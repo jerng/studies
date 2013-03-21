@@ -1,8 +1,18 @@
 # Hell
 
-A web application development framework, for the Haskell programming language.
+An aspiring MVC web application development framework, for the Haskell
+programming language.
 
-(Muchly lacking in documentation, sorry.)
+## Status
+
+This project is in its embryonic stages.  It remains muchly lacking in
+documentation, and for that I am sorry.
+
+What has been accomplished so far, is a Warp server application that routes
+requests based on HTTP path segments. The server calls the router, the router
+calls the controller-action, the controller-action passes a reaction back to
+the server, the server renders the reaction into the respective view, and
+serves this as a response. 
 
 ## Intro
 
@@ -11,15 +21,27 @@ Yesod, Hell does not use Template Haskell (which compiles to Haskell AST), and
 instead compiles your application into a bunch of plain Haskell scripts which
 you can open up to read (read:check) if necessary.
 
-## Functionality
+### Dependencies
 
-./Hell contains libraries, and some templates.
-./src would be where you write your application code.
+[Haskell Platform](http://www.haskell.org/platform/) will suffice. If a
+required module is missing, I'm afraid that, for now, you'll just have to
+Google to find the respective package, and get it via `cabal install`.
 
-Running "runghc ./makeHell.hs" would assemble code from the two directories
-mentioned above. The assembled code would be written to ./app .
+### Framework 
 
-Running "runghc ./tryHell.hs" would run ./app/Server.hs .
+`./Hell` contains libraries, and some templates.
+`./src` would be where you write your application code.
+
+Running `runghc ./makeHell.hs` would assemble code from the two directories
+mentioned above. The assembled code would be written to `./app`.
+
+Running `runghc ./tryHell.hs` would run `./app/Server.hs`.
+
+### Example
+
+The only thing to look at right now, is `./src/c/Default.hs`, which is the 
+Default controller, containing the (index) action. This corresponds to 
+`./src/v/Default/index.hs.view`
 
 ## Background
 
