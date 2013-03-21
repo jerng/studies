@@ -119,11 +119,12 @@ bunch of scripts, for now.
 
 1.  All the framework's own code is in two files for now.
 
-1. 1. "ez_app/ez/ez.erl" - this contains the router, and rendering interface with 
-'inets', the httpd service, and 'mod_esi' from the 'stdlib'. Documentation 
-inside includes a diagram of the function-call sequence when URLs are hit.
+  1.  "ez_app/ez/ez.erl" - this contains the router, and rendering interface
+  with 'inets', the httpd service, and 'mod_esi' from the 'stdlib'.
+  Documentation inside includes a diagram of the function-call sequence when
+  URLs are hit.
 
-1. 2. "ez_app/ez/ezutils.erl" - this contains the code that starts the webserver
-("ez_app/ezboot.bat" just compiles this, and runs ezutils:start()), compiles 
-MVC source code and loads it into RAM. Documentation inside includes a diagram
-of the function-call sequence that begins at ezutils:start()
+  2. "ez_app/ez/ezutils.erl" - this contains the code that starts the webserver
+  ("ez_app/ezboot.bat" just compiles this, and runs ezutils:start()), compiles
+  MVC source code and loads it into RAM. Documentation inside includes a
+  diagram of the function-call sequence that begins at ezutils:start()
