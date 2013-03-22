@@ -22,35 +22,29 @@ spliceTemplate module' = do
 
 -- | This function builds slices of text.
 buildSlice :: SliceID -> IO Text
-buildSlice s = case s of 
+buildSlice s  
 
-  -- PRETTIFY:
-  SliceID Server ImportControllers -> do 
+  | SliceID Server ImportControllers <- s
+  = do  
     cs <- controllers
-    return 
-      $ T.intercalate "\n" 
-      $ map 
-        ((T.append "import qualified Controllers.").(T.pack)) 
-        cs 
+    return $ 
+      T.intercalate "\n" $ 
+      map ((T.append "import qualified Controllers.").(T.pack)) cs 
 
-  -- PRETTIFY:
-  SliceID Server ImportViews -> do 
+  | SliceID Server ImportViews <- s
+  = do  
     al <- views
     let cs = keysAL al
-        eachC = \c -> do 
-          let vs = fromJust $ lookup c al 
-          T.concat $ map (eachV c) vs
-        eachV = \c v -> do
+        eachC = \c -> T.concat $ map (eachV c) $ fromJust $ lookup c al 
+        eachV = \c v ->
           T.concat [ "import qualified Views."
-                   , T.pack c
-                   , "."
-                   , T.pack v
-                   , "\n"
+                   , T.pack c , "."
+                   , T.pack v , "\n"
                    ]
     return $ T.concat $ map eachC cs 
 
 spliceView :: FilePath -> FilePath -> Text -> Text
-spliceView c v unsplicedText =  
+spliceView c v unsplicedText = 
   unrenderedToModuleText  
   1 
   ( T.pack $  "{-# LANGUAGE OverloadedStrings #-}\n\
@@ -58,83 +52,80 @@ spliceView c v unsplicedText =
               \\nimport qualified Data.Text as T\
               \\nimport Hell.Lib\
               \\n--import SomeResourceName2" 
-  )
-  $ textToUnrendereds unsplicedText
+  ) 
+  ( textToUnrendereds unsplicedText )
 
-unrenderedToModuleText 
-  ::  Int ->            -- counter
-      Text ->           -- accumulator
-      [Unrendered] ->   -- List of (Unrendered)s
-      ResourceNameText      
-unrenderedToModuleText 0 _  remainingList  = 
-  error "The counter must be greater than 0"
-  -- CONVERT TO PATTERN GUARD, fail on <0
+unrenderedToModuleText :: Int -> Text -> [Unrendered] -> ResourceNameText
+unrenderedToModuleText count acc remainingList  
 
-unrenderedToModuleText count acc [] = 
+  | True <- count < 1 
+  = error "The counter must be greater than 0"
+
   -- | Final Unrendered
-  T.concat 
+
+  | [] <- remainingList
+  = T.concat 
     [ acc 
     , "\nmain :: Reaction -> Text\
       \\nmain reaction = T.concat ["
-    , ( T.intercalate "," $ 
-          map 
-          (\x->
-            T.concat 
-            [ "text" 
-            , (T.pack $ show x)
-            , " reaction"
-            ]) 
-          [1..(count-1)] )
+    , T.intercalate "," $ map 
+                          (\x->
+                            T.concat 
+                            [ "text" 
+                            , (T.pack $ show x)
+                            , " reaction"
+                            ]
+                          ) 
+                          [1..(count-1)] 
     , "]"
     ]
-unrenderedToModuleText count acc (unrendered:remainingList) = 
--- | Any other Unrendereds
-  case unrendered of
-    (Plain text)
-      ->  unrenderedToModuleText 
-          (count+1) 
-          ( T.concat
-            [ acc 
-            , "\n\ntext"
-            , T.pack $ show count
-            , " :: Reaction -> Text\ntext"
-            , T.pack $ show count
-            , " _ = \""
-            , ( textToHsSyntax text )
-            , "\"\n"
-            ]
-          )      
-          remainingList
-    (Exp text)
-      
-      {- IMPROVE:  currently, if Text has text in parentheses, then Text is
+
+  -- | Any other Unrendereds:
+
+  | ((Plain text) :remainingList) <- remainingList
+  = unrenderedToModuleText 
+    (count+1) 
+    ( T.concat
+      [ acc 
+      , "\n\ntext"
+      , T.pack $ show count
+      , " :: Reaction -> Text\ntext"
+      , T.pack $ show count
+      , " _ = \""
+      , ( textToHsSyntax text )
+      , "\"\n"
+      ]
+    )      
+    remainingList
+
+  | ((Exp text) :remainingList) <- remainingList
+    {- IMPROVE:  currently, if Text has text in parentheses, then Text is
       processed as an expression. Otherwise, Text is processed as the key to
       (reaction) (Hell.Types.Reaction). This is a rather fragile semantic, in
       terms of language design. Perhaps we should instead, have <hs/> for
       expressions and <hsv/> for Reaction keys.
-      -}
-
-      ->  unrenderedToModuleText 
-          (count+1) 
-          ( T.concat
-            [ acc 
-            , "\n\ntext"
-            , T.pack $ show count
-            , " :: Reaction -> Text\ntext"
-            , T.pack $ show count
-            , " (Reaction status route textMap) = "
-            , case T.head text of
-                '(' ->  T.append
-                        "T.pack $ show $ "
-                        text 
-                _   ->  T.concat 
-                        [ "fromJust $ lookup \""
-                        , text
-                        , "\" textMap\n"
-                        ]
-            ]
-          )      
-          remainingList
+    -}
+  = unrenderedToModuleText 
+    (count+1) 
+    ( T.concat
+      [ acc 
+      , "\n\ntext"
+      , T.pack $ show count
+      , " :: Reaction -> Text\ntext"
+      , T.pack $ show count
+      , " (Reaction status route textMap) = "
+      , case T.head text of
+          '(' ->  T.append
+                  "T.pack $ show $ "
+                  text 
+          _   ->  T.concat 
+                  [ "fromJust $ lookup \""
+                  , text
+                  , "\" textMap\n"
+                  ]
+      ]
+    )      
+    remainingList
 
 textToUnrendereds :: Text -> [Unrendered]
 textToUnrendereds text =  
