@@ -5,11 +5,9 @@ module Hell.Splice (
   , spliceView
 ) where
 
-import Control.Monad (foldM)
 import qualified Data.Text as T 
 import qualified Data.Text.IO as T
-import Hell.Conf
-import Hell.Types
+import Hell.Lib
 
 spliceTemplate :: ResourceName -> IO ResourceNameText 
 spliceTemplate module' = do 
@@ -25,6 +23,8 @@ spliceTemplate module' = do
 -- | This function builds slices of text.
 buildSlice :: SliceID -> IO Text
 buildSlice s = case s of 
+
+  -- PRETTIFY:
   SliceID Server ImportControllers -> do 
     cs <- controllers
     return 
@@ -32,37 +32,43 @@ buildSlice s = case s of
       $ map 
         ((T.append "import qualified Controllers.").(T.pack)) 
         cs 
+
+  -- PRETTIFY:
   SliceID Server ImportViews -> do 
-    return "import qualified Views.Default.Index"
+    al <- views
+    let cs = keysAL al
+        eachC = \c -> do 
+          let vs = fromJust $ lookup c al 
+          T.concat $ map (eachV c) vs
+        eachV = \c v -> do
+          T.concat [ "import qualified Views."
+                   , T.pack c
+                   , "."
+                   , T.pack v
+                   , "\n"
+                   ]
+    return $ T.concat $ map eachC cs 
 
-    -- TODO: SOFT CODE THIS
+spliceView :: FilePath -> FilePath -> Text -> Text
+spliceView c v unsplicedText =  
+  unrenderedToModuleText  
+  1 
+  ( T.pack $  "{-# LANGUAGE OverloadedStrings #-}\n\
+              \module Views." ++ c ++ "." ++ v ++ " where\
+              \\nimport qualified Data.Text as T\
+              \\nimport Hell.Lib\
+              \\n--import SomeResourceName2" 
+  )
+  $ textToUnrendereds unsplicedText
 
---    vs <- views
---    return 
---      $ T.intercalate "\n" 
---      $ map 
---        ((T.append "import qualified Views.").(T.pack)) 
---        vs
-
-spliceView :: Text -> Text
-spliceView unsplicedText =  unrenderedToModuleText   
-                            0 
-                            T.empty 
-                            $ textToUnrendereds unsplicedText
 unrenderedToModuleText 
   ::  Int ->            -- counter
       Text ->           -- accumulator
       [Unrendered] ->   -- List of (Unrendered)s
       ResourceNameText      
 unrenderedToModuleText 0 _  remainingList  = 
-  -- | First Unrendered
-  unrenderedToModuleText 1 "{-# LANGUAGE OverloadedStrings #-}\n\
-    \module Views.Default.Index where\
-    \\nimport qualified Data.Text as T\
-    \\nimport Hell.Lib\
-    \\n--import SomeResourceName2" remainingList
-
-    -- TODO: SOFT CODE THIS
+  error "The counter must be greater than 0"
+  -- CONVERT TO PATTERN GUARD, fail on <0
 
 unrenderedToModuleText count acc [] = 
   -- | Final Unrendered

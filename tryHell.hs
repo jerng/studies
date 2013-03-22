@@ -29,7 +29,7 @@ forkWait a = do
   _ <- mask $ \restore -> forkIO $ try (restore a) >>= putMVar res
   return (takeMVar res >>= either (\ex -> throwIO (ex :: SomeException)) return)
 
--- | This is It is a modified version of System.Process.readProcess, so to debug 
+-- | This is a modified version of System.Process.readProcess, so to debug 
 -- this (especially if you're not running GHC, please refer to that original 
 -- module's source code. This basically contains one function (readProcess') 
 -- whose sole function is to fire the assembled app in app/. 

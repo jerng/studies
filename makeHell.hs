@@ -4,10 +4,10 @@
 
 import Data.List
 import Data.String.Utils
-import Data.List.Utils
 import qualified Data.Text    as T 
 import qualified Data.Text.IO as T
 import Hell.Lib
+import Hell.Splice (spliceTemplate,spliceView)
 import System.Directory
 
 -------------------------------------------------------------------------------
@@ -69,6 +69,7 @@ assembleModels = (mapM_ copy) =<< models
 
 -- Later: WARN for all actions without views.
 --        WARN for all views without actions.
+-- PRETTIFY:
 assembleViews = do 
   al <- views
   let cs = keysAL al
@@ -79,7 +80,7 @@ assembleViews = do
       eachV = \c v -> do
         unsplicedText <- T.readFile 
           (fromPath Views ++ c ++ "/" ++ v ++ scriptExtension ++ viewExtension)
-        let splicedText = spliceView unsplicedText
+        let splicedText = spliceView c v unsplicedText
             toFileName = v ++ scriptExtension
             toFilePath = concat [ toPath Views, c, "/", toFileName ]
         T.writeFile toFilePath splicedText 
