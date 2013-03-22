@@ -12,6 +12,9 @@ module Hell.Types (
   , Response (..)
   , Status (..)
 
+  -- | Defined in Network.HTTP.Types
+  , ok200
+
   -- | Defined below:
   , DM
   , Controller
@@ -31,7 +34,10 @@ module Hell.Types (
 import Data.Text (Text)
 import Data.Dynamic (Dynamic, Typeable)
 import Network.Wai (Request(..), Response(..))
-import Network.HTTP.Types (Status)
+import Network.HTTP.Types ( 
+    Status
+  , ok200
+  )
 
 type ResourceNameText = Text 
 type DM = [(Text,Dynamic)]

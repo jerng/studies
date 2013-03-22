@@ -51,8 +51,7 @@ spliceView c v unsplicedText =
   ( T.pack $  "{-# LANGUAGE OverloadedStrings #-}\n\
               \module Views." ++ c ++ "." ++ v ++ " where\
               \\nimport qualified Data.Text as T\
-              \\nimport Hell.Lib\
-              \\n--import SomeResourceName2" 
+              \\nimport Hell.Lib" 
   ) 
   ( textToUnrendereds unsplicedText )
 

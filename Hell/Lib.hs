@@ -43,6 +43,7 @@ module Hell.Lib (
   , Request (..)
   , Response (..)
   , Status (..)
+  , ok200
 
   , DM
   , Controller
