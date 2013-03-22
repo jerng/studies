@@ -1,1 +1,14 @@
-Lots of fixes required in Hell.Splice
+Automate the assembly of controller boilerplate.
+
+Differently handle <hs/> and <hsv/> tags in Views.
+
+Implement redirection, from one action, to another action.
+
+Implement a simple form helper.
+
+Implement a URL helper.
+
+Replace usage of Text with usage of Builders (since all Text is ultimately converted to Builder).
+
+Check functionality of Warp sessions. Check functionality of Warp cookies.
+Following these, implement authentication.
