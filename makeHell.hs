@@ -67,9 +67,9 @@ assembleModels = (mapM_ copy) =<< models
           (fromPath Models ++ m ++ scriptExtension)
           (toPath Models ++ m ++ scriptExtension)  
 
--- Later: WARN for all actions without views.
---        WARN for all views without actions.
--- PRETTIFY:
+-- TODO: WARN for all actions without views.
+--       WARN for all views without actions.
+assembleViews :: IO ()
 assembleViews = do 
   al <- views
   let cs = keysAL al

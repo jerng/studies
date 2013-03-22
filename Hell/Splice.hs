@@ -21,6 +21,7 @@ spliceTemplate module' = do
   foldM buildSlices templateText moduleSliceIDs
 
 -- | This function builds slices of text.
+
 buildSlice :: SliceID -> IO Text
 buildSlice s  
 
