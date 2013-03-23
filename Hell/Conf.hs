@@ -102,3 +102,10 @@ messageStartTryHell = "Running source code of ./app/Server.hs ...\n"
 
 messageJobDone :: Text
 messageJobDone = "... and the job is done.\n"
+
+viewableListHelpers :: Text 
+viewableListHelpers = 
+  "  viewInt key = lookupDM key textMap :: Int\n\
+  \  viewFloat key = lookupDM key textMap :: Float\n\
+  \  viewText key = lookupDM key textMap :: Text\n\
+  \  viewIntList key = lookupDM key textMap :: [Int]\n"

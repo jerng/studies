@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>frameworkRnD</title>
+    <title>Hell Framework: R&D</title>
   </head>
   <body>
     <h1>a simple view: </h1> 
     Following this is an attempt to interpolate some Haskell expressions<br/>
-    1 +1 : <hs>(1+1)</hs><br/>
-    a variable called (someVar) : <hs>someVar</hs><br/>
+    Haskell script "1 +1" : <hs>(1+1)</hs><br/>
+    a ViewableList key called (someInt) : <hs>viewInt "someInt"</hs><br/>
+    a ViewableList key called (someFloat) : <hs>viewFloat "someFloat"</hs><br/>
+    a Viewable called (someText) : <hs>viewText "someText"</hs><br/>
+    a Viewable called (someIntList) : <hs>viewIntList "someIntList"</hs><br/>
     <br/>
-    The objective here is to run all of this inside a (do{}) statement, within
-    a (Controller.action), so that the scope is confined to that.<br/>
-    <br/>
-    I had earlier thought of using the architecture where the (Controller.action)
-    returns parameters and control to (Server.main) to have rendering done
-    elsewhere, at a higher level, but the passing of variables seems to involve
-    much boilerplate. I'm still thinking about this. And about how much time 
-    this is consuming to no definite end, subtracting from  my general scheme of 
-    studies.
+    These are defined in (Hell.Conf.viewableListHelpers). For now, you'll have to
+    write a new helper function, every time you want to pass another type into
+    the view. The current mechanism uses the Dynamic type to pass data 
+    through the ViewableList, and I am wondering if using (read)-(show) would be
+    performant (it would certainly provide less to code against).
   </body>
-</html>"
+</html>

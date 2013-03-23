@@ -32,15 +32,14 @@ router request
   | c:a:_ <- pathInfo request = ( c, a )
 
 render :: Reaction -> ResourceT IO Response
-render (Reaction status route textMap) = return 
-      -- Can this be further optimised with a "where"?
-  $ ResponseBuilder status [] -- customisation of ResponseHeaders occurs here
-  $ fromText 
+render (Reaction status route textMap) = return $
+   ResponseBuilder status [] $ -- customisation of ResponseHeaders occurs here
+   fromText $
 
       -- OPTIMISATION: look into... working backwards, 
       -- and replacing as much (Text) as possible, with (Builder).
       -- Try to figure out how to start using Builder instead of Text in Views.
-  $ 
+   
     
 
     maybe 

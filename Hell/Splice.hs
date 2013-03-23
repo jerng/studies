@@ -55,12 +55,25 @@ spliceView c v unsplicedText =
   unrenderedToModuleText  
   1 
   ( T.pack $  "{-# LANGUAGE OverloadedStrings #-}\n\
-              \module Views." ++ c ++ "." ++ v ++ " where\
-              \\nimport qualified Data.Text as T\
-              \\nimport Hell.Lib" 
+              \module Views." ++ c ++ "." ++ v ++ " where\n\n\
+              \import qualified Data.Text as T\n\
+              \import Hell.Lib\n\n" 
   ) 
   ( textToUnrendereds unsplicedText )
 
+-- | The approach taken creates a unique function (textN) for each unrendered
+-- slice. (main) then consists of a magazine that calls all these functions
+-- and then concatenates them. This makes it the rendered module easy to read,
+-- I hope. 
+--
+-- However, if slices were rendered directly into the (main) magazine 
+-- that gets concatenated, a lot of boilerplate would be reduced as helper
+-- functions inside each (Exp text) slice would only have to be rendered once.
+-- Basically, passing of scope might (???) be simpler, and code might run
+-- faster, but code would be harder to read. Unless of course, GHC is already
+-- solving all these problems for us behind the scenes.
+--
+-- TODO: test and decide if a better approach is feasible.
 unrenderedToModuleText :: Int -> Text -> [Unrendered] -> ResourceNameText
 unrenderedToModuleText count acc remainingList  
 
@@ -72,9 +85,11 @@ unrenderedToModuleText count acc remainingList
   | [] <- remainingList
   = T.concat 
     [ acc 
-    , "\nmain :: Reaction -> Text\
-      \\nmain reaction = T.concat ["
-    , T.intercalate "," $ map 
+    , "main :: Reaction -> Text\n\
+      \main reaction =\n\
+      \  T.concat\n\
+      \  [ "
+    , T.intercalate "\n  , " $ map 
                           (\x->
                             T.concat 
                             [ "text" 
@@ -83,10 +98,10 @@ unrenderedToModuleText count acc remainingList
                             ]
                           ) 
                           [1..(count-1)] 
-    , "]\n\n\
-      \main' = do\
-      \ T.empty\
-    \ "
+    , "\n  ]\n\n\
+      \main' reaction = do\
+      \  T.empty"
+    
     ]
 
   -- | Any other Unrendereds:
@@ -108,12 +123,6 @@ unrenderedToModuleText count acc remainingList
     remainingList
 
   | ((Exp text) :remainingList) <- remainingList
-    {- IMPROVE:  currently, if Text has text in parentheses, then Text is
-      processed as an expression. Otherwise, Text is processed as the key to
-      (reaction) (Hell.Types.Reaction). This is a rather fragile semantic, in
-      terms of language design. Perhaps we should instead, have <hs/> for
-      expressions and <hsv/> for Reaction keys.
-    -}
   = unrenderedToModuleText 
     (count+1) 
     ( T.concat
@@ -123,15 +132,12 @@ unrenderedToModuleText count acc remainingList
       , " :: Reaction -> Text\ntext"
       , T.pack $ show count
       , " (Reaction status route textMap) = "
-      , case T.head text of
-          '(' ->  T.append
-                  "T.pack $ show $ "
-                  text 
-          _   ->  T.concat 
-                  [ "fromJust $ lookup \""
-                  , text
-                  , "\" textMap\n"
-                  ]
+      , T.concat 
+          [ " T.pack $ show $ " , text
+          , "\n\
+            \  where\n"
+          , viewableListHelpers
+          ]
       ]
     )      
     remainingList

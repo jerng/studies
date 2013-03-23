@@ -1,4 +1,9 @@
-Differently handle <hs/> and <hsv/> tags in Views.
+Implement a helper function for populating the ViewableList in Controllers.
+
+   :Test if it is performant to pass variables using
+  (show) and (read) instead of Dynamic. Doing so might reduce
+  boilerplate and the need for utility functions. But I am
+  concerned that it will run slowly.
 
 Implement redirection, from one action, to another action.
 

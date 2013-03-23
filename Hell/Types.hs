@@ -21,7 +21,7 @@ module Hell.Types (
   , Action
   , Route
   , AppControllerVars
-  , ViewSlices
+  , ViewableList
   , Reaction (..)
   , ResourceName (..)
   , Slice (..)
@@ -45,9 +45,9 @@ type Controller = Text
 type Action = Text
 type Route = (Controller,Action)
 type AppControllerVars = DM
-type ViewSlices = [(Text,Text)]
+type ViewableList = [(Text,Dynamic)]
 
-data Reaction = Reaction Status Route ViewSlices 
+data Reaction = Reaction Status Route ViewableList
 
 -- | This data structure was considered. 
 -- But I can't think of a great use for it.

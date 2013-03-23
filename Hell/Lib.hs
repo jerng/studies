@@ -37,6 +37,7 @@ module Hell.Lib (
   , filterInViews
   , scriptExtension
   , viewExtension
+  , viewableListHelpers
 
   -- | Defined in Hell.Types:
   , Text
@@ -50,7 +51,7 @@ module Hell.Lib (
   , Action
   , Route
   , AppControllerVars
-  , ViewSlices
+  , ViewableList
   , Reaction (..)
   , ResourceName (..)
   , Slice (..)
@@ -78,7 +79,7 @@ import Hell.Types
 import Network.Wai.Handler.Warp
 
 lookupDM :: (Typeable a) => Text -> [(Text, Dynamic)] -> a
-lookupDM k dmap    = Data.Maybe.fromJust 
+lookupDM k dmap = Data.Maybe.fromJust 
                     $ Data.Dynamic.fromDynamic 
                     $ Data.Maybe.fromJust 
                     $ lookup k dmap
