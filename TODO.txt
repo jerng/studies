@@ -1,5 +1,6 @@
 Automate the assembly of controller boilerplate.
 
+
 Differently handle <hs/> and <hsv/> tags in Views.
 
 Implement redirection, from one action, to another action.
@@ -12,3 +13,9 @@ Replace usage of Text with usage of Builders (since all Text is ultimately conve
 
 Check functionality of Warp sessions. Check functionality of Warp cookies.
 Following these, implement authentication.
+
+Check functional limits:
+Can all View code share scope? (e.g. all run within a do {})
+
+Chore-like:
+In Hell.Conf, (controllers), (views), etc. should return a list of type (HellResource { name :: x ,  type ::, fromPath ::, toPath ::} ; of course, first define this in Hell.Types

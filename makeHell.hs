@@ -7,7 +7,7 @@ import Data.String.Utils
 import qualified Data.Text    as T 
 import qualified Data.Text.IO as T
 import Hell.Lib
-import Hell.Splice (spliceTemplate,spliceView)
+import Hell.Splice (spliceController,spliceTemplate,spliceView)
 import System.Directory
 
 -------------------------------------------------------------------------------
@@ -54,18 +54,22 @@ copyStaticResources = mapM_ copy staticResources
                           (toPath module')
 
 assembleControllers :: IO ()
-assembleControllers = (mapM_ copy) =<< controllers
-  where copy = \c ->  
-          copyFile  
-          (fromPath Controllers ++ c ++ scriptExtension)
-          (toPath Controllers ++ c ++ scriptExtension)
+assembleControllers = do
+  cs <- controllers
+  let assemble c =  do
+        splicedText <- spliceController c
+        T.writeFile (toPath Controllers ++ c ++ scriptExtension) $
+          T.concat  [ "{-# LANGUAGE OverloadedStrings #-}\n\n\
+                      \module Controllers.", T.pack c, " where\n\n\
+                      \import qualified Data.Text as T\n\
+                      \import Hell.Lib\n\n", splicedText ]
+  mapM_ assemble cs
 
 assembleModels :: IO ()
 assembleModels = (mapM_ copy) =<< models
-  where copy = \m ->  
-          copyFile  
-          (fromPath Models ++ m ++ scriptExtension)
-          (toPath Models ++ m ++ scriptExtension)  
+  where copy = \m ->  copyFile  
+                      (fromPath Models ++ m ++ scriptExtension)
+                      (toPath Models ++ m ++ scriptExtension)  
 
 -- TODO: WARN for all actions without views.
 --       WARN for all views without actions.
@@ -78,8 +82,8 @@ assembleViews = do
         let vs = fromJust $ lookup c al 
         mapM_ (eachV c) vs
       eachV = \c v -> do
-        unsplicedText <- T.readFile 
-          (fromPath Views ++ c ++ "/" ++ v ++ scriptExtension ++ viewExtension)
+        unsplicedText <- T.readFile $ concat 
+          [fromPath Views, c, "/", v, scriptExtension, viewExtension]
         let splicedText = spliceView c v unsplicedText
             toFileName = v ++ scriptExtension
             toFilePath = concat [ toPath Views, c, "/", toFileName ]

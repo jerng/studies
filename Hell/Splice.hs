@@ -1,13 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Hell.Splice (
-    spliceTemplate
+    spliceController
+  , spliceTemplate
   , spliceView
 ) where
 
 import qualified Data.Text as T 
 import qualified Data.Text.IO as T
 import Hell.Lib
+
+spliceController :: FilePath -> IO ResourceNameText 
+spliceController c = do
+  templateText <- T.readFile $ (fromPath Controllers) ++ c ++ scriptExtension
+  return templateText
 
 spliceTemplate :: ResourceName -> IO ResourceNameText 
 spliceTemplate module' = do 
