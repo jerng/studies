@@ -17,12 +17,12 @@ module Hell.Types (
 
   -- | Defined below:
   , DM
-  , Controller
-  , Action
+  , ControllerName
+  , ActionName
   , Route
   , AppControllerVars
-  , ViewableList
-  , Reaction (..)
+  , ViewDictionary
+  , Action (..)
   , ResourceName (..)
   , Slice (..)
   , SliceID (..)
@@ -41,13 +41,13 @@ import Network.HTTP.Types (
 
 type ResourceNameText = Text 
 type DM = [(Text,Dynamic)]
-type Controller = Text
-type Action = Text
-type Route = (Controller,Action)
+type ControllerName = Text
+type ActionName = Text
+type Route = (ControllerName,ActionName)
 type AppControllerVars = DM
-type ViewableList = [(Text,Dynamic)]
+type ViewDictionary = [(Text,Dynamic)]
 
-data Reaction = Reaction Status Route ViewableList
+data Action = Action Status Route ViewDictionary
 
 -- | This data structure was considered. 
 -- But I can't think of a great use for it.

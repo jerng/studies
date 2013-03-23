@@ -85,7 +85,7 @@ unrenderedToModuleText count acc remainingList
   | [] <- remainingList
   = T.concat 
     [ acc 
-    , "main :: Reaction -> Text\n\
+    , "main :: Action -> Text\n\
       \main reaction =\n\
       \  T.concat\n\
       \  [ "
@@ -113,7 +113,7 @@ unrenderedToModuleText count acc remainingList
       [ acc 
       , "\n\ntext"
       , T.pack $ show count
-      , " :: Reaction -> Text\ntext"
+      , " :: Action -> Text\ntext"
       , T.pack $ show count
       , " _ = \""
       , ( textToHsSyntax text )
@@ -129,14 +129,14 @@ unrenderedToModuleText count acc remainingList
       [ acc 
       , "\n\ntext"
       , T.pack $ show count
-      , " :: Reaction -> Text\ntext"
+      , " :: Action -> Text\ntext"
       , T.pack $ show count
-      , " (Reaction status route textMap) = "
+      , " (Action status route textMap) = "
       , T.concat 
           [ " T.pack $ show $ " , text
           , "\n\
             \  where\n"
-          , viewableListHelpers
+          , viewDictionaryHelpers
           ]
       ]
     )      

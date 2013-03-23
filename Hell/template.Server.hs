@@ -12,14 +12,14 @@ main :: IO ()
 main = run hellServerPort app
 
 app :: Request -> ResourceT IO Response 
-app request =  render $ act request 
+app = \request-> render $ getAction request 
 
-act ::  Request -> Reaction
-act request 
+getAction ::  Request -> Action
+getAction request 
   = ( maybe 
-      ( fromJust $ lookup (Hell.Lib.defaultRoute) actionList ) 
+      (fromJust $ lookup (Hell.Lib.defaultRoute) actionList) 
       id
-      ( lookup (router request) actionList ) 
+      (lookup (router request) actionList)
     )
     request 
     appControllerVariables
@@ -31,21 +31,14 @@ router request
   -- (Hell.Conf.customPaths) may be defined, then called here.
   | c:a:_ <- pathInfo request = ( c, a )
 
-render :: Reaction -> ResourceT IO Response
-render (Reaction status route textMap) = return $
-   ResponseBuilder status [] $ -- customisation of ResponseHeaders occurs here
-   fromText $
-
-      -- OPTIMISATION: look into... working backwards, 
-      -- and replacing as much (Text) as possible, with (Builder).
-      -- Try to figure out how to start using Builder instead of Text in Views.
-   
-    
-
-    maybe 
-    "Missing View:" 
-    ( \view->view (Reaction status route textMap) )
-    ( lookup route viewList ) 
+render :: Action -> ResourceT IO Response
+render (Action status route textMap) = return $
+  ResponseBuilder status [] $ -- customisation of ResponseHeaders should occur here
+  fromText $
+  maybe 
+  "We lack a point of View." 
+  ( \view->view (Action status route textMap) )
+  ( lookup route viewList ) 
 
 -- | SHOULD THIS GO INTO (Hell.Conf) ?
 -- TO CONSULT PROFESSIONALS:
@@ -63,21 +56,12 @@ appControllerVariables = [
             toDyn ("\"Hello, I too am defined in AppController\"" :: Text ))
     ]
 
-
-
--- | CONTINUE HERE: Generate these from src0
---
--- Possible alternatives to using [((Text,Text),a)] :
---
--- (a) Data.Map 
--- (b) [(Text,a)]] 
-
-actionList :: [(Route, Request -> AppControllerVars -> Reaction)]
+actionList :: [(Route, Request -> AppControllerVars -> Action)]
 actionList = [
         (("default", "index"), Controllers.Default.index)
     ]
 
-viewList :: [(Route, Reaction -> Text)]
+viewList :: [(Route, Action -> Text)]
 viewList = [
         (("default", "index"), Views.Default.Index.main)
     ]

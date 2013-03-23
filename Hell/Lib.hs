@@ -37,7 +37,7 @@ module Hell.Lib (
   , filterInViews
   , scriptExtension
   , viewExtension
-  , viewableListHelpers
+  , viewDictionaryHelpers
   , hellServerPort
 
   -- | Defined in Hell.Types:
@@ -48,12 +48,12 @@ module Hell.Lib (
   , ok200
 
   , DM
-  , Controller
-  , Action
+  , ControllerName
+  , ActionName
   , Route
   , AppControllerVars
-  , ViewableList
-  , Reaction (..)
+  , ViewDictionary
+  , Action (..)
   , ResourceName (..)
   , Slice (..)
   , SliceID (..)

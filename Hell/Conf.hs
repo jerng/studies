@@ -103,8 +103,8 @@ messageStartTryHell = "Running source code of ./app/Server.hs ...\n"
 messageJobDone :: Text
 messageJobDone = "... and the job is done.\n"
 
-viewableListHelpers :: Text 
-viewableListHelpers = 
+viewDictionaryHelpers :: Text 
+viewDictionaryHelpers = 
   "  viewInt key = lookupDM key textMap :: Int\n\
   \  viewFloat key = lookupDM key textMap :: Float\n\
   \  viewText key = lookupDM key textMap :: Text\n\
