@@ -1,6 +1,3 @@
-Automate the assembly of controller boilerplate.
-
-
 Differently handle <hs/> and <hsv/> tags in Views.
 
 Implement redirection, from one action, to another action.

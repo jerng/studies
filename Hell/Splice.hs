@@ -83,7 +83,10 @@ unrenderedToModuleText count acc remainingList
                             ]
                           ) 
                           [1..(count-1)] 
-    , "]"
+    , "]\n\n\
+      \main' = do\
+      \ T.empty\
+    \ "
     ]
 
   -- | Any other Unrendereds:
@@ -153,6 +156,6 @@ textToUnrendereds text =
             remainder )
 
 textToHsSyntax :: Text -> Text
-textToHsSyntax text = T.replace "\n" "\\\n\\" $ T.replace "\"" "\\\"" text
+textToHsSyntax text = (T.intercalate "\\\n\\" ) $ T.lines $ T.replace "\"" "\\\"" text
                     -- Formats multiline text.
                     -- Escapes double-quotes
