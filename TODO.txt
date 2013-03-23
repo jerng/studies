@@ -1,3 +1,5 @@
+Deal with missing keys in ViewableList (currently: crashes without much description).
+
 Implement a helper function for populating the ViewableList in Controllers.
 
    :Test if it is performant to pass variables using
