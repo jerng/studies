@@ -9,7 +9,7 @@ import qualified Data.Text as T
 {-assemble:ImportViews-}
 
 main :: IO ()
-main = run 3000 app
+main = run hellServerPort app
 
 app :: Request -> ResourceT IO Response 
 app request =  render $ act request 

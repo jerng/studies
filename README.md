@@ -37,6 +37,9 @@ mentioned above. The assembled code would be written to `./app`.
 
 Running `runghc ./tryHell.hs` would run `./app/Server.hs`.
 
+By default, the server's port in Hell.Conf is set to 3000, so check 
+[localhost:3000](http://localhost:3000)
+
 ### Example
 
 The only thing to look at right now, is `./src/c/Default.hs`, which is the 

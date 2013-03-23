@@ -109,3 +109,6 @@ viewableListHelpers =
   \  viewFloat key = lookupDM key textMap :: Float\n\
   \  viewText key = lookupDM key textMap :: Text\n\
   \  viewIntList key = lookupDM key textMap :: [Int]\n"
+
+hellServerPort :: Int
+hellServerPort = 3000

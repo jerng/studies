@@ -38,6 +38,7 @@ module Hell.Lib (
   , scriptExtension
   , viewExtension
   , viewableListHelpers
+  , hellServerPort
 
   -- | Defined in Hell.Types:
   , Text
