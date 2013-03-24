@@ -105,10 +105,10 @@ messageJobDone = "... and the job is done.\n"
 
 viewDictionaryHelpers :: Text 
 viewDictionaryHelpers = 
-  "  viewInt key = lookupDM key textMap :: Int\n\
-  \  viewFloat key = lookupDM key textMap :: Float\n\
-  \  viewText key = lookupDM key textMap :: Text\n\
-  \  viewIntList key = lookupDM key textMap :: [Int]\n"
+  "  viewInt key = lookupViewDictionary key textMap :: Int\n\
+  \  viewFloat key = lookupViewDictionary key textMap :: Float\n\
+  \  viewText key = lookupViewDictionary key textMap :: Text\n\
+  \  viewIntList key = lookupViewDictionary key textMap :: [Int]\n"
 
 hellServerPort :: Int
 hellServerPort = 3000

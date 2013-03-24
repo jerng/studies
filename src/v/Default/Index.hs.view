@@ -7,15 +7,16 @@
     <h1>a simple view: </h1> 
     Following this is an attempt to interpolate some Haskell expressions<br/>
     Haskell script "1 +1" : <hs>(1+1)</hs><br/>
-    a ViewableList key called (someInt) : <hs>viewInt "someInt"</hs><br/>
-    a ViewableList key called (someFloat) : <hs>viewFloat "someFloat"</hs><br/>
-    a Viewable called (someText) : <hs>viewText "someText"</hs><br/>
-    a Viewable called (someIntList) : <hs>viewIntList "someIntList"</hs><br/>
+    a ViewDictionary key called (someInt) : <hs>viewInt "someInt"</hs><br/>
+    a ViewDictionary key called (someFloat) : <hs>viewFloat "someFloat"</hs><br/>
+    a ViewDictionary key called (someText) : <hs>viewText "someText"</hs><br/>
+    a ViewDictionary key called (someIntList) : <hs>viewIntList "someIntList"</hs><br/>
+    a ViewDictionary key called (x) : <hs>viewText "x"</hs><br/>
     <br/>
     These are defined in (Hell.Conf.viewableListHelpers). For now, you'll have to
     write a new helper function, every time you want to pass another type into
     the view. The current mechanism uses the Dynamic type to pass data 
-    through the ViewableList, and I am wondering if using (read)-(show) would be
+    through the ViewDictionary, and I am wondering if using (read)-(show) would be
     performant (it would certainly provide less to code against).
   </body>
 </html>

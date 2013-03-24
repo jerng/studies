@@ -2,8 +2,6 @@
 
 ## Laundry List of outstanding tasks; sorted by ease, descending
 
-Deal with missing keys in ViewDictionary (currently: crashes without much description).
-
 Automate assembly of Hell.Server.actionList and .viewList
 
 Implement Views-in-Views ("widgets")
@@ -53,6 +51,6 @@ Where (and how) can Text be replaced with Builders (since all Text is ultimately
 
 ## Chore-like:
 
-Replace all association lists, with Data.Map
+Replace all association lists, Hell.Types.DM, with Data.Map.Map
 
 In Hell.Conf, (controllers), (views), etc. should return a list of type (HellResource { name :: x ,  type ::, fromPath ::, toPath ::} ; of course, first define this in Hell.Types

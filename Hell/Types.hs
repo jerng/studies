@@ -34,27 +34,22 @@ module Hell.Types (
 import Data.Text (Text)
 import Data.Dynamic (Dynamic, Typeable)
 import Network.Wai (Request(..), Response(..))
-import Network.HTTP.Types ( 
-    Status
+import Network.HTTP.Types 
+  ( Status
   , ok200
   )
 
 type ResourceNameText = Text 
-type DM = [(Text,Dynamic)]
 type ControllerName = Text
 type ActorName = Text
 type Route = (ControllerName,ActorName)
+
+-- | Replace DM with Data.Map.Map
+type DM = [(Text,Dynamic)]
 type AppControllerVars = DM
-type ViewDictionary = [(Text,Dynamic)]
+type ViewDictionary = DM 
 
 data Action = Action Status Route ViewDictionary
-
--- | This data structure was considered. 
--- But I can't think of a great use for it.
---data Resource = Resource  { name :: ResourceName
---                          , src :: FilePath
---                          , app :: FilePath 
---                          } 
 
 data ResourceName = Controllers
                   | Models
