@@ -18,7 +18,7 @@ module Hell.Types (
   -- | Defined below:
   , DM
   , ControllerName
-  , ActionName
+  , ActorName
   , Route
   , AppControllerVars
   , ViewDictionary
@@ -42,8 +42,8 @@ import Network.HTTP.Types (
 type ResourceNameText = Text 
 type DM = [(Text,Dynamic)]
 type ControllerName = Text
-type ActionName = Text
-type Route = (ControllerName,ActionName)
+type ActorName = Text
+type Route = (ControllerName,ActorName)
 type AppControllerVars = DM
 type ViewDictionary = [(Text,Dynamic)]
 

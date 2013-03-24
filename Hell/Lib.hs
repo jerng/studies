@@ -49,7 +49,7 @@ module Hell.Lib (
 
   , DM
   , ControllerName
-  , ActionName
+  , ActorName
   , Route
   , AppControllerVars
   , ViewDictionary

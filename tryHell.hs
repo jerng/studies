@@ -19,7 +19,11 @@ import System.Process
 
 main = do 
   T.putStrLn messageStartTryHell
-  readProcess' "runghc" [ "Server.hs" , "-Wall", "-threaded"] [] 
+  readProcess' "runghc" [ "Server.hs" 
+                        , "-Wall"
+                        --, "-threaded"
+                        --, "-O2"
+                        ] [] 
     -- Increase warnings from GHC. 
 
 -- | A copy of System.Process.forkWait (module version 1.1.0.1)

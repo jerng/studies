@@ -6,6 +6,10 @@ Deal with missing keys in ViewDictionary (currently: crashes without much descri
 
 Automate assembly of Hell.Server.actionList and .viewList
 
+Implement Views-in-Views ("widgets")
+
+Implement meta-View (CakePHP' "setFlash")
+
 Implement a helper function for populating the ViewDictionary in Controllers.
 
 Implement redirection, from one action, to another action.

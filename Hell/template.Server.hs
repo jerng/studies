@@ -12,24 +12,25 @@ main :: IO ()
 main = run hellServerPort app
 
 app :: Request -> ResourceT IO Response 
-app = \request-> render $ getAction request 
+app = \request-> render $ getActor request 
 
-getAction ::  Request -> Action
-getAction request 
-  = ( maybe 
-      (fromJust $ lookup (Hell.Lib.defaultRoute) actionList) 
-      id
-      (lookup (router request) actionList)
-    )
-    request 
-    appControllerVariables
-    
+getActor ::  Request -> Action
+getActor request = actor request appControllerVariables
+  where actor = 
+          case lookup (router request) actorList of
+            Just a -> a
+            Nothing -> fromJust $ lookup (Hell.Lib.defaultRoute) actorList
+                        -- Perhaps unnecessarily wordy...?
+                        -- Does GHC optimise out things like this?
+                        --
+                        -- ANYWAY: do what CakePHP calls a "setFlash" here.
+
 -- | Convert from pattern guard, to let {} in { case of }
 router :: Request -> Route 
 router request 
   | [] <- pathInfo request = Hell.Lib.defaultRoute
   -- (Hell.Conf.customPaths) may be defined, then called here.
-  | c:a:_ <- pathInfo request = ( c, a )
+  | c:a:_ <- pathInfo request = ( T.toLower c, T.toLower a )
 
 render :: Action -> ResourceT IO Response
 render (Action status route textMap) = return $
@@ -56,8 +57,8 @@ appControllerVariables = [
             toDyn ("\"Hello, I too am defined in AppController\"" :: Text ))
     ]
 
-actionList :: [(Route, Request -> AppControllerVars -> Action)]
-actionList = [
+actorList :: [(Route, Request -> AppControllerVars -> Action)]
+actorList = [
         (("default", "index"), Controllers.Default.index)
     ]
 
