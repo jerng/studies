@@ -17,6 +17,7 @@ module Hell.Lib (
 
   -- | Defined in Data.Maybe:
   , fromJust
+  , fromMaybe
 
   -- | Defined in Data.List:
   , nub
@@ -27,6 +28,8 @@ module Hell.Lib (
   -- | Defined in Hell.Conf:
   , defaultRoute
   , noSuchActionRoute
+  , viewNotFoundRoute
+
   , templatedResources
   , staticResources
   , sliceIDsOf

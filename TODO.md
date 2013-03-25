@@ -2,13 +2,13 @@
 
 ## Laundry List of outstanding tasks; sorted by ease, descending
 
-Implement Views-in-Views ("widgets")
+Get debug trail set up... from request to response... a standard data structure.
 
 Implement meta-View (CakePHP' "setFlash")
 
-Implement a helper function for populating the ViewDictionary in Controllers.
-
 Implement redirection, from one action, to another action.
+
+Implement a helper function for populating the ViewDictionary in Controllers.
 
 Implement a simple form helper.
 
@@ -18,11 +18,13 @@ Customise ResponseHeaders in (Hell.Server.render)
 
 Check functionality of Warp sessions. Check functionality of Warp cookies.  Following these, implement authentication.
 
+Implement Views-in-Views ("widgets")
+
 ## Design questions  
 
 Currently:
 
-    (run) -> (app) -> (render) <-> (getAction) <-+-> (router)
+    (run) -> (app) -> (render) <-> (getReport) <-+-> (router)
                           |           |          |
                           |           |          +-> (actionList)
                           |           |
@@ -31,10 +33,11 @@ Currently:
                           +-------> (Controller.View)
 
 Under consideration:
-
-    (run) -> (app) -> (render) <-> (getAction) <-> (App("global")Controller) <-+-> (router)
-                          |                                    |               |
-                          |                                    |               +-> (actionList)
+                                       +-------------------------------------+
+                                       V                                     |
+    (run) -> (app) -> (render) <-> (getReport) <-> (App("global")Controller)  +-> (router)
+                          |                                    |             |
+                          |                                    |             +-> (actionList)
                           |                                    |
                           |                                    +-> (Controller.main)
                           |                                                |

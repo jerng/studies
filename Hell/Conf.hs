@@ -12,6 +12,10 @@ defaultRoute = ("default","index")
 noSuchActionRoute :: Route
 noSuchActionRoute = ("default","nosuchaction")
 
+-- | Scaffolding. This should just be passed as a message.
+viewNotFoundRoute :: Route
+viewNotFoundRoute = ("default","viewnotfound")
+
 -- | Notice that (Hell.Splice) isn't included here.
 -- That's because it's not used in ./app .
 staticResources :: [ResourceName]

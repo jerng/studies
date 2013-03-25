@@ -4,4 +4,4 @@ subtest1 request appControllerVariables =
 
 subtest2 :: Request -> AppControllerVars -> Report
 subtest2 request appControllerVariables = 
-  Report ok200 ("test","subtest2") []
+  Report ok200 ("test","subtest2x") []
