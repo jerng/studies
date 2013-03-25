@@ -1,8 +1,10 @@
 # To-dos
 
-## Laundry List of outstanding tasks; sorted by ease, descending
+## Laundry List of outstanding tasks; sorted by ease*importance, descending
 
 Get debug trail set up... from request to response... a standard data structure.
+Wrap everything between the (Network.Wai.Request) and the (Network.Wai.Response)
+within a Report data structure. 
 
 Implement meta-View (CakePHP' "setFlash")
 
