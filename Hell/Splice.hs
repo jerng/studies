@@ -18,37 +18,75 @@ spliceController c = do
 spliceTemplate :: ResourceName -> IO ResourceNameText 
 spliceTemplate module' = do 
   templateText <- T.readFile $ templateFromPath module'
-  let moduleSliceIDs = sliceIDsOf module'
+  let moduleSlices = sliceIDsOf module'
   let buildSlices = \text sliceID -> do
-        let SliceID _ slice = sliceID
+        let Slice _ slice = sliceID
         let tag = (T.pack $ "{-assemble:"++ show slice ++"-}" )
         builtSlice <- buildSlice sliceID 
         return $ T.replace tag builtSlice text
-  foldM buildSlices templateText moduleSliceIDs
+  foldM buildSlices templateText moduleSlices
 
 -- | This function builds slices of text.
 
-buildSlice :: SliceID -> IO Text
-buildSlice s  
+buildSlice :: Slice -> IO Text
+buildSlice s = case s of 
 
-  | SliceID Server ImportControllers <- s
-  = do  
+  Slice Server ImportControllers -> do  
     cs <- controllers
     return $ 
       T.intercalate "\n" $ 
       map ((T.append "import qualified Controllers.").(T.pack)) cs 
 
-  | SliceID Server ImportViews <- s
-  = do  
+  Slice Server ImportViews -> do  
     al <- views
     let cs = keysAL al
         eachC = \c -> T.concat $ map (eachV c) $ fromJust $ lookup c al 
         eachV = \c v ->
-          T.concat [ "import qualified Views."
-                   , T.pack c , "."
-                   , T.pack v , "\n"
-                   ]
+          T.concat ["import qualified Views.", T.pack c, ".", T.pack v, "\n"]
     return $ T.concat $ map eachC cs 
+
+  Slice Server ListActions -> do
+    actions <- (mapM eachC) =<< controllers 
+    return $ T.intercalate "\n  , " $ concat $ actions
+
+      where 
+        eachC c = do 
+          text <- T.readFile $ (fromPath Controllers) ++ c ++ scriptExtension
+          return $ map f'' $ nub $ map f' $ filter f $ T.lines text
+
+          where
+            f = \line-> 
+              case (T.take 1 line) of "" -> False; " " -> False; _ -> True
+            f' = \line -> head $ T.words line
+            f'' = \a -> T.concat  [ "((\""
+                                  , T.toLower $ T.pack c
+                                  , "\", \""
+                                  , a,"\"), Controllers."
+                                  , T.pack c
+                                  , "."
+                                  , a
+                                  , ")"
+                                  ]
+
+  Slice Server ListViews -> do
+    al <- views
+    let cs = keysAL al
+        eachC = \c-> 
+          map (eachV c) $ fromJust $ lookup c al 
+        eachV = \c v->
+          let c' = T.pack c
+              v' = T.pack v
+          in  T.concat  [ "((\""
+                        , T.toLower c'
+                        , "\", \""
+                        , T.toLower v'
+                        , "\"), Views."
+                        , c'
+                        , "."
+                        , v'
+                        , ".main)"
+                        ]
+    return $ T.intercalate "\n  , " $ concat $ map eachC cs 
 
 spliceView :: FilePath -> FilePath -> Text -> Text
 spliceView c v unsplicedText = 
@@ -85,7 +123,7 @@ unrenderedToModuleText count acc remainingList
   | [] <- remainingList
   = T.concat 
     [ acc 
-    , "main :: Action -> Text\n\
+    , "main :: Report -> Text\n\
       \main reaction =\n\
       \  T.concat\n\
       \  [ "
@@ -113,7 +151,7 @@ unrenderedToModuleText count acc remainingList
       [ acc 
       , "\n\ntext"
       , T.pack $ show count
-      , " :: Action -> Text\ntext"
+      , " :: Report -> Text\ntext"
       , T.pack $ show count
       , " _ = \""
       , ( textToHsSyntax text )
@@ -129,9 +167,9 @@ unrenderedToModuleText count acc remainingList
       [ acc 
       , "\n\ntext"
       , T.pack $ show count
-      , " :: Action -> Text\ntext"
+      , " :: Report -> Text\ntext"
       , T.pack $ show count
-      , " (Action status route textMap) = "
+      , " (Report status route textMap) = "
       , T.concat 
           [ " T.pack $ show $ " , text
           , "\n\

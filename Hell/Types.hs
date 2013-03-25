@@ -18,14 +18,14 @@ module Hell.Types (
   -- | Defined below:
   , DM
   , ControllerName
-  , ActorName
+  , ActionName
   , Route
   , AppControllerVars
   , ViewDictionary
-  , Action (..)
+  , Report (..)
   , ResourceName (..)
+  , SliceTag (..)
   , Slice (..)
-  , SliceID (..)
   , Unrendered (..)
   , ResourceNameText
 
@@ -41,15 +41,15 @@ import Network.HTTP.Types
 
 type ResourceNameText = Text 
 type ControllerName = Text
-type ActorName = Text
-type Route = (ControllerName,ActorName)
+type ActionName = Text
+type Route = (ControllerName,ActionName)
 
 -- | Replace DM with Data.Map.Map
 type DM = [(Text,Dynamic)]
 type AppControllerVars = DM
 type ViewDictionary = DM 
 
-data Action = Action Status Route ViewDictionary
+data Report = Report Status Route ViewDictionary
 
 data ResourceName = Controllers
                   | Models
@@ -63,11 +63,13 @@ data ResourceName = Controllers
                   | Types
                   deriving (Eq,Show) 
 
-data Slice  = ImportControllers 
-            | ImportViews
-            deriving (Eq,Show)
+data SliceTag = ImportControllers 
+              | ImportViews
+              | ListActions
+              | ListViews
+              deriving (Eq,Show)
 
-data SliceID  = SliceID ResourceName Slice
+data Slice  = Slice ResourceName SliceTag
               deriving (Show)
 
 data Unrendered = Plain Text 

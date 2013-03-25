@@ -4,7 +4,7 @@
     <title>Hell Framework: R&D</title>
   </head>
   <body>
-    <h1>a simple view: </h1> 
+    <h1>a simple view (Default.Index): </h1> 
     Following this is an attempt to interpolate some Haskell expressions<br/>
     Haskell script "1 +1" : <hs>(1+1)</hs><br/>
     a ViewDictionary key called (someInt) : <hs>viewInt "someInt"</hs><br/>

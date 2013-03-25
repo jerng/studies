@@ -9,6 +9,9 @@ import System.Directory
 defaultRoute :: Route
 defaultRoute = ("default","index")
 
+noSuchActionRoute :: Route
+noSuchActionRoute = ("default","nosuchaction")
+
 -- | Notice that (Hell.Splice) isn't included here.
 -- That's because it's not used in ./app .
 staticResources :: [ResourceName]
@@ -23,10 +26,12 @@ templatedResources =
   [ Server
   ]
 
-sliceIDsOf :: ResourceName -> [SliceID]
+sliceIDsOf :: ResourceName -> [Slice]
 sliceIDsOf Server = 
-  [ SliceID Server ImportControllers 
-  , SliceID Server ImportViews 
+  [ Slice Server ImportControllers 
+  , Slice Server ImportViews 
+  , Slice Server ListActions 
+  , Slice Server ListViews
   ]
 
 fromPath :: ResourceName -> FilePath

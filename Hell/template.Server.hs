@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-} 
-{-# LANGUAGE TemplateHaskell #-}
 
 import Hell.Lib
 import qualified Data.Text as T
@@ -12,34 +11,37 @@ main :: IO ()
 main = run hellServerPort app
 
 app :: Request -> ResourceT IO Response 
-app = \request-> render $ getActor request 
+app = \request-> render $ getReport request 
 
-getActor ::  Request -> Action
-getActor request = actor request appControllerVariables
-  where actor = 
-          case lookup (router request) actorList of
-            Just a -> a
-            Nothing -> fromJust $ lookup (Hell.Lib.defaultRoute) actorList
-                        -- Perhaps unnecessarily wordy...?
-                        -- Does GHC optimise out things like this?
-                        --
-                        -- ANYWAY: do what CakePHP calls a "setFlash" here.
+-- | "AppController" would have to intercept, here.
+getReport ::  Request -> Report
+getReport request = action request appControllerVariables
+  where 
+    action = 
+      case lookup (router request) actionList of
+        Just a -> a
+        Nothing -> fromJust $ 
+          lookup (Hell.Lib.noSuchActionRoute) actionList
+            -- Perhaps unnecessarily wordy...?
+            -- Does GHC optimise out things like this?
+            --
+            -- ANYWAY: do what CakePHP calls a "setFlash" here.
 
--- | Convert from pattern guard, to let {} in { case of }
 router :: Request -> Route 
-router request 
-  | [] <- pathInfo request = Hell.Lib.defaultRoute
-  -- (Hell.Conf.customPaths) may be defined, then called here.
-  | c:a:_ <- pathInfo request = ( T.toLower c, T.toLower a )
+router request = 
+  case pathInfo request of
+    []    -> Hell.Lib.defaultRoute
+    c:a:_ -> ( T.toLower c, T.toLower a )
 
-render :: Action -> ResourceT IO Response
-render (Action status route textMap) = return $
-  ResponseBuilder status [] $ -- customisation of ResponseHeaders should occur here
+render :: Report -> ResourceT IO Response
+render (Report status (c,a) textMap) = return $
+  ResponseBuilder status [] $ 
+    -- customisation of ResponseHeaders should occur here
   fromText $
   maybe 
   "We lack a point of View." 
-  ( \view->view (Action status route textMap) )
-  ( lookup route viewList ) 
+  ( \view->view (Report status (c,a) textMap) )
+  ( lookup (c,a) viewList ) 
 
 -- | SHOULD THIS GO INTO (Hell.Conf) ?
 -- TO CONSULT PROFESSIONALS:
@@ -57,13 +59,13 @@ appControllerVariables = [
             toDyn ("\"Hello, I too am defined in AppController\"" :: Text ))
     ]
 
-actorList :: [(Route, Request -> AppControllerVars -> Action)]
-actorList = [
-        (("default", "index"), Controllers.Default.index)
-    ]
+actionList :: [(Route, Request -> AppControllerVars -> Report)]
+actionList = 
+  [ {-assemble:ListActions-}
+  ]
 
-viewList :: [(Route, Action -> Text)]
-viewList = [
-        (("default", "index"), Views.Default.Index.main)
-    ]
+viewList :: [(Route, Report -> Text)]
+viewList = 
+  [ {-assemble:ListViews-}
+  ]
 

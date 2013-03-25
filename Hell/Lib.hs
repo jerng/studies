@@ -7,6 +7,7 @@ module Hell.Lib (
 
   -- | Defined in Control.Monad:
   , foldM
+  , liftM
 
   -- | Defined in Control.Monad.Trans.Resource:
   , ResourceT
@@ -17,11 +18,15 @@ module Hell.Lib (
   -- | Defined in Data.Maybe:
   , fromJust
 
+  -- | Defined in Data.List:
+  , nub
+
   -- | Defined in Data.List.Utils:
   , keysAL 
 
   -- | Defined in Hell.Conf:
   , defaultRoute
+  , noSuchActionRoute
   , templatedResources
   , staticResources
   , sliceIDsOf
@@ -49,15 +54,15 @@ module Hell.Lib (
 
   , DM
   , ControllerName
-  , ActorName
+  , ActionName
   , Route
   , AppControllerVars
   , ViewDictionary
 
-  , Action (..)
+  , Report (..)
   , ResourceName (..)
+  , SliceTag (..)
   , Slice (..)
-  , SliceID (..)
   , Unrendered (..)
   , ResourceNameText
   
@@ -70,9 +75,10 @@ module Hell.Lib (
 
 -- import qualified Data.Typeable
 import Blaze.ByteString.Builder.Char.Utf8 (fromText)
-import Control.Monad (foldM)
+import Control.Monad (foldM, liftM)
 import Control.Monad.Trans.Resource (ResourceT)
 import Data.Dynamic (fromDynamic, toDyn)
+import Data.List (nub)
 import Data.List.Utils (keysAL)
 import Data.Maybe (fromJust,fromMaybe)
 import qualified Data.Text as T
