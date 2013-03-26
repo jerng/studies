@@ -26,9 +26,10 @@ module Hell.Lib (
   , keysAL 
 
   -- | Defined in Hell.Conf:
+  , indexAction
   , defaultRoute
   , noSuchActionRoute
-  , viewNotFoundRoute
+  , noSuchViewRoute
 
   , templatedResources
   , staticResources

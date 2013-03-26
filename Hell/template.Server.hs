@@ -31,6 +31,7 @@ router :: Request -> Route
 router request = 
   case pathInfo request of
     []    -> Hell.Lib.defaultRoute
+    c:[]  -> ( T.toLower c, Hell.Lib.indexAction )
     c:a:_ -> ( T.toLower c, T.toLower a )
 
 -- | TODO: Customisation of ResponseHeaders 
@@ -38,7 +39,7 @@ render :: Report -> ResourceT IO Response
 render (Report status route textMap) = 
   return $ ResponseBuilder status [] $ fromText $
   ( fromMaybe 
-    (fromJust $ lookup Hell.Lib.viewNotFoundRoute viewList) 
+    (fromJust $ lookup Hell.Lib.noSuchViewRoute viewList) 
     (lookup route viewList) 
   ) $ Report status route textMap
   
