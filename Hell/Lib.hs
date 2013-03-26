@@ -26,6 +26,8 @@ module Hell.Lib (
   , keysAL 
 
   -- | Defined in Hell.Conf:
+  , defaultHeaders
+  , defaultStatus
   , indexAction
   , defaultRoute
   , noSuchActionRoute
@@ -54,13 +56,17 @@ module Hell.Lib (
   , Request (..)
   , Response (..)
   , Status (..)
+  , Header
+  , accepted202
   , ok200
 
-  , DM
+  , ResourceNameText
   , ControllerName
   , ActionName
   , Route
-  , AppControllerVars
+
+  , DM
+  , ActionDictionary
   , ViewDictionary
 
   , Report (..)
@@ -68,7 +74,6 @@ module Hell.Lib (
   , SliceTag (..)
   , Slice (..)
   , Unrendered (..)
-  , ResourceNameText
   
   -- | Defined in Network.HTTP.Types:
   , run

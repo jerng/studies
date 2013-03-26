@@ -6,6 +6,12 @@ import Data.List
 import Hell.Types
 import System.Directory
 
+defaultHeaders :: [Header]
+defaultHeaders = []
+
+defaultStatus :: Status
+defaultStatus = accepted202
+
 indexAction :: ActionName
 indexAction = "index"
 
@@ -117,10 +123,10 @@ messageJobDone = "... and the job is done.\n"
 
 viewDictionaryHelpers :: Text 
 viewDictionaryHelpers = 
-  "  viewInt key = lookupViewDictionary key textMap :: Int\n\
-  \  viewFloat key = lookupViewDictionary key textMap :: Float\n\
-  \  viewText key = lookupViewDictionary key textMap :: Text\n\
-  \  viewIntList key = lookupViewDictionary key textMap :: [Int]\n"
+  "  viewInt key = lookupViewDictionary key (viewDictionary report) :: Int\n\
+  \  viewFloat key = lookupViewDictionary key (viewDictionary report) :: Float\n\
+  \  viewText key = lookupViewDictionary key (viewDictionary report) :: Text\n\
+  \  viewIntList key = lookupViewDictionary key (viewDictionary report) :: [Int]\n"
 
 hellServerPort :: Int
 hellServerPort = 3000

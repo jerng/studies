@@ -45,6 +45,13 @@ buildSlice s = case s of
           T.concat ["import qualified Views.", T.pack c, ".", T.pack v, "\n"]
     return $ T.concat $ map eachC cs 
 
+ {- This is crufty. It take the unique first words that start at zero
+     indent, in eac ./scr/c/* . It needs to be improved to parse out non
+     functions, before that. Better still, it should simply not have to read
+     the contents of Controller files. So perhaps, Actions should be called
+     with the pattern (Xcontroller.Yaction.main) instead.
+ -}
+
   Slice Server ListActions -> do
     actions <- (mapM eachC) =<< controllers 
     return $ T.intercalate "\n  , " $ concat $ actions
@@ -55,8 +62,13 @@ buildSlice s = case s of
           return $ map f'' $ nub $ map f' $ filter f $ T.lines text
 
           where
-            f = \line-> 
-              case (T.take 1 line) of "" -> False; " " -> False; _ -> True
+            f = \line-> elem (T.take 1 line)  [ "a" , "b" , "c" , "d" , "e"
+                , "f" , "g" , "h" , "i" , "j" , "k" , "l" , "m" , "n" , "o"
+                , "p" , "q" , "r" , "s" , "t" , "u" , "v" , "w" , "x" , "y"
+                , "z" , "_" ]
+--              case (T.take 1 line) of "" -> False
+--                                      " " -> False 
+--                                      _ -> True
             f' = \line -> head $ T.words line
             f'' = \a -> T.concat  [ "((\""
                                   , T.toLower $ T.pack c
@@ -124,7 +136,7 @@ unrenderedToModuleText count acc remainingList
   = T.concat 
     [ acc 
     , "main :: Report -> Text\n\
-      \main reaction =\n\
+      \main report =\n\
       \  T.concat\n\
       \  [ "
     , T.intercalate "\n  , " $ map 
@@ -132,14 +144,11 @@ unrenderedToModuleText count acc remainingList
                             T.concat 
                             [ "text" 
                             , (T.pack $ show x)
-                            , " reaction"
+                            , " report"
                             ]
                           ) 
                           [1..(count-1)] 
-    , "\n  ]\n\n\
-      \main' reaction = do\
-      \  T.empty"
-    
+    , "\n  ]"
     ]
 
   -- | Any other Unrendereds:
@@ -169,7 +178,7 @@ unrenderedToModuleText count acc remainingList
       , T.pack $ show count
       , " :: Report -> Text\ntext"
       , T.pack $ show count
-      , " (Report status route textMap) = "
+      , " report = "
       , T.concat 
           [ " T.pack $ show $ " , text
           , "\n\
@@ -200,6 +209,8 @@ textToUnrendereds text =
             remainder )
 
 textToHsSyntax :: Text -> Text
-textToHsSyntax text = (T.intercalate "\\\n\\" ) $ T.lines $ T.replace "\"" "\\\"" text
+textToHsSyntax text = 
+  (T.intercalate "\\\n\\" ) $ T.lines $ 
                     -- Formats multiline text.
+  T.replace "\"" "\\\"" text
                     -- Escapes double-quotes

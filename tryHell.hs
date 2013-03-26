@@ -21,6 +21,7 @@ main = do
   T.putStrLn messageStartTryHell
   readProcess' "runghc" [ "Server.hs" 
                         , "-Wall"
+                        --, "-Werror"
                         --, "-threaded"
                         --, "-O2"
                         ] [] 
