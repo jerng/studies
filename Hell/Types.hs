@@ -20,14 +20,17 @@ module Hell.Types (
   , ok200
 
   -- | Defined below:
-  , DM
+  , ResourceName (..)
   , ControllerName
   , ActionName
   , Route
+
+  , DM
   , ActionDictionary
   , ViewDictionary
+  , ReportM
+
   , Report (..)
-  , ResourceName (..)
   , SliceTag (..)
   , Slice (..)
   , Unrendered (..)
@@ -54,7 +57,7 @@ type Route = (ControllerName,ActionName)
 type DM = [(Text,Dynamic)]
 type ActionDictionary = DM
 type ViewDictionary = DM 
-
+type ReportM = [(Text,Report)]
 {- I am giving serious thought to naming this data structure: (Hell).
 
 Record syntax may be useful in this context, as the Report will be updated
@@ -92,6 +95,9 @@ data Report = Report
   -- , session?
   -- , cookies?
   -- , other?
+  , subReports :: ReportM
+      -- Outstanding views, which need to be rendered, then inserted into the
+      -- current View stipulated in routeV.
   }
 
 data ResourceName = Controllers

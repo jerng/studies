@@ -26,6 +26,7 @@ module Hell.Lib (
   , keysAL 
 
   -- | Defined in Hell.Conf:
+  , hellServerPort
   , defaultHeaders
   , defaultStatus
   , indexAction
@@ -45,11 +46,10 @@ module Hell.Lib (
   , messageStartMakeHell
   , messageStartTryHell
   , messageJobDone
-  , filterInViews
   , scriptExtension
   , viewExtension
   , viewDictionaryHelpers
-  , hellServerPort
+  , ViewExpression
 
   -- | Defined in Hell.Types:
   , Text
@@ -68,6 +68,7 @@ module Hell.Lib (
   , DM
   , ActionDictionary
   , ViewDictionary
+  , ReportM
 
   , Report (..)
   , ResourceName (..)
@@ -80,6 +81,8 @@ module Hell.Lib (
 
   -- | Defined below:
   , lookupViewDictionary
+  , toText
+
 )  where
 
 -- import qualified Data.Typeable

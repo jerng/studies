@@ -2,9 +2,7 @@
 
 ## Laundry List of outstanding tasks; sorted by ease*importance, descending
 
-Get debug trail set up... from request to response... a standard data structure.
-Wrap everything between the (Network.Wai.Request) and the (Network.Wai.Response)
-within a Report data structure. 
+TODO: have the rendered create a default routeV if it's not specified
 
 Implement meta-View (CakePHP' "setFlash")
 
@@ -20,33 +18,23 @@ Customise ResponseHeaders in (Hell.Server.render)
 
 Check functionality of Warp sessions. Check functionality of Warp cookies.  Following these, implement authentication.
 
-Implement Views-in-Views ("widgets")
-
 ## Design questions  
 
 Currently:
 
-    (run) -> (app) -> (render) <-> (getReport) <-+-> (router)
-                          |           |          |
-                          |           |          +-> (actionList)
-                          |           |
-                          |           +-> (Controller.Action)
-                          |
-                          +-------> (Controller.View)
+  Hell.Server.main
+    app
+      report
+        (confirmAction)
+          router
+            (Controllers.controller.action)
+        applyActionToReport
+      render -- subreports? goto (confirmAction)... until Text is returned
+        reportToText
 
 Under consideration:
-                                       +-------------------------------------+
-                                       V                                     |
-    (run) -> (app) -> (render) <-> (getReport) <-> (App("global")Controller)  +-> (router)
-                          |                                    |             |
-                          |                                    |             +-> (actionList)
-                          |                                    |
-                          |                                    +-> (Controller.main)
-                          |                                                |
-                          |                                                +-> Controller.actor
-                          |
-                          +-------> (Controller.View)
 
+  Add (AppController) between (router) and (Controllers.controller.action)
 
 ## Functional limits to-be-examined
 

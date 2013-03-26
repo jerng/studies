@@ -11,35 +11,42 @@ main :: IO ()
 main = run hellServerPort app
 
 app :: Request -> ResourceT IO Response 
-app = \request-> render $ getReport request 
+app = \request-> render $ report request 
 
 -- | "AppController" would have to intercept, here.
-getReport ::  Request -> Report
-getReport request = 
+report ::  Request -> Report
+report request = 
   let route = router request
-      (routeA', action) = case lookup route actionList of
-        Just action -> (route, action)
-        Nothing -> 
-          ( Hell.Lib.noSuchActionRoute
-          , fromJust $ lookup (Hell.Lib.noSuchActionRoute) actionList)
+      (routeA', action) = confirmAction route 
+      initialReport = Report 
+        { request = request
+        , actionDictionary = appControllerVariables
+        , routeA = routeA'
+        , routeV = Hell.Lib.defaultRoute
+        , viewDictionary = []
+        , subReports = []
+        , meta = ""
+        , status = Hell.Lib.defaultStatus 
+        , headers = Hell.Lib.defaultHeaders
+        }
+        -- I would really like to know how all this setting of defaults
+        -- affects memory use. Testing will be required.
+  in  applyActionToReport action initialReport 
 
-            -- Perhaps unnecessarily wordy?
-            -- Does GHC optimise-away messes like this?
-            -- ANYWAY: do what CakePHP calls a "setFlash" here.
+confirmAction :: Route -> (Route, (Report -> Report))
+confirmAction route = case lookup route actionList of
+  Just action -> (route, action)
+  Nothing -> 
+    ( Hell.Lib.noSuchActionRoute
+    , fromJust $ lookup (Hell.Lib.noSuchActionRoute) actionList
+    ) 
+    -- Perhaps unnecessarily wordy?
+    -- Does GHC optimise-away messes like this?
+    -- ANYWAY: do what CakePHP calls a "setFlash" here.
 
-  in  action Report 
-      { request = request
-      , actionDictionary = appControllerVariables
-      
-      , routeA = routeA'
-      , routeV = Hell.Lib.defaultRoute
-      , viewDictionary = []
-      , meta = ""
-      , status = Hell.Lib.defaultStatus 
-      , headers = Hell.Lib.defaultHeaders
-      }
-      -- I would really like to know how all this setting of defaults
-      -- affects memory use. Testing will be required.
+
+applyActionToReport :: (Report -> Report) -> Report -> Report
+applyActionToReport action report = action report
 
 router :: Request -> Route 
 router request = 
@@ -66,15 +73,32 @@ ResponseHeaders based on the Report from the Action.
 
 -}
 
+-- | Takes Report from a Controller, returns a variety of ResponseBuilder.
 render :: Report -> ResourceT IO Response
-render report = do
-  let s = status report
-      v = routeV report
-  return $ ResponseBuilder s [] $ fromText $
-    ( fromMaybe
-      (fromJust $ lookup Hell.Lib.noSuchViewRoute viewList)
-      (lookup v viewList)
-    ) report
+render report = 
+  let getTexts (key, subReport) = 
+        let ( route, action ) = confirmAction $ routeA subReport 
+        in  ( key
+            , toDyn 
+              ( ( reportToText $ applyActionToReport action subReport ) :: Text )
+            )
+      report' = case subReports report of
+        []          -> report
+        subReports  -> report 
+          { subReports = []
+          , viewDictionary = 
+              (viewDictionary report) ++ (map getTexts subReports)
+          }
+  in  return $ 
+      ResponseBuilder (status report') [] $ fromText $ reportToText report'
+        -- SOFTEN CODE HERE: there are other types of ResponseBuilders
+
+-- | Takes Report from a Controller, returns a Text.
+reportToText :: Report -> Text
+reportToText report = fromMaybe
+  (fromJust $ lookup Hell.Lib.noSuchViewRoute viewList)
+  (lookup (routeV report ) viewList)
+  report
 
 -- | SHOULD THIS GO INTO (Hell.Conf) ?
 

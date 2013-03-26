@@ -66,9 +66,6 @@ buildSlice s = case s of
                 , "f" , "g" , "h" , "i" , "j" , "k" , "l" , "m" , "n" , "o"
                 , "p" , "q" , "r" , "s" , "t" , "u" , "v" , "w" , "x" , "y"
                 , "z" , "_" ]
---              case (T.take 1 line) of "" -> False
---                                      " " -> False 
---                                      _ -> True
             f' = \line -> head $ T.words line
             f'' = \a -> T.concat  [ "((\""
                                   , T.toLower $ T.pack c
@@ -158,13 +155,13 @@ unrenderedToModuleText count acc remainingList
     (count+1) 
     ( T.concat
       [ acc 
-      , "\n\ntext"
+      , "text"
       , T.pack $ show count
       , " :: Report -> Text\ntext"
       , T.pack $ show count
       , " _ = \""
       , ( textToHsSyntax text )
-      , "\"\n"
+      , "\"\n\n"
       ]
     )      
     remainingList
@@ -174,16 +171,18 @@ unrenderedToModuleText count acc remainingList
     (count+1) 
     ( T.concat
       [ acc 
-      , "\n\ntext"
+      , "text"
       , T.pack $ show count
       , " :: Report -> Text\ntext"
       , T.pack $ show count
       , " report = "
       , T.concat 
-          [ " T.pack $ show $ " , text
-          , "\n\
+          [ " toText (\n" 
+          , T.unlines $ map (T.append "  ") $ T.lines text
+          , "\n  )\n\
             \  where\n"
           , viewDictionaryHelpers
+          ,"\n"
           ]
       ]
     )      
@@ -210,7 +209,7 @@ textToUnrendereds text =
 
 textToHsSyntax :: Text -> Text
 textToHsSyntax text = 
-  (T.intercalate "\\\n\\" ) $ T.lines $ 
+  (T.intercalate "\\\n  \\" ) $ T.lines $ 
                     -- Formats multiline text.
   T.replace "\"" "\\\"" text
                     -- Escapes double-quotes

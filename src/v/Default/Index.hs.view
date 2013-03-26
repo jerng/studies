@@ -6,7 +6,7 @@
   <body>
     <h1>a simple view (Default.Index): </h1> 
     Following this is an attempt to interpolate some Haskell expressions<br/>
-    Haskell script "1 +1" : <hs>(1+1)</hs><br/>
+    Haskell script "1 +1" : <hs>(1+1 :: Int)</hs><br/>
     a ViewDictionary key called (someInt) : <hs>viewInt "someInt"</hs><br/>
     a ViewDictionary key called (someFloat) : <hs>viewFloat "someFloat"</hs><br/>
     a ViewDictionary key called (someText) : <hs>viewText "someText"</hs><br/>
@@ -18,5 +18,6 @@
     the view. The current mechanism uses the Dynamic type to pass data 
     through the ViewDictionary, and I am wondering if using (read)-(show) would be
     performant (it would certainly provide less to code against).
+    <hs>viewText "innerkey"</hs>
   </body>
 </html>

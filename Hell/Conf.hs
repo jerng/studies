@@ -1,10 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module Hell.Conf where
 
 import Data.List
+import qualified Data.Text as T
 import Hell.Types
 import System.Directory
+
+hellServerPort :: Int
+hellServerPort = 3000
 
 defaultHeaders :: [Header]
 defaultHeaders = []
@@ -127,6 +132,19 @@ viewDictionaryHelpers =
   \  viewFloat key = lookupViewDictionary key (viewDictionary report) :: Float\n\
   \  viewText key = lookupViewDictionary key (viewDictionary report) :: Text\n\
   \  viewIntList key = lookupViewDictionary key (viewDictionary report) :: [Int]\n"
+  -- TODO: Try and see if a class can introduce ad hoc polymorphism here.
 
-hellServerPort :: Int
-hellServerPort = 3000
+class ViewExpression a where
+  toText :: a -> Text
+
+instance ViewExpression Int where
+  toText a = T.pack $ show a
+
+instance ViewExpression Float where
+  toText a = T.pack $ show a
+
+instance ViewExpression Text where
+  toText a = a
+
+instance ViewExpression [Int] where
+  toText a = T.pack $ show a

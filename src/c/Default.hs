@@ -9,9 +9,12 @@ index report =
     , ("someText", toDyn ("I_AM_TEXT" :: Text)) 
     , ("someIntList", toDyn ([1,2,3]::[Int]))
     ]
+  , subReports = [("innerkey", report {routeA = ("default", "inner")}) ] 
   }
     --  TODO :Try to make a helper function for sending variables to the
     --  ViewableList.
+
+    -- TODO: have the rendered create a default routeV if it's not specified
 
 index2 :: Report -> Report
 index2 report = 
@@ -27,3 +30,13 @@ nosuchaction report =
   { status = ok200
   , routeV = ("default","nosuchaction")
   }
+
+
+inner :: Report -> Report 
+inner report =
+  report
+  { status = ok200
+  , routeV = ("default","inner")
+  }
+
+
