@@ -6,7 +6,6 @@
 
 ### Miscellany
 
-Implement meta-View (CakePHP' "setFlash")
 Implement a URL helper.
 Implement redirection, from one action, to another action.
 Implement a simple form helper.
@@ -14,9 +13,9 @@ Implement a helper function for populating the ViewDictionary in Controllers.
 Implement various types of ResponseBuilder in Hell.Server.render
 
 Customise ResponseHeaders in (Hell.Server.render)
-
-Check functionality of Warp sessions. Check functionality of Warp cookies.
-Following these, implement authentication.
+  Cookie handler
+    Session handling using Web.ClientSession
+      Following these, implement authentication.
 
 ## Design questions  
 
