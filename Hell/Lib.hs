@@ -27,6 +27,7 @@ module Hell.Lib (
 
   -- | Defined in Hell.Conf:
   , hellServerPort
+  , defaultReport
   , defaultHeaders
   , defaultStatus
   , indexAction
@@ -39,7 +40,6 @@ module Hell.Lib (
   , sliceIDsOf
   , fromPath
   , toPath
-  , templateFromPath
   , controllers
   , models
   , views
@@ -60,6 +60,7 @@ module Hell.Lib (
   , accepted202
   , ok200
 
+  , Action
   , ResourceNameText
   , ControllerName
   , ActionName

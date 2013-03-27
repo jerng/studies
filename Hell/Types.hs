@@ -20,6 +20,7 @@ module Hell.Types (
   , ok200
 
   -- | Defined below:
+  , Action
   , ResourceName (..)
   , ControllerName
   , ActionName
@@ -53,6 +54,8 @@ type ControllerName = Text
 type ActionName = Text
 type Route = (ControllerName,ActionName)
 
+type Action = Report -> Report
+
 -- | Replace DM with Data.Map.Map
 type DM = [(Text,Dynamic)]
 type ActionDictionary = DM
@@ -66,7 +69,7 @@ at various points during the (Hell.Server) response.
 -}
 
 data Report = Report
-  { request :: Request,
+  { request :: Maybe Request,
       -- Network.Wai.Request
     routeA :: Route -- of Action
       -- We should only ever need one. To redirect from one to another, use a
@@ -110,6 +113,7 @@ data ResourceName = Controllers
                   | Lib
                   | Splice
                   | Types
+                  | AppController
                   deriving (Eq,Show) 
 
 data SliceTag = ImportControllers 

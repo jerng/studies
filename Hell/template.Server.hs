@@ -3,6 +3,8 @@
 import Hell.Lib
 import qualified Data.Text as T
 
+import qualified AppController
+
 {-assemble:ImportControllers-}
 
 {-assemble:ImportViews-}
@@ -13,27 +15,18 @@ main = run hellServerPort app
 app :: Request -> ResourceT IO Response 
 app = \request-> render $ report request 
 
--- | "AppController" would have to intercept, here.
 report ::  Request -> Report
-report request = 
-  let route = router request
+report request' = 
+  let route = router request'
       (routeA', action) = confirmAction route 
-      initialReport = Report 
-        { request = request
+      initialReport = defaultReport 
+        { request = Just request'
         , actionDictionary = appControllerVariables
         , routeA = routeA'
-        , routeV = Hell.Lib.defaultRoute
-        , viewDictionary = []
-        , subReports = []
-        , meta = ""
-        , status = Hell.Lib.defaultStatus 
-        , headers = Hell.Lib.defaultHeaders
-        }
-        -- I would really like to know how all this setting of defaults
-        -- affects memory use. Testing will be required.
+        } 
   in  applyActionToReport action initialReport 
 
-confirmAction :: Route -> (Route, (Report -> Report))
+confirmAction :: Route -> (Route, Action)
 confirmAction route = case lookup route actionList of
   Just action -> (route, action)
   Nothing -> 
@@ -45,8 +38,11 @@ confirmAction route = case lookup route actionList of
     -- ANYWAY: do what CakePHP calls a "setFlash" here.
 
 
-applyActionToReport :: (Report -> Report) -> Report -> Report
-applyActionToReport action report = action report
+applyActionToReport :: Action -> Report -> Report
+applyActionToReport action report = AppController.main report action
+
+applyActionToSubReport :: Action -> Report -> Report
+applyActionToSubReport action report = AppController.subMain report action
 
 router :: Request -> Route 
 router request = 
@@ -80,7 +76,7 @@ render report =
         let ( route, action ) = confirmAction $ routeA subReport 
         in  ( key
             , toDyn 
-              ( ( reportToText $ applyActionToReport action subReport ) :: Text )
+              ( ( reportToText $ applyActionToSubReport action subReport ) :: Text )
             )
       report' = case subReports report of
         []          -> report
@@ -117,7 +113,7 @@ appControllerVariables =
   , ("someVar2", toDyn ("\"Hello, I too am defined in AppController\"" :: Text))
   ]
 
-actionList :: [(Route, Report -> Report)]
+actionList :: [(Route, Action)]
 actionList = 
   [ {-assemble:ListActions-}
   ]

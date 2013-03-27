@@ -11,6 +11,21 @@ import System.Directory
 hellServerPort :: Int
 hellServerPort = 3000
 
+-- I would really like to know how all this setting of defaults
+-- affects memory use. Testing will be required.
+defaultReport = Report 
+  { request = Nothing
+  , actionDictionary = [] 
+  , routeA = defaultRoute
+  , routeV = defaultRoute
+  , viewDictionary = []
+  , subReports = []
+  , meta = ""
+  , status = defaultStatus 
+  , headers = defaultHeaders
+  }
+
+
 defaultHeaders :: [Header]
 defaultHeaders = []
 
@@ -37,6 +52,7 @@ staticResources =
   [ Conf
   , Lib
   , Types
+  , AppController
   ]
 
 templatedResources :: [ResourceName]
@@ -61,22 +77,21 @@ fromPath Conf           = "./Hell/Conf.hs"
 fromPath Lib            = "./Hell/Lib.hs"
 fromPath Splice         = "./Hell/Splice.hs"
 fromPath Types          = "./Hell/Types.hs"
+fromPath Server         = "./Hell/template.Server.hs"
+fromPath AppController  = "./src/AppController.hs"
 
 toPath :: ResourceName -> FilePath
-toPath App            = "./app/"
-toPath Controllers    = "./app/Controllers/"
-toPath Models         = "./app/Models/"
-toPath Views          = "./app/Views/"
-toPath Server         = "./app/Server.hs"
-toPath Hell           = "./app/Hell/"
-toPath Conf           = "./app/Hell/Conf.hs"
-toPath Lib            = "./app/Hell/Lib.hs"
-toPath Splice         = "./app/Hell/Splice.hs"
-toPath Types          = "./app/Hell/Types.hs"
-
-templateFromPath :: ResourceName -> FilePath
-templateFromPath module' = 
-  concat [fromPath Hell, "template.", show module', scriptExtension]
+toPath App              = "./app/"
+toPath Controllers      = "./app/Controllers/"
+toPath Models           = "./app/Models/"
+toPath Views            = "./app/Views/"
+toPath Hell             = "./app/Hell/"
+toPath Conf             = "./app/Hell/Conf.hs"
+toPath Lib              = "./app/Hell/Lib.hs"
+toPath Splice           = "./app/Hell/Splice.hs"
+toPath Types            = "./app/Hell/Types.hs"
+toPath Server           = "./app/Server.hs"
+toPath AppController    = "./app/AppController.hs"
 
 controllers :: IO [FilePath]
 controllers = do  

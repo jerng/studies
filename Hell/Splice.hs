@@ -17,7 +17,7 @@ spliceController c = do
 
 spliceTemplate :: ResourceName -> IO ResourceNameText 
 spliceTemplate module' = do 
-  templateText <- T.readFile $ templateFromPath module'
+  templateText <- T.readFile $ fromPath module'
   let moduleSlices = sliceIDsOf module'
   let buildSlices = \text sliceID -> do
         let Slice _ slice = sliceID
