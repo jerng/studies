@@ -30,6 +30,7 @@ module Hell.Lib (
   , defaultReport
   , defaultHeaders
   , defaultStatus
+  , defaultViewTemplate
   , indexAction
   , defaultRoute
   , noSuchActionRoute

@@ -10,6 +10,7 @@ index report =
     , ("someIntList", toDyn ([1,2,3]::[Int]))
     ]
   , subReports = [("innerkey", report {routeA = ("default", "inner")}) ] 
+  , viewTemplate = Just ("default","template")
   }
     --  TODO :Try to make a helper function for sending variables to the
     --  ViewableList.
@@ -21,6 +22,7 @@ index2 report =
   report
   { status = ok200
   , routeV = ("default","index2")
+  , viewTemplate = Nothing
   }
 
 

@@ -21,7 +21,7 @@ spliceTemplate module' = do
   let moduleSlices = sliceIDsOf module'
   let buildSlices = \text sliceID -> do
         let Slice _ slice = sliceID
-        let tag = (T.pack $ "{-assemble:"++ show slice ++"-}" )
+        let tag = (T.pack $ "{-makeHell:"++ show slice ++"-}" )
         builtSlice <- buildSlice sliceID 
         return $ T.replace tag builtSlice text
   foldM buildSlices templateText moduleSlices

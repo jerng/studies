@@ -23,8 +23,11 @@ defaultReport = Report
   , meta = ""
   , status = defaultStatus 
   , headers = defaultHeaders
+  , viewTemplate = defaultViewTemplate
   }
 
+defaultViewTemplate :: Maybe Route
+defaultViewTemplate = Just ("default","template")
 
 defaultHeaders :: [Header]
 defaultHeaders = []

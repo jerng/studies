@@ -5,9 +5,9 @@ import qualified Data.Text as T
 
 import qualified AppController
 
-{-assemble:ImportControllers-}
+{-makeHell:ImportControllers-}
 
-{-assemble:ImportViews-}
+{-makeHell:ImportViews-}
 
 main :: IO ()
 main = run hellServerPort app
@@ -86,8 +86,19 @@ render report =
               (viewDictionary report) ++ (map getTexts subReports)
           }
   in  return $ 
-      ResponseBuilder (status report') [] $ fromText $ reportToText report'
-        -- SOFTEN CODE HERE: there are other types of ResponseBuilders
+      ResponseBuilder (status report') [] $ fromText $ 
+        
+      -- SOFTEN CODE HERE: there are other types of ResponseBuilders
+      case viewTemplate report of
+        Nothing -> reportToText report'
+        Just route -> reportToText report' -- rendered outer view
+          { viewTemplate = Nothing
+          , routeV = route
+          , viewDictionary = 
+            ( "viewContent"
+            , toDyn (reportToText report') -- rendered inner view
+            ):viewDictionary report' 
+          }
 
 -- | Takes Report from a Controller, returns a Text.
 reportToText :: Report -> Text
@@ -115,11 +126,11 @@ appControllerVariables =
 
 actionList :: [(Route, Action)]
 actionList = 
-  [ {-assemble:ListActions-}
+  [ {-makeHell:ListActions-}
   ]
 
 viewList :: [(Route, Report -> Text)]
 viewList = 
-  [ {-assemble:ListViews-}
+  [ {-makeHell:ListViews-}
   ]
 

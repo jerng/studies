@@ -101,6 +101,8 @@ data Report = Report
   , subReports :: ReportM
       -- Outstanding views, which need to be rendered, then inserted into the
       -- current View stipulated in routeV.
+  , viewTemplate :: Maybe Route
+      -- experiments with templates.
   }
 
 data ResourceName = Controllers
