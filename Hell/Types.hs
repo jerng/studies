@@ -86,6 +86,8 @@ data Report = Report
       -- Controller layer to the View layer.
       -- Perhaps rename to (dataV).
   , meta :: Text
+      -- This should move into the session when we have that.
+      --
       -- This should be a single message. (Feel free to debate the merits of a
       -- list of messages that gets processed into one, later.) The message
       -- should contain metadata (information) about the Request/Response, 
