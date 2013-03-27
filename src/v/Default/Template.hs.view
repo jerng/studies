@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hell Framework: R&D</title>
+  </head>
+  <body>
+    <hs>
+-- TODO: So dirty. Clean me up.
+case hasKeyAL "meta" $ viewDictionary report of
+  False -> ""
+  True  -> T.concat [ "<blockquote style = \"background-color:#cfc\">"
+                    , viewText "meta"
+                    , "</blockquote>"
+                    ]
+  </hs>
+    <blockquote style="border:5px solid #000;">
+      <hs>viewText "viewContent"</hs>
+    </blockquote>
+  </body>
+</html>

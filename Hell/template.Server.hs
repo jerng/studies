@@ -18,24 +18,25 @@ app = \request-> render $ report request
 report ::  Request -> Report
 report request' = 
   let route = router request'
-      (routeA', action) = confirmAction route 
+      (routeA', action, meta') = confirmAction route 
       initialReport = defaultReport 
         { request = Just request'
         , actionDictionary = appControllerVariables
         , routeA = routeA'
+        , meta = meta' -- clobbered: slow? but it's the default
         } 
   in  applyActionToReport action initialReport 
 
-confirmAction :: Route -> (Route, Action)
+-- | CLEAN UP: Should be rewritten to be merely :: Report -> Report
+confirmAction :: Route -> (Route, Action, Text)
 confirmAction route = case lookup route actionList of
-  Just action -> (route, action)
+  Just action -> (route, action, "")
   Nothing -> 
     ( Hell.Lib.noSuchActionRoute
     , fromJust $ lookup (Hell.Lib.noSuchActionRoute) actionList
-    ) 
+    , "Uhoh! We could not perform that action.") -- TODO: move to Hell.Conf
     -- Perhaps unnecessarily wordy?
     -- Does GHC optimise-away messes like this?
-    -- ANYWAY: do what CakePHP calls a "setFlash" here.
 
 
 applyActionToReport :: Action -> Report -> Report
@@ -73,10 +74,13 @@ ResponseHeaders based on the Report from the Action.
 render :: Report -> ResourceT IO Response
 render report = 
   let getTexts (key, subReport) = 
-        let ( route, action ) = confirmAction $ routeA subReport 
+        let ( route, action, meta' ) = confirmAction $ routeA subReport 
         in  ( key
             , toDyn 
-              ( ( reportToText $ applyActionToSubReport action subReport ) :: Text )
+              ( ( reportToText $ applyActionToSubReport action 
+                  (if meta' == "" then subReport else subReport {meta=meta'}) 
+                ) :: Text 
+              )
             )
       report' = case subReports report of
         []          -> report
@@ -94,10 +98,14 @@ render report =
         Just route -> reportToText report' -- rendered outer view
           { viewTemplate = Nothing
           , routeV = route
+          , meta = ""
           , viewDictionary = 
-            ( "viewContent"
-            , toDyn (reportToText report') -- rendered inner view
-            ):viewDictionary report' 
+
+             ("viewContent", toDyn $ reportToText report') 
+                                      -- rendered inner view
+            :("meta", toDyn $ meta report')
+
+            :viewDictionary report' 
           }
 
 -- | Takes Report from a Controller, returns a Text.

@@ -23,6 +23,7 @@ module Hell.Lib (
   , nub
 
   -- | Defined in Data.List.Utils:
+  , hasKeyAL
   , keysAL 
 
   -- | Defined in Hell.Conf:
@@ -93,7 +94,7 @@ import Control.Monad (foldM, liftM)
 import Control.Monad.Trans.Resource (ResourceT)
 import Data.Dynamic (fromDynamic, toDyn)
 import Data.List (nub)
-import Data.List.Utils (keysAL)
+import Data.List.Utils (hasKeyAL, keysAL)
 import Data.Maybe (fromJust,fromMaybe)
 import qualified Data.Text as T
 import Hell.Conf 
