@@ -6,6 +6,9 @@
 
 ### Miscellany
 
+Replace Hell.Server.actionList and viewList with case-ofs
+Soften hardcoded arguments in Hell.Server
+
 Implement a URL helper.
 Implement redirection, from one action, to another action.
 Implement a simple form helper.
@@ -47,8 +50,6 @@ ultimately converted to Builder)?
 ## Chore-like:
 
 Once Models are in, Controllers which are now pure will become Monadic D:
-
-Replace Hell.Server.actionList and viewList with case-ofs
 
 Replace all association lists, Hell.Types.DM, with Data.Map.Map
 

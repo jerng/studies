@@ -13,41 +13,41 @@ main :: IO ()
 main = run hellServerPort app
 
 app :: Request -> ResourceT IO Response 
-app = \request-> render $ report request 
+app = \request-> renderReport $ getReport request 
 
-report :: Request -> Report
-report request = 
-  let initialReport = defaultReport { request = Just request } 
-      (report',action') = confirmAction $ router initialReport 
-  in  applyActionToReport action' report'
+getReport :: Request -> Report
+getReport r = 
+  let initialReport = defaultReport { request = Just r } 
+      (r',a') = confirmAction $ router initialReport 
+  in  applyActionToReport a' r'
 
 confirmAction :: Report -> (Report,Action)
-confirmAction report = 
-  case lookup (routeA report) actionList of
-    Just action -> (report, action)
-    Nothing -> 
-      ( report  { routeA = Hell.Lib.noSuchActionRoute
-                , meta = "Uhoh! We could not perform that action."
-                          -- TODO: move to Hell.Conf
-                }
-      , fromJust $ lookup (Hell.Lib.noSuchActionRoute) actionList ) 
-      -- Perhaps unnecessarily wordy?
-      -- Does GHC optimise-away messes like this?
+confirmAction r = 
+  case lookup (routeA r) actionList of
+    Just a  -> (r, a)
+    Nothing -> (r { routeA = Hell.Lib.noSuchActionRoute
+                  , meta = "Uhoh! We could not perform that action."
+                      -- TODO: soften this argument 
+                  }
+               , fromJust $ lookup (Hell.Lib.noSuchActionRoute) actionList
+               ) 
+                  -- Perhaps unnecessarily wordy?
+                  -- Does GHC optimise-away messes like this?
 
 applyActionToReport :: Action -> Report -> Report
-applyActionToReport action report = AppController.main report action
+applyActionToReport a r = AppController.main r a
 
 applyActionToSubReport :: Action -> Report -> Report
-applyActionToSubReport action report = AppController.subMain report action
+applyActionToSubReport a r = AppController.subMain r a
 
 -- | Maybe add a hook from here, to Hell.Conf.
 router :: Report -> Report
-router report = 
-  let r = case pathInfo $ fromJust $ request report of
+router r = 
+  let r' = case pathInfo $ fromJust $ request r of
         []    -> Hell.Lib.defaultRoute
         c:[]  -> ( T.toLower c, Hell.Lib.indexAction )
         c:a:_ -> ( T.toLower c, T.toLower a )
-  in  report { routeA = r }
+  in  r { routeA = r' }
     
 {- for reference:
 
@@ -56,9 +56,9 @@ ResponseFile Status ResponseHeaders FilePath (Maybe FilePart)
 ResponseBuilder Status ResponseHeaders Builder	 
 ResponseSource Status ResponseHeaders (Source (ResourceT IO) (Flush Builder))	
 
-Hell.Server.(render) should have branches to deal with all the above, eventually.
+Hell.Server.(renderReport) should have branches to deal with all the above, eventually.
 FilePath, FilePart, Source, etc. should be passed in the ViewDictionary.
-(render) should be able to determine, from the Report, which data constructor
+(renderReport) should be able to determine, from the Report, which data constructor
 of Response is required by the Controller.
 
 ResponseHeaders are currently hardcoded here as [].
@@ -68,46 +68,43 @@ ResponseHeaders based on the Report from the Action.
 -}
 
 -- | Takes Report from a Controller, returns a variety of ResponseBuilder.
-render :: Report -> ResourceT IO Response
-render report = 
-  let getTexts = \(key, subReport) ->
-        let ( subReport',action ) = confirmAction subReport 
-        in  ( key
-            , toDyn $
-              reportToText $ applyActionToSubReport action subReport' 
-            )
-      report' = case subReports report of
-        []          -> report
-        subReports  -> report 
+renderReport :: Report -> ResourceT IO Response
+renderReport r = 
+  let sRtoT (key,subReport) = 
+        let (sR,a) = confirmAction subReport 
+        in  (key,toDyn $ reportToText $ applyActionToSubReport a sR)
+
+      r' = case subReports r of
+        []  -> r
+        sRs -> r 
           { subReports = []
           , viewDictionary = 
-              (viewDictionary report) ++ (map getTexts subReports)
+            (viewDictionary r) ++ (map sRtoT sRs)
           }
+
   in  return $ 
-      ResponseBuilder (status report') [] $ fromText $ 
+      ResponseBuilder (status r') [] $ fromText $ 
         
       -- SOFTEN CODE HERE: there are other types of ResponseBuilders
-      case viewTemplate report of
-        Nothing -> reportToText report'
-        Just route -> reportToText report' -- rendered outer view
+      case viewTemplate r of
+        Nothing -> reportToText r'
+        Just route -> reportToText r' -- rendered outer view
           { viewTemplate = Nothing
           , routeV = route
           , meta = ""
-          , viewDictionary = 
-
-             ("viewContent", toDyn $ reportToText report') 
+          , viewDictionary =  ("viewContent", toDyn $ reportToText r') 
                                       -- rendered inner view
-            :("meta", toDyn $ meta report')
-
-            :viewDictionary report' 
+                              :("meta", toDyn $ meta r')
+                              :viewDictionary r' 
+                                -- TODO: soften these arguments.
           }
 
 -- | Takes Report from a Controller, returns a Text.
 reportToText :: Report -> Text
-reportToText report = fromMaybe
+reportToText r = fromMaybe
   (fromJust $ lookup Hell.Lib.noSuchViewRoute viewList)
-  (lookup (routeV report ) viewList)
-  report
+  (lookup (routeV r) viewList)
+  r
 
 -- | SHOULD THIS GO INTO (Hell.Conf) ?
 
