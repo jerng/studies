@@ -6,15 +6,15 @@
   <body>
     <hs>
 -- TODO: So dirty. Clean me up.
-case hasKeyAL "meta" $ viewDictionary report of
+case hasKeyAL Hell.Lib.keyOfMetaView $ viewDictionary report of
   False -> ""
   True  -> T.concat [ "<blockquote style = \"background-color:#cfc\">"
-                    , viewText "meta"
+                    , viewText Hell.Lib.keyOfMetaView
                     , "</blockquote>"
                     ]
   </hs>
     <blockquote style="border:5px solid #000;">
-      <hs>viewText "viewContent"</hs>
+      <hs>viewText Hell.Lib.keyOfTemplatedView</hs>
     </blockquote>
   </body>
 </html>

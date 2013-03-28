@@ -7,7 +7,6 @@
 ### Miscellany
 
 Replace Hell.Server.actionList and viewList with case-ofs
-Soften hardcoded arguments in Hell.Server
 
 Implement a URL helper.
 Implement redirection, from one action, to another action.
@@ -19,6 +18,8 @@ Customise ResponseHeaders in (Hell.Server.render)
   Cookie handler
     Session handling using Web.ClientSession
       Following these, implement authentication.
+
+Implement static file service.
 
 ## Design questions  
 

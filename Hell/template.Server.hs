@@ -26,7 +26,9 @@ confirmAction r =
   case lookup (routeA r) actionList of
     Just a  -> (r, a)
     Nothing -> (r { routeA = Hell.Lib.noSuchActionRoute
-                  , meta = "Uhoh! We could not perform that action."
+                  , meta =  if    Hell.Lib.appMode == Development 
+                            then  Hell.Lib.metaNoSuchAction 
+                            else  meta r
                       -- TODO: soften this argument 
                   }
                , fromJust $ lookup (Hell.Lib.noSuchActionRoute) actionList
@@ -92,9 +94,9 @@ renderReport r =
           { viewTemplate = Nothing
           , routeV = route
           , meta = ""
-          , viewDictionary =  ("viewContent", toDyn $ reportToText r') 
+          , viewDictionary =  (Hell.Lib.keyOfTemplatedView, toDyn $ reportToText r') 
                                       -- rendered inner view
-                              :("meta", toDyn $ meta r')
+                              :(Hell.Lib.keyOfMetaView, toDyn $ meta r')
                               :viewDictionary r' 
                                 -- TODO: soften these arguments.
           }

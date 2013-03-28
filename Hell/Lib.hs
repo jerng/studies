@@ -27,7 +27,11 @@ module Hell.Lib (
   , keysAL 
 
   -- | Defined in Hell.Conf:
+  , keyOfTemplatedView
+  , keyOfMetaView
+  , metaNoSuchAction
   , hellServerPort
+  , appMode
   , defaultReport
   , defaultHeaders
   , defaultStatus
@@ -78,6 +82,7 @@ module Hell.Lib (
   , SliceTag (..)
   , Slice (..)
   , Unrendered (..)
+  , AppMode (..)
   
   -- | Defined in Network.HTTP.Types:
   , run

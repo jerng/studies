@@ -11,6 +11,10 @@ import System.Directory
 hellServerPort :: Int
 hellServerPort = 3000
 
+appMode :: AppMode
+appMode = Development
+          -- Production
+
 -- I would really like to know how all this setting of defaults
 -- affects memory use. Testing will be required.
 defaultReport = Report 
@@ -25,6 +29,18 @@ defaultReport = Report
   , headers = defaultHeaders
   , viewTemplate = defaultViewTemplate
   }
+
+metaNoSuchAction :: Text
+metaNoSuchAction = "Debug: Hell.Server.confirmAction did not find the requested action in Hell.Server.actionList. This is the list assembled by ./makeHell.hs and spliced into ./app/Server.hs."
+
+keyOfMetaView :: Text
+keyOfMetaView = "metaView"
+
+-- | The key in a viewDictionary of a view template, whose value is the text 
+-- of a view that has been full rendered, along with any of its subviews. 
+-- (Report and sub Reports) by Hell.Server.renderReport.
+keyOfTemplatedView :: Text
+keyOfTemplatedView = "viewContent"
 
 defaultViewTemplate :: Maybe Route
 defaultViewTemplate = Just ("default","template")

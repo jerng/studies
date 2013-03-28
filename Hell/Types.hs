@@ -36,6 +36,7 @@ module Hell.Types (
   , Slice (..)
   , Unrendered (..)
   , ResourceNameText
+  , AppMode (..)
 
 ) where
 
@@ -132,3 +133,7 @@ data Slice  = Slice ResourceName SliceTag
 data Unrendered = Plain Text 
                 | Exp Text
                 deriving (Show)
+
+data AppMode  = Development
+              | Production
+              deriving (Eq,Show)
