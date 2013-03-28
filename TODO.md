@@ -26,8 +26,8 @@ Currently:
       report
         (confirmAction) >---------------------+
                      ^                        |
-                     |                        |
-          router     +---------------------+  |
+                     +---------------------+  |
+          router                           |  |
             (Controllers.controller.action)+  |
         applyActionToReport                   |
           (AppController.main) <--------------+

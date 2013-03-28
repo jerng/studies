@@ -15,29 +15,24 @@ main = run hellServerPort app
 app :: Request -> ResourceT IO Response 
 app = \request-> render $ report request 
 
-report ::  Request -> Report
-report request' = 
-  let route = router request'
-      (routeA', action, meta') = confirmAction route 
-      initialReport = defaultReport 
-        { request = Just request'
-        , actionDictionary = appControllerVariables
-        , routeA = routeA'
-        , meta = meta' -- clobbered: slow? but it's the default
-        } 
-  in  applyActionToReport action initialReport 
+report :: Request -> Report
+report request = 
+  let initialReport = defaultReport { request = Just request } 
+      (report',action') = confirmAction $ router initialReport 
+  in  applyActionToReport action' report'
 
--- | CLEAN UP: Should be rewritten to be merely :: Report -> Report
-confirmAction :: Route -> (Route, Action, Text)
-confirmAction route = case lookup route actionList of
-  Just action -> (route, action, "")
-  Nothing -> 
-    ( Hell.Lib.noSuchActionRoute
-    , fromJust $ lookup (Hell.Lib.noSuchActionRoute) actionList
-    , "Uhoh! We could not perform that action.") -- TODO: move to Hell.Conf
-    -- Perhaps unnecessarily wordy?
-    -- Does GHC optimise-away messes like this?
-
+confirmAction :: Report -> (Report,Action)
+confirmAction report = 
+  case lookup (routeA report) actionList of
+    Just action -> (report, action)
+    Nothing -> 
+      ( report  { routeA = Hell.Lib.noSuchActionRoute
+                , meta = "Uhoh! We could not perform that action."
+                          -- TODO: move to Hell.Conf
+                }
+      , fromJust $ lookup (Hell.Lib.noSuchActionRoute) actionList ) 
+      -- Perhaps unnecessarily wordy?
+      -- Does GHC optimise-away messes like this?
 
 applyActionToReport :: Action -> Report -> Report
 applyActionToReport action report = AppController.main report action
@@ -45,13 +40,15 @@ applyActionToReport action report = AppController.main report action
 applyActionToSubReport :: Action -> Report -> Report
 applyActionToSubReport action report = AppController.subMain report action
 
-router :: Request -> Route 
-router request = 
-  case pathInfo request of
-    []    -> Hell.Lib.defaultRoute
-    c:[]  -> ( T.toLower c, Hell.Lib.indexAction )
-    c:a:_ -> ( T.toLower c, T.toLower a )
-
+-- | Maybe add a hook from here, to Hell.Conf.
+router :: Report -> Report
+router report = 
+  let r = case pathInfo $ fromJust $ request report of
+        []    -> Hell.Lib.defaultRoute
+        c:[]  -> ( T.toLower c, Hell.Lib.indexAction )
+        c:a:_ -> ( T.toLower c, T.toLower a )
+  in  report { routeA = r }
+    
 {- for reference:
 
 data Response = 
@@ -73,14 +70,11 @@ ResponseHeaders based on the Report from the Action.
 -- | Takes Report from a Controller, returns a variety of ResponseBuilder.
 render :: Report -> ResourceT IO Response
 render report = 
-  let getTexts (key, subReport) = 
-        let ( route, action, meta' ) = confirmAction $ routeA subReport 
+  let getTexts = \(key, subReport) ->
+        let ( subReport',action ) = confirmAction subReport 
         in  ( key
-            , toDyn 
-              ( ( reportToText $ applyActionToSubReport action 
-                  (if meta' == "" then subReport else subReport {meta=meta'}) 
-                ) :: Text 
-              )
+            , toDyn $
+              reportToText $ applyActionToSubReport action subReport' 
             )
       report' = case subReports report of
         []          -> report
