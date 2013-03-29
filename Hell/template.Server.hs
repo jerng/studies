@@ -80,9 +80,10 @@ renderR r =
                     , viewDictionary = (viewDictionary r) ++ (map subRtoT subRs)
                     }
 
-  in  return $ ResponseBuilder (status r') [] $ fromText $ 
+  in  return $ ResponseBuilder (status r') [] $ 
         
       -- SOFTEN CODE HERE: there are other types of ResponseBuilders
+      fromText $ 
       case viewTemplate r of
         Nothing -> rToT r'
         Just route -> rToT r' -- rendered outer view

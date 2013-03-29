@@ -1,6 +1,6 @@
--- |  NOT A MODULE - just a bootstrap script, that runs ./app/ 
-
 {-# LANGUAGE OverloadedStrings #-} 
+
+module TryHell where
 
 import Control.Concurrent
 import Control.DeepSeq (rnf)

@@ -1,6 +1,6 @@
--- | NOT A MODULE - just a bootstrap script, that does some metaprogramming.
-
 {-# LANGUAGE OverloadedStrings #-} 
+
+module MakeHell where
 
 import Data.List
 import Data.String.Utils
