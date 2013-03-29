@@ -55,13 +55,13 @@ buildSlice s = case s of
   Slice Server ListActions -> do
     actions <- (mapM eachC) =<< controllers 
     return $ T.intercalate "\n  , " $ concat $ actions
-
       where 
+
         eachC c = do 
           text <- T.readFile $ (fromPath Controllers) ++ c ++ scriptExtension
           return $ map f'' $ nub $ map f' $ filter f $ T.lines text
-
           where
+
             f = \line-> elem (T.take 1 line)  [ "a" , "b" , "c" , "d" , "e"
                 , "f" , "g" , "h" , "i" , "j" , "k" , "l" , "m" , "n" , "o"
                 , "p" , "q" , "r" , "s" , "t" , "u" , "v" , "w" , "x" , "y"

@@ -13,34 +13,33 @@ main :: IO ()
 main = run hellServerPort app
 
 app :: Request -> ResourceT IO Response 
-app = \request-> renderReport $ getReport request 
+app = \request-> renderR $ getR request 
 
-getReport :: Request -> Report
-getReport r = 
+getR :: Request -> Report
+getR r = 
   let initialReport = defaultReport { request = Just r } 
-      (r',a') = confirmAction $ router initialReport 
-  in  applyActionToReport a' r'
+      (r',a') = confirmA $ router initialReport 
+  in  aToR a' r'
 
-confirmAction :: Report -> (Report,Action)
-confirmAction r = 
-  case lookup (routeA r) actionList of
+confirmA :: Report -> (Report,Action)
+confirmA r = 
+  case lookup (routeA r) aList of
     Just a  -> (r, a)
     Nothing -> (r { routeA = Hell.Lib.noSuchActionRoute
                   , meta =  if    Hell.Lib.appMode == Development 
                             then  Hell.Lib.metaNoSuchAction 
                             else  meta r
-                      -- TODO: soften this argument 
                   }
-               , fromJust $ lookup (Hell.Lib.noSuchActionRoute) actionList
+               , fromJust $ lookup (Hell.Lib.noSuchActionRoute) aList
                ) 
                   -- Perhaps unnecessarily wordy?
                   -- Does GHC optimise-away messes like this?
 
-applyActionToReport :: Action -> Report -> Report
-applyActionToReport a r = AppController.main r a
+aToR :: Action -> Report -> Report
+aToR a r = AppController.main r a
 
-applyActionToSubReport :: Action -> Report -> Report
-applyActionToSubReport a r = AppController.subMain r a
+aToSubR :: Action -> Report -> Report
+aToSubR a r = AppController.subMain r a
 
 -- | Maybe add a hook from here, to Hell.Conf.
 router :: Report -> Report
@@ -58,9 +57,9 @@ ResponseFile Status ResponseHeaders FilePath (Maybe FilePart)
 ResponseBuilder Status ResponseHeaders Builder	 
 ResponseSource Status ResponseHeaders (Source (ResourceT IO) (Flush Builder))	
 
-Hell.Server.(renderReport) should have branches to deal with all the above, eventually.
+Hell.Server.(renderR) should have branches to deal with all the above, eventually.
 FilePath, FilePart, Source, etc. should be passed in the ViewDictionary.
-(renderReport) should be able to determine, from the Report, which data constructor
+(renderR) should be able to determine, from the Report, which data constructor
 of Response is required by the Controller.
 
 ResponseHeaders are currently hardcoded here as [].
@@ -70,42 +69,39 @@ ResponseHeaders based on the Report from the Action.
 -}
 
 -- | Takes Report from a Controller, returns a variety of ResponseBuilder.
-renderReport :: Report -> ResourceT IO Response
-renderReport r = 
-  let sRtoT (key,subReport) = 
-        let (sR,a) = confirmAction subReport 
-        in  (key,toDyn $ reportToText $ applyActionToSubReport a sR)
+renderR :: Report -> ResourceT IO Response
+renderR r = 
+  let subRtoT (key,subReport) = (key, toDyn $ rToT $ aToSubR a subR)
+        where (subR,a) = confirmA subReport 
 
-      r' = case subReports r of
-        []  -> r
-        sRs -> r 
-          { subReports = []
-          , viewDictionary = 
-            (viewDictionary r) ++ (map sRtoT sRs)
-          }
+      r' = case subReports r of 
+        [] -> r
+        subRs -> r  { subReports = []
+                    , viewDictionary = (viewDictionary r) ++ (map subRtoT subRs)
+                    }
 
-  in  return $ 
-      ResponseBuilder (status r') [] $ fromText $ 
+  in  return $ ResponseBuilder (status r') [] $ fromText $ 
         
       -- SOFTEN CODE HERE: there are other types of ResponseBuilders
       case viewTemplate r of
-        Nothing -> reportToText r'
-        Just route -> reportToText r' -- rendered outer view
+        Nothing -> rToT r'
+        Just route -> rToT r' -- rendered outer view
           { viewTemplate = Nothing
           , routeV = route
           , meta = ""
-          , viewDictionary =  (Hell.Lib.keyOfTemplatedView, toDyn $ reportToText r') 
-                                      -- rendered inner view
-                              :(Hell.Lib.keyOfMetaView, toDyn $ meta r')
-                              :viewDictionary r' 
-                                -- TODO: soften these arguments.
+          , viewDictionary =  
+            (Hell.Lib.keyOfTemplatedView, toDyn $ rToT r') 
+                    -- rendered inner view
+            :(Hell.Lib.keyOfMetaView, toDyn $ meta r')
+            :viewDictionary r' 
+              -- TODO: soften these arguments.
           }
 
 -- | Takes Report from a Controller, returns a Text.
-reportToText :: Report -> Text
-reportToText r = fromMaybe
-  (fromJust $ lookup Hell.Lib.noSuchViewRoute viewList)
-  (lookup (routeV r) viewList)
+rToT :: Report -> Text
+rToT r = fromMaybe
+  (fromJust $ lookup Hell.Lib.noSuchViewRoute vList)
+  (lookup (routeV r) vList)
   r
 
 -- | SHOULD THIS GO INTO (Hell.Conf) ?
@@ -125,13 +121,13 @@ appControllerVariables =
   , ("someVar2", toDyn ("\"Hello, I too am defined in AppController\"" :: Text))
   ]
 
-actionList :: [(Route, Action)]
-actionList = 
+aList :: [(Route, Action)]
+aList = 
   [ {-makeHell:ListActions-}
   ]
 
-viewList :: [(Route, Report -> Text)]
-viewList = 
+vList :: [(Route, Report -> Text)]
+vList = 
   [ {-makeHell:ListViews-}
   ]
 

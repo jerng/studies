@@ -6,8 +6,6 @@
 
 ### Miscellany
 
-Replace Hell.Server.actionList and viewList with case-ofs
-
 Implement a URL helper.
 Implement redirection, from one action, to another action.
 Implement a simple form helper.
