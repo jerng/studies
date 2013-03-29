@@ -54,7 +54,7 @@ buildSlice s = case s of
 
   Slice Server ListActions -> do
     actions <- (mapM eachC) =<< controllers 
-    return $ T.intercalate "\n  , " $ concat $ actions
+    return $ T.intercalate "\n  " $ concat $ actions
       where 
 
         eachC c = do 
@@ -67,10 +67,10 @@ buildSlice s = case s of
                 , "p" , "q" , "r" , "s" , "t" , "u" , "v" , "w" , "x" , "y"
                 , "z" , "_" ]
             f' = \line -> head $ T.words line
-            f'' = \a -> T.concat  [ "((\""
+            f'' = \a -> T.concat  [ "| (\""
                                   , T.toLower $ T.pack c
                                   , "\", \""
-                                  , a,"\"), Controllers."
+                                  , a,"\") <- r = Just (Controllers."
                                   , T.pack c
                                   , "."
                                   , a
@@ -85,17 +85,17 @@ buildSlice s = case s of
         eachV = \c v->
           let c' = T.pack c
               v' = T.pack v
-          in  T.concat  [ "((\""
+          in  T.concat  [ "| (\""
                         , T.toLower c'
                         , "\", \""
                         , T.toLower v'
-                        , "\"), Views."
+                        , "\") <- r = Just (Views."
                         , c'
                         , "."
                         , v'
                         , ".main)"
                         ]
-    return $ T.intercalate "\n  , " $ concat $ map eachC cs 
+    return $ T.intercalate "\n  " $ concat $ map eachC cs 
 
 spliceView :: FilePath -> FilePath -> Text -> Text
 spliceView c v unsplicedText = 

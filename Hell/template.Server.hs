@@ -23,14 +23,14 @@ getR r =
 
 confirmA :: Report -> (Report,Action)
 confirmA r = 
-  case lookup (routeA r) aList of
+  case aList (routeA r) of
     Just a  -> (r, a)
     Nothing -> (r { routeA = Hell.Lib.noSuchActionRoute
                   , meta =  if    Hell.Lib.appMode == Development 
                             then  Hell.Lib.metaNoSuchAction 
                             else  meta r
                   }
-               , fromJust $ lookup (Hell.Lib.noSuchActionRoute) aList
+               , fromJust $ aList (Hell.Lib.noSuchActionRoute)
                ) 
                   -- Perhaps unnecessarily wordy?
                   -- Does GHC optimise-away messes like this?
@@ -100,8 +100,8 @@ renderR r =
 -- | Takes Report from a Controller, returns a Text.
 rToT :: Report -> Text
 rToT r = fromMaybe
-  (fromJust $ lookup Hell.Lib.noSuchViewRoute vList)
-  (lookup (routeV r) vList)
+  (fromJust $ vList Hell.Lib.noSuchViewRoute)
+  (vList (routeV r))
   r
 
 -- | SHOULD THIS GO INTO (Hell.Conf) ?
@@ -115,19 +115,12 @@ rToT r = fromMaybe
  reattempted in the future.
 -}
 
-appControllerVariables :: ActionDictionary 
-appControllerVariables = 
-  [ ("someVar1", toDyn ("\"Hello, I'm defined in AppController\"" :: Text))
-  , ("someVar2", toDyn ("\"Hello, I too am defined in AppController\"" :: Text))
-  ]
+aList :: Route -> Maybe Action
+aList r 
+  {-makeHell:ListActions-}
+  | _ <- r = Nothing
 
-aList :: [(Route, Action)]
-aList = 
-  [ {-makeHell:ListActions-}
-  ]
-
-vList :: [(Route, Report -> Text)]
-vList = 
-  [ {-makeHell:ListViews-}
-  ]
-
+vList :: Route -> Maybe (Report -> Text)
+vList r 
+  {-makeHell:ListViews-}
+  | _ <- r = Nothing
