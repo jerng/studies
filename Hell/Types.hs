@@ -1,7 +1,10 @@
 module Hell.Types (
   
+  -- | Defined in Data.ByteString:
+    ByteString
+
   -- | Defined in Data.Text:
-    Text
+  , Text
   
   -- | Defined in Data.Dynamic:
   , Dynamic
@@ -18,6 +21,9 @@ module Hell.Types (
   -- | Defined in Network.HTTP.Types
   , accepted202
   , ok200
+
+  -- | Defined in Web.Cookie:
+  --, SetCookie (..)
 
   -- | Defined below:
   , Action
@@ -40,6 +46,7 @@ module Hell.Types (
 
 ) where
 
+import Data.ByteString.Char8 (ByteString)
 import Data.Text (Text)
 import Data.Dynamic (Dynamic, Typeable)
 import Network.Wai (Request(..), Response(..))
@@ -48,7 +55,8 @@ import Network.HTTP.Types
   , accepted202
   , ok200
   )
-import Network.HTTP.Headers (Header) 
+import Network.HTTP.Headers (Header,HeaderName) 
+--import Web.Cookie (SetCookie(..))
 
 type ResourceNameText = Text 
 type ControllerName = Text

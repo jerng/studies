@@ -1,2 +1,7 @@
 app/*
 *.aes
+*.o
+*.hi
+MakeHell
+TryHell
+*.swp

@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-} 
 
 import Hell.Lib
+import qualified Data.ByteString as B
 import qualified Data.Text as T
 
 import qualified AppController
@@ -13,42 +14,43 @@ main :: IO ()
 main = run hellServerPort app
 
 app :: Request -> ResourceT IO Response 
-app = \request-> renderR $ getR request 
+app = \request-> renderRep $ getRep request 
 
-getR :: Request -> Report
-getR r = 
-  let initialReport = defaultReport { request = Just r } 
-      (r',a') = confirmA $ router initialReport 
-  in  aToR a' r'
+getRep :: Request -> Report
+getRep req = 
+  let initialRep = defaultReport { request = Just req, meta = T.concat ["getRep reporting<br/>",T.pack $ show $ requestHeaders req] } 
+      (rep,act) = confirmAct $ router initialRep 
+  in  applyActToRep act rep
 
-confirmA :: Report -> (Report,Action)
-confirmA r = 
-  case aList (routeA r) of
-    Just a  -> (r, a)
-    Nothing -> (r { routeA = Hell.Lib.noSuchActionRoute
-                  , meta =  if    Hell.Lib.appMode == Development 
-                            then  Hell.Lib.metaNoSuchAction 
-                            else  meta r
-                  }
-               , fromJust $ aList (Hell.Lib.noSuchActionRoute)
+confirmAct :: Report -> (Report,Action)
+confirmAct rep = 
+  case getAct (routeA rep) of
+    Just act  -> (rep, act)
+    Nothing -> (rep { routeA = Hell.Lib.noSuchActionRoute
+                    , meta =  if    Hell.Lib.appMode == Development 
+                              then  T.concat [ meta rep, "<br/>",
+                                      Hell.Lib.metaNoSuchAction]
+                              else  meta rep
+                    }
+               , fromJust $ getAct (Hell.Lib.noSuchActionRoute)
                ) 
                   -- Perhaps unnecessarily wordy?
                   -- Does GHC optimise-away messes like this?
 
-aToR :: Action -> Report -> Report
-aToR a r = AppController.main r a
+applyActToRep :: Action -> Report -> Report
+applyActToRep act rep = AppController.main rep act
 
-aToSubR :: Action -> Report -> Report
-aToSubR a r = AppController.subMain r a
+applyActToSubRep :: Action -> Report -> Report
+applyActToSubRep act rep = AppController.subMain rep act
 
 -- | Maybe add a hook from here, to Hell.Conf.
 router :: Report -> Report
-router r = 
-  let r' = case pathInfo $ fromJust $ request r of
-        []    -> Hell.Lib.defaultRoute
-        c:[]  -> ( T.toLower c, Hell.Lib.indexAction )
-        c:a:_ -> ( T.toLower c, T.toLower a )
-  in  r { routeA = r' }
+router rep = 
+  let rep' = case pathInfo $ fromJust $ request rep of
+        []        -> Hell.Lib.defaultRoute
+        con:[]    -> ( T.toLower con, Hell.Lib.indexAction )
+        con:act:_ -> ( T.toLower con, T.toLower act )
+  in  rep { routeA = rep' }
     
 {- for reference:
 
@@ -57,10 +59,10 @@ ResponseFile Status ResponseHeaders FilePath (Maybe FilePart)
 ResponseBuilder Status ResponseHeaders Builder	 
 ResponseSource Status ResponseHeaders (Source (ResourceT IO) (Flush Builder))	
 
-Hell.Server.(renderR) should have branches to deal with all the above, eventually.
-FilePath, FilePart, Source, etc. should be passed in the ViewDictionary.
-(renderR) should be able to determine, from the Report, which data constructor
-of Response is required by the Controller.
+Hell.Server.(renderRep) should have branches to deal with all the above,
+eventually.  FilePath, FilePart, Source, etc. should be passed in the
+ViewDictionary.  (renderRep) should be able to determine, from the Report,
+which data constructor of Response is required by the Controller.
 
 ResponseHeaders are currently hardcoded here as [].
 Later, there should be a mechanism for updating the
@@ -69,40 +71,42 @@ ResponseHeaders based on the Report from the Action.
 -}
 
 -- | Takes Report from a Controller, returns a variety of ResponseBuilder.
-renderR :: Report -> ResourceT IO Response
-renderR r = 
-  let subRtoT (key,subReport) = (key, toDyn $ rToT $ aToSubR a subR)
-        where (subR,a) = confirmA subReport 
+renderRep :: Report -> ResourceT IO Response
+renderRep rep = 
+  let subRepToText (key,subRepeport) = 
+        (key,toDyn $ repToText $ applyActToSubRep a subRep)
+        where (subRep,a) = confirmAct subRepeport 
 
-      r' = case subReports r of 
-        [] -> r
-        subRs -> r  { subReports = []
-                    , viewDictionary = (viewDictionary r) ++ (map subRtoT subRs)
-                    }
+      rep' = case subReports rep of 
+        [] -> rep
+        subReps -> rep  { subReports = []
+                      , viewDictionary = 
+                        (viewDictionary rep) ++ (map subRepToText subReps)
+                      }
 
-  in  return $ ResponseBuilder (status r') [] $ 
+  in  return $ ResponseBuilder (status rep') 
+        [ ( "Set-Cookie" , B.intercalate ";" ["name=Hell","max-age=10080"] ) ] $ 
         
       -- SOFTEN CODE HERE: there are other types of ResponseBuilders
       fromText $ 
-      case viewTemplate r of
-        Nothing -> rToT r'
-        Just route -> rToT r' -- rendered outer view
+      case viewTemplate rep of
+        Nothing -> repToText rep'
+        Just route -> repToText rep' -- rendered outer view
           { viewTemplate = Nothing
           , routeV = route
-          , meta = ""
           , viewDictionary =  
-            (Hell.Lib.keyOfTemplatedView, toDyn $ rToT r') 
-                    -- rendered inner view
-            :(Hell.Lib.keyOfMetaView, toDyn $ meta r')
-            :viewDictionary r' 
+                                        -- rendered inner view
+            (Hell.Lib.keyOfTemplatedView, toDyn $ repToText rep') 
+            :(Hell.Lib.keyOfMetaView, toDyn $ meta rep')
+            :viewDictionary rep' 
               -- TODO: soften these arguments.
           }
 
 -- | Takes Report from a Controller, returns a Text.
-rToT :: Report -> Text
-rToT r = fromMaybe
-  (fromJust $ vList Hell.Lib.noSuchViewRoute)
-  (vList (routeV r))
+repToText :: Report -> Text
+repToText r = fromMaybe
+  (fromJust $ getView Hell.Lib.noSuchViewRoute)
+  (getView (routeV r))
   r
 
 -- | SHOULD THIS GO INTO (Hell.Conf) ?
@@ -116,12 +120,12 @@ rToT r = fromMaybe
  reattempted in the future.
 -}
 
-aList :: Route -> Maybe Action
-aList r 
+getAct :: Route -> Maybe Action
+getAct r 
   {-makeHell:ListActions-}
   | _ <- r = Nothing
 
-vList :: Route -> Maybe (Report -> Text)
-vList r 
+getView :: Route -> Maybe (Report -> Text)
+getView r 
   {-makeHell:ListViews-}
   | _ <- r = Nothing

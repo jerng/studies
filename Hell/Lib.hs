@@ -58,6 +58,7 @@ module Hell.Lib (
   , ViewExpression
 
   -- | Defined in Hell.Types:
+  , ByteString
   , Text
   , Request (..)
   , Response (..)
@@ -87,6 +88,11 @@ module Hell.Lib (
   -- | Defined in Network.HTTP.Types:
   , run
 
+  -- | Defined in Web.ClientSession 
+  
+  -- | Defined in Web.Cookie
+  --, SetCookie (..)
+
   -- | Defined below:
   , lookupViewDictionary
   , toText
@@ -105,6 +111,8 @@ import qualified Data.Text as T
 import Hell.Conf 
 import Hell.Types
 import Network.Wai.Handler.Warp
+import Web.ClientSession
+--import Web.Cookie (SetCookie(..))
 
 lookupViewDictionary :: (Typeable a) => Text -> ViewDictionary -> a
 lookupViewDictionary k vd = 

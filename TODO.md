@@ -33,9 +33,9 @@ Currently:
                      +---------------------+  |
           router                           |  |
             (Controllers.controller.action)+  |
-        aToR                                  |
+        applyAtoR                                  |
           (AppController.main) <--------------+
-      render -- subreports? --> goto (confirmA,aToSubR)...
+      render -- subreports? --> goto (confirmA,applyAtoSubR)...
                                   until Text is returned
         reportToText
 
