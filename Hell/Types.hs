@@ -13,12 +13,18 @@ module Hell.Types (
   , Dynamic
   , Typeable
 
+  -- | Defined in Data.Map:
+  , Map
+
+  -- | Defined in Data.Word:
+  , Word8
+
   -- | Defined in Network.Wai
   , Request (..)
   , Response (..)
   , Status (..)
 
-  -- | Defined in Network.HTTP.Headers
+  -- | Defined in Network.HTTP.Types.Header
   , Header
 
   -- | Defined in Network.HTTP.Types
@@ -33,6 +39,7 @@ module Hell.Types (
   , Route
 
   , DM
+  , TBCMap
   , ActionDictionary
   , ViewDictionary
   , ReportM
@@ -53,15 +60,17 @@ module Hell.Types (
 
 import Control.Monad.Trans.Resource (ResourceT)
 import Data.ByteString.Char8 (ByteString)
+import Data.Map (Map)
 import Data.Text (Text)
 import Data.Dynamic (Dynamic, Typeable)
+import Data.Word (Word8)
 import Network.Wai (Request(..), Response(..))
 import Network.HTTP.Types 
   ( Status
   , accepted202
   , ok200
   )
-import Network.HTTP.Headers (Header,HeaderName) 
+import Network.HTTP.Types.Header ( Header) 
 
 type ResourceNameText = Text 
 type ControllerName = Text
@@ -72,6 +81,8 @@ type Action = Report -> Report
 
 -- | Replace DM with Data.Map.Map
 type DM = [(Text,Dynamic)]
+-- | Choice of Text over ByteString as keys, is for Unicode.
+type TBCMap = [(Text,(ByteString,Char))]
 type ActionDictionary = DM
 type ViewDictionary = DM 
 type ReportM = [(Text,Report)]
@@ -87,15 +98,17 @@ type CookieValue = ByteString
 type CookieAVPair = (CookieAttribute, CookieValue)
 
 data Cookie = Cookie  { cookieName :: CookieAttribute -- essential
+                      , cookieValue :: CookieValue -- essential
                       , cookieSecure :: Bool
                       , cookieHttpOnly :: Bool
                       , cookiePairs :: [CookieAVPair]
                       }
 
 data Report = Report
-  { request :: Maybe Request,
+  { session :: [TBCMap]
+  , request :: Maybe Request
       -- Network.Wai.Request
-    routeA :: Route -- of Action
+  , routeA :: Route -- of Action
       -- We should only ever need one. To redirect from one to another, use a
       -- status300!
   , routeV :: Route -- of View
@@ -119,7 +132,7 @@ data Report = Report
       -- rendered to the User. CakePHP calls this a Flash message. 
   , status :: Status
       -- Network.Wai.Status
-  , headers :: [Header]
+  , resHeaders :: [Header]
       -- Network.HTTP.Headers.Header
   -- , session?
   -- , cookies?

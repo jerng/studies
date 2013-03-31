@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-} 
 
 import Hell.Lib
-import qualified Data.ByteString as B
+import qualified Data.ByteString as BS
+import qualified Data.Map as Map
 import qualified Data.Text as T
 
 import qualified AppController
@@ -16,11 +17,16 @@ main = run hellServerPort app
 app :: Request -> ResourceT IO Response 
 app = \request-> renderRep $ getRep request 
 
+-- ***************************************************************************
+-- | UNDER VOLATILE CONSTRUCTION
+--
 getRep :: Request -> Report
 getRep req = 
-  let initialRep = defaultReport { request = Just req, meta = T.concat ["getRep reporting<br/>",T.pack $ show $ requestHeaders req] } 
+  let initialRep = defaultReport { request = Just req, meta = 
+        T.concat ["getRep reporting<br/>",T.pack $ show $ requestHeaders req] } 
       (rep,act) = confirmAct $ router initialRep 
   in  applyActToRep act rep
+-- ***************************************************************************
 
 confirmAct :: Report -> (Report,Action)
 confirmAct rep = 
@@ -84,8 +90,7 @@ renderRep rep =
                           (viewDictionary rep) ++ (map subRepToText subReps)
                         }
 
-  in  return $ ResponseBuilder (status rep') 
-        [ ( "Set-Cookie" , cookieToBS Hell.Lib.defaultCookie ) ] $ 
+  in  return $ ResponseBuilder (status rep') (getResHeaders rep') $ 
         
       -- SOFTEN CODE HERE: there are other types of ResponseBuilders
       fromText $ 
@@ -100,6 +105,29 @@ renderRep rep =
             : viewDictionary rep' 
               -- TODO: soften these arguments.
           }
+
+-- ***************************************************************************
+-- | UNDER VOLATILE CONSTRUCTION
+--
+getResHeaders :: Report -> [Header]
+getResHeaders rep = concat 
+  [ resHeaders rep
+  , [ ( "Set-Cookie", cookieToBS Hell.Lib.defaultCookie 
+        { cookieName = sessionCookieName
+        --, cookieValue = BS.concat $ toChunks $ encode [("userID",toDyn 4564)]
+        , cookieValue = BS.concat $ toChunks $ encode 
+          [ ( "userID" :: Text
+            , (encode (4564 :: Int),'i')
+            )
+          , ( "username"
+            , (encode ("John" :: Text),'t')
+            )
+          ]
+        } 
+      ) 
+    ]
+  ]
+-- ***************************************************************************
 
 -- | Takes Report from a Controller, returns a Text.
 repToText :: Report -> Text

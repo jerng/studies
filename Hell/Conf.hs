@@ -5,6 +5,7 @@ module Hell.Conf where
 
 import Data.List
 import qualified Data.Text as T
+import qualified Data.ByteString as BS
 import Hell.Types
 import System.Directory
 
@@ -18,24 +19,30 @@ appMode = Development
 -- I would really like to know how all this setting of defaults
 -- affects memory use. Testing will be required.
 defaultReport :: Report
-defaultReport = Report 
-  { request = Nothing
-  , actionDictionary = [] 
-  , routeA = defaultRoute
-  , routeV = defaultRoute
-  , viewDictionary = []
-  , subReports = []
-  , meta = ""
-  , status = defaultStatus 
-  , headers = defaultHeaders
-  , viewTemplate = defaultViewTemplate
-  }
+defaultReport = Report  { request = Nothing
+                        , session = []
+                        , actionDictionary = [] 
+                        , routeA = defaultRoute
+                        , routeV = defaultRoute
+                        , viewDictionary = []
+                        , subReports = []
+                        , meta = ""
+                        , status = defaultStatus 
+                        , resHeaders = defaultHeaders
+                        , viewTemplate = defaultViewTemplate
+                        }
+
+sessionCookieName :: ByteString
+sessionCookieName = "FsbD"
 
 defaultCookie :: Cookie
-defaultCookie = Cookie  { cookieName = ""
+defaultCookie = Cookie  { cookieName = sessionCookieName
+                        , cookieValue = "" 
                         , cookieHttpOnly = False
                         , cookieSecure = False
-                        , cookiePairs = [ ("Max-Age","-10080") ]
+                        , cookiePairs = 
+                          [ ("Max-Age","10080")
+                          ]
                         }
 
 metaNoSuchAction :: Text

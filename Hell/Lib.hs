@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module Hell.Lib (
   
@@ -8,6 +9,12 @@ module Hell.Lib (
   -- | Defined in Control.Monad:
   , foldM
   , liftM
+
+  -- | Defined in Data.ByteString:
+  , encode
+
+  -- | Defined in Data.ByteString:
+  , toChunks
 
   -- | Defined in Data.Dynamic:
   , toDyn
@@ -31,6 +38,7 @@ module Hell.Lib (
   , appMode
   , defaultReport
   , defaultCookie
+  , sessionCookieName
   , defaultHeaders
   , defaultStatus
   , defaultViewTemplate
@@ -60,6 +68,7 @@ module Hell.Lib (
   -- | Defined in Hell.Types:
   , ResourceT
   , ByteString
+  , Map
   , Text
   , Request (..)
   , Response (..)
@@ -105,16 +114,19 @@ module Hell.Lib (
 -- import qualified Data.Typeable
 import Blaze.ByteString.Builder.Char.Utf8 (fromText)
 import Control.Monad (foldM, liftM)
-import Data.Dynamic (fromDynamic, toDyn)
+import Data.Binary (Binary, encode, get, Get, put)
+import Data.Dynamic (fromDyn, fromDynamic, toDyn)
 import Data.List (nub)
 import Data.List.Utils (hasKeyAL, keysAL)
 import Data.Maybe (fromJust,fromMaybe)
-import qualified Data.ByteString as B
+import qualified Data.ByteString as BS
+import Data.ByteString.Lazy (toChunks)
 import qualified Data.Text as T
+import Data.Text.Encoding (decodeUtf8, encodeUtf8)
 import Hell.Conf 
 import Hell.Types
 import Network.Wai.Handler.Warp
-import Web.ClientSession
+import Web.ClientSession ()
 
 lookupViewDictionary :: (Typeable a) => Text -> ViewDictionary -> a
 lookupViewDictionary k vd = 
@@ -125,13 +137,34 @@ lookupViewDictionary k vd =
 
 -- | Perhaps the entire Cooke type should be refactored with (Maybe)
 cookieToBS :: Cookie -> ByteString
-cookieToBS c = B.intercalate ";" $ concat
-  [ [ B.append "name=" $ cookieName c ]
+cookieToBS c = BS.intercalate "; " $ concat
+  [ [ BS.concat [ cookieName c, "=", cookieValue c ] ]
   , if cookieHttpOnly c then ["HttpOnly"] else []
   , if cookieSecure c then ["Secure"] else []
-  , -- ["libtest=libval"] 
-    map cookieAVPairToBS $ cookiePairs c
+  , map cookieAVPairToBS $ cookiePairs c
   ]
 
 cookieAVPairToBS :: CookieAVPair -> ByteString
-cookieAVPairToBS (attr,val) = B.concat [attr,"=",val] 
+cookieAVPairToBS (attr,val) = BS.concat [attr,"=",val] 
+
+instance Binary Text where
+  put text = do put (encodeUtf8 text)
+  get = do  text <- get
+            return (decodeUtf8 text)
+
+
+--instance Binary Dynamic where
+--   put dyn = do put (fromDynamic dyn)
+--   get = do a <- get
+--            return (toDyn a)
+--
+--instance Binary (Text,Dynamic) where
+--  put (text,dyn) = do put (0 :: Word8)
+--                      put text
+--                      put dyn
+--
+--  get = do  word8 <- get :: Get Word8
+--            case word8 of
+--              0 -> do text <- get
+--                      dyn <- get
+--                      return (text,dyn)
