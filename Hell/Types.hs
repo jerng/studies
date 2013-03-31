@@ -1,7 +1,10 @@
 module Hell.Types (
   
+  -- | Defined in Control.Monad.Trans.Resource:
+    ResourceT
+
   -- | Defined in Data.ByteString:
-    ByteString
+  , ByteString
 
   -- | Defined in Data.Text:
   , Text
@@ -22,9 +25,6 @@ module Hell.Types (
   , accepted202
   , ok200
 
-  -- | Defined in Web.Cookie:
-  --, SetCookie (..)
-
   -- | Defined below:
   , Action
   , ResourceName (..)
@@ -44,8 +44,14 @@ module Hell.Types (
   , ResourceNameText
   , AppMode (..)
 
+  , CookieAttribute
+  , CookieValue
+  , CookieAVPair
+  , Cookie (..)
+
 ) where
 
+import Control.Monad.Trans.Resource (ResourceT)
 import Data.ByteString.Char8 (ByteString)
 import Data.Text (Text)
 import Data.Dynamic (Dynamic, Typeable)
@@ -56,7 +62,6 @@ import Network.HTTP.Types
   , ok200
   )
 import Network.HTTP.Headers (Header,HeaderName) 
---import Web.Cookie (SetCookie(..))
 
 type ResourceNameText = Text 
 type ControllerName = Text
@@ -76,6 +81,16 @@ Record syntax may be useful in this context, as the Report will be updated
 at various points during the (Hell.Server) response.
 
 -}
+
+type CookieAttribute = ByteString
+type CookieValue = ByteString
+type CookieAVPair = (CookieAttribute, CookieValue)
+
+data Cookie = Cookie  { cookieName :: CookieAttribute -- essential
+                      , cookieSecure :: Bool
+                      , cookieHttpOnly :: Bool
+                      , cookiePairs :: [CookieAVPair]
+                      }
 
 data Report = Report
   { request :: Maybe Request,
@@ -145,3 +160,4 @@ data Unrendered = Plain Text
 data AppMode  = Development
               | Production
               deriving (Eq,Show)
+

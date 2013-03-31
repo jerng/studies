@@ -9,9 +9,6 @@ module Hell.Lib (
   , foldM
   , liftM
 
-  -- | Defined in Control.Monad.Trans.Resource:
-  , ResourceT
-
   -- | Defined in Data.Dynamic:
   , toDyn
 
@@ -33,6 +30,7 @@ module Hell.Lib (
   , hellServerPort
   , appMode
   , defaultReport
+  , defaultCookie
   , defaultHeaders
   , defaultStatus
   , defaultViewTemplate
@@ -57,7 +55,10 @@ module Hell.Lib (
   , viewDictionaryHelpers
   , ViewExpression
 
+  , toText
+
   -- | Defined in Hell.Types:
+  , ResourceT
   , ByteString
   , Text
   , Request (..)
@@ -84,35 +85,36 @@ module Hell.Lib (
   , Slice (..)
   , Unrendered (..)
   , AppMode (..)
+
+  , CookieAttribute
+  , CookieValue
+  , CookieAVPair
+  , Cookie (..)
   
   -- | Defined in Network.HTTP.Types:
   , run
 
   -- | Defined in Web.ClientSession 
-  
-  -- | Defined in Web.Cookie
-  --, SetCookie (..)
 
   -- | Defined below:
   , lookupViewDictionary
-  , toText
+  , cookieToBS
 
 )  where
 
 -- import qualified Data.Typeable
 import Blaze.ByteString.Builder.Char.Utf8 (fromText)
 import Control.Monad (foldM, liftM)
-import Control.Monad.Trans.Resource (ResourceT)
 import Data.Dynamic (fromDynamic, toDyn)
 import Data.List (nub)
 import Data.List.Utils (hasKeyAL, keysAL)
 import Data.Maybe (fromJust,fromMaybe)
+import qualified Data.ByteString as B
 import qualified Data.Text as T
 import Hell.Conf 
 import Hell.Types
 import Network.Wai.Handler.Warp
 import Web.ClientSession
---import Web.Cookie (SetCookie(..))
 
 lookupViewDictionary :: (Typeable a) => Text -> ViewDictionary -> a
 lookupViewDictionary k vd = 
@@ -120,3 +122,16 @@ lookupViewDictionary k vd =
   fromDynamic $ 
   fromMaybe (toDyn ("(lookupViewDictionary returned Nothing)" :: Text)) $ 
   lookup k vd
+
+-- | Perhaps the entire Cooke type should be refactored with (Maybe)
+cookieToBS :: Cookie -> ByteString
+cookieToBS c = B.intercalate ";" $ concat
+  [ [ B.append "name=" $ cookieName c ]
+  , if cookieHttpOnly c then ["HttpOnly"] else []
+  , if cookieSecure c then ["Secure"] else []
+  , -- ["libtest=libval"] 
+    map cookieAVPairToBS $ cookiePairs c
+  ]
+
+cookieAVPairToBS :: CookieAVPair -> ByteString
+cookieAVPairToBS (attr,val) = B.concat [attr,"=",val] 

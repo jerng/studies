@@ -80,12 +80,12 @@ renderRep rep =
       rep' = case subReports rep of 
         [] -> rep
         subReps -> rep  { subReports = []
-                      , viewDictionary = 
-                        (viewDictionary rep) ++ (map subRepToText subReps)
-                      }
+                        , viewDictionary = 
+                          (viewDictionary rep) ++ (map subRepToText subReps)
+                        }
 
   in  return $ ResponseBuilder (status rep') 
-        [ ( "Set-Cookie" , B.intercalate ";" ["name=Hell","max-age=10080"] ) ] $ 
+        [ ( "Set-Cookie" , cookieToBS Hell.Lib.defaultCookie ) ] $ 
         
       -- SOFTEN CODE HERE: there are other types of ResponseBuilders
       fromText $ 
@@ -94,11 +94,10 @@ renderRep rep =
         Just route -> repToText rep' -- rendered outer view
           { viewTemplate = Nothing
           , routeV = route
-          , viewDictionary =  
-                                        -- rendered inner view
-            (Hell.Lib.keyOfTemplatedView, toDyn $ repToText rep') 
-            :(Hell.Lib.keyOfMetaView, toDyn $ meta rep')
-            :viewDictionary rep' 
+          , viewDictionary =              -- rendered inner view
+            ( Hell.Lib.keyOfTemplatedView, toDyn $ repToText rep' )
+            : ( Hell.Lib.keyOfMetaView, toDyn $ meta rep' )
+            : viewDictionary rep' 
               -- TODO: soften these arguments.
           }
 

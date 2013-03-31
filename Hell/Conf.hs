@@ -17,6 +17,7 @@ appMode = Development
 
 -- I would really like to know how all this setting of defaults
 -- affects memory use. Testing will be required.
+defaultReport :: Report
 defaultReport = Report 
   { request = Nothing
   , actionDictionary = [] 
@@ -29,6 +30,13 @@ defaultReport = Report
   , headers = defaultHeaders
   , viewTemplate = defaultViewTemplate
   }
+
+defaultCookie :: Cookie
+defaultCookie = Cookie  { cookieName = ""
+                        , cookieHttpOnly = False
+                        , cookieSecure = False
+                        , cookiePairs = [ ("Max-Age","-10080") ]
+                        }
 
 metaNoSuchAction :: Text
 metaNoSuchAction = "Debug: Hell.Server.confirmAction did not find the requested action in Hell.Server.actionList. This is the list assembled by ./makeHell.hs and spliced into ./app/Server.hs."
