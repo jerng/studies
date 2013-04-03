@@ -4,8 +4,10 @@
 module Hell.Conf where
 
 import Data.List
-import qualified Data.Text as T
-import qualified Data.ByteString as BS
+import qualified 
+       Data.ByteString as BS
+import qualified 
+       Data.Text as T
 import Hell.Types
 import System.Directory
 

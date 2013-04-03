@@ -2,10 +2,6 @@
 
 module MakeHell where
 
-import Data.List
-import Data.String.Utils
-import qualified Data.Text    as T 
-import qualified Data.Text.IO as T
 import Hell.Lib
 import Hell.Splice (spliceController,spliceTemplate,spliceView)
 import System.Directory
@@ -13,14 +9,14 @@ import System.Directory
 -------------------------------------------------------------------------------
 main :: IO ()
 main = do 
-  T.putStrLn messageStartMakeHell
+  tPutStrLn messageStartMakeHell
   resetAppDir
   copyStaticResources
   assembleControllers
   assembleViews
   assembleModels
   assembleTemplates
-  T.putStrLn messageJobDone 
+  tPutStrLn messageJobDone 
 
 resetAppDir :: IO ()
 resetAppDir = do 
@@ -58,10 +54,9 @@ assembleControllers = do
   cs <- controllers
   let assemble c =  do
         splicedText <- spliceController c
-        T.writeFile (toPath Controllers ++ c ++ scriptExtension) $
-          T.concat  [ "{-# LANGUAGE OverloadedStrings #-}\n\n\
-                      \module Controllers.", T.pack c, " where\n\n\
-                      \import qualified Data.Text as T\n\
+        tWriteFile (toPath Controllers ++ c ++ scriptExtension) $
+          tConcat  [ "{-# LANGUAGE OverloadedStrings #-}\n\n\
+                      \module Controllers.", tPack c, " where\n\n\
                       \import Hell.Lib\n\n", splicedText ]
   mapM_ assemble cs
 
@@ -82,16 +77,16 @@ assembleViews = do
         let vs = fromJust $ lookup c al 
         mapM_ (eachV c) vs
       eachV = \c v -> do
-        unsplicedText <- T.readFile $ concat 
+        unsplicedText <- tReadFile $ concat 
           [fromPath Views, c, "/", v, scriptExtension, viewExtension]
         let splicedText = spliceView c v unsplicedText
             toFileName = v ++ scriptExtension
             toFilePath = concat [ toPath Views, c, "/", toFileName ]
-        T.writeFile toFilePath splicedText 
+        tWriteFile toFilePath splicedText 
   mapM_ eachC cs
   
 assembleTemplates :: IO ()
 assembleTemplates = mapM_ assemble templatedResources 
   where assemble =  \module' -> do
           splicedText <- spliceTemplate module'
-          T.writeFile (toPath module') splicedText
+          tWriteFile (toPath module') splicedText

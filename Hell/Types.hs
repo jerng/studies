@@ -4,14 +4,26 @@ module Hell.Types (
     ResourceT
 
   -- | Defined in Data.Binary:
-  , Binary 
+  , Bin.Binary 
 
   -- | Defined in Data.Bson:
-  , Document, (!?), look, {-lookup,-} valueAt, at, include, exclude, merge,
-  Field(..), (=:), (=?), Label, Value(..), Val(..), fval, cast, typed,
-  typeOfVal, {-Binary(..),-} Function(..), UUID(..), MD5(..), UserDefined(..),
-  Regex(..), Javascript(..), Symbol(..), MongoStamp(..), MinMaxKey(..),
-  ObjectId(..), timestamp, genObjectId
+  
+  , Document
+  , Field(..)
+  , Label
+  , Value(..)
+  , Val(..)
+  , BsonBinary(..){- is a synonym -}
+  , Function(..)
+  , UUID(..)
+  , MD5(..)
+  , UserDefined(..)
+  , Regex(..)
+  , Javascript(..)
+  , Symbol(..)
+  , MongoStamp(..)
+  , MinMaxKey(..)
+  , ObjectId(..)
 
   -- | Defined in Data.ByteString:
   , ByteString
@@ -69,8 +81,8 @@ module Hell.Types (
 ) where
 
 import Control.Monad.Trans.Resource (ResourceT)
-import Data.Binary (Binary) 
-import Data.Bson hiding (Binary)
+import qualified Data.Binary as Bin (Binary) 
+import Data.Bson as Bson 
 import Data.ByteString.Char8 (ByteString)
 import Data.Map (Map)
 import Data.Text (Text)
@@ -83,6 +95,8 @@ import Network.HTTP.Types
   , ok200
   )
 import Network.HTTP.Types.Header ( Header) 
+
+type BsonBinary = Binary
 
 type ResourceNameText = Text 
 type ControllerName = Text

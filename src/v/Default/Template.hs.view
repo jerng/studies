@@ -8,7 +8,7 @@
 -- TODO: So dirty. Clean me up.
 case hasKeyAL Hell.Lib.keyOfMetaView $ viewDictionary report of
   False -> ""
-  True  -> T.concat [ "<blockquote style = \"background-color:#cfc\">"
+  True  -> tConcat [ "<blockquote style = \"background-color:#cfc\">"
                     , viewText Hell.Lib.keyOfMetaView
                     , "</blockquote>"
                     ]

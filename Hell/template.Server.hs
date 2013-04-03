@@ -1,9 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-} 
 
 import Hell.Lib
-import qualified Data.ByteString as BS
-import qualified Data.Map as Map
-import qualified Data.Text as T
 
 import qualified AppController
 
@@ -23,7 +20,7 @@ app = \request-> renderRep $ getRep request
 getRep :: Request -> Report
 getRep req = 
   let initialRep = defaultReport { request = Just req, meta = 
-        T.concat ["getRep reporting<br/>",T.pack $ show $ requestHeaders req] } 
+        tConcat ["getRep reporting<br/>",tPack $ show $ requestHeaders req] } 
       (rep,act) = confirmAct $ router initialRep 
   in  applyActToRep act rep
 -- ***************************************************************************
@@ -34,7 +31,7 @@ confirmAct rep =
     Just act  -> (rep, act)
     Nothing -> (rep { routeA = Hell.Lib.noSuchActionRoute
                     , meta =  if    Hell.Lib.appMode == Development 
-                              then  T.concat [ meta rep, "<br/>",
+                              then  tConcat [ meta rep, "<br/>",
                                       Hell.Lib.metaNoSuchAction]
                               else  meta rep
                     }
@@ -54,8 +51,8 @@ router :: Report -> Report
 router rep = 
   let rep' = case pathInfo $ fromJust $ request rep of
         []        -> Hell.Lib.defaultRoute
-        con:[]    -> ( T.toLower con, Hell.Lib.indexAction )
-        con:act:_ -> ( T.toLower con, T.toLower act )
+        con:[]    -> ( tToLower con, Hell.Lib.indexAction )
+        con:act:_ -> ( tToLower con, tToLower act )
   in  rep { routeA = rep' }
     
 {- for reference:
@@ -118,7 +115,7 @@ getResHeaders rep = concat
           [ "name":= String "john"
           , "age":= Int32 23
           , "child":= Doc ["name":= String "jim"]
-          ] -- :: Document
+          ] 
         } 
       ) 
     ]

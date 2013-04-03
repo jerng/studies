@@ -6,24 +6,22 @@ module Hell.Splice (
   , spliceView
 ) where
 
-import qualified Data.Text as T 
-import qualified Data.Text.IO as T
 import Hell.Lib
 
 spliceController :: FilePath -> IO ResourceNameText 
 spliceController c = do
-  templateText <- T.readFile $ (fromPath Controllers) ++ c ++ scriptExtension
+  templateText <- tReadFile $ (fromPath Controllers) ++ c ++ scriptExtension
   return templateText
 
 spliceTemplate :: ResourceName -> IO ResourceNameText 
 spliceTemplate module' = do 
-  templateText <- T.readFile $ fromPath module'
+  templateText <- tReadFile $ fromPath module'
   let moduleSlices = sliceIDsOf module'
   let buildSlices = \text sliceID -> do
         let Slice _ slice = sliceID
-        let tag = (T.pack $ "{-makeHell:"++ show slice ++"-}" )
+        let tag = (tPack $ "{-makeHell:"++ show slice ++"-}" )
         builtSlice <- buildSlice sliceID 
-        return $ T.replace tag builtSlice text
+        return $ tReplace tag builtSlice text
   foldM buildSlices templateText moduleSlices
 
 -- | This function builds slices of text.
@@ -34,16 +32,16 @@ buildSlice s = case s of
   Slice Server ImportControllers -> do  
     cs <- controllers
     return $ 
-      T.intercalate "\n" $ 
-      map ((T.append "import qualified Controllers.").(T.pack)) cs 
+      tIntercalate "\n" $ 
+      map ((tAppend "import qualified Controllers.").(tPack)) cs 
 
   Slice Server ImportViews -> do  
     al <- views
     let cs = keysAL al
-        eachC = \c -> T.concat $ map (eachV c) $ fromJust $ lookup c al 
+        eachC = \c -> tConcat $ map (eachV c) $ fromJust $ lookup c al 
         eachV = \c v ->
-          T.concat ["import qualified Views.", T.pack c, ".", T.pack v, "\n"]
-    return $ T.concat $ map eachC cs 
+          tConcat ["import qualified Views.", tPack c, ".", tPack v, "\n"]
+    return $ tConcat $ map eachC cs 
 
  {- This is crufty. It take the unique first words that start at zero
      indent, in eac ./scr/c/* . It needs to be improved to parse out non
@@ -54,24 +52,24 @@ buildSlice s = case s of
 
   Slice Server ListActions -> do
     actions <- (mapM eachC) =<< controllers 
-    return $ T.intercalate "\n  " $ concat $ actions
+    return $ tIntercalate "\n  " $ concat $ actions
       where 
 
         eachC c = do 
-          text <- T.readFile $ (fromPath Controllers) ++ c ++ scriptExtension
-          return $ map f'' $ nub $ map f' $ filter f $ T.lines text
+          text <- tReadFile $ (fromPath Controllers) ++ c ++ scriptExtension
+          return $ map f'' $ nub $ map f' $ filter f $ tLines text
           where
 
-            f = \line-> elem (T.take 1 line)  [ "a" , "b" , "c" , "d" , "e"
+            f = \line-> elem (tTake 1 line)  [ "a" , "b" , "c" , "d" , "e"
                 , "f" , "g" , "h" , "i" , "j" , "k" , "l" , "m" , "n" , "o"
                 , "p" , "q" , "r" , "s" , "t" , "u" , "v" , "w" , "x" , "y"
                 , "z" , "_" ]
-            f' = \line -> head $ T.words line
-            f'' = \a -> T.concat  [ "| (\""
-                                  , T.toLower $ T.pack c
+            f' = \line -> head $ tWords line
+            f'' = \a -> tConcat  [ "| (\""
+                                  , tToLower $ tPack c
                                   , "\", \""
                                   , a,"\") <- r = Just (Controllers."
-                                  , T.pack c
+                                  , tPack c
                                   , "."
                                   , a
                                   , ")"
@@ -83,27 +81,26 @@ buildSlice s = case s of
         eachC = \c-> 
           map (eachV c) $ fromJust $ lookup c al 
         eachV = \c v->
-          let c' = T.pack c
-              v' = T.pack v
-          in  T.concat  [ "| (\""
-                        , T.toLower c'
+          let c' = tPack c
+              v' = tPack v
+          in  tConcat  [ "| (\""
+                        , tToLower c'
                         , "\", \""
-                        , T.toLower v'
+                        , tToLower v'
                         , "\") <- r = Just (Views."
                         , c'
                         , "."
                         , v'
                         , ".main)"
                         ]
-    return $ T.intercalate "\n  " $ concat $ map eachC cs 
+    return $ tIntercalate "\n  " $ concat $ map eachC cs 
 
 spliceView :: FilePath -> FilePath -> Text -> Text
 spliceView c v unsplicedText = 
   unrenderedToModuleText  
   1 
-  ( T.pack $  "{-# LANGUAGE OverloadedStrings #-}\n\
+  ( tPack $  "{-# LANGUAGE OverloadedStrings #-}\n\
               \module Views." ++ c ++ "." ++ v ++ " where\n\n\
-              \import qualified Data.Text as T\n\
               \import Hell.Lib\n\n" 
   ) 
   ( textToUnrendereds unsplicedText )
@@ -130,17 +127,17 @@ unrenderedToModuleText count acc remainingList
   -- | Final Unrendered
 
   | [] <- remainingList
-  = T.concat 
+  = tConcat 
     [ acc 
     , "main :: Report -> Text\n\
       \main report =\n\
-      \  T.concat\n\
+      \  tConcat\n\
       \  [ "
-    , T.intercalate "\n  , " $ map 
+    , tIntercalate "\n  , " $ map 
                           (\x->
-                            T.concat 
+                            tConcat 
                             [ "text" 
-                            , (T.pack $ show x)
+                            , (tPack $ show x)
                             , " report"
                             ]
                           ) 
@@ -153,12 +150,12 @@ unrenderedToModuleText count acc remainingList
   | ((Plain text) :remainingList) <- remainingList
   = unrenderedToModuleText 
     (count+1) 
-    ( T.concat
+    ( tConcat
       [ acc 
       , "text"
-      , T.pack $ show count
+      , tPack $ show count
       , " :: Report -> Text\ntext"
-      , T.pack $ show count
+      , tPack $ show count
       , " _ = \""
       , ( textToHsSyntax text )
       , "\"\n\n"
@@ -169,16 +166,16 @@ unrenderedToModuleText count acc remainingList
   | ((Exp text) :remainingList) <- remainingList
   = unrenderedToModuleText 
     (count+1) 
-    ( T.concat
+    ( tConcat
       [ acc 
       , "text"
-      , T.pack $ show count
+      , tPack $ show count
       , " :: Report -> Text\ntext"
-      , T.pack $ show count
+      , tPack $ show count
       , " report = "
-      , T.concat 
+      , tConcat 
           [ " toText (\n" 
-          , T.unlines $ map (T.append "  ") $ T.lines text
+          , tUnlines $ map (tAppend "  ") $ tLines text
           , "\n  )\n\
             \  where\n"
           , viewDictionaryHelpers
@@ -190,14 +187,14 @@ unrenderedToModuleText count acc remainingList
 
 textToUnrendereds :: Text -> [Unrendered]
 textToUnrendereds text =  
-  case T.splitOn "<hs>" text of
+  case tSplitOn "<hs>" text of
     [text]
       ->  [Plain text]
     text:remainder
       ->  ( Plain text ) : 
           ( concat 
           $ map
-            ( \t-> case T.splitOn "</hs>" t of
+            ( \t-> case tSplitOn "</hs>" t of
                 [withinTag, withoutTag]
                   ->  [Exp withinTag, Plain withoutTag]
                 [_]
@@ -209,7 +206,7 @@ textToUnrendereds text =
 
 textToHsSyntax :: Text -> Text
 textToHsSyntax text = 
-  (T.intercalate "\\\n  \\" ) $ T.lines $ 
+  (tIntercalate "\\\n  \\" ) $ tLines $ 
                     -- Formats multiline text.
-  T.replace "\"" "\\\"" text
+  tReplace "\"" "\\\"" text
                     -- Escapes double-quotes

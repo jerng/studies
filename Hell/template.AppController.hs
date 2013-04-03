@@ -5,7 +5,6 @@
 
 module AppController where
 
-import qualified Data.Text as T
 import Hell.Lib
 
 -- | Hell.Server.applyActionToReport calls this.
