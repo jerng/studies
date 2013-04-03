@@ -114,15 +114,11 @@ getResHeaders rep = concat
   [ resHeaders rep
   , [ ( "Set-Cookie", cookieToBS Hell.Lib.defaultCookie 
         { cookieName = sessionCookieName
-        --, cookieValue = BS.concat $ toChunks $ encode [("userID",toDyn 4564)]
-        , cookieValue = BS.concat $ toChunks $ encode 
-          [ ( "userID" :: Text
-            , (encode (4564 :: Int),'i')
-            )
-          , ( "username"
-            , (encode ("John" :: Text),'t')
-            )
-          ]
+        , cookieValue = encdoc 
+          [ "name":= String "john"
+          , "age":= Int32 23
+          , "child":= Doc ["name":= String "jim"]
+          ] -- :: Document
         } 
       ) 
     ]

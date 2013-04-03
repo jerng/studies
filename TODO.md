@@ -6,7 +6,12 @@
 
 ### Miscellany
 
-Replace all association lists, Hell.Types.DM, with Data.Map.Map
+Make ./src/* file names case insensitive.
+
+Start using BSON everywhere...
+
+Replace all association lists, Hell.Types.DM, with Data.Map.Map?
+
 Session handling using Web.ClientSession
 
 Implement a URL helper.

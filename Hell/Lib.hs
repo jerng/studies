@@ -10,11 +10,17 @@ module Hell.Lib (
   , foldM
   , liftM
 
-  -- | Defined in Data.ByteString:
-  , encode
+  -- | Defined in Data.Bson:
+  , Document, (!?), look, {-lookup,-} valueAt, at, include, exclude, merge,
+  Field(..), (=:), (=?), Label, Value(..), Val(..), fval, cast, typed,
+  typeOfVal, {-Binary(..),-} Function(..), UUID(..), MD5(..), UserDefined(..),
+  Regex(..), Javascript(..), Symbol(..), MongoStamp(..), MinMaxKey(..),
+  ObjectId(..), timestamp, genObjectId
 
   -- | Defined in Data.ByteString:
-  , toChunks
+
+  -- | Defined in Data.ByteString.Lazy:
+  --, toChunks
 
   -- | Defined in Data.Dynamic:
   , toDyn
@@ -100,7 +106,7 @@ module Hell.Lib (
   , CookieAVPair
   , Cookie (..)
   
-  -- | Defined in Network.HTTP.Types:
+  -- | Defined in Network.Wai.Handler.Warp
   , run
 
   -- | Defined in Web.ClientSession 
@@ -108,24 +114,29 @@ module Hell.Lib (
   -- | Defined below:
   , lookupViewDictionary
   , cookieToBS
+  , decdoc
+  , encdoc
 
 )  where
 
 -- import qualified Data.Typeable
 import Blaze.ByteString.Builder.Char.Utf8 (fromText)
 import Control.Monad (foldM, liftM)
-import Data.Binary (Binary, encode, get, Get, put)
+import Data.Binary.Put (runPut)
+import Data.Binary.Get (runGet)
+import Data.Bson (Document)
+import Data.Bson.Binary (putDocument, getDocument)
+import qualified Data.ByteString as BS (concat,intercalate)
+import Data.ByteString.Lazy (toChunks,fromChunks)
 import Data.Dynamic (fromDyn, fromDynamic, toDyn)
 import Data.List (nub)
 import Data.List.Utils (hasKeyAL, keysAL)
 import Data.Maybe (fromJust,fromMaybe)
-import qualified Data.ByteString as BS
-import Data.ByteString.Lazy (toChunks)
 import qualified Data.Text as T
 import Data.Text.Encoding (decodeUtf8, encodeUtf8)
 import Hell.Conf 
 import Hell.Types
-import Network.Wai.Handler.Warp
+import Network.Wai.Handler.Warp (run)
 import Web.ClientSession ()
 
 lookupViewDictionary :: (Typeable a) => Text -> ViewDictionary -> a
@@ -147,24 +158,8 @@ cookieToBS c = BS.intercalate "; " $ concat
 cookieAVPairToBS :: CookieAVPair -> ByteString
 cookieAVPairToBS (attr,val) = BS.concat [attr,"=",val] 
 
-instance Binary Text where
-  put text = do put (encodeUtf8 text)
-  get = do  text <- get
-            return (decodeUtf8 text)
+encdoc :: Document -> ByteString
+encdoc doc = BS.concat $ toChunks $ runPut $ putDocument doc 
 
-
---instance Binary Dynamic where
---   put dyn = do put (fromDynamic dyn)
---   get = do a <- get
---            return (toDyn a)
---
---instance Binary (Text,Dynamic) where
---  put (text,dyn) = do put (0 :: Word8)
---                      put text
---                      put dyn
---
---  get = do  word8 <- get :: Get Word8
---            case word8 of
---              0 -> do text <- get
---                      dyn <- get
---                      return (text,dyn)
+decdoc :: ByteString -> Document
+decdoc bin = runGet getDocument $ fromChunks [ bin ]
