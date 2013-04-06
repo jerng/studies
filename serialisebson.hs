@@ -14,7 +14,7 @@ main = return $ decdoc  $
     [ "name":= String "john"
     , "age":= Int32 23
     , "child":= Doc ["name":= String "jim"]
-    ] 
+    ] :: Document
 
 encdoc :: Document -> BS.ByteString
 encdoc doc = BS.concat $ toChunks $ runPut $ putDocument doc 
