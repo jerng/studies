@@ -175,11 +175,11 @@ unrenderedToModuleText count acc remainingList
       , " report = "
       , tConcat 
           [ " toText (\n" 
-          , tUnlines $ map (tAppend "  ") $ tLines text
-          , "\n  )\n\
+          , tUnlines $ map (tAppend "    ") $ tLines text
+          , "  )\n\
             \  where\n"
-          , viewDictionaryHelpers
-          ,"\n"
+          , viewBsonHelpers
+          ,"\n\n"
           ]
       ]
     )      

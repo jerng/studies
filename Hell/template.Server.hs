@@ -76,15 +76,15 @@ ResponseHeaders based on the Report from the Action.
 -- | Takes Report from a Controller, returns a variety of ResponseBuilder.
 renderRep :: Report -> ResourceT IO Response
 renderRep rep = 
-  let subRepToText (key,subRepeport) = 
-        (key,toDyn $ repToText $ applyActToSubRep a subRep)
-        where (subRep,a) = confirmAct subRepeport 
+  let subRepToText (key,subReport) = 
+        key := String (repToText $ applyActToSubRep a subRep)
+        where (subRep,a) = confirmAct subReport 
 
       rep' = case subReports rep of 
         [] -> rep
         subReps -> rep  { subReports = []
-                        , viewDictionary = 
-                          (viewDictionary rep) ++ (map subRepToText subReps)
+                        , viewBson = 
+                          (viewBson rep) ++ (map subRepToText subReps)
                         }
 
   in  return $ ResponseBuilder (status rep') (getResHeaders rep') $ 
@@ -96,10 +96,10 @@ renderRep rep =
         Just route -> repToText rep' -- rendered outer view
           { viewTemplate = Nothing
           , routeV = route
-          , viewDictionary =              -- rendered inner view
-            ( Hell.Lib.keyOfTemplatedView, toDyn $ repToText rep' )
-            : ( Hell.Lib.keyOfMetaView, toDyn $ meta rep' )
-            : viewDictionary rep' 
+          , viewBson =              -- rendered inner view
+              ( Hell.Lib.keyOfTemplatedView := String (repToText rep') )
+            : ( Hell.Lib.keyOfMetaView := String (meta rep') )
+            : viewBson rep' 
               -- TODO: soften these arguments.
           }
 

@@ -60,10 +60,6 @@ module Hell.Types (
   , ActionName
   , Route
 
-  , DM
-  , TBCMap
-  , ActionDictionary
-  , ViewDictionary
   , ReportM
 
   , Report (..)
@@ -105,20 +101,6 @@ type Route = (ControllerName,ActionName)
 
 type Action = Report -> Report
 
--- | Replace DM with Data.Map.Map
-type DM = [(Text,Dynamic)]
--- | Choice of Text over ByteString as keys, is for Unicode.
-type TBCMap = [(Text,(ByteString,Char))]
-type ActionDictionary = DM
-type ViewDictionary = DM 
-type ReportM = [(Text,Report)]
-{- I am giving serious thought to naming this data structure: (Hell).
-
-Record syntax may be useful in this context, as the Report will be updated
-at various points during the (Hell.Server) response.
-
--}
-
 type CookieAttribute = ByteString
 type CookieValue = ByteString
 type CookieAVPair = (CookieAttribute, CookieValue)
@@ -130,8 +112,16 @@ data Cookie = Cookie  { cookieName :: CookieAttribute -- essential
                       , cookiePairs :: [CookieAVPair]
                       }
 
+type ReportM = [(Text,Report)]
+{- I am giving serious thought to naming this data structure: (Hell).
+
+Record syntax may be useful in this context, as the Report will be updated
+at various points during the (Hell.Server) response.
+
+-}
+
 data Report = Report
-  { session :: [TBCMap]
+  { session :: Document 
   , request :: Maybe Request
       -- Network.Wai.Request
   , routeA :: Route -- of Action
@@ -140,11 +130,11 @@ data Report = Report
   , routeV :: Route -- of View
       -- Again, we should only ever need one.  Addresses of subViews/widgets,
       -- in future development, should be communicated via the ViewDictionary.
-  , actionDictionary :: ActionDictionary
+  , actBson :: Document -- ActionDictionary
       -- This should be the medium of communicating most data from the 
       -- Server through to the Controller layer.
       -- Perhaps rename to (dataA).
-  , viewDictionary :: ViewDictionary
+  , viewBson :: Document -- ViewDictionary
       -- This should be the medium of communicating most data from the 
       -- Controller layer to the View layer.
       -- Perhaps rename to (dataV).

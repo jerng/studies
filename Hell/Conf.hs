@@ -23,10 +23,10 @@ appMode = Development
 defaultReport :: Report
 defaultReport = Report  { request = Nothing
                         , session = []
-                        , actionDictionary = [] 
+                        , actBson = [] 
                         , routeA = defaultRoute
                         , routeV = defaultRoute
-                        , viewDictionary = []
+                        , viewBson = []
                         , subReports = []
                         , meta = ""
                         , status = defaultStatus 
@@ -48,12 +48,14 @@ defaultCookie = Cookie  { cookieName = sessionCookieName
                         }
 
 metaNoSuchAction :: Text
-metaNoSuchAction = "Debug: Hell.Server.confirmAction did not find the requested action in Hell.Server.actionList. This is the list assembled by ./makeHell.hs and spliced into ./app/Server.hs."
+metaNoSuchAction = "Debug: Hell.Server.confirmAction did not find the\
+  \ requested action in Hell.Server.actionList. This is the list assembled\
+  \ by ./makeHell.hs and spliced into ./app/Server.hs."
 
 keyOfMetaView :: Text
 keyOfMetaView = "metaView"
 
--- | The key in a viewDictionary of a view template, whose value is the text 
+-- | The key in a viewBson of a view template, whose value is the text 
 -- of a view that has been full rendered, along with any of its subviews. 
 -- (Report and sub Reports) by Hell.Server.renderReport.
 keyOfTemplatedView :: Text
@@ -177,12 +179,18 @@ messageStartTryHell = "Running source code of ./app/Server.hs ...\n"
 messageJobDone :: Text
 messageJobDone = "... and the job is done.\n"
 
-viewDictionaryHelpers :: Text 
-viewDictionaryHelpers = 
-  "  viewInt key = lookupViewDictionary key (viewDictionary report) :: Int\n\
-  \  viewFloat key = lookupViewDictionary key (viewDictionary report) :: Float\n\
-  \  viewText key = lookupViewDictionary key (viewDictionary report) :: Text\n\
-  \  viewIntList key = lookupViewDictionary key (viewDictionary report) :: [Int]\n"
+viewBsonHelpers :: Text 
+viewBsonHelpers = 
+  "  view label = lookupBsonVal label (viewBson report)"
+--  "   viewInt key = fromMaybe (error $ \"viewInt key missing in action, and view: \" ++ show (routeA report) ++ show (routeV report)) $\
+--  \     lookupBsonVal key (viewBson report) :: Int\n\
+--  \   viewFloat key = fromMaybe (error $ \"viewFloat key missing in action, and view: \" ++ show (routeA report) ++ show (routeV report))  $\
+--  \     lookupBsonVal key (viewBson report) :: Float\n\
+--  \   viewText key = fromMaybe (error $ \"viewText key missing in action, and view: \" ++ show (routeA report) ++ show (routeV report))  $\
+--  \     lookupBsonVal key (viewBson report) :: Text\n\
+--  \   viewIntList key = fromMaybe (error $ \"viewIntList key missing in action, and view: \" ++ show (routeA report) ++ show (routeV report))  $\
+--  \     lookupBsonVal key (viewBson report) :: [Int]\n"
+
   -- TODO: Try and see if a class can introduce ad hoc polymorphism here.
 
 class ViewExpression a where

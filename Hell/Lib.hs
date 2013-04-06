@@ -11,10 +11,9 @@ module Hell.Lib (
   , liftM
 
   -- | Defined in Data.Bson:
-
   , (Bson.!?)
   , Bson.look
-  , bsonLookup {-is a synonym -}
+  --, bsonLookup {-is a synonym -}
   , Bson.valueAt
   , Bson.at
   , Bson.include
@@ -34,7 +33,7 @@ module Hell.Lib (
   -- | Defined in Data.ByteString.Lazy:
 
   -- | Defined in Data.Dynamic:
-  , toDyn
+  , toDyn -- still used in Views
 
   -- | Defined in Data.List:
   , nub
@@ -93,7 +92,7 @@ module Hell.Lib (
   , messageJobDone
   , scriptExtension
   , viewExtension
-  , viewDictionaryHelpers
+  , viewBsonHelpers
   , ViewExpression
 
   , toText
@@ -134,9 +133,6 @@ module Hell.Lib (
   , ActionName
   , Route
 
-  , DM
-  , ActionDictionary
-  , ViewDictionary
   , ReportM
 
   , Report (..)
@@ -157,10 +153,11 @@ module Hell.Lib (
   -- | Defined in Web.ClientSession 
 
   -- | Defined below:
-  , lookupViewDictionary
+--  , lookupViewDictionary
   , cookieToBS
   , decdoc
   , encdoc
+  , lookupBsonVal
 
 )  where
 
@@ -231,17 +228,17 @@ tWriteFile = T.writeFile
 tPutStrLn :: Text -> IO()
 tPutStrLn = T.putStrLn
 
-bsonLookup :: (Val v, Monad m) => Label -> Document -> m v
-bsonLookup = Bson.lookup
+--bsonLookup :: (Val v, Monad m) => Label -> Document -> m v
+--bsonLookup = Bson.lookup
 
-lookupViewDictionary :: (Typeable a) => Text -> ViewDictionary -> a
-lookupViewDictionary k vd = 
-  fromJust $ 
-  fromDynamic $ 
-  fromMaybe (toDyn ("(lookupViewDictionary returned Nothing)" :: Text)) $ 
-  lookup k vd
+--lookupViewDictionary :: (Typeable a) => Text -> ViewDictionary -> a
+--lookupViewDictionary k vd = 
+--  fromJust $ 
+--  fromDynamic $ 
+--  fromMaybe (toDyn ("(lookupViewDictionary returned Nothing)" :: Text)) $ 
+--  lookup k vd
 
--- | Perhaps the entire Cooke type should be refactored with (Maybe)
+-- | Perhaps the entire Cookie type should be refactored with (Maybe)
 cookieToBS :: Cookie -> ByteString
 cookieToBS c = BS.intercalate "; " $ concat
   [ [ BS.concat [ cookieName c, "=", cookieValue c ] ]
@@ -258,3 +255,9 @@ encdoc doc = BS.concat $ toChunks $ runPut $ putDocument doc
 
 decdoc :: ByteString -> Document
 decdoc bin = runGet getDocument $ fromChunks [ bin ]
+
+lookupBsonVal :: Val a => Label -> Document -> Maybe a
+lookupBsonVal _key [] = Nothing
+lookupBsonVal  key (field:exhead)
+    | key == (label field) =  (cast' =<< Just (value field))
+    | otherwise = lookupBsonVal key exhead

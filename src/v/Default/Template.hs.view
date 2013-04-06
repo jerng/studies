@@ -5,16 +5,15 @@
   </head>
   <body>
     <hs>
--- TODO: So dirty. Clean me up.
-case hasKeyAL Hell.Lib.keyOfMetaView $ viewDictionary report of
-  False -> ""
-  True  -> tConcat [ "<blockquote style = \"background-color:#cfc\">"
-                    , viewText Hell.Lib.keyOfMetaView
-                    , "</blockquote>"
-                    ]
+
+tConcat [ "<blockquote style = \"background-color:#cfc\">" 
+        , fromMaybe "" $ view Hell.Lib.keyOfMetaView 
+        , "</blockquote>" 
+        ] 
+
   </hs>
     <blockquote style="border:5px solid #000;">
-      <hs>viewText Hell.Lib.keyOfTemplatedView</hs>
+      <hs>fromJust $ view Hell.Lib.keyOfTemplatedView :: Text</hs>
     </blockquote>
   </body>
 </html>
