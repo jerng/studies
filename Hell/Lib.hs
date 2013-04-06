@@ -29,11 +29,15 @@ module Hell.Lib (
   , Bson.genObjectId
 
   -- | Defined in Data.ByteString:
+  --, bsSplit 
+  , bsEmpty
+  , bsConcat
+  --, bsFindIndex
+  --, bsSplitAt
+  , bsTail
+  , bsSpan
 
   -- | Defined in Data.ByteString.Lazy:
-
-  -- | Defined in Data.Dynamic:
-  , toDyn -- still used in Views
 
   -- | Defined in Data.List:
   , nub
@@ -147,6 +151,9 @@ module Hell.Lib (
   , CookieAVPair
   , Cookie (..)
   
+  -- | Defined in Network.HTTP.Types.Header
+  , hCookie
+
   -- | Defined in Network.Wai.Handler.Warp
   , run
 
@@ -169,7 +176,7 @@ import qualified
        Data.Bson as Bson
 import Data.Bson.Binary (putDocument, getDocument)
 import qualified 
-       Data.ByteString as BS (concat,intercalate)
+       Data.ByteString.Char8 as BS (concat,intercalate,empty,tail,span)
 import Data.ByteString.Lazy (toChunks,fromChunks)
 import Data.Dynamic (fromDyn, fromDynamic, toDyn)
 import Data.List (nub)
@@ -183,8 +190,29 @@ import qualified
 import Data.Text.Encoding (decodeUtf8, encodeUtf8)
 import Hell.Conf 
 import Hell.Types
+import Network.HTTP.Types.Header ( hCookie ) 
 import Network.Wai.Handler.Warp (run)
 import Web.ClientSession ()
+
+--bsSplit :: Char -> ByteString -> [ByteString]
+--bsSplit = BS.split
+
+bsSpan :: (Char -> Bool) -> ByteString -> (ByteString, ByteString)
+bsSpan = BS.span
+
+bsEmpty :: ByteString
+bsEmpty = BS.empty
+
+bsConcat :: [ByteString] -> ByteString
+bsConcat = BS.concat
+
+bsTail :: ByteString -> ByteString
+bsTail = BS.tail
+--bsFindIndex :: (Char -> Bool) -> ByteString -> Maybe Int
+--bsFindIndex = BS.findIndex
+
+--bsSplitAt :: Int -> ByteString -> (ByteString, ByteString)
+--bsSplitAt = BS.splitAt
 
 tConcat :: [Text] -> Text
 tConcat = T.concat
@@ -228,16 +256,6 @@ tWriteFile = T.writeFile
 tPutStrLn :: Text -> IO()
 tPutStrLn = T.putStrLn
 
---bsonLookup :: (Val v, Monad m) => Label -> Document -> m v
---bsonLookup = Bson.lookup
-
---lookupViewDictionary :: (Typeable a) => Text -> ViewDictionary -> a
---lookupViewDictionary k vd = 
---  fromJust $ 
---  fromDynamic $ 
---  fromMaybe (toDyn ("(lookupViewDictionary returned Nothing)" :: Text)) $ 
---  lookup k vd
-
 -- | Perhaps the entire Cookie type should be refactored with (Maybe)
 cookieToBS :: Cookie -> ByteString
 cookieToBS c = BS.intercalate "; " $ concat
@@ -259,5 +277,5 @@ decdoc bin = runGet getDocument $ fromChunks [ bin ]
 lookupBsonVal :: Val a => Label -> Document -> Maybe a
 lookupBsonVal _key [] = Nothing
 lookupBsonVal  key (field:exhead)
-    | key == (label field) =  (cast' =<< Just (value field))
-    | otherwise = lookupBsonVal key exhead
+  | key == (label field) =  (cast' =<< Just (value field))
+  | otherwise = lookupBsonVal key exhead

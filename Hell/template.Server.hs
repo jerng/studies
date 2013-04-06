@@ -3,6 +3,8 @@
 import Hell.Lib
 
 import qualified AppController
+import Data.ByteString.Base64 as B64
+import Data.ByteString.UTF8 as BS
 
 {-makeHell:ImportControllers-}
 
@@ -19,11 +21,44 @@ app = \request-> renderRep $ getRep request
 --
 getRep :: Request -> Report
 getRep req = 
-  let initialRep = defaultReport { request = Just req, meta = 
-        tConcat ["getRep reporting<br/>",tPack $ show $ requestHeaders req] } 
+  let initialRep = defaultReport 
+        { request = Just req
+        --, session = decdoc "7\STXname\ENQjohn\DLEage\ETB\ETXchild\DC3\STXname\EOTjim"
+        , meta = tConcat 
+          [ "getRep reporting<br/>"
+          , tPack $ show $ requestHeaders req
+          , "<br/><br/>debug:<br/>"
+          , tPack $ show $ 
+            case sessionValue $ onlyCookies $ requestHeaders req of
+              Nothing ->   ["session":= String "no data"]
+              Just cookieValue -> decdoc $ case B64.decode cookieValue of
+                Left s -> BS.fromString s
+                Right bs -> bs
+          ]
+
+        } 
       (rep,act) = confirmAct $ router initialRep 
   in  applyActToRep act rep
 -- ***************************************************************************
+
+-- Optimised? Feels crufty.
+sessionValue :: [Header] -> Maybe ByteString
+sessionValue hs = 
+  let f (_,bs) = 
+        let (shn,exshn) = bsSpan (\c->not ('='==c)) bs
+        in  if  (shn == Hell.Lib.sessionCookieName) &&
+                (not $ exshn == "=") && 
+                (not $ exshn == bsEmpty)
+            then bsTail exshn
+            else bsEmpty
+      f' bs'' = not $ bs'' == bsEmpty
+  in  case filter f' $ map f hs of
+        [] -> Nothing
+        shv:_ -> Just shv
+
+-- to Lib?
+onlyCookies :: [Header] -> [Header]
+onlyCookies headers = filter ((hCookie==).fst) headers
 
 confirmAct :: Report -> (Report,Action)
 confirmAct rep = 
@@ -110,8 +145,9 @@ getResHeaders :: Report -> [Header]
 getResHeaders rep = concat 
   [ resHeaders rep
   , [ ( "Set-Cookie", cookieToBS Hell.Lib.defaultCookie 
-        { cookieName = sessionCookieName
-        , cookieValue = encdoc 
+        { cookieName = Hell.Lib.sessionCookieName
+        , cookieValue = B64.encode $ 
+          encdoc 
           [ "name":= String "john"
           , "age":= Int32 23
           , "child":= Doc ["name":= String "jim"]
