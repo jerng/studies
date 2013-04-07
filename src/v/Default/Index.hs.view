@@ -1,15 +1,10 @@
     <h1>a simple view (Default.Index): </h1> 
     Following this is an attempt to interpolate some Haskell expressions<br/>
     Haskell script "1 +1" : <hs>(1+1 :: Int)</hs><br/>
-    a ViewDictionary key called (someInt) : <hs>fromJust $ view "someInt" :: Int</hs><br/>
-    a ViewDictionary key called (someFloat) : <hs>fromJust $ view "someFloat" :: Float</hs><br/>
-    a ViewDictionary key called (someText) : <hs>fromJust $ view "someText" :: Text</hs><br/>
-    a ViewDictionary key called (someIntList) : <hs>fromJust $ view "someIntList" :: [Int]</hs><br/>
-    a ViewDictionary key called (x) : <hs>fromMaybe "\"x\" not found" (view "x") :: Text</hs><br/>
+    a Document label called (someInt) : <hs>fromJust $ view "someInt" :: Int</hs><br/>
+    a Document label called (someFloat) : <hs>fromJust $ view "someFloat" :: Float</hs><br/>
+    a Document label called (someText) : <hs>fromJust $ view "someText" :: Text</hs><br/>
+    a Document label called (someIntList) : <hs>fromJust $ view "someIntList" :: [Int]</hs><br/>
+    a Document label called (x) : <hs>fromMaybe "\"x\" not found" (view "x") :: Text</hs><br/>
     <br/>
-    These are defined in (Hell.Conf.viewableListHelpers). For now, you'll have to
-    write a new helper function, every time you want to pass another type into
-    the view. The current mechanism uses the Dynamic type to pass data 
-    through the ViewDictionary, and I am wondering if using (read)-(show) would be
-    performant (it would certainly provide less to code against).
     <hs>fromJust $  (view "innerkey")::Text</hs>

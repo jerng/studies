@@ -29,11 +29,20 @@ getRep req =
           , tPack $ show $ requestHeaders req
           , "<br/><br/>debug:<br/>"
           , tPack $ show $ 
+
             case sessionValue $ onlyCookies $ requestHeaders req of
               Nothing ->   ["session":= String "no data"]
-              Just cookieValue -> decdoc $ case B64.decode cookieValue of
-                Left s -> BS.fromString s
-                Right bs -> bs
+              Just cookieValue -> 
+              
+                decdoc $ 
+                case B64.decode cookieValue of
+                  Left s -> BS.fromString s
+                  Right encrypted -> encrypted
+{-
+                    case decrypt key encrypted of
+                      Nothing -> ["session":= String "undecryptable"]
+                      Just bs -> bs
+-}
           ]
 
         } 
@@ -62,9 +71,9 @@ onlyCookies headers = filter ((hCookie==).fst) headers
 
 confirmAct :: Report -> (Report,Action)
 confirmAct rep = 
-  case getAct (routeA rep) of
+  case getAct (actRoute rep) of
     Just act  -> (rep, act)
-    Nothing -> (rep { routeA = Hell.Lib.noSuchActionRoute
+    Nothing -> (rep { actRoute = Hell.Lib.noSuchActionRoute
                     , meta =  if    Hell.Lib.appMode == Development 
                               then  tConcat [ meta rep, "<br/>",
                                       Hell.Lib.metaNoSuchAction]
@@ -88,7 +97,7 @@ router rep =
         []        -> Hell.Lib.defaultRoute
         con:[]    -> ( tToLower con, Hell.Lib.indexAction )
         con:act:_ -> ( tToLower con, tToLower act )
-  in  rep { routeA = rep' }
+  in  rep { actRoute = rep' }
     
 {- for reference:
 
@@ -123,46 +132,46 @@ renderRep rep =
                         }
 
   in  return $ ResponseBuilder (status rep') (getResHeaders rep') $ 
-        
-      -- SOFTEN CODE HERE: there are other types of ResponseBuilders
-      fromText $ 
-      case viewTemplate rep of
-        Nothing -> repToText rep'
-        Just route -> repToText rep' -- rendered outer view
-          { viewTemplate = Nothing
-          , routeV = route
-          , viewBson =              -- rendered inner view
-              ( Hell.Lib.keyOfTemplatedView := String (repToText rep') )
-            : ( Hell.Lib.keyOfMetaView := String (meta rep') )
-            : viewBson rep' 
-              -- TODO: soften these arguments.
-          }
+        -- SOFTEN CODE HERE: there are other types of ResponseBuilders
+        fromText $ 
+        case viewTemplate rep of
+          Nothing -> repToText rep'
+          Just route -> repToText rep' -- rendered outer view
+            { viewTemplate = Nothing
+            , viewRoute = route
+            , viewBson =              -- rendered inner view
+                ( Hell.Lib.keyOfTemplatedView := String (repToText rep') )
+              : ( Hell.Lib.keyOfMetaView := String (meta rep') )
+              : viewBson rep' 
+                -- TODO: soften these arguments.
+            }
 
 -- ***************************************************************************
 -- | UNDER VOLATILE CONSTRUCTION
 --
 getResHeaders :: Report -> [Header]
-getResHeaders rep = concat 
-  [ resHeaders rep
-  , [ ( "Set-Cookie", cookieToBS Hell.Lib.defaultCookie 
-        { cookieName = Hell.Lib.sessionCookieName
-        , cookieValue = B64.encode $ 
-          encdoc 
-          [ "name":= String "john"
-          , "age":= Int32 23
-          , "child":= Doc ["name":= String "jim"]
-          ] 
-        } 
-      ) 
+getResHeaders rep = 
+  concat 
+    [ resHeaders rep
+    , [ ( "Set-Cookie", cookieToBS Hell.Lib.defaultCookie 
+          { cookieName = Hell.Lib.sessionCookieName
+          , cookieValue = B64.encode  {-encryptIO-} $
+            encdoc 
+            [ "name":= String "john"
+            , "age":= Int32 23
+            , "child":= Doc ["name":= String "jim"]
+            ] 
+          } 
+        ) 
+      ]
     ]
-  ]
 -- ***************************************************************************
 
 -- | Takes Report from a Controller, returns a Text.
 repToText :: Report -> Text
 repToText r = fromMaybe
   (fromJust $ getView Hell.Lib.noSuchViewRoute)
-  (getView (routeV r))
+  (getView (viewRoute r))
   r
 
 -- | SHOULD THIS GO INTO (Hell.Conf) ?

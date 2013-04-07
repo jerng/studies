@@ -124,10 +124,10 @@ data Report = Report
   { session :: Document 
   , request :: Maybe Request
       -- Network.Wai.Request
-  , routeA :: Route -- of Action
+  , actRoute :: Route -- of Action
       -- We should only ever need one. To redirect from one to another, use a
       -- status300!
-  , routeV :: Route -- of View
+  , viewRoute :: Route -- of View
       -- Again, we should only ever need one.  Addresses of subViews/widgets,
       -- in future development, should be communicated via the ViewDictionary.
   , actBson :: Document -- ActionDictionary
@@ -155,7 +155,7 @@ data Report = Report
   -- , other?
   , subReports :: ReportM
       -- Outstanding views, which need to be rendered, then inserted into the
-      -- current View stipulated in routeV.
+      -- current View stipulated in viewRoute.
   , viewTemplate :: Maybe Route
       -- experiments with templates.
   }

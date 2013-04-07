@@ -158,6 +158,9 @@ module Hell.Lib (
   , run
 
   -- | Defined in Web.ClientSession 
+  , encryptIO
+  , decrypt
+  , getDefaultKey
 
   -- | Defined below:
 --  , lookupViewDictionary
@@ -192,7 +195,7 @@ import Hell.Conf
 import Hell.Types
 import Network.HTTP.Types.Header ( hCookie ) 
 import Network.Wai.Handler.Warp (run)
-import Web.ClientSession ()
+import Web.ClientSession (encryptIO, decrypt, getDefaultKey)
 
 --bsSplit :: Char -> ByteString -> [ByteString]
 --bsSplit = BS.split

@@ -2,7 +2,7 @@ index :: Report -> Report
 index report = 
   report
   { status = ok200
-  , routeV = ("default","index")
+  , viewRoute = ("default","index")
   , viewBson = 
     
     [ "someInt" :=Int32 999
@@ -17,19 +17,19 @@ index report =
 --    , ("someIntList", toDyn ([1,2,3]::[Int]))
 --    ]
 
-  , subReports = [("innerkey", report {routeA = ("default", "inner")}) ] 
+  , subReports = [("innerkey", report {actRoute = ("default", "inner")}) ] 
   , viewTemplate = Just ("default","template")
   }
     --  TODO :Try to make a helper function for sending variables to the
     --  ViewableList.
 
-    -- TODO: have the rendered create a default routeV if it's not specified
+    -- TODO: have the rendered create a default viewRoute if it's not specified
 
 index2 :: Report -> Report
 index2 report = 
   report
   { status = ok200
-  , routeV = ("default","index2")
+  , viewRoute = ("default","index2")
   , viewTemplate = Nothing
   }
 
@@ -38,7 +38,7 @@ nosuchaction :: Report -> Report
 nosuchaction report =
   report
   { status = ok200
-  , routeV = ("default","nosuchaction")
+  , viewRoute = ("default","nosuchaction")
   }
 
 
@@ -46,7 +46,7 @@ inner :: Report -> Report
 inner report =
   report
   { status = ok200
-  , routeV = ("default","inner")
+  , viewRoute = ("default","inner")
   }
 
 

@@ -24,8 +24,8 @@ defaultReport :: Report
 defaultReport = Report  { request = Nothing
                         , session = []
                         , actBson = [] 
-                        , routeA = defaultRoute
-                        , routeV = defaultRoute
+                        , actRoute = defaultRoute
+                        , viewRoute = defaultRoute
                         , viewBson = []
                         , subReports = []
                         , meta = ""
@@ -182,13 +182,13 @@ messageJobDone = "... and the job is done.\n"
 viewBsonHelpers :: Text 
 viewBsonHelpers = 
   "  view label = lookupBsonVal label (viewBson report)"
---  "   viewInt key = fromMaybe (error $ \"viewInt key missing in action, and view: \" ++ show (routeA report) ++ show (routeV report)) $\
+--  "   viewInt key = fromMaybe (error $ \"viewInt key missing in action, and view: \" ++ show (actRoute report) ++ show (viewRoute report)) $\
 --  \     lookupBsonVal key (viewBson report) :: Int\n\
---  \   viewFloat key = fromMaybe (error $ \"viewFloat key missing in action, and view: \" ++ show (routeA report) ++ show (routeV report))  $\
+--  \   viewFloat key = fromMaybe (error $ \"viewFloat key missing in action, and view: \" ++ show (actRoute report) ++ show (viewRoute report))  $\
 --  \     lookupBsonVal key (viewBson report) :: Float\n\
---  \   viewText key = fromMaybe (error $ \"viewText key missing in action, and view: \" ++ show (routeA report) ++ show (routeV report))  $\
+--  \   viewText key = fromMaybe (error $ \"viewText key missing in action, and view: \" ++ show (actRoute report) ++ show (viewRoute report))  $\
 --  \     lookupBsonVal key (viewBson report) :: Text\n\
---  \   viewIntList key = fromMaybe (error $ \"viewIntList key missing in action, and view: \" ++ show (routeA report) ++ show (routeV report))  $\
+--  \   viewIntList key = fromMaybe (error $ \"viewIntList key missing in action, and view: \" ++ show (actRoute report) ++ show (viewRoute report))  $\
 --  \     lookupBsonVal key (viewBson report) :: [Int]\n"
 
   -- TODO: Try and see if a class can introduce ad hoc polymorphism here.
