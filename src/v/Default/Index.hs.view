@@ -8,3 +8,5 @@
     a Document label called (x) : <hs>fromMaybe "\"x\" not found" (view "x") :: Text</hs><br/>
     <br/>
     <hs>fromJust $  (view "innerkey")::Text</hs>
+    <h3>print: session</h3>
+    <hs>tPack $ show $ session report </hs>

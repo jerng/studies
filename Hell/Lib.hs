@@ -8,8 +8,11 @@ module Hell.Lib (
 
   -- | Defined in Control.Monad:
   , foldM
-  , liftM
+  --, liftM
 
+  -- | Defined in Control.Monad.Trans.Class:
+  , lift
+  
   -- | Defined in Data.Bson:
   , (Bson.!?)
   , Bson.look
@@ -172,7 +175,8 @@ module Hell.Lib (
 )  where
 
 import Blaze.ByteString.Builder.Char.Utf8 (fromText)
-import Control.Monad (foldM, liftM)
+import Control.Monad (foldM{-, liftM-})
+import Control.Monad.Trans.Class (lift)
 import Data.Binary.Get (runGet)
 import Data.Binary.Put (runPut)
 import qualified 

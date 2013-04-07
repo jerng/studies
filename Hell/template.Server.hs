@@ -3,8 +3,6 @@
 import Hell.Lib
 
 import qualified AppController
-import Data.ByteString.Base64 as B64
-import Data.ByteString.UTF8 as BS
 
 {-makeHell:ImportControllers-}
 
@@ -16,39 +14,38 @@ main = run hellServerPort app
 app :: Request -> ResourceT IO Response 
 app = \request-> renderRep $ getRep request 
 
--- ***************************************************************************
--- | UNDER VOLATILE CONSTRUCTION
---
-getRep :: Request -> Report
-getRep req = 
+-- | Beware that the key should be stored somewhere outside ./app, otherwise
+-- it will have to be changed every time MakeHell.main is run.
+getRep :: Request -> ResourceT IO Report
+getRep req = do
+  key <- lift {- into ResourceT -} getDefaultKey
   let initialRep = defaultReport 
         { request = Just req
-        --, session = decdoc "7\STXname\ENQjohn\DLEage\ETB\ETXchild\DC3\STXname\EOTjim"
+
+        , session = 
+            case sessionValue $ onlyCookies $ requestHeaders req of
+              Nothing           ->   ["session":= String "no data"]
+              Just cookieValue  -> 
+
+                case decrypt key cookieValue of
+                  Nothing -> ["session":= String "undecryptable"]
+                  Just decrypted -> decdoc decrypted
+
+-- ***************************************************************************
+-- | SCAFFOLDING 
+--
         , meta = tConcat 
           [ "getRep reporting<br/>"
           , tPack $ show $ requestHeaders req
           , "<br/><br/>debug:<br/>"
-          , tPack $ show $ 
+          --, tPack $ show $ 
 
-            case sessionValue $ onlyCookies $ requestHeaders req of
-              Nothing ->   ["session":= String "no data"]
-              Just cookieValue -> 
-              
-                decdoc $ 
-                case B64.decode cookieValue of
-                  Left s -> BS.fromString s
-                  Right encrypted -> encrypted
-{-
-                    case decrypt key encrypted of
-                      Nothing -> ["session":= String "undecryptable"]
-                      Just bs -> bs
--}
           ]
+-- ***************************************************************************
 
         } 
       (rep,act) = confirmAct $ router initialRep 
-  in  applyActToRep act rep
--- ***************************************************************************
+  lift {- into ResourceT -} $ return {- into IO -} $ applyActToRep act rep
 
 -- Optimised? Feels crufty.
 sessionValue :: [Header] -> Maybe ByteString
@@ -118,8 +115,9 @@ ResponseHeaders based on the Report from the Action.
 -}
 
 -- | Takes Report from a Controller, returns a variety of ResponseBuilder.
-renderRep :: Report -> ResourceT IO Response
-renderRep rep = 
+renderRep :: ResourceT IO Report -> ResourceT IO Response
+renderRep rep''' = do
+  rep <- rep'''
   let subRepToText (key,subReport) = 
         key := String (repToText $ applyActToSubRep a subRep)
         where (subRep,a) = confirmAct subReport 
@@ -130,8 +128,9 @@ renderRep rep =
                         , viewBson = 
                           (viewBson rep) ++ (map subRepToText subReps)
                         }
+  headers <-  (getResHeaders rep')
+  return $ ResponseBuilder (status rep') headers $ 
 
-  in  return $ ResponseBuilder (status rep') (getResHeaders rep') $ 
         -- SOFTEN CODE HERE: there are other types of ResponseBuilders
         fromText $ 
         case viewTemplate rep of
@@ -146,26 +145,30 @@ renderRep rep =
                 -- TODO: soften these arguments.
             }
 
+getResHeaders :: Report -> ResourceT IO [Header]
+getResHeaders rep = do
+  key <- lift {- into ResourceT -} getDefaultKey
+  encrypted <- lift {- into ResourceT -} $ encryptIO key $ encdoc 
+
 -- ***************************************************************************
--- | UNDER VOLATILE CONSTRUCTION
+-- | SCAFFOLDING
 --
-getResHeaders :: Report -> [Header]
-getResHeaders rep = 
-  concat 
+    [ "session" := Doc  [ "name":= String "john"
+                        , "age":= Int32 23
+                        , "child":= Doc ["name":= String "jim"]
+                        ] 
+    ]
+-- ***************************************************************************
+
+  lift {- into ResourceT -} $ return {- into IO -} $ concat 
     [ resHeaders rep
     , [ ( "Set-Cookie", cookieToBS Hell.Lib.defaultCookie 
           { cookieName = Hell.Lib.sessionCookieName
-          , cookieValue = B64.encode  {-encryptIO-} $
-            encdoc 
-            [ "name":= String "john"
-            , "age":= Int32 23
-            , "child":= Doc ["name":= String "jim"]
-            ] 
+          , cookieValue = encrypted
           } 
         ) 
       ]
     ]
--- ***************************************************************************
 
 -- | Takes Report from a Controller, returns a Text.
 repToText :: Report -> Text
