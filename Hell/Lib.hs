@@ -53,9 +53,13 @@ module Hell.Lib (
   , fromJust
   , fromMaybe
 
+  -- | Defined in Data.String.Utils:
+  , replace
+
   -- | Defined in Data.Text:
   , tConcat
   , tPack
+  , tUnpack
   , tToLower
   , tIntercalate
   , tLines
@@ -85,6 +89,7 @@ module Hell.Lib (
   , defaultRoute
   , noSuchActionRoute
   , noSuchViewRoute
+  , staticFileRoute
 
   , templatedResources
   , staticResources
@@ -168,9 +173,11 @@ module Hell.Lib (
   -- | Defined below:
 --  , lookupViewDictionary
   , cookieToBS
+  , onlyCookies
   , decdoc
   , encdoc
   , lookupBsonVal
+  , partitionM
 
 )  where
 
@@ -189,9 +196,10 @@ import Data.Dynamic (fromDyn, fromDynamic, toDyn)
 import Data.List (nub)
 import Data.List.Utils (hasKeyAL, keysAL)
 import Data.Maybe (fromJust,fromMaybe)
+import Data.String.Utils (replace)
 import qualified 
        Data.Text as T (concat, pack, toLower, intercalate, lines, unlines,
-       splitOn, replace, append, take, words, )
+       splitOn, replace, append, take, words, unpack )
 import qualified 
        Data.Text.IO as T (readFile,writeFile,putStrLn)
 import Data.Text.Encoding (decodeUtf8, encodeUtf8)
@@ -215,6 +223,7 @@ bsConcat = BS.concat
 
 bsTail :: ByteString -> ByteString
 bsTail = BS.tail
+
 --bsFindIndex :: (Char -> Bool) -> ByteString -> Maybe Int
 --bsFindIndex = BS.findIndex
 
@@ -229,6 +238,9 @@ tToLower = T.toLower
 
 tPack :: String -> Text
 tPack = T.pack
+
+tUnpack :: Text -> String
+tUnpack = T.unpack
 
 tIntercalate :: Text -> [Text] -> Text
 tIntercalate = T.intercalate
@@ -263,6 +275,9 @@ tWriteFile = T.writeFile
 tPutStrLn :: Text -> IO()
 tPutStrLn = T.putStrLn
 
+onlyCookies :: [Header] -> [Header]
+onlyCookies headers = filter ((hCookie==).fst) headers
+
 -- | Perhaps the entire Cookie type should be refactored with (Maybe)
 cookieToBS :: Cookie -> ByteString
 cookieToBS c = BS.intercalate "; " $ concat
@@ -286,3 +301,13 @@ lookupBsonVal _key [] = Nothing
 lookupBsonVal  key (field:exhead)
   | key == (label field) =  (cast' =<< Just (value field))
   | otherwise = lookupBsonVal key exhead
+
+-- | http://stackoverflow.com/questions/15216621/can-partition-be-applied-to-a-io-bool
+partitionM :: (Monad m) => (a -> m Bool) -> [a] -> m ([a], [a])
+partitionM p xs = foldM f ([], []) xs
+  where 
+    f (a, b) x = do
+      flag <- p x
+      return $ if flag 
+        then (x : a, b) 
+        else (a, x : b)

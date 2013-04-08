@@ -159,6 +159,9 @@ data Report = Report
       -- current View stipulated in viewRoute.
   , viewTemplate :: Maybe Route
       -- experiments with templates.
+  , pathVars :: [Text]
+      -- (pathInfo someRequest) less the first two heads (con:act:pathVars)
+  , static :: Bool
   }
 
 data ResourceName = Controllers
@@ -172,6 +175,7 @@ data ResourceName = Controllers
                   | Splice
                   | Types
                   | AppController
+                  | Files
                   deriving (Eq,Show) 
 
 data SliceTag = ImportControllers 

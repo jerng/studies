@@ -32,6 +32,8 @@ defaultReport = Report  { request = Nothing
                         , status = defaultStatus 
                         , resHeaders = defaultHeaders
                         , viewTemplate = defaultViewTemplate
+                        , pathVars = []
+                        , static = False
                         }
 
 sessionCookieName :: ByteString
@@ -44,6 +46,10 @@ defaultCookie = Cookie  { cookieName = sessionCookieName
                         , cookieSecure = False
                         , cookiePairs = 
                           [ ("Max-Age","10080")
+                          --, ("path","/")
+                          --, ("Max-Age","0")
+                          --, ("Domain","localhost")
+
                           ]
                         }
 
@@ -83,6 +89,9 @@ noSuchActionRoute = ("default","nosuchaction")
 noSuchViewRoute :: Route
 noSuchViewRoute = ("default","nosuchview")
 
+staticFileRoute :: Route
+staticFileRoute = ("default","files")
+
 -- | Notice that (Hell.Splice) isn't included here.
 -- That's because it's not used in ./app .
 staticResources :: [ResourceName]
@@ -107,29 +116,33 @@ sliceIDsOf Server =
   ]
 
 fromPath :: ResourceName -> FilePath
-fromPath Controllers    = "./src/c/"
-fromPath Models         = "./src/m/"
-fromPath Views          = "./src/v/"
-fromPath Hell           = "./Hell/"
-fromPath Conf           = "./Hell/Conf.hs"
-fromPath Lib            = "./Hell/Lib.hs"
-fromPath Splice         = "./Hell/Splice.hs"
-fromPath Types          = "./Hell/Types.hs"
-fromPath Server         = "./Hell/template.Server.hs"
-fromPath AppController  = "./src/AppController.hs"
+fromPath r = case r of
+  Files          -> "./src/f/"
+  Controllers    -> "./src/c/"
+  Models         -> "./src/m/"
+  Views          -> "./src/v/"
+  Hell           -> "./Hell/"
+  Conf           -> "./Hell/Conf.hs"
+  Lib            -> "./Hell/Lib.hs"
+  Splice         -> "./Hell/Splice.hs"
+  Types          -> "./Hell/Types.hs"
+  Server         -> "./Hell/template.Server.hs"
+  AppController  -> "./src/AppController.hs"
 
 toPath :: ResourceName -> FilePath
-toPath App              = "./app/"
-toPath Controllers      = "./app/Controllers/"
-toPath Models           = "./app/Models/"
-toPath Views            = "./app/Views/"
-toPath Hell             = "./app/Hell/"
-toPath Conf             = "./app/Hell/Conf.hs"
-toPath Lib              = "./app/Hell/Lib.hs"
-toPath Splice           = "./app/Hell/Splice.hs"
-toPath Types            = "./app/Hell/Types.hs"
-toPath Server           = "./app/Server.hs"
-toPath AppController    = "./app/AppController.hs"
+toPath r = case r of
+  App             -> "./app/"
+  Files           -> "./app/Files/"
+  Controllers     -> "./app/Controllers/"
+  Models          -> "./app/Models/"
+  Views           -> "./app/Views/"
+  Hell            -> "./app/Hell/"
+  Conf            -> "./app/Hell/Conf.hs"
+  Lib             -> "./app/Hell/Lib.hs"
+  Splice          -> "./app/Hell/Splice.hs"
+  Types           -> "./app/Hell/Types.hs"
+  Server          -> "./app/Server.hs"
+  AppController   -> "./app/AppController.hs"
 
 controllers :: IO [FilePath]
 controllers = do  
@@ -167,7 +180,7 @@ filterInViews :: [FilePath] -> [FilePath]
 filterInViews filePathList = filter (isSuffixOf viewExtension) filePathList
 
 takeUntilDot :: FilePath -> FilePath
-takeUntilDot filePath = takeWhile ( \char -> not $ '.' == char ) filePath
+takeUntilDot filePath = takeWhile ('.'/=) filePath
 
 messageStartMakeHell :: Text
 messageStartMakeHell = 

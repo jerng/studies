@@ -3,8 +3,21 @@
 module MakeHell where
 
 import Hell.Lib
+
+-- | Other imports which would be dangerous to put into Hell.Lib;
+-- but later, a lot of rethinking the name spaces for Hell in general
+-- will be required.
+import Data.List (partition)
 import Hell.Splice (spliceController,spliceTemplate,spliceView)
-import System.Directory
+import System.Directory 
+  ( copyFile
+  , removeDirectoryRecursive
+  , createDirectoryIfMissing
+  , doesFileExist
+  , doesDirectoryExist
+  )
+import System.Path (recurseDir)
+import System.IO.HVFS (SystemFS(..))
 
 -------------------------------------------------------------------------------
 main :: IO ()
@@ -12,6 +25,7 @@ main = do
   tPutStrLn messageStartMakeHell
   resetAppDir
   copyStaticResources
+  copyStaticFiles -- combine with above?
   assembleControllers
   assembleViews
   assembleModels
@@ -41,6 +55,7 @@ resetAppDir = do
         , toPath Controllers
         , toPath Views
         , toPath Models
+        , toPath Files
         ]
 
 copyStaticResources :: IO ()
@@ -48,6 +63,17 @@ copyStaticResources = mapM_ copy staticResources
   where copy = \module'-> copyFile 
                           (fromPath module')
                           (toPath module')
+
+-- | Unoptimised, but frankly this file has a low priority for optimisation.
+copyStaticFiles :: IO ()
+copyStaticFiles = do
+  paths <- recurseDir SystemFS $ fromPath Files
+  let paths' = map (replace "//" "/") paths
+  (dirs,files) <- partitionM doesDirectoryExist paths'
+  flip mapM_ dirs 
+    (\p-> createDirectoryIfMissing True $ replace (fromPath Files) (toPath Files) p)
+  flip mapM_ files 
+    (\p-> copyFile p $ replace (fromPath Files) (toPath Files) p)
 
 assembleControllers :: IO ()
 assembleControllers = do
