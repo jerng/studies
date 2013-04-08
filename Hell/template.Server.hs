@@ -43,14 +43,13 @@ getRep req = do
 sessionValue :: [Header] -> Maybe ByteString
 sessionValue hs = 
   let f (_,bs) = 
-        let (shn,exshn) = bsSpan (\c->not ('='==c)) bs
+        let (shn,exshn) = bsSpan (/='=') bs
         in  if  (shn == Hell.Lib.sessionCookieName) &&
-                (not $ exshn == "=") && 
-                (not $ exshn == bsEmpty)
-            then bsTail exshn
+                (exshn /= "=") && 
+                (exshn /= bsEmpty)
+            then bsTakeWhile (/=';') $ bsTail exshn
             else bsEmpty
-      f' bs'' = not $ bs'' == bsEmpty
-  in  case filter f' $ map f hs of
+  in  case filter (/=bsEmpty) $ map f hs of
         [] -> Nothing
         shv:_ -> Just shv
 
@@ -154,12 +153,13 @@ renderRep rep''' = do
         -- | SCAFFOLDING
         --
                             [ meta rep'
-                            , "<br/><br/>debug:<br/>"
+                            , "<br/><br/><div class=\"debug\">debug:<br/>"
                             , "<br/>repToText reporting<br/>"
                             , tPack $ show $ requestHeaders $ fromJust $ request rep'
                             , "<br/><br/>pathVars<br/>"
                             , tPack $ show $ pathVars rep' 
                             , tAppend (tPack $ "./Files/") (tIntercalate "/" $ pathVars rep')
+                            , "</div>"
                             ]
         -- ***************************************************************************
                         ) )

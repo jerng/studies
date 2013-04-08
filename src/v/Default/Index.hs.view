@@ -6,6 +6,7 @@
     a Document label called (someText) : <hs>fromJust $ view "someText" :: Text</hs><br/>
     a Document label called (someIntList) : <hs>fromJust $ view "someIntList" :: [Int]</hs><br/>
     a Document label called (x) : <hs>fromMaybe "\"x\" not found" (view "x") :: Text</hs><br/>
+    <b>bold</b> <i>italicised</i> 
     <br/>
     <hs>fromJust $  (view "innerkey")::Text</hs>
     <h3>print: session</h3>

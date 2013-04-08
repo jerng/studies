@@ -1,4 +1,21 @@
+@font-face 
+  { font-family: Roboto Light
+  ; src: url(./fonts/Roboto/Roboto-Light.ttf)
+  }
+
+@font-face 
+  { font-family: DejaVu Sans Mono 
+  ; src: url(./fonts/DejaVu/DejaVuSansMono.ttf)
+  }
+
+
 body 
-  { font-family : Tahoma, Verdana
-  ;
+  { font-family : Roboto Light 
+  ; font-size: 1em
+  }
+
+.debug
+  { font-family : DejaVu Sans Mono 
+  ; font-size: 0.6em
+  ; background-color: #ff0
   }

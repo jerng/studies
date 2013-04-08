@@ -39,6 +39,7 @@ module Hell.Lib (
   --, bsSplitAt
   , bsTail
   , bsSpan
+  , bsTakeWhile
 
   -- | Defined in Data.ByteString.Lazy:
 
@@ -190,7 +191,8 @@ import qualified
        Data.Bson as Bson
 import Data.Bson.Binary (putDocument, getDocument)
 import qualified 
-       Data.ByteString.Char8 as BS (concat,intercalate,empty,tail,span)
+       Data.ByteString.Char8 as BS (concat, intercalate, empty, tail, span,
+       takeWhile)
 import Data.ByteString.Lazy (toChunks,fromChunks)
 import Data.Dynamic (fromDyn, fromDynamic, toDyn)
 import Data.List (nub)
@@ -229,6 +231,9 @@ bsTail = BS.tail
 
 --bsSplitAt :: Int -> ByteString -> (ByteString, ByteString)
 --bsSplitAt = BS.splitAt
+
+bsTakeWhile :: (Char -> Bool) -> ByteString -> ByteString
+bsTakeWhile = BS.takeWhile
 
 tConcat :: [Text] -> Text
 tConcat = T.concat
