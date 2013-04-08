@@ -6,43 +6,27 @@
 
 ### Miscellany
 
+Make an instance of Show Request
+Make a debug helper
+Iron out how debugging should work
+
+Make a session helper
+Make a cookie helper
+
 Make ./src/* file names case insensitive.
 
-Start using BSON everywhere...
+Replace all association lists, with Data.Map.Map
 
-Replace all association lists, Hell.Types.DM, with Data.Map.Map?
-
-Session handling using Web.ClientSession
-
-Implement a URL helper.
-Implement redirection, from one action, to another action.
-Implement a simple form helper.
 Implement a helper function for populating the ViewDictionary in Controllers.
 Implement various types of ResponseBuilder in Hell.Server.render
-
-Customise ResponseHeaders in (Hell.Server.render)
-  Cookie handler
-      Following these, implement authentication.
-
-Implement static file service.
+Following these, implement authentication.
+Implement redirection, from one action, to another action.
+Implement a URL helper.
+Implement a simple form helper.
 
 ## Design questions  
 
 Currently:
-
-  Hell.Server.main
-    app
-      report
-        (confirmA) >--------------------------+
-                     ^                        |
-                     +---------------------+  |
-          router                           |  |
-            (Controllers.controller.action)+  |
-        applyAtoR                                  |
-          (AppController.main) <--------------+
-      render -- subreports? --> goto (confirmA,applyAtoSubR)...
-                                  until Text is returned
-        reportToText
 
 Under consideration:
 
@@ -54,6 +38,8 @@ Where (and how) can Text be replaced with Builders (since all Text is
 ultimately converted to Builder)?
 
 ## Chore-like:
+
+Eviscerate common errors with no messages / uninformative messages.
 
 Once Models are in, Controllers which are now pure will become Monadic D:
 

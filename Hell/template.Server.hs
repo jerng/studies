@@ -41,17 +41,17 @@ getRep req = do
 -- . Also, even if it remains all here, the implementation might be shortened
 -- with a (foldx) so that the input is traversed only once.
 sessionValue :: [Header] -> Maybe ByteString
-sessionValue hs = 
-  let f (_,bs) = 
-        let (shn,exshn) = bsSpan (/='=') bs
-        in  if  (shn == Hell.Lib.sessionCookieName) &&
-                (exshn /= "=") && 
-                (exshn /= bsEmpty)
-            then bsTakeWhile (/=';') $ bsTail exshn
+sessionValue headers = 
+  let scrub header = 
+        let (name,exname) = bsSpan (/='=') $ snd header
+        in  if    name    ==  Hell.Lib.sessionCookieName
+              &&  exname  /=  "="
+              &&  exname  /=  bsEmpty
+            then bsTakeWhile (/=';') $ bsTail exname
             else bsEmpty
-  in  case filter (/=bsEmpty) $ map f hs of
+  in  case filter (/=bsEmpty) $ map scrub headers of
         [] -> Nothing
-        shv:_ -> Just shv
+        value:_ -> Just value
 
 confirmAct :: Report -> (Report,Action)
 confirmAct rep = 
@@ -109,14 +109,13 @@ ResponseHeaders based on the Report from the Action.
 
 -- | Takes Report from a Controller, returns a variety of ResponseBuilder.
 --
--- OMG FIX ME. TOO BIG.
 renderRep :: ResourceT IO Report -> ResourceT IO Response
 renderRep rep''' = do
   rep <- rep'''
   if static rep 
     then return $ ResponseFile 
                   (status rep) 
-                  [] 
+                  (resHeaders rep) 
                   ("./Files/" ++ (tUnpack $ tIntercalate "/" $ pathVars rep) )
                   Nothing
     else 
@@ -134,57 +133,45 @@ renderRep rep''' = do
           headers <-  (getResHeaders rep')
           return $ ResponseBuilder (status rep') headers $ 
 
-                -- SOFTEN CODE HERE: there are other types of ResponseBuilders
-                fromText $ 
-                case viewTemplate rep of
-                  Nothing -> repToText rep'
-                  Just route -> repToText rep' -- rendered outer view
-                    { viewTemplate = Nothing
-                    , viewRoute = route
-                    , viewBson =              -- rendered inner view
-                        ( Hell.Lib.keyOfTemplatedView := String (repToText rep') )
+            -- SOFTEN CODE HERE: there are other types of ResponseBuilders
+            fromText $ 
+            case viewTemplate rep of
+              Nothing -> repToText rep'
+              Just route -> repToText rep' -- rendered outer view
+                { viewTemplate = Nothing
+                , viewRoute = route
+                , viewBson =              -- rendered inner view
+                    ( Hell.Lib.keyOfTemplatedView := String (repToText rep') )
 
-                        -- DEBUG to VIEW: happens here.
-                      : ( Hell.Lib.keyOfMetaView := String (
-                          if Hell.Lib.appMode == Production
-                          then meta rep'
-                          else tConcat 
-        -- ***************************************************************************
-        -- | SCAFFOLDING
-        --
-                            [ meta rep'
-                            , "<br/><br/><div class=\"debug\">debug:<br/>"
-                            , "<br/>repToText reporting<br/>"
-                            , tPack $ show $ requestHeaders $ fromJust $ request rep'
-                            , "<br/><br/>pathVars<br/>"
-                            , tPack $ show $ pathVars rep' 
-                            , tAppend (tPack $ "./Files/") (tIntercalate "/" $ pathVars rep')
-                            , "</div>"
-                            ]
-        -- ***************************************************************************
-                        ) )
-                      : viewBson rep' 
-                        -- TODO: soften these arguments.
-                    }
+                    -- DEBUG to VIEW: happens here.
+                  : ( Hell.Lib.keyOfMetaView := String (
+                      if Hell.Lib.appMode == Production
+                      then meta rep'
+                      else tConcat 
+    -- ***************************************************************************
+    -- | SCAFFOLDING
+    --
+                        [ meta rep'
+                        , "<br/><div class=\"debug\">debug:<br/>"
+                        --, tPack $ show $ rep'
+                        , "<br/>repToText reporting<br/>"
+                        , tPack $ show $ requestHeaders $ fromJust $ request rep'
+                        , "<br/><br/>pathVars<br/>"
+                        , tPack $ show $ pathVars rep' 
+                        , tAppend (tPack $ "./Files/") (tIntercalate "/" $ pathVars rep')
+                        , "</div>"
+                        ]
+    -- ***************************************************************************
+                    ) )
+                  : viewBson rep' 
+                    -- TODO: soften these arguments.
+                }
 
--- | WARNING: it seems like we're getting duplicate cookies if the server is 
--- restarted and re-requested many times. Look into this.
 getResHeaders :: Report -> ResourceT IO [Header]
 getResHeaders rep = do
-  key <- lift {- into ResourceT -} getDefaultKey
-  encrypted <- lift {- into ResourceT -} $ encryptIO key $ encdoc 
-
--- ***************************************************************************
--- | SCAFFOLDING
---
-    [ "session" := Doc  [ "name":= String "john"
-                        , "age":= Int32 23
-                        , "child":= Doc ["name":= String "jim"]
-                        ] 
-    ]
--- ***************************************************************************
-
-  lift {- into ResourceT -} $ return {- into IO -} $ concat 
+  key <- lift getDefaultKey
+  encrypted <- lift $ encryptIO key $ encdoc $ session rep
+  lift $ return $ concat 
     [ resHeaders rep
     , [ ( "Set-Cookie", cookieToBS Hell.Lib.defaultCookie 
           { cookieName = Hell.Lib.sessionCookieName
@@ -203,7 +190,7 @@ getResHeaders rep = do
 repToText :: Report -> Text
 repToText r = fromMaybe
   (fromJust $ getView Hell.Lib.noSuchViewRoute)
-  (getView (viewRoute r))
+  (getView $ viewRoute r)
   r
 
 -- | SHOULD THIS GO INTO (Hell.Conf) ?

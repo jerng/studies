@@ -162,7 +162,8 @@ data Report = Report
   , pathVars :: [Text]
       -- (pathInfo someRequest) less the first two heads (con:act:pathVars)
   , static :: Bool
-  }
+  } 
+  --deriving (Show)
 
 data ResourceName = Controllers
                   | Models
