@@ -9,63 +9,102 @@ import Control.Monad (liftM)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.Trans.Resource (ResourceT,liftResourceT,runResourceT)
+import Data.Text (Text)
 import Data.ByteString.Char8 (ByteString)
-import Data.Conduit (Source,Sink,yield,await,($$),($=),(=$))
---import Data.Conduit.Internal (ConduitM(..))
+import Data.Conduit (Source,Sink,yield,await,($$))
 import qualified Data.Vault as V (Vault(..),empty)
+import Network.HTTP.Types.Header (RequestHeaders)
+import Network.HTTP.Types.Method (Method)
+import Network.HTTP.Types.URI (Query)
+import Network.HTTP.Types.Version (HttpVersion(..))
+import Network.Socket.Internal (SockAddr(..))
 import Network.Wai (RequestBodyLength(..),Request(..),Response(..))
 
 main :: IO ()
 main = putStrLnTest
-
-data Test = Test 
-  { requestBodyLength' :: RequestBodyLength
-  , vault' :: V.Vault
-  , requestBody' :: ResourceT IO ByteString
-  }
-
-_test :: ResourceT IO Test
-_test = lift.return $ Test 
-  { requestBodyLength' = ChunkedBody
-  , vault' = V.empty
-  , requestBody' = source $$ sink 
-  }
 
 putStrLnTest :: IO ()
 putStrLnTest = do
   a <- runResourceT.showTest $ _test
   putStrLn a
 
-showTest :: ResourceT IO Test -> ResourceT IO String
+-- ***************************************************************************
+-- REQUEST
+--
+data Test = Test 
+  { requestMethod' :: Method
+  , httpVersion' :: HttpVersion
+  , rawPathInfo' :: ByteString
+  , rawQueryString' :: ByteString  
+  , serverName' :: ByteString
+  , serverPort' :: Int
+  , requestHeaders' :: RequestHeaders
+  , isSecure' :: Bool
+  , remoteHost' :: SockAddr
+  , pathInfo' :: [Text]
+  , queryString' :: Query
+  , vault' :: V.Vault
+  , requestBody' :: Source (ResourceT IO) ByteString
+  , requestBodyLength' :: RequestBodyLength
+  }
+
+_test :: ResourceT IO Request 
+_test = lift.return $ Request 
+  { requestMethod = "GET" 
+  , httpVersion = HttpVersion 1 0  
+  , rawPathInfo = "/rawPathInfo"
+  , rawQueryString = "?queryString"
+  , serverName = "serverName"
+  , serverPort = 3000
+  , requestHeaders = [("HeaderName","HeaderValue")]
+  , isSecure = True
+  , remoteHost = SockAddrUnix "a :: SockAddrUnix String"
+  , pathInfo = ["pathInfo1","pathInfo2"]
+  , queryString= [("queryItemKey",Just "queryItemValue")]
+  , vault = V.empty
+  , requestBody = source
+  , requestBodyLength = ChunkedBody
+  }
+
+showTest :: ResourceT IO Request -> ResourceT IO String
 showTest resIOt = do
   t <- lift.runResourceT $ resIOt -- the test data
-  let requestBodyLength'' = show.requestBodyLength' $ t
-      vault'' = show.vault' $ t
-  requestBody'' <- lift.runResourceT.showResIO.requestBody' $ t
+  
+  let requestMethod'' = show.requestMethod $ t
+      httpVersion'' = show.httpVersion $ t
+      rawPathInfo'' = show.rawPathInfo $ t
+      rawQueryString'' = show.rawQueryString $ t
+      serverName'' = show.serverName $ t
+      serverPort'' = show.serverPort $ t
+      requestHeaders'' = show.requestHeaders $ t
+      isSecure'' = show.isSecure $ t
+      remoteHost'' = show.remoteHost $ t
+      pathInfo'' = show.pathInfo $ t
+      queryString'' = show.queryString $ t
+  requestBody'' <- lift.runResourceT.showResIO $ (requestBody t $$ sink)
+  let vault'' = show.vault $ t
+      requestBodyLength'' = show.requestBodyLength $ t
+
   lift.return $ concat 
-    [ "Test {"
-    , "requestBodyLength' = ", requestBodyLength'', ", "
-    , "vault' = ", vault'', ", "
-    , "requestBody' = ", requestBody'', ","
+    [ "Request {", "\n  "
+    , "httpVersion = ", httpVersion'', ", ", "\n  "
+    , "isSecure = ", isSecure'', ", " , "\n  "
+    , "pathInfo = ", pathInfo'', ", ", "\n  "
+    , "queryString = ", queryString'', ", ", "\n  "
+    , "rawPathInfo = ", rawPathInfo'', ", " , "\n  "
+    , "rawQueryString = ", rawQueryString'', ", ", "\n  "
+    , "remoteHost = ", remoteHost'', ", ", "\n  "
+    , "requestBody = ", requestBody'', ", ", "\n  "
+    , "requestBodyLength = ", requestBodyLength'', ", ", "\n  "
+    , "requestHeaders = ", requestHeaders'', ", ", "\n  "
+    , "requestMethod = ", requestMethod'', ", ", "\n  "
+    , "serverName = ", serverName'', ", " , "\n  "
+    , "serverPort = ", serverPort'', ", ", "\n  "
+    , "vault = ", vault'', ", ", "\n"
     , "}"
     ]
-
---_request = Request 
---  { requestMethod =
---  , httpVersion =
---  , rawPathInfo = 
---  , rawQueryString =
---  , serverName =
---  , serverPort = 
---  , requestHeaders = 
---  , isSecure = 
---  , remoteHost =
---  , pathInfo =
---  , queryString =
---  , requestBody = 
---  , vault = 
---  , requestBodyLength = _requestBodyLength
---  }
+--
+-- ***************************************************************************
 
 source :: Source (ResourceT IO) ByteString
 source = do
@@ -77,12 +116,6 @@ sink = do
   case a of
     Nothing -> return ""
     Just b -> return b
-
-_requestBody :: (ResourceT IO) ByteString
-_requestBody = lift $ return "requestBody" 
-
-_vault = V.empty
-_requestBodyLength = ChunkedBody 
 
 showResIO :: (Show a) => ResourceT IO a -> ResourceT IO String
 showResIO a = do
@@ -96,10 +129,3 @@ instance Show RequestBodyLength where
   show r = case r of 
     ChunkedBody -> "ChunkedBody"
     KnownLength w64 -> "KnownLength " ++ show w64
-
-instance Show Request where
-  show r = "Hell.Lib instance for Show Request : TODO"
-
-instance Show Response where
-  show r = "Hell.Lib instance for Show Response : TODO"
-
