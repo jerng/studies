@@ -9,7 +9,10 @@ import qualified AppController
 {-makeHell:ImportViews-}
 
 main :: IO ()
-main = run hellServerPort app
+main =  run 
+        hellServerPort 
+        -- $ logStdoutDev 
+        app
 
 app :: Request -> ResourceT IO Response 
 app = \request-> renderRep $ getRep request 
@@ -130,9 +133,10 @@ renderRep rep''' = do
                               (viewBson rep) ++ (map subRepToText subReps)
                             }
       in  do
-          headers <-  (getResHeaders rep')
-          return $ ResponseBuilder (status rep') headers $ 
+          headers <- getResHeaders rep'
+          reqString <- showRequest $ lift.return.fromJust $ request rep'
 
+          return $ ResponseBuilder (status rep') headers $ 
             -- SOFTEN CODE HERE: there are other types of ResponseBuilders
             fromText $ 
             case viewTemplate rep of
@@ -152,14 +156,10 @@ renderRep rep''' = do
     -- | SCAFFOLDING
     --
                         [ meta rep'
-                        , "<br/><div class=\"debug\">debug:<br/>"
-                        --, tPack $ show $ rep'
+                        , "<br/><div class=\"debug\">debug:<br/><pre>"
                         , "<br/>repToText reporting<br/>"
-                        , tPack $ show $ requestHeaders $ fromJust $ request rep'
-                        , "<br/><br/>pathVars<br/>"
-                        , tPack $ show $ pathVars rep' 
-                        , tAppend (tPack $ "./Files/") (tIntercalate "/" $ pathVars rep')
-                        , "</div>"
+                        , tPack reqString
+                        , "</pre></div>"
                         ]
     -- ***************************************************************************
                     ) )

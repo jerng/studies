@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Hell.Lib (
   
@@ -179,12 +180,14 @@ module Hell.Lib (
   , encdoc
   , lookupBsonVal
   , partitionM
+  , showRequest
 
 )  where
 
 import Blaze.ByteString.Builder.Char.Utf8 (fromText)
 import Control.Monad (foldM{-, liftM-})
 import Control.Monad.Trans.Class (lift)
+import Control.Monad.Trans.Resource (runResourceT)
 import Data.Binary.Get (runGet)
 import Data.Binary.Put (runPut)
 import qualified 
@@ -194,8 +197,9 @@ import qualified
        Data.ByteString.Char8 as BS (concat, intercalate, empty, tail, span,
        takeWhile)
 import Data.ByteString.Lazy (toChunks,fromChunks)
+import Data.Conduit ({-Source,-}Sink,yield,await,($$))
 import Data.Dynamic (fromDyn, fromDynamic, toDyn)
-import Data.List (nub)
+import Data.List (nub,intercalate)
 import Data.List.Utils (hasKeyAL, keysAL)
 import Data.Maybe (fromJust,fromMaybe)
 import Data.String.Utils (replace)
@@ -209,6 +213,7 @@ import Hell.Conf
 import Hell.Types
 import Network.HTTP.Types.Header ( hCookie ) 
 import Network.Wai.Handler.Warp (run)
+-- import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Web.ClientSession (encryptIO, decrypt, getDefaultKey)
 
 --bsSplit :: Char -> ByteString -> [ByteString]
@@ -307,7 +312,9 @@ lookupBsonVal  key (field:exhead)
   | key == (label field) =  (cast' =<< Just (value field))
   | otherwise = lookupBsonVal key exhead
 
--- | http://stackoverflow.com/questions/15216621/can-partition-be-applied-to-a-io-bool
+-- ****************************************************************************
+-- | FROM: http://stackoverflow.com/questions/15216621
+--    /can-partition-be-applied-to-a-io-bool
 partitionM :: (Monad m) => (a -> m Bool) -> [a] -> m ([a], [a])
 partitionM p xs = foldM f ([], []) xs
   where 
@@ -316,3 +323,74 @@ partitionM p xs = foldM f ([], []) xs
       return $ if flag 
         then (x : a, b) 
         else (a, x : b)
+--
+-- ****************************************************************************
+
+showRequest :: ResourceT IO Request -> ResourceT IO String
+showRequest resIOreq = do
+  req <- lift.runResourceT $ resIOreq
+  let requestMethod'' = show.requestMethod $ req
+      httpVersion'' = show.httpVersion $ req
+      rawPathInfo'' = show.rawPathInfo $ req
+      rawQueryString'' = show.rawQueryString $ req
+      serverName'' = show.serverName $ req
+      serverPort'' = show.serverPort $ req
+      requestHeaders'' = 
+        intercalate "\n    " $ "" : (map showHeader $ requestHeaders req)
+      isSecure'' = show.isSecure $ req
+      remoteHost'' = show.remoteHost $ req
+      pathInfo'' = intercalate "\n    " $ "" : (map show $ pathInfo req)
+      queryString'' = intercalate "\n    " $ "" : (map show $ queryString req)
+
+  requestBody'' 
+    <- lift.runResourceT.showResIO $ (requestBody req $$ sinkForRequestBody)
+  let vault'' = show.vault $ req
+      requestBodyLength'' = show.requestBodyLength $ req
+  lift.return.concat $
+    [ "Request {\n  " 
+    , "vault = ", vault'', ", \n\n  "
+
+    , "remoteHost = ", remoteHost'', ", \n  "
+    , "isSecure = ", isSecure'', ", \n\n  "  
+
+    , "serverName = ", serverName'', ", \n  " 
+    , "serverPort = ", serverPort'', ", \n\n  "
+
+    , "rawPathInfo = ", rawPathInfo'', ", \n  "
+    , "pathInfo = ", pathInfo'', ", \n\n  " 
+
+    , "rawQueryString = ", rawQueryString'', ", \n  "
+    , "queryString = ", queryString'', ", \n\n  "
+
+    , "httpVersion = ", httpVersion'', ", \n  "
+    , "requestMethod = ", requestMethod'', ", \n  "
+    , "requestHeaders = ", requestHeaders'', ", \n\n  "
+
+    , "requestBodyLength = ", requestBodyLength'', ", \n  "
+    , "requestBody = ", requestBody'', ", \n"
+    , "}"
+    ]
+
+sinkForRequestBody :: Sink ByteString (ResourceT IO) ByteString
+sinkForRequestBody = do
+  a :: (Maybe ByteString) <- await
+  case a of
+    Nothing -> return ""
+    Just b -> return b
+
+showResIO :: (Show a) => ResourceT IO a -> ResourceT IO String
+showResIO a = do
+  b <- lift $ runResourceT a
+  lift $ return $ show b
+
+showHeader :: Header -> String
+showHeader (headerName,headerValue) =
+  concat  [ show headerName , " : " , show headerValue ]
+
+instance Show Vault where
+  show _ = "a :: Vault"
+
+instance Show RequestBodyLength where
+  show r = case r of 
+    ChunkedBody -> "ChunkedBody"
+    KnownLength w64 -> "KnownLength " ++ show w64

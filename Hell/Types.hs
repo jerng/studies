@@ -33,22 +33,27 @@ module Hell.Types (
   , Text
   
   -- | Defined in Data.Dynamic:
-  , Dynamic
-  , Typeable
+--  , Dynamic
+--  , Typeable
 
   -- | Defined in Data.Map:
   , Map
+
+  -- | Defined in Data.Vault:
+  , Vault (..)
 
   -- | Defined in Data.Word:
   , Word8
 
   -- | Defined in Network.Wai
+  , RequestBodyLength (..)
   , Request (..)
   , Response (..)
   , Status (..)
 
   -- | Defined in Network.HTTP.Types.Header
   , Header
+--  , RequestHeaders
 
   -- | Defined in Network.HTTP.Types
   , accepted202
@@ -83,15 +88,16 @@ import Data.Bson as Bson
 import Data.ByteString.Char8 (ByteString)
 import Data.Map (Map)
 import Data.Text (Text)
-import Data.Dynamic (Dynamic, Typeable)
+--import Data.Dynamic (Dynamic, Typeable)
+import Data.Vault as V (Vault(..))
 import Data.Word (Word8)
-import Network.Wai (Request(..), Response(..))
 import Network.HTTP.Types 
   ( Status
   , accepted202
   , ok200
   )
-import Network.HTTP.Types.Header ( Header) 
+import Network.HTTP.Types.Header ( Header{-,RequestHeaders-}) 
+import Network.Wai (RequestBodyLength(..),Request(..),Response(..))
 
 type BsonBinary = Binary
 

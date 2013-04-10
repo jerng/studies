@@ -14,8 +14,13 @@ body
   ; font-size: 1em
   }
 
-.debug
+.debug, .debug *
   { font-family : DejaVu Sans Mono 
-  ; font-size: 0.7em
   ; background-color: #ff0
   }
+
+.debug
+  {
+  ; font-size: 0.7em
+  }
+
