@@ -26,7 +26,7 @@ getRep req = do
         { request = Just req
 
         , session = 
-            case sessionValue $ onlyCookies $ requestHeaders req of
+            case sessionValue.onlyCookies.requestHeaders...req of
               Nothing           ->   ["session":= String "no cookie data"]
               Just cookieValue  -> 
 
@@ -142,14 +142,17 @@ renderRep rep''' = do
                       [ "<div class=\"debug\"><h4>Debug\
                       \ (Hell.Conf.appMode == "
                       , tPack.show $ Hell.Lib.appMode
-                      , ")</h4><pre>debug: "
-                      , tIntercalate "<br/>debug: " $
+                      , ")</h4><pre><b>debug</b>: "
+                      , tIntercalate "<br/><b>debug</b>: " $
 
                         -- Finalise Report {debug} here. (?) 
                         -- (After this, changes won't be output to View.)
                           if Hell.Lib.appMode > Development1
                           then reverse.debug...rep
-                          else tPack reqString : reverse.debug...rep
+                          else  
+                              tAppend (tPack reqString) "<br/>"
+                            : tAppend "session<br/>" (showDoc 0.session...rep)
+                            : reverse.debug...rep
 
                       , "</pre></div>"
                       ]  
@@ -187,7 +190,9 @@ renderRep rep''' = do
 getResHeaders :: Report -> ResourceT IO [Header]
 getResHeaders rep = do
   key <- lift getDefaultKey
-  encrypted <- lift $ encryptIO key $ encdoc $ session rep
+  encrypted <- lift.encryptIO key.encdoc... 
+    --session rep
+    ["key":= String "value","key2":=Doc["key3":=String"value2","key4":=Int32 324]]
   lift $ return $ concat 
     [ resHeaders rep
     , [ ( "Set-Cookie", cookieToBS Hell.Lib.defaultCookie 

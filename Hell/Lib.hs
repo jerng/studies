@@ -74,6 +74,7 @@ module Hell.Lib (
   , tReadFile
   , tWriteFile
   , tPutStrLn
+  , tReplicate
 
   -- | Defined in Hell.Conf:
   , keyOfTemplatedView
@@ -185,6 +186,7 @@ module Hell.Lib (
   , (?>>)
   , (<<?)
   , (...)
+  , showDoc
 
 )  where
 
@@ -209,7 +211,7 @@ import Data.Maybe (fromJust,fromMaybe)
 import Data.String.Utils (replace)
 import qualified 
        Data.Text as T (concat, pack, toLower, intercalate, lines, unlines,
-       splitOn, replace, append, take, words, unpack )
+       splitOn, replace, append, take, words, unpack, replicate )
 import qualified 
        Data.Text.IO as T (readFile,writeFile,putStrLn)
 import Data.Text.Encoding (decodeUtf8, encodeUtf8)
@@ -288,6 +290,9 @@ tWriteFile = T.writeFile
 
 tPutStrLn :: Text -> IO()
 tPutStrLn = T.putStrLn
+
+tReplicate :: Int -> Text -> Text
+tReplicate = T.replicate
 
 onlyCookies :: [Header] -> [Header]
 onlyCookies headers = filter ((hCookie==).fst) headers
@@ -423,3 +428,79 @@ infixl 1 <<?
 
 f ... a = f a
 infixr 8 ...
+
+--------------------------------------------------------------------------------
+-- Could be rewritten to be somewhat more Haskellian. Consider.
+--
+-- LIBRARY : PRETTY PRINT FOR Data.Bson's types
+-- (The following code remains inconsistent, and much improvable.)
+-- ind : indentation levels 
+-- doc : documents
+-- arr : arrays
+-- fld : fields
+-- val : values
+-- col : collection
+showBson :: [Document] -> Text
+showBson docList = tIntercalate "\n" (map (showDoc 0) docList)
+
+-- Indentation token could be moved to Hell.Conf
+showInd :: Int -> Text
+showInd ind = tReplicate ind "  "
+
+showDoc :: Int -> Document -> Text
+showDoc ind doc = tConcat $! "[\n"
+  : tIntercalate ",\n" (map (showFld (ind+1)) doc)
+  : "\n"
+  : showInd ind
+  : "]\n"
+  : ( showInd ind )
+  : []  
+
+showArr :: Int -> [Value] -> Text
+showArr ind arr = tConcat $! "[\n"
+  : tIntercalate ",\n"
+    (map (\v -> tConcat [ showInd (ind+1), showVal (ind+1) v ]) arr)
+  : "\n"
+  : showInd ind
+  : "]\n"
+  : showInd ind 
+  : []
+
+showFld :: Int -> Field -> Text
+showFld ind fld@((:=) {label=l, value=v }) = tConcat $! showInd ind
+  : T.pack(show l)
+  : " =: "
+  : showVal ind v
+  : []
+
+showVal :: Int -> Value -> Text
+showVal ind val = case val of 
+  Float v     -> tConcat [T.pack(show v)," (Float Double)"]
+  String v    -> tConcat [T.pack(show v)," (String Text)"]
+  Doc v       -> tConcat [showDoc ind v,"(Doc Document)"]
+  Array v     -> tConcat [showArr ind v,"(Array [Value])"]
+  Bin v       -> tConcat [T.pack(show v)," (Bin Binary)"]
+  Fun v       -> tConcat [T.pack(show v)," (Fun Function)"]
+  Uuid v      -> tConcat [T.pack(show v)," (Uuid UUID)"]
+  Md5 v       -> tConcat [T.pack(show v)," (Md5 MD5)"]
+  UserDef v   -> tConcat [T.pack(show v)," (UserDef UserDefined)"]
+  ObjId v     -> tConcat [T.pack(show v)," (ObjId ObjectId)"]
+  UTC v       -> tConcat [T.pack(show v)," (UTC UTCTime)"]
+  Null        ->                          "Null (Null)"
+  RegEx v     -> tConcat [T.pack(show v)," (RegEx Regex)"]
+  JavaScr v   -> tConcat [T.pack(show v)," (JavaScr Javascript)"]
+  Sym v       -> tConcat [T.pack(show v)," (Sym Symbol)"]
+  Int32 v     -> tConcat [T.pack(show v)," (Int32 Int32)"]
+  Int64 v     -> tConcat [T.pack(show v)," (Int64 Int64)"]
+  Stamp v     -> tConcat [T.pack(show v)," (Stamp MongoStamp)"]
+  MinMax v    -> tConcat [T.pack(show v)," (MinMax MinMaxKey)"]
+
+-- | Collections; maybe later.
+-- Data.MongoDB.Query.Collection 
+--showCols :: [Collection] -> Text
+--showCols cols = concat $! "[\n\t"
+--  : tIntercalate ",\n\t" cols
+--  : "\n]"
+--  : []
+
+--------------------------------------------------------------------------------

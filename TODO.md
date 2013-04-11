@@ -6,6 +6,9 @@
 
 ### Miscellany
 
+Make giant re-exportation library to turn T.append into tAppend, 
+  BS.append into bsAppend, etc.
+Make Report showable.
 Make a session helper
 Make a cookie helper
 
