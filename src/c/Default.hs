@@ -1,25 +1,21 @@
 index :: Report -> Report
 index report = 
-  report
+  "more debuggable stuff (because if you do, you have to type from right to left)" ?>> "debuggable stuff (I don't recommend you use the (?>>) operator)" ?>> report
   { status = ok200
   , viewRoute = ("default","index")
   , viewBson = 
-    
     [ "someInt" :=Int32 999
     , "someFloat" :=Float 3.132
     , "someText" :=String "I_AM_TEXT"
     , "someIntList" := Array [Int32 1,Int32 2, Int32 3]
     ]
-
---    [ ("someInt", toDyn (999 :: Int)) 
---    , ("someFloat", toDyn (3.142 :: Float)) 
---    , ("someText", toDyn ("I_AM_TEXT" :: Text)) 
---    , ("someIntList", toDyn ([1,2,3]::[Int]))
---    ]
-
   , subReports = [("innerkey", report {actRoute = ("default", "inner")}) ] 
   , viewTemplate = Just ("default","template")
-  }
+  }   <<? "even more debuggable stuff"
+      <<? "lastly, for good measure" 
+      <<? "default.hs line 14" 
+      <<? tPack.show...666 
+      <<? "just trying to debug an int"
     --  TODO :Try to make a helper function for sending variables to the
     --  ViewableList.
 

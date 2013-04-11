@@ -57,9 +57,11 @@ defaultCookie = Cookie  { cookieName = sessionCookieName
                         }
 
 metaNoSuchAction :: Text
-metaNoSuchAction = "Debug: Hell.Server.confirmAction did not find the\
-  \ requested action in Hell.Server.actionList. This is the list assembled\
-  \ by ./makeHell.hs and spliced into ./app/Server.hs."
+metaNoSuchAction = "We could not find the page that you are looking for." 
+  `T.append` if appMode == Production then "" else 
+    "<div class=\"debug\">Hell.Server.confirmAction did not find the\
+    \ requested action in Hell.Server.actionList. This is the list assembled\
+    \ by ./makeHell.hs and spliced into ./app/Server.hs.</div>"
 
 keyOfMetaView :: Text
 keyOfMetaView = "metaView"

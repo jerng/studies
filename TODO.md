@@ -6,9 +6,6 @@
 
 ### Miscellany
 
-Make a debug helper
-Iron out how debugging should work
-
 Make a session helper
 Make a cookie helper
 

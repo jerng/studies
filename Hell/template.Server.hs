@@ -65,7 +65,7 @@ confirmAct rep =
         Just act  -> (rep, act)
         Nothing -> (rep { actRoute = Hell.Lib.noSuchActionRoute
                         , meta =  tConcat 
-                          [ meta rep , "<br/>" , Hell.Lib.metaNoSuchAction ]
+                          [ meta rep , Hell.Lib.metaNoSuchAction ]
                         }
                    , fromJust $ getAct (Hell.Lib.noSuchActionRoute)
                    ) 
@@ -79,10 +79,13 @@ applyActToSubRep :: Action -> Report -> Report
 applyActToSubRep act rep = AppController.subMain rep act
 
 -- | Maybe add a hook from here, to Hell.Conf.
+-- Maybe replace this with a regex-style router, as many other frameworks have.
 router :: Report -> Report
 router rep = case pathInfo $ fromJust $ request rep of
   []        -> rep  { actRoute = Hell.Lib.defaultRoute }
+  "":[]     -> rep  { actRoute = Hell.Lib.defaultRoute }
   con:[]    -> rep  { actRoute = (tToLower con, Hell.Lib.indexAction) }
+  con:"":x  -> rep  { actRoute = (tToLower con, Hell.Lib.indexAction) }
   con:act:x -> rep  { actRoute = (tToLower con, tToLower act)
                     , pathVars = x
                     }
@@ -135,18 +138,18 @@ renderRep rep''' = do
               rep 
                 { meta = tConcat 
                     [ meta rep
-                    , "<br/>"
                     , tConcat
                       [ "<div class=\"debug\"><h4>Debug\
                       \ (Hell.Conf.appMode == "
                       , tPack.show $ Hell.Lib.appMode
-                      , ")</h4><pre>"
-                      , tIntercalate "<br/>" $
+                      , ")</h4><pre>debug: "
+                      , tIntercalate "<br/>debug: " $
 
                         -- Finalise Report {debug} here. (?) 
+                        -- (After this, changes won't be output to View.)
                           if Hell.Lib.appMode > Development1
-                          then debug rep
-                          else (tPack reqString) : (debug rep)
+                          then reverse.debug...rep
+                          else tPack reqString : reverse.debug...rep
 
                       , "</pre></div>"
                       ]  

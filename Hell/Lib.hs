@@ -181,6 +181,10 @@ module Hell.Lib (
   , lookupBsonVal
   , partitionM
   , showRequest
+  , addDebug
+  , (?>>)
+  , (<<?)
+  , (...)
 
 )  where
 
@@ -405,3 +409,17 @@ instance Show RequestBodyLength where
   show r = case r of 
     ChunkedBody -> "ChunkedBody"
     KnownLength w64 -> "KnownLength " ++ show w64
+
+addDebug :: Text -> Report -> Report
+addDebug text report = report { debug = text : debug report }
+
+(?>>) :: Text -> Report -> Report 
+infixr 2 ?>>
+(?>>) = addDebug
+
+(<<?) :: Report -> Text -> Report 
+infixl 1 <<?
+(<<?) = flip addDebug
+
+f ... a = f a
+infixr 8 ...
