@@ -64,13 +64,8 @@ confirmAct rep =
       else case getAct aR of
         Just act  -> (rep, act)
         Nothing -> (rep { actRoute = Hell.Lib.noSuchActionRoute
-                        , meta =  if Hell.Lib.appMode == Development 
-                                  then tConcat 
-                                    [ meta rep
-                                    , "<br/>"
-                                    , Hell.Lib.metaNoSuchAction
-                                    ]
-                                  else meta rep
+                        , meta =  tConcat 
+                          [ meta rep , "<br/>" , Hell.Lib.metaNoSuchAction ]
                         }
                    , fromJust $ getAct (Hell.Lib.noSuchActionRoute)
                    ) 
@@ -115,26 +110,59 @@ ResponseHeaders based on the Report from the Action.
 renderRep :: ResourceT IO Report -> ResourceT IO Response
 renderRep rep''' = do
   rep <- rep'''
+
+  -- next line only efficient if lazy, as only used in (else) branch
+  reqString <- showRequest $ lift.return.fromJust $ request rep
+
   if static rep 
     then return $ ResponseFile 
                   (status rep) 
                   (resHeaders rep) 
                   ("./Files/" ++ (tUnpack $ tIntercalate "/" $ pathVars rep) )
                   Nothing
+         -- Perhaps, included the ability to render Report { debug } to the
+         -- ResponseHeaders; currently debug only happens below.
     else 
       let subRepToText (key,subReport) = 
             key := String (repToText $ applyActToSubRep a subRep)
             where (subRep,a) = confirmAct subReport 
+          
+          -- Append Report { debug } to Report { meta }.
+          rep'' =
+            if Hell.Lib.appMode == Production
+            then rep
+            else do
+              rep 
+                { meta = tConcat 
+                    [ meta rep
+                    , "<br/>"
+                    , tConcat
+                      [ "<div class=\"debug\"><h4>Debug\
+                      \ (Hell.Conf.appMode == "
+                      , tPack.show $ Hell.Lib.appMode
+                      , ")</h4><pre>"
+                      , tIntercalate "<br/>" $
 
-          rep' = case subReports rep of 
-            [] -> rep
-            subReps -> rep  { subReports = []
-                            , viewBson = 
-                              (viewBson rep) ++ (map subRepToText subReps)
-                            }
+                        -- Finalise Report {debug} here. (?) 
+                          if Hell.Lib.appMode > Development1
+                          then debug rep
+                          else (tPack reqString) : (debug rep)
+
+                      , "</pre></div>"
+                      ]  
+                    ]
+                }
+
+          -- Render sub-reports, if any exist.
+          rep' = case subReports rep'' of 
+            [] -> rep''
+            subReps -> rep''
+              { subReports = []
+              , viewBson = 
+                (viewBson rep'') ++ (map subRepToText subReps)
+              }
       in  do
           headers <- getResHeaders rep'
-          reqString <- showRequest $ lift.return.fromJust $ request rep'
 
           return $ ResponseBuilder (status rep') headers $ 
             -- SOFTEN CODE HERE: there are other types of ResponseBuilders
@@ -148,21 +176,7 @@ renderRep rep''' = do
                     ( Hell.Lib.keyOfTemplatedView := String (repToText rep') )
 
                     -- DEBUG to VIEW: happens here.
-                  : ( Hell.Lib.keyOfMetaView := String (
-                      if Hell.Lib.appMode == Production
-                      then meta rep'
-                      else tConcat 
-    -- ***************************************************************************
-    -- | SCAFFOLDING
-    --
-                        [ meta rep'
-                        , "<br/><div class=\"debug\">debug:<br/><pre>"
-                        , "<br/>repToText reporting<br/>"
-                        , tPack reqString
-                        , "</pre></div>"
-                        ]
-    -- ***************************************************************************
-                    ) )
+                  : ( Hell.Lib.keyOfMetaView := String (meta rep') )
                   : viewBson rep' 
                     -- TODO: soften these arguments.
                 }

@@ -168,6 +168,9 @@ data Report = Report
   , pathVars :: [Text]
       -- (pathInfo someRequest) less the first two heads (con:act:pathVars)
   , static :: Bool
+      -- for serving static files
+  , debug :: [Text]
+      -- bit'o'a dumpy arrangement for now
   } 
   --deriving (Show)
 
@@ -198,7 +201,9 @@ data Unrendered = Plain Text
                 | Exp Text
                 deriving (Show)
 
-data AppMode  = Development
+data AppMode  = Development0
+              | Development1
+              | Development2
               | Production
-              deriving (Eq,Show)
+              deriving (Eq,Ord,Show)
 

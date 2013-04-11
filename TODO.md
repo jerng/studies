@@ -6,7 +6,6 @@
 
 ### Miscellany
 
-Make an instance of Show Request
 Make a debug helper
 Iron out how debugging should work
 

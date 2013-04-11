@@ -1,26 +1,46 @@
-@font-face 
-  { font-family: Roboto Light
-  ; src: url(./fonts/Roboto/Roboto-Light.ttf)
+@font-face { 
+  font-family: Roboto Light;
+  src: url(./fonts/Roboto/Roboto-Light.ttf);
   }
 
-@font-face 
-  { font-family: DejaVu Sans Mono 
-  ; src: url(./fonts/DejaVu/DejaVuSansMono.ttf)
+@font-face { 
+  font-family: DejaVu Sans Mono ;
+  src: url(./fonts/DejaVu/DejaVuSansMono.ttf);
   }
 
 
-body 
-  { font-family : Roboto Light 
-  ; font-size: 1em
+body { 
+  font-family : Roboto Light ;
+  font-size: 1em;
   }
 
-.debug, .debug *
-  { font-family : DejaVu Sans Mono 
-  ; background-color: #ff0
+.debug {
+  border: 1px solid #ffcc00;
+  border-radius: 5px;
+  background: #ffcc00; /* Old browsers */
+  background: -moz-linear-gradient(-45deg, #ffcc00 0%, #ffff00 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#ffcc00), color-stop(100%,#ffff00)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(-45deg, #ffcc00 0%,#ffff00 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(-45deg, #ffcc00 0%,#ffff00 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(-45deg, #ffcc00 0%,#ffff00 100%); /* IE10+ */
+  background: linear-gradient(135deg, #ffcc00 0%,#ffff00 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffcc00', endColorstr='#ffff00',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  font-size: 0.7em;
   }
 
-.debug
-  {
-  ; font-size: 0.7em
+.debug, .debug * { 
+  font-family : DejaVu Sans Mono ;
   }
 
+.debug b {
+  border: 1px solid #ffe000;
+  border-radius: 5px;
+  background: #ffbb00; /* Old browsers */
+  background: -moz-linear-gradient(-45deg, #ffbb00 0%, #ffff00 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#ffbb00), color-stop(100%,#ffff00)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(-45deg, #ffbb00 0%,#ffff00 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(-45deg, #ffbb00 0%,#ffff00 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(-45deg, #ffbb00 0%,#ffff00 100%); /* IE10+ */
+  background: linear-gradient(135deg, #ffbb00 0%,#ffff00 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffbb00', endColorstr='#ffff00',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  }

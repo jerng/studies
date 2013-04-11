@@ -15,7 +15,9 @@ hellServerPort :: Int
 hellServerPort = 3000
 
 appMode :: AppMode
-appMode = Development
+appMode = --Development0
+          -- Development1
+           Development2
           -- Production
 
 -- I would really like to know how all this setting of defaults
@@ -34,6 +36,7 @@ defaultReport = Report  { request = Nothing
                         , viewTemplate = defaultViewTemplate
                         , pathVars = []
                         , static = False
+                        , debug = []
                         }
 
 sessionCookieName :: ByteString

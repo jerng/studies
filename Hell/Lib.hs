@@ -346,28 +346,39 @@ showRequest resIOreq = do
     <- lift.runResourceT.showResIO $ (requestBody req $$ sinkForRequestBody)
   let vault'' = show.vault $ req
       requestBodyLength'' = show.requestBodyLength $ req
+
+  -- This is so not-optimised :P
   lift.return.concat $
-    [ "Request {\n  " 
-    , "vault = ", vault'', ", \n\n  "
+    [ "Request {"
+    , if Hell.Conf.appMode > Development0 then " <b>(set appMode == Development0 to see more fields)</b>" else "", "\n  "
+    , if Hell.Conf.appMode > Development0 then "" else
+      concat ["<b>vault</b> = ", vault'', ", \n\n  "]
 
-    , "remoteHost = ", remoteHost'', ", \n  "
-    , "isSecure = ", isSecure'', ", \n\n  "  
+    , "<b>remoteHost</b> = ", remoteHost'', ", \n  "
+    , "<b>isSecure</b> = ", isSecure'', ","
+    , if Hell.Conf.appMode > Development0 then "" else "\n", "\n  "  
 
-    , "serverName = ", serverName'', ", \n  " 
-    , "serverPort = ", serverPort'', ", \n\n  "
+    , "<b>serverName</b> = ", serverName'', ", \n  " 
+    , "<b>serverPort</b> = ", serverPort'' , ","
+    , if Hell.Conf.appMode > Development0 then "" else "\n", "\n  "  
 
-    , "rawPathInfo = ", rawPathInfo'', ", \n  "
-    , "pathInfo = ", pathInfo'', ", \n\n  " 
+    , "<b>rawPathInfo</b> = ", rawPathInfo'', ", \n  "
+    , if Hell.Conf.appMode > Development0 then "" else
+      concat ["<b>pathInfo</b> = ", pathInfo'', ", \n\n  "]
 
-    , "rawQueryString = ", rawQueryString'', ", \n  "
-    , "queryString = ", queryString'', ", \n\n  "
+    , "<b>rawQueryString</b> = ", rawQueryString'', ", \n  "
+    , if Hell.Conf.appMode > Development0 then "" else
+      concat ["<b>queryString</b> = ", queryString'', ", \n\n  "]
 
-    , "httpVersion = ", httpVersion'', ", \n  "
-    , "requestMethod = ", requestMethod'', ", \n  "
-    , "requestHeaders = ", requestHeaders'', ", \n\n  "
+    , "<b>httpVersion</b> = ", httpVersion'', ", \n  "
+    , "<b>requestMethod</b> = ", requestMethod'', ", \n  "
+    , "<b>requestHeaders</b> = ", requestHeaders'' , ","
+    , if Hell.Conf.appMode > Development0 then "" else "\n", "\n  "  
 
-    , "requestBodyLength = ", requestBodyLength'', ", \n  "
-    , "requestBody = ", requestBody'', ", \n"
+    , if Hell.Conf.appMode > Development0 then "" else
+      concat ["<b>requestBodyLength</b> = ", requestBodyLength'', ", \n  "]
+
+    , "<b>requestBody</b> = ", requestBody'', " \n"
     , "}"
     ]
 
