@@ -139,12 +139,12 @@ renderRep rep''' = do
                 { meta = tConcat 
                     [ meta rep
                     , tConcat
-                      [ "<div class=\"debug\"><h4>Debug\
+                      [ "<span class=\"debug\">Debug\
                       \ (Hell.Conf.appMode == "
                       , tPack.show $ Hell.Lib.appMode
-                      , ")</h4><pre><b>debug</b>: "
-                      , tIntercalate "<br/><b>debug</b>: " $
-
+                      , ")</span>"
+                      --, tIntercalate "<br/>" $
+                      , tConcat $ map debugf...
                         -- Finalise Report {debug} here. (?) 
                         -- (After this, changes won't be output to View.)
                           if Hell.Lib.appMode > Development1
@@ -154,7 +154,6 @@ renderRep rep''' = do
                             : tAppend "session<br/>" (showDoc 0.session...rep)
                             : reverse.debug...rep
 
-                      , "</pre></div>"
                       ]  
                     ]
                 }

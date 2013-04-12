@@ -187,7 +187,8 @@ module Hell.Lib (
   , (<<?)
   , (...)
   , showDoc
-
+  , debugf
+  , debugfps
 )  where
 
 import Blaze.ByteString.Builder.Char.Utf8 (fromText)
@@ -415,6 +416,15 @@ instance Show RequestBodyLength where
     ChunkedBody -> "ChunkedBody"
     KnownLength w64 -> "KnownLength " ++ show w64
 
+-- | In views, it's too late to update the (Report), so just format and print.
+debugf :: Text -> Text
+debugf a = tConcat 
+  [ "<pre class=\"debug\"><b>debug: </b> <span>" , a , "</span></pre>" ]
+
+debugfps :: Show a => a -> Text
+debugfps a = debugf.tPack.show...a
+
+-- | Updates the (debug) field of a report
 addDebug :: Text -> Report -> Report
 addDebug text report = report { debug = text : debug report }
 

@@ -100,18 +100,18 @@ import Network.HTTP.Types.Header ( Header{-,RequestHeaders-})
 import Network.Wai (RequestBodyLength(..),Request(..),Response(..))
 
 type BsonBinary = Binary
-
 type ResourceNameText = Text 
 type ControllerName = Text
 type ActionName = Text
 type Route = (ControllerName,ActionName)
+type ReportM = [(Text,Report)]
+type Session = Document
 
 type Action = Report -> Report
 
 type CookieAttribute = ByteString
 type CookieValue = ByteString
 type CookieAVPair = (CookieAttribute, CookieValue)
-
 data Cookie = Cookie  { cookieName :: CookieAttribute -- essential
                       , cookieValue :: CookieValue -- essential
                       , cookieSecure :: Bool
@@ -119,7 +119,6 @@ data Cookie = Cookie  { cookieName :: CookieAttribute -- essential
                       , cookiePairs :: [CookieAVPair]
                       }
 
-type ReportM = [(Text,Report)]
 {- I am giving serious thought to naming this data structure: (Hell).
 
 Record syntax may be useful in this context, as the Report will be updated
@@ -128,7 +127,7 @@ at various points during the (Hell.Server) response.
 -}
 
 data Report = Report
-  { session :: Document 
+  { session :: Session 
   , request :: Maybe Request
       -- Network.Wai.Request
   , actRoute :: Route -- of Action
