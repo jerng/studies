@@ -10,9 +10,22 @@ import qualified
        Data.Text as T
 import Hell.Types
 import System.Directory
+import Network.Wai
+import Network.Wai.Handler.Warp
 
-hellServerPort :: Int
-hellServerPort = 3000
+-- Network.Wai.Handler.Warp.defaultSettings { settingsPort is 3000 }
+--
+-- If you intend to keep a state in the web server across multiple
+-- request-response pairs, this page is informative:
+-- https://github.com/yesodweb/yesod/wiki/Keeping-(in-memory)-state-with-warp
+--
+-- Some items which probably ought to be cached in the server include the
+-- (Web.ClientSession) key, etc. I have no idea how Warp handles it if 
+-- things like these are not coded outside the application, but are redundant
+-- across all requests/responses.
+--
+warpServer :: Application -> IO ()
+warpServer app = runSettings defaultSettings app
 
 appMode :: AppMode
 appMode = --Development0
@@ -24,6 +37,9 @@ appMode = --Development0
 -- affects memory use. Testing will be required.
 defaultReport :: Report
 defaultReport = Report  { request = Nothing
+                        , shownRequest = ""
+                        , key = Nothing
+                        , iv = Nothing
                         , session = []
                         , actBson = [] 
                         , actRoute = defaultRoute

@@ -51,6 +51,9 @@ module Hell.Types (
   , Response (..)
   , Status (..)
 
+  -- | Defined in Network.Wai.Handler.Warp
+  , Settings
+
   -- | Defined in Network.HTTP.Types.Header
   , Header
 --  , RequestHeaders
@@ -102,6 +105,7 @@ import Network.HTTP.Types
   )
 import Network.HTTP.Types.Header ( Header{-,RequestHeaders-}) 
 import Network.Wai (RequestBodyLength(..),Request(..),Response(..))
+import Network.Wai.Handler.Warp (Settings)
 import Web.ClientSession (IV,Key)
 
 type BsonBinary = Binary
@@ -135,6 +139,9 @@ data Report = Report
   { session :: Session 
   , request :: Maybe Request
       -- Network.Wai.Request
+  , shownRequest :: String
+  , key :: Maybe Key
+  , iv :: Maybe IV
   , actRoute :: Route -- of Action
       -- We should only ever need one. To redirect from one to another, use a
       -- status300!

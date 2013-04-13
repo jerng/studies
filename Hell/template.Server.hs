@@ -9,8 +9,7 @@ import qualified AppController
 {-makeHell:ImportViews-}
 
 main :: IO ()
-main =  run 
-        hellServerPort 
+main =  Hell.Lib.warpServer
         -- $ logStdoutDev 
         app
 
@@ -18,15 +17,20 @@ app :: Request -> ResourceT IO Response
 app = \req-> do
   key <- lift getDefaultKey
   iv <- lift randomIV 
-  let finalRep = actOnRep $ confirmAct $ actRouter $ initSession key req 
+  let finalRep = actOnRep.confirmAct.actRouter... initSession key iv req 
   reqString <- showRequest $ lift.return.fromJust $ request finalRep 
-  lift.return $ respond finalRep reqString key iv
+  lift.return.respond...
+    if    Hell.Lib.appMode == Production
+    then  finalRep
+    else  finalRep { shownRequest = reqString }
 
 -- | The key file should be stored somewhere outside ./app, otherwise
 -- it is deleted every time MakeHell.main is run.
-initSession :: Key -> Request -> Report
-initSession key req = defaultReport 
+initSession :: Key -> IV -> Request -> Report
+initSession key iv req = defaultReport 
   { request = Just req
+  , key = Just key
+  , iv = Just iv
   , session = 
       case sessionValue.onlyCookies.requestHeaders...req of
         Nothing           ->   ["session":= String "no cookie data"]
@@ -37,10 +41,19 @@ initSession key req = defaultReport
   } 
 
 -- | Optimised? Feels crufty.
+--
 -- This function is doing a lot: it looks through [Header] to find field-values
 -- of the form (Hell.Lib.sessionCookieName ++ "=" ++ encrypted serialised Bson)
 -- . Also, even if it remains all here, the implementation might be shortened
 -- with a (foldx) so that the input is traversed only once.
+--
+-- A bug occurs sometimes after the server has been started and restarted 
+-- times. MULTIPLE values of the session cookie get sent back from the browser.
+-- E.g. "Cookie: sessionkey=xxx; sessionkey=yyy; sessionkey= etc."
+-- This does nothing but add bloat to the request/response if the first value
+-- changes on each response. But sometimes the value which changes is not first
+-- e.g. it is yyy not xxx, and thereby, the code below will apply the new key
+-- to a value encrypted by an old key, resulting in undecipherability.
 sessionValue :: [Header] -> Maybe ByteString
 sessionValue headers = 
   let scrub header = 
@@ -59,7 +72,7 @@ sessionValue headers =
 --  Maybe add a hook from here, to Hell.Conf.
 --  Maybe replace this with a regex-style actRouter, as many other frameworks have.
 actRouter :: Report -> Report
-actRouter rep = case pathInfo $ fromJust $ request rep of
+actRouter rep = case pathInfo.fromJust.request...rep of
   []        -> rep  { actRoute = Hell.Lib.defaultRoute }
   "":[]     -> rep  { actRoute = Hell.Lib.defaultRoute }
   con:[]    -> rep  { actRoute = (tToLower con, Hell.Lib.indexAction) }
@@ -81,9 +94,9 @@ confirmAct rep =
       else  case getAct aR of
         Just act  -> rep { action = act }
         Nothing   -> rep 
-          { actRoute = Hell.Lib.missingActionRoute
-          , meta =  tConcat [ meta rep , Hell.Lib.metaNoSuchAction ]
-          , action = fromJust.getAct...(Hell.Lib.missingActionRoute)
+          { actRoute  = Hell.Lib.missingActionRoute
+          , meta      = tConcat [ meta rep , Hell.Lib.metaNoSuchAction ]
+          , action    = fromJust.getAct...(Hell.Lib.missingActionRoute)
           }
           -- Perhaps unnecessarily wordy?
           -- Does GHC optimise-away messes like this?
@@ -115,31 +128,32 @@ which data constructor of Response is required by the Controller.
 -}
 
 -- | Takes Report from a Controller, returns a variety of ResponseBuilder.
-respond :: Report -> String -> Key -> IV -> Response
-respond rep reqString key iv = if static rep 
-  then respondWithFile rep reqString key iv
-  else respondWithBuilder rep reqString key iv
+respond :: Report -> Response
+respond rep = ( if    static rep 
+                then  respondWithFile
+                else  respondWithBuilder ) rep
 
 --  | Perhaps, included the ability to render Report { debug } to the
 -- ResponseHeaders; currently debug only happens in (respondWithBuilder).
-respondWithFile :: Report -> String -> Key -> IV -> Response
-respondWithFile rep reqString key iv = 
+respondWithFile :: Report -> Response
+respondWithFile rep = 
   ResponseFile status' headers filePath Nothing where
     status'   = status rep
-    headers   = getResHeaders rep key iv
+    headers   = getResHeaders rep 
     filePath  = "./Files/" ++ (tUnpack $ tIntercalate "/" $ pathVars rep)
 
 -- | I haven't properly studied Builders, but they're probably useless if 
 -- used this way. At some point, I guess I'll refactor Hell so that they're
 -- utilised properly.
-respondWithBuilder :: Report -> String -> Key -> IV -> Response
-respondWithBuilder rep reqString key iv = 
-  let rep'    = renderSubReps $ renderDebug rep reqString
-      headers =  getResHeaders rep' key iv
+respondWithBuilder :: Report -> Response
+respondWithBuilder rep = 
+  let reqString = shownRequest rep
+      rep'      = renderSubReps $ renderDebug rep reqString
+      headers   =  getResHeaders rep'
   in  ResponseBuilder (status rep') headers $ fromText $ 
         case viewTemplate rep of
-          Nothing -> repToText rep'
-          Just route -> repToText rep' -- rendered outer view
+          Nothing     -> repToText rep'
+          Just route  -> repToText rep' -- rendered outer view
             { viewTemplate = Nothing
             , viewRoute = route
             , viewBson =              -- rendered inner view
@@ -160,9 +174,9 @@ renderDebug rep reqString =
         , tConcat
           [ "<span class=\"debug\">Debug\
           \ (Hell.Conf.appMode == "
-          , tPack.show $ Hell.Lib.appMode
+          , tPack.show...Hell.Lib.appMode
           , ")</span>"
-          , tConcat $ map debugf...
+          , tConcat $ map debugf $
             -- Finalise Report {debug} here. (?) 
             -- (After this, changes won't be output to View.)
               if    Hell.Lib.appMode > Development1
@@ -189,9 +203,17 @@ renderSubReps rep =
             (viewBson rep) ++ (map subRepToText subReps)
           }
 
-getResHeaders :: Report -> Key -> IV -> [Header]
-getResHeaders rep key iv = 
-  let encrypted = encrypt key iv $ encdoc  
+getResHeaders :: Report -> [Header]
+getResHeaders rep = 
+  let maybeKey  = key rep
+      maybeIv   = iv rep
+      key'      = if    isJust maybeKey
+                  then  fromJust maybeKey
+                  else  error "getResHeaders: report's key is Nothing"
+      iv'       = if    isJust maybeIv
+                  then  fromJust maybeIv
+                  else  error "getResHeaders: report's iv is Nothing"
+      encrypted = encrypt key' iv' $ encdoc  
       
       -- | OBVIOUSLY TEMPORARY: DATA FOR THE SESSION
         [ "key":= String "value"

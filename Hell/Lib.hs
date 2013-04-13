@@ -54,6 +54,7 @@ module Hell.Lib (
   -- | Defined in Data.Maybe:
   , fromJust
   , fromMaybe
+  , isJust
 
   -- | Defined in Data.String.Utils:
   , replace
@@ -80,7 +81,7 @@ module Hell.Lib (
   , keyOfTemplatedView
   , keyOfMetaView
   , metaNoSuchAction
-  , hellServerPort
+  , warpServer 
   , appMode
   , defaultReport
   , defaultCookie
@@ -143,6 +144,7 @@ module Hell.Lib (
   , Header
   , accepted202
   , ok200
+  , Settings
 
   , Action
   , ResourceNameText
@@ -166,9 +168,6 @@ module Hell.Lib (
   
   -- | Defined in Network.HTTP.Types.Header
   , hCookie
-
-  -- | Defined in Network.Wai.Handler.Warp
-  , run
 
   -- | Defined in Web.ClientSession 
   , randomIV 
@@ -212,7 +211,7 @@ import Data.Conduit ({-Source,-}Sink,yield,await,($$))
 import Data.Dynamic (fromDyn, fromDynamic, toDyn)
 import Data.List (nub,intercalate)
 import Data.List.Utils (hasKeyAL, keysAL)
-import Data.Maybe (fromJust,fromMaybe)
+import Data.Maybe (fromJust,fromMaybe,isJust)
 import Data.String.Utils (replace)
 import qualified 
        Data.Text as T (concat, pack, toLower, intercalate, lines, unlines,
@@ -223,7 +222,6 @@ import Data.Text.Encoding (decodeUtf8, encodeUtf8)
 import Hell.Conf 
 import Hell.Types
 import Network.HTTP.Types.Header ( hCookie ) 
-import Network.Wai.Handler.Warp (run)
 -- import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Web.ClientSession (randomIV, encrypt, encryptIO, decrypt, getDefaultKey)
 
@@ -315,7 +313,7 @@ cookieAVPairToBS :: CookieAVPair -> ByteString
 cookieAVPairToBS (attr,val) = BS.concat [attr,"=",val] 
 
 encdoc :: Document -> ByteString
-encdoc doc = BS.concat $ toChunks $ runPut $ putDocument doc 
+encdoc doc = BS.concat.toChunks.runPut...putDocument doc 
 
 decdoc :: ByteString -> Document
 decdoc bin = runGet getDocument $ fromChunks [ bin ]
@@ -364,7 +362,8 @@ showRequest resIOreq = do
   -- This is so not-optimised :P
   lift.return.concat $
     [ "Request {"
-    , if Hell.Conf.appMode > Development0 then " <b>(set appMode == Development0 to see more fields)</b>" else "", "\n  "
+    , if Hell.Conf.appMode > Development0 then " <b>(set appMode ==\
+      \ Development0 to see more fields)</b>" else "", "\n  "
     , if Hell.Conf.appMode > Development0 then "" else
       concat ["<b>vault</b> = ", vault'', ", \n\n  "]
 
@@ -440,6 +439,11 @@ infixr 2 ?>>
 infixl 1 <<?
 (<<?) = flip addDebug
 
+-- | Invented for use where it is less noisy to use (a.b.c...d)
+-- instead of (a.b.c $ d) 
+--
+-- Perhaps to be avoided where it may be too subtle to use (a b... c.d.e... f g)
+-- instead of (a b $ c.d.e $ f g)
 f ... a = f a
 infixr 8 ...
 
