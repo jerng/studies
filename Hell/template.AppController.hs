@@ -8,9 +8,9 @@ module AppController where
 import Hell.Lib
 
 -- | Hell.Server.applyActionToReport calls this.
-main :: Report -> (Report -> Report) -> Report
-main report action = action report
+main :: ResourceT IO Report -> Report
+main report = action report $ report
 
 -- | Hell.Server.applyActionToSubReport calls this.
-subMain :: Report -> (Report -> Report) -> Report
-subMain report action = action report
+subMain :: ResourceT IO Report -> Report
+subMain report = action report $ report

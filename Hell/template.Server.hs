@@ -15,12 +15,12 @@ main =  run
         app
 
 app :: Request -> ResourceT IO Response 
-app = \request-> renderRep $ getRep request 
+app = \request-> renderRep.afterInitialise.initialise...request 
 
 -- | Beware that the key should be stored somewhere outside ./app, otherwise
 -- it will have to be changed every time MakeHell.main is run.
-getRep :: Request -> ResourceT IO Report
-getRep req = do
+initialise :: Request -> ResourceT IO Report
+initialise req = do
   key <- lift {- into ResourceT -} getDefaultKey
   let initialRep = defaultReport 
         { request = Just req
@@ -35,8 +35,13 @@ getRep req = do
                   Just decrypted -> decdoc decrypted
 
         } 
-      (rep,act) = confirmAct $ router initialRep 
-  lift {- into ResourceT -} $ return {- into IO -} $ applyActToRep act rep
+  return $ confirmAct $ router initialRep 
+
+afterInitialise :: ResourceT IO Report -> ResourceT IO Report
+afterInitialise rep' = do
+  rep <- rep' 
+  lift $ return $ applyActToRep rep
+
 
 -- | Optimised? Feels crufty.
 -- This function is doing a lot: it looks through [Header] to find field-values
@@ -56,27 +61,27 @@ sessionValue headers =
         [] -> Nothing
         value:_ -> Just value
 
-confirmAct :: Report -> (Report,Action)
+confirmAct :: Report -> Report
 confirmAct rep = 
   let aR = actRoute rep
   in  if aR == Hell.Lib.staticFileRoute
-      then (rep { static = True },\_->rep { static = True }) -- CRUFTY!
+      then rep { static = True }
       else case getAct aR of
-        Just act  -> (rep, act)
-        Nothing -> (rep { actRoute = Hell.Lib.noSuchActionRoute
-                        , meta =  tConcat 
-                          [ meta rep , Hell.Lib.metaNoSuchAction ]
-                        }
-                   , fromJust $ getAct (Hell.Lib.noSuchActionRoute)
-                   ) 
+        Just act  -> rep { action = act }
+        Nothing -> rep 
+          { actRoute = Hell.Lib.noSuchActionRoute
+          , meta =  tConcat [ meta rep , Hell.Lib.metaNoSuchAction ]
+          , action = fromJust.getAct...(Hell.Lib.noSuchActionRoute)
+          }
+                    
                       -- Perhaps unnecessarily wordy?
                       -- Does GHC optimise-away messes like this?
 
-applyActToRep :: Action -> Report -> Report
-applyActToRep act rep = AppController.main rep act
+applyActToRep :: Report -> Report
+applyActToRep rep = AppController.main rep
 
-applyActToSubRep :: Action -> Report -> Report
-applyActToSubRep act rep = AppController.subMain rep act
+applyActToSubRep :: Report -> Report
+applyActToSubRep rep = AppController.subMain rep
 
 -- | Maybe add a hook from here, to Hell.Conf.
 -- Maybe replace this with a regex-style router, as many other frameworks have.
@@ -127,8 +132,9 @@ renderRep rep''' = do
          -- ResponseHeaders; currently debug only happens below.
     else 
       let subRepToText (key,subReport) = 
-            key := String (repToText $ applyActToSubRep a subRep)
-            where (subRep,a) = confirmAct subReport 
+            key := String 
+              (repToText $ applyActToSubRep subRep)
+            where subRep = confirmAct subReport 
           
           -- Append Report { debug } to Report { meta }.
           rep'' =

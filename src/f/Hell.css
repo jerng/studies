@@ -48,6 +48,8 @@ body {
 
 .debug span {
   transition: font-size 0.1s, background 0.1s;
+  transition-timing-function: ease-in;
+  -webkit-transition-timing-function: ease-in;
   -webkit-transition: font-size 0.1s, background 0.1s;
   }
 

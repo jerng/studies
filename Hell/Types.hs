@@ -170,6 +170,12 @@ data Report = Report
       -- for serving static files
   , debug :: [Text]
       -- bit'o'a dumpy arrangement for now
+  , action :: Action
+      -- Seems to help make Hell.Server functions more regular, i.e. like
+      -- each other... if we make pass everything through Report. I have no
+      -- idea at this time how this affects performance. Must test later.
+      -- 2013-04-13
+
   } 
   --deriving (Show)
 
