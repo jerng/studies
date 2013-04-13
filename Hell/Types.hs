@@ -59,6 +59,10 @@ module Hell.Types (
   , accepted202
   , ok200
 
+  -- | Defined in Web.ClientSession
+  , IV
+  , Key
+
   -- | Defined below:
   , Action
   , ResourceName (..)
@@ -98,6 +102,7 @@ import Network.HTTP.Types
   )
 import Network.HTTP.Types.Header ( Header{-,RequestHeaders-}) 
 import Network.Wai (RequestBodyLength(..),Request(..),Response(..))
+import Web.ClientSession (IV,Key)
 
 type BsonBinary = Binary
 type ResourceNameText = Text 

@@ -6,7 +6,6 @@
 
 ### Miscellany
 
-Make code in Hell.Server more self-documenting.
 Make giant re-exportation library to turn T.append into tAppend, 
   BS.append into bsAppend, etc.
 Make Report showable.

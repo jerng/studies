@@ -5,12 +5,13 @@
 
 module AppController where
 
+import qualified Data.Text as T
 import Hell.Lib
 
 -- | Hell.Server.applyActionToReport calls this.
-main :: ResourceT IO Report -> Report
+main :: Report -> Report
 main report = action report $ report
 
 -- | Hell.Server.applyActionToSubReport calls this.
-subMain :: ResourceT IO Report -> Report
+subMain :: Report -> Report
 subMain report = action report $ report

@@ -88,12 +88,12 @@ indexAction = "index"
 defaultRoute :: Route
 defaultRoute = ("default","index")
 
-noSuchActionRoute :: Route
-noSuchActionRoute = ("default","nosuchaction")
+missingActionRoute :: Route
+missingActionRoute = ("default","nosuchaction")
 
 -- | Scaffolding. This should just be passed as a message.
-noSuchViewRoute :: Route
-noSuchViewRoute = ("default","nosuchview")
+missingViewRoute :: Route
+missingViewRoute = ("default","nosuchview")
 
 staticFileRoute :: Route
 staticFileRoute = ("default","files")

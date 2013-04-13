@@ -90,8 +90,8 @@ module Hell.Lib (
   , defaultViewTemplate
   , indexAction
   , defaultRoute
-  , noSuchActionRoute
-  , noSuchViewRoute
+  , missingActionRoute
+  , missingViewRoute
   , staticFileRoute
 
   , templatedResources
@@ -113,6 +113,8 @@ module Hell.Lib (
   , toText
 
   -- | Defined in Hell.Types:
+  , IV
+  , Key
   , ResourceT
   , Binary
   , ByteString
@@ -169,6 +171,8 @@ module Hell.Lib (
   , run
 
   -- | Defined in Web.ClientSession 
+  , randomIV 
+  , encrypt
   , encryptIO
   , decrypt
   , getDefaultKey
@@ -221,7 +225,7 @@ import Hell.Types
 import Network.HTTP.Types.Header ( hCookie ) 
 import Network.Wai.Handler.Warp (run)
 -- import Network.Wai.Middleware.RequestLogger (logStdoutDev)
-import Web.ClientSession (encryptIO, decrypt, getDefaultKey)
+import Web.ClientSession (randomIV, encrypt, encryptIO, decrypt, getDefaultKey)
 
 --bsSplit :: Char -> ByteString -> [ByteString]
 --bsSplit = BS.split
