@@ -6,20 +6,21 @@
 
 ### Miscellany
 
+Implement a URL helper.
+Implement a simple form helper.
+Make a session helper
+Make a cookie helper
+Implement redirection, from one action, to another action.
+Following these, implement authentication.
+
 Make giant re-exportation library to turn T.append into tAppend, 
   BS.append into bsAppend, etc.
 Make Report showable.
-Make a session helper
-Make a cookie helper
-Following these, implement authentication.
-
 Look into ResponseSource usage for Hell.Server.respond
-Implement redirection, from one action, to another action.
-Implement a URL helper.
-Implement a simple form helper.
 
 Make ./src/* file names case insensitive.
 
+Cabalise this.
 Replace all association lists, with Data.Map.Map
 user Builders properly! (no idea about this yet)
 

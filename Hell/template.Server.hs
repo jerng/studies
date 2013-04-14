@@ -17,7 +17,13 @@ app :: Request -> ResourceT IO Response
 app = \req-> do
   key <- lift getDefaultKey
   iv <- lift randomIV 
-  let finalRep = actOnRep.confirmAct.actRouter... initSession key iv req 
+  let finalRep =  setCookieHeaders
+               .  actOnRep
+               .  confirmAct
+               .  actRouter
+               $  initSession key iv req 
+  -- | TODO: Allow per-action sessionless behaviour.
+  -- | TODO: Allow per-action cookieless behaviour.
   reqString <- showRequest $ lift.return.fromJust $ request finalRep 
   lift.return.respond...
     if    Hell.Lib.appMode == Production
@@ -29,15 +35,17 @@ app = \req-> do
 initSession :: Key -> IV -> Request -> Report
 initSession key iv req = defaultReport 
   { request = Just req
-  , key = Just key
-  , iv = Just iv
+  , key     = Just key
+  , iv      = Just iv
   , session = 
-      case sessionValue.onlyCookies.requestHeaders...req of
-        Nothing           ->   ["session":= String "no cookie data"]
+
+      -- REFACTOR AFTER STANDARDISING COOKIE DYNAMICS
+      case sessionValue.onlyCookieHeaders.requestHeaders...req of
+        Nothing           ->  Nothing
         Just cookieValue  -> 
           case decrypt key cookieValue of
-            Nothing         -> ["session":= String "undecryptable"]
-            Just decrypted  -> decdoc decrypted
+            Nothing         -> Just ["session":= String "undecryptable"]
+            Just decrypted  -> Just $ decdoc decrypted
   } 
 
 -- | Optimised? Feels crufty.
@@ -148,7 +156,7 @@ respondWithFile rep =
 respondWithBuilder :: Report -> Response
 respondWithBuilder rep = 
   let reqString = shownRequest rep
-      rep'      = renderSubReps $ renderDebug rep reqString
+      rep'      = renderSubReps $ renderDebug rep
       headers   =  getResHeaders rep'
   in  ResponseBuilder (status rep') headers $ fromText $ 
         case viewTemplate rep of
@@ -164,8 +172,8 @@ respondWithBuilder rep =
             }
 
 -- | Append Report { debug } to Report { meta }.
-renderDebug :: Report -> String -> Report
-renderDebug rep reqString =
+renderDebug :: Report -> Report
+renderDebug rep =
   if  Hell.Lib.appMode == Production
   then rep
   else rep 
@@ -182,8 +190,25 @@ renderDebug rep reqString =
               if    Hell.Lib.appMode > Development1
               then  reverse.debug...rep
               else  
-                    tAppend (tPack reqString) "<br/>"
-                  : tAppend "session<br/>" (showDoc 0.session...rep)
+                    tAppend (tPack.shownRequest...rep) "<br/>"
+                  : ( tIntercalate "<br/>  " $ "request cookies" :
+                      
+                      ( --- MOVE to Hell.Lib.showCookie or Show instance
+                        map (\(k,v)-> tConcat 
+                              [ tPack.show...k, " : " , tPack.show...v] ) $ 
+                          cookieHeadersToKVs
+                        . onlyCookieHeaders
+                        . requestHeaders
+                        . fromJust
+                        . request...rep
+                      )
+                    )
+                  : tAppend "session<br/>" 
+                    ( let maybeSession = session rep
+                      in  case maybeSession of 
+                            Nothing ->  "Report{session=Nothing}"
+                            Just s  ->  showDoc 0 s
+                    )
                   : reverse.debug...rep
           ]  
         ]
@@ -225,7 +250,7 @@ getResHeaders rep =
 
   in  concat 
       [ resHeaders rep
-      , [ ( "Set-Cookie", cookieToBS Hell.Lib.defaultCookie 
+      , [ cookieToHeader Hell.Lib.defaultCookie 
             { cookieName = Hell.Lib.sessionCookieName
             , cookieValue = encrypted
   --          , cookiePairs = [ ("path","/")
@@ -234,16 +259,18 @@ getResHeaders rep =
   --                          , ("expires","Thu, 01 Jan 1970 00:00:00 GMT")
   --                          ]
             } 
-          ) 
         ]
       ]
 
+setCookieHeaders :: Report -> Report
+setCookieHeaders rep = rep 
+  { resHeaders = resHeaders rep ++ map cookieToHeader (resCookies rep) }
 
 -- | Takes Report from a Controller, returns a Text.
 repToText :: Report -> Text
 repToText r = fromMaybe
   (fromJust $ getView Hell.Lib.missingViewRoute)
-  (getView $ viewRoute r)
+  (getView  $ viewRoute r)
   r
 
 getAct :: Route -> Maybe Action

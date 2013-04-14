@@ -119,6 +119,7 @@ module Hell.Lib (
   , ResourceT
   , Binary
   , ByteString
+  , LByteString
 
   , Document
   , Field(..)
@@ -178,8 +179,9 @@ module Hell.Lib (
 
   -- | Defined below:
 --  , lookupViewDictionary
-  , cookieToBS
-  , onlyCookies
+  , cookieHeadersToKVs
+  , cookieToHeader
+  , onlyCookieHeaders
   , decdoc
   , encdoc
   , lookupBsonVal
@@ -205,8 +207,11 @@ import qualified
 import Data.Bson.Binary (putDocument, getDocument)
 import qualified 
        Data.ByteString.Char8 as BS (concat, intercalate, empty, tail, span,
-       takeWhile)
-import Data.ByteString.Lazy (toChunks,fromChunks)
+       takeWhile,split)
+import qualified
+       Data.ByteString.Lazy.Char8 as LBS (toChunks,fromChunks,split)
+import qualified Data.ByteString.Search as BSS (replace)
+import Data.ByteString.Search.Substitution
 import Data.Conduit ({-Source,-}Sink,yield,await,($$))
 import Data.Dynamic (fromDyn, fromDynamic, toDyn)
 import Data.List (nub,intercalate)
@@ -225,8 +230,17 @@ import Network.HTTP.Types.Header ( hCookie )
 -- import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Web.ClientSession (randomIV, encrypt, encryptIO, decrypt, getDefaultKey)
 
---bsSplit :: Char -> ByteString -> [ByteString]
---bsSplit = BS.split
+lbsSplit :: Char -> LByteString -> [LByteString]
+lbsSplit = LBS.split
+
+bsSplit :: Char -> ByteString -> [ByteString]
+bsSplit = BS.split
+
+bssReplace :: Substitution rep => ByteString -> rep -> ByteString -> LByteString
+bssReplace = BSS.replace
+
+--bssSplit :: ByteString -> ByteString -> [ByteString]
+--bssSplit = BSS.split
 
 bsSpan :: (Char -> Bool) -> ByteString -> (ByteString, ByteString)
 bsSpan = BS.span
@@ -297,8 +311,11 @@ tPutStrLn = T.putStrLn
 tReplicate :: Int -> Text -> Text
 tReplicate = T.replicate
 
-onlyCookies :: [Header] -> [Header]
-onlyCookies headers = filter ((hCookie==).fst) headers
+onlyCookieHeaders :: [Header] -> [Header]
+onlyCookieHeaders headers = filter ((hCookie==).fst) headers
+
+cookieToHeader :: Cookie -> Header
+cookieToHeader c = ("Set-Cookie", cookieToBS c)
 
 -- | Perhaps the entire Cookie type should be refactored with (Maybe)
 cookieToBS :: Cookie -> ByteString
@@ -309,14 +326,26 @@ cookieToBS c = BS.intercalate "; " $ concat
   , map cookieAVPairToBS $ cookiePairs c
   ]
 
+-- | Perhaps, introduce a type synonym for (ByteString,ByteString)
+cookieHeadersToKVs :: [Header] -> [(ByteString,ByteString)]
+cookieHeadersToKVs hs = concatMap headerValueToKVs hs
+
+-- | If a value like "key=value=zzz==" is parsed, zzz etc. is discarded
+headerValueToKVs :: Header -> [(ByteString,ByteString)]
+headerValueToKVs (_,bs) = map (\lbs->  case lbsSplit '=' lbs of
+    k:[]  ->  (bsConcat.LBS.toChunks...k, "")
+    k:v:_ ->  (bsConcat.LBS.toChunks...k, bsConcat.LBS.toChunks...v)
+    _     ->  ("Hell.Lib.headerValueToKVs","unexpected result from splitting on '='")) $ 
+  lbsSplit ';' $ bssReplace " " (""::ByteString) bs
+
 cookieAVPairToBS :: CookieAVPair -> ByteString
 cookieAVPairToBS (attr,val) = BS.concat [attr,"=",val] 
 
 encdoc :: Document -> ByteString
-encdoc doc = BS.concat.toChunks.runPut...putDocument doc 
+encdoc doc = BS.concat.LBS.toChunks.runPut...putDocument doc 
 
 decdoc :: ByteString -> Document
-decdoc bin = runGet getDocument $ fromChunks [ bin ]
+decdoc bin = runGet getDocument $ LBS.fromChunks [ bin ]
 
 lookupBsonVal :: Val a => Label -> Document -> Maybe a
 lookupBsonVal _key [] = Nothing

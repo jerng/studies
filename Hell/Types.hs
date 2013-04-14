@@ -27,7 +27,10 @@ module Hell.Types (
   , ObjectId(..)
 
   -- | Defined in Data.ByteString:
-  , ByteString
+  , BS.ByteString
+
+  -- | Defined in Data.ByteString:
+  , LByteString
 
   -- | Defined in Data.Text:
   , Text
@@ -92,7 +95,8 @@ module Hell.Types (
 import Control.Monad.Trans.Resource (ResourceT)
 import qualified Data.Binary as Bin (Binary) 
 import Data.Bson as Bson 
-import Data.ByteString.Char8 (ByteString)
+import qualified Data.ByteString.Char8 as BS (ByteString)
+import qualified Data.ByteString.Lazy.Char8 as LBS (ByteString)
 import Data.Map (Map)
 import Data.Text (Text)
 --import Data.Dynamic (Dynamic, Typeable)
@@ -108,6 +112,7 @@ import Network.Wai (RequestBodyLength(..),Request(..),Response(..))
 import Network.Wai.Handler.Warp (Settings)
 import Web.ClientSession (IV,Key)
 
+type LByteString = LBS.ByteString
 type BsonBinary = Binary
 type ResourceNameText = Text 
 type ControllerName = Text
@@ -118,8 +123,8 @@ type Session = Document
 
 type Action = Report -> Report
 
-type CookieAttribute = ByteString
-type CookieValue = ByteString
+type CookieAttribute = BS.ByteString
+type CookieValue = BS.ByteString
 type CookieAVPair = (CookieAttribute, CookieValue)
 data Cookie = Cookie  { cookieName :: CookieAttribute -- essential
                       , cookieValue :: CookieValue -- essential
@@ -136,7 +141,7 @@ at various points during the (Hell.Server) response.
 -}
 
 data Report = Report
-  { session :: Session 
+  { session :: Maybe Session 
   , request :: Maybe Request
       -- Network.Wai.Request
   , shownRequest :: String
@@ -166,11 +171,11 @@ data Report = Report
       -- rendered to the User. CakePHP calls this a Flash message. 
   , status :: Status
       -- Network.Wai.Status
+  , reqCookies :: [Cookie]
+  , resCookies :: [Cookie]
+      -- At some point these get added to resHeaders
   , resHeaders :: [Header]
       -- Network.HTTP.Headers.Header
-  -- , session?
-  -- , cookies?
-  -- , other?
   , subReports :: ReportM
       -- Outstanding views, which need to be rendered, then inserted into the
       -- current View stipulated in viewRoute.

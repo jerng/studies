@@ -9,7 +9,5 @@
     <b>bold</b> <i>italicised</i> 
     <br/>
     <hs>fromJust $  (view "innerkey")::Text</hs>
-    <h3>print: session</h3>
-    <hs>tPack.show.session...report </hs>
     <hs>debugfps 123 </hs>
     <hs>debugf "debugging from views\\; used (debugf) for Text; (debugfps) for other showables" </hs>

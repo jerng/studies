@@ -1,6 +1,8 @@
 index :: Report -> Report
 index report = 
-  "more debuggable stuff (because if you do, you have to type from right to left)" ?>> "debuggable stuff (I don't recommend you use the (?>>) operator)" ?>> report
+  "more debuggable stuff (because if you do, you have to type from right to left)" ?>> 
+  "debuggable stuff (I don't recommend you use the (?>>) operator)" ?>> 
+  report
   { status = ok200
   , viewRoute = ("default","index")
   , viewBson = 
@@ -11,6 +13,10 @@ index report =
     ]
   , subReports = [("innerkey", report {actRoute = ("default", "inner")}) ] 
   , viewTemplate = Just ("default","template")
+  , resCookies = defaultCookie 
+    { cookieName = "newCookie"
+    , cookieValue = "newValue"
+    } : resCookies report
   }   <<? "even more debuggable stuff"
       <<? "lastly, for good measure" 
       <<? "default.hs line 14" 

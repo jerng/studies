@@ -29,8 +29,8 @@ warpServer app = runSettings defaultSettings app
 
 appMode :: AppMode
 appMode = --Development0
-          -- Development1
-           Development2
+           Development1
+          -- Development2
           -- Production
 
 -- I would really like to know how all this setting of defaults
@@ -40,7 +40,7 @@ defaultReport = Report  { request = Nothing
                         , shownRequest = ""
                         , key = Nothing
                         , iv = Nothing
-                        , session = []
+                        , session = Nothing
                         , actBson = [] 
                         , actRoute = defaultRoute
                         , viewRoute = defaultRoute
@@ -48,6 +48,8 @@ defaultReport = Report  { request = Nothing
                         , subReports = []
                         , meta = ""
                         , status = defaultStatus 
+                        , reqCookies = []
+                        , resCookies = []
                         , resHeaders = defaultHeaders
                         , viewTemplate = defaultViewTemplate
                         , pathVars = []
@@ -60,6 +62,7 @@ sessionCookieName :: ByteString
 sessionCookieName = "FsbD"
 
 defaultCookie :: Cookie
+                                        -- CHANGE THIS!!!
 defaultCookie = Cookie  { cookieName = sessionCookieName
                         , cookieValue = "" 
                         , cookieHttpOnly = False
