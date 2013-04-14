@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-} 
 
+module Hell.Server () where
+
 import Hell.Lib
 
 import qualified AppController
@@ -15,13 +17,23 @@ main =  Hell.Lib.warpServer
 
 app :: Request -> ResourceT IO Response 
 app = \req-> do
-  key <- lift getDefaultKey
-  iv <- lift randomIV 
-  let finalRep =  setCookieHeaders
+  (maybeKey, maybeIv) <-  
+        if    Hell.Lib.useEncryption
+        then  lift $ do key <- getDefaultKey
+                        iv <- randomIV
+                        return (Just key, Just iv)
+        else  lift.return...(Nothing, Nothing)
+  let rep' = Hell.Lib.defaultReport {request = Just req}
+      finalRep =  setResCookieHeaders
                .  actOnRep
                .  confirmAct
                .  actRouter
-               $  initSession key iv req 
+               .  ( if    Hell.Lib.useSessions
+                    then  initSession maybeKey maybeIv 
+                    else  id
+                  )
+               .  getReqCookies...rep'
+
   -- | TODO: Allow per-action sessionless behaviour.
   -- | TODO: Allow per-action cookieless behaviour.
   reqString <- showRequest $ lift.return.fromJust $ request finalRep 
@@ -30,50 +42,40 @@ app = \req-> do
     then  finalRep
     else  finalRep { shownRequest = reqString }
 
+getReqCookies :: Report -> Report
+getReqCookies rep = 
+  if    Hell.Lib.useCookies  
+  then  rep { reqCookies  = cookieHeadersToKVs
+                          . onlyCookieHeaders
+                          . requestHeaders
+                          . fromMaybe (error "getReqCookies: no request") 
+                          . request...rep
+            }
+  else  rep
+
 -- | The key file should be stored somewhere outside ./app, otherwise
 -- it is deleted every time MakeHell.main is run.
-initSession :: Key -> IV -> Request -> Report
-initSession key iv req = defaultReport 
-  { request = Just req
-  , key     = Just key
-  , iv      = Just iv
+initSession :: Maybe Key -> Maybe IV -> Report -> Report
+initSession maybeKey maybeIv rep = rep 
+  { key     = maybeKey
+  , iv      = maybeIv
+                -- If we want to (error) when Conf.useSession is true,
+                -- but when the (key) or (iv) is not obtained, here would 
+                -- be the place to do it.
   , session = 
-
-      -- REFACTOR AFTER STANDARDISING COOKIE DYNAMICS
-      case sessionValue.onlyCookieHeaders.requestHeaders...req of
-        Nothing           ->  Nothing
-        Just cookieValue  -> 
-          case decrypt key cookieValue of
-            Nothing         -> Just ["session":= String "undecryptable"]
-            Just decrypted  -> Just $ decdoc decrypted
+      case lookup Hell.Lib.sessionCookieName $ reqCookies rep of
+        Nothing           -> Hell.Lib.defaultSession 
+        Just cookieValue  ->
+          case  decrypt 
+                (fromMaybe (error "initSession: no encryption key") maybeKey) 
+                cookieValue of
+            Nothing         -> Hell.Lib.undecryptableSession
+            Just decrypted  -> 
+              let decoded = decdoc decrypted
+              in  if    decoded == Hell.Lib.undecryptableSession
+                  then  Hell.Lib.defaultSession
+                  else  decoded 
   } 
-
--- | Optimised? Feels crufty.
---
--- This function is doing a lot: it looks through [Header] to find field-values
--- of the form (Hell.Lib.sessionCookieName ++ "=" ++ encrypted serialised Bson)
--- . Also, even if it remains all here, the implementation might be shortened
--- with a (foldx) so that the input is traversed only once.
---
--- A bug occurs sometimes after the server has been started and restarted 
--- times. MULTIPLE values of the session cookie get sent back from the browser.
--- E.g. "Cookie: sessionkey=xxx; sessionkey=yyy; sessionkey= etc."
--- This does nothing but add bloat to the request/response if the first value
--- changes on each response. But sometimes the value which changes is not first
--- e.g. it is yyy not xxx, and thereby, the code below will apply the new key
--- to a value encrypted by an old key, resulting in undecipherability.
-sessionValue :: [Header] -> Maybe ByteString
-sessionValue headers = 
-  let scrub header = 
-        let (name,exname) = bsSpan (/='=') $ snd header
-        in  if    name    ==  Hell.Lib.sessionCookieName
-              &&  exname  /=  "="
-              &&  exname  /=  bsEmpty
-            then bsTakeWhile (/=';') $ bsTail exname
-            else bsEmpty
-  in  case filter (/=bsEmpty) $ map scrub headers of
-        [] -> Nothing
-        value:_ -> Just value
 
 -- | This function sets a Report's (actRoute) based on its (request)'s (pathInfo)
 --
@@ -195,20 +197,11 @@ renderDebug rep =
                       
                       ( --- MOVE to Hell.Lib.showCookie or Show instance
                         map (\(k,v)-> tConcat 
-                              [ tPack.show...k, " : " , tPack.show...v] ) $ 
-                          cookieHeadersToKVs
-                        . onlyCookieHeaders
-                        . requestHeaders
-                        . fromJust
-                        . request...rep
+                              [ tPack.show...k, " : " , tPack.show...v] ) $
+                        reqCookies rep
                       )
                     )
-                  : tAppend "session<br/>" 
-                    ( let maybeSession = session rep
-                      in  case maybeSession of 
-                            Nothing ->  "Report{session=Nothing}"
-                            Just s  ->  showDoc 0 s
-                    )
+                  : tAppend "session<br/>" (showDoc 0 $ session rep)
                   : reverse.debug...rep
           ]  
         ]
@@ -238,15 +231,7 @@ getResHeaders rep =
       iv'       = if    isJust maybeIv
                   then  fromJust maybeIv
                   else  error "getResHeaders: report's iv is Nothing"
-      encrypted = encrypt key' iv' $ encdoc  
-      
-      -- | OBVIOUSLY TEMPORARY: DATA FOR THE SESSION
-        [ "key":= String "value"
-        , "key2":=Doc
-          [ "key3":=String"value2"
-          , "key4":=Int32 324
-          ]
-        ]
+      encrypted = encrypt key' iv' $ encdoc $ session rep
 
   in  concat 
       [ resHeaders rep
@@ -262,8 +247,8 @@ getResHeaders rep =
         ]
       ]
 
-setCookieHeaders :: Report -> Report
-setCookieHeaders rep = rep 
+setResCookieHeaders :: Report -> Report
+setResCookieHeaders rep = rep 
   { resHeaders = resHeaders rep ++ map cookieToHeader (resCookies rep) }
 
 -- | Takes Report from a Controller, returns a Text.

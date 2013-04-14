@@ -24,6 +24,8 @@ Cabalise this.
 Replace all association lists, with Data.Map.Map
 user Builders properly! (no idea about this yet)
 
+Wherever Document is used, include a type synonym as an abstraction "interface"
+
 ## Design questions  
 
 Currently Stati:

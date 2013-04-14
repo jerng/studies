@@ -70,6 +70,7 @@ module Hell.Types (
   , Key
 
   -- | Defined below:
+  , Session
   , Action
   , ResourceName (..)
   , ControllerName
@@ -141,7 +142,7 @@ at various points during the (Hell.Server) response.
 -}
 
 data Report = Report
-  { session :: Maybe Session 
+  { session :: Session 
   , request :: Maybe Request
       -- Network.Wai.Request
   , shownRequest :: String
@@ -171,7 +172,7 @@ data Report = Report
       -- rendered to the User. CakePHP calls this a Flash message. 
   , status :: Status
       -- Network.Wai.Status
-  , reqCookies :: [Cookie]
+  , reqCookies :: [(CookieAttribute,CookieValue)]
   , resCookies :: [Cookie]
       -- At some point these get added to resHeaders
   , resHeaders :: [Header]

@@ -34,6 +34,7 @@ module Hell.Lib (
 
   -- | Defined in Data.ByteString:
   --, bsSplit 
+  , bsAppend
   , bsEmpty
   , bsConcat
   --, bsFindIndex
@@ -77,7 +78,15 @@ module Hell.Lib (
   , tPutStrLn
   , tReplicate
 
+  -- | Defined in Data.Text.Encoding:
+  , decodeUtf8
+
   -- | Defined in Hell.Conf:
+  , defaultSession
+  , undecryptableSession
+  , useCookies
+  , useSessions
+  , useEncryption
   , keyOfTemplatedView
   , keyOfMetaView
   , metaNoSuchAction
@@ -207,9 +216,9 @@ import qualified
 import Data.Bson.Binary (putDocument, getDocument)
 import qualified 
        Data.ByteString.Char8 as BS (concat, intercalate, empty, tail, span,
-       takeWhile,split)
+       takeWhile,split,append)
 import qualified
-       Data.ByteString.Lazy.Char8 as LBS (toChunks,fromChunks,split)
+       Data.ByteString.Lazy.Char8 as LBS (toChunks,fromChunks,split,span,tail)
 import qualified Data.ByteString.Search as BSS (replace)
 import Data.ByteString.Search.Substitution
 import Data.Conduit ({-Source,-}Sink,yield,await,($$))
@@ -223,12 +232,15 @@ import qualified
        splitOn, replace, append, take, words, unpack, replicate )
 import qualified 
        Data.Text.IO as T (readFile,writeFile,putStrLn)
-import Data.Text.Encoding (decodeUtf8, encodeUtf8)
+import Data.Text.Encoding (decodeUtf8{-, encodeUtf8-})
 import Hell.Conf 
 import Hell.Types
 import Network.HTTP.Types.Header ( hCookie ) 
 -- import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Web.ClientSession (randomIV, encrypt, encryptIO, decrypt, getDefaultKey)
+
+bsAppend :: ByteString -> ByteString -> ByteString
+bsAppend = BS.append
 
 lbsSplit :: Char -> LByteString -> [LByteString]
 lbsSplit = LBS.split
@@ -245,11 +257,17 @@ bssReplace = BSS.replace
 bsSpan :: (Char -> Bool) -> ByteString -> (ByteString, ByteString)
 bsSpan = BS.span
 
+lbsSpan :: (Char -> Bool) -> LByteString -> (LByteString, LByteString)
+lbsSpan = LBS.span
+
 bsEmpty :: ByteString
 bsEmpty = BS.empty
 
 bsConcat :: [ByteString] -> ByteString
 bsConcat = BS.concat
+
+lbsTail :: LByteString -> LByteString
+lbsTail = LBS.tail
 
 bsTail :: ByteString -> ByteString
 bsTail = BS.tail
@@ -330,13 +348,16 @@ cookieToBS c = BS.intercalate "; " $ concat
 cookieHeadersToKVs :: [Header] -> [(ByteString,ByteString)]
 cookieHeadersToKVs hs = concatMap headerValueToKVs hs
 
--- | If a value like "key=value=zzz==" is parsed, zzz etc. is discarded
 headerValueToKVs :: Header -> [(ByteString,ByteString)]
-headerValueToKVs (_,bs) = map (\lbs->  case lbsSplit '=' lbs of
-    k:[]  ->  (bsConcat.LBS.toChunks...k, "")
-    k:v:_ ->  (bsConcat.LBS.toChunks...k, bsConcat.LBS.toChunks...v)
-    _     ->  ("Hell.Lib.headerValueToKVs","unexpected result from splitting on '='")) $ 
-  lbsSplit ';' $ bssReplace " " (""::ByteString) bs
+headerValueToKVs (_,bs) = 
+    map 
+    ( \lbs->  
+        case lbsSpan (/='=') lbs of
+          ("",_)  -> ("","")
+          (k,"")  -> (bsConcat.LBS.toChunks...k,"")
+          (k,v)   -> (bsConcat.LBS.toChunks...k, bsConcat.LBS.toChunks.lbsTail...v)
+    ) $ 
+    lbsSplit ';' $ bssReplace " " (""::ByteString) bs
 
 cookieAVPairToBS :: CookieAVPair -> ByteString
 cookieAVPairToBS (attr,val) = BS.concat [attr,"=",val] 
@@ -458,7 +479,9 @@ debugfps a = debugf.tPack.show...a
 
 -- | Updates the (debug) field of a report
 addDebug :: Text -> Report -> Report
-addDebug text report = report { debug = text : debug report }
+addDebug text report =  if    Hell.Conf.appMode == Production
+                        then  report
+                        else  report { debug = text : debug report }
 
 (?>>) :: Text -> Report -> Report 
 infixr 2 ?>>

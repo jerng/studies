@@ -33,6 +33,22 @@ appMode = --Development0
           -- Development2
           -- Production
 
+useCookies :: Bool
+useCookies = True
+
+useEncryption :: Bool
+useEncryption = True
+
+useSessions :: Bool
+useSessions = True
+
+defaultSession :: Session
+defaultSession = ["data" := Null ] 
+
+-- | This is probably a temporary solution/mechanism
+undecryptableSession :: Session
+undecryptableSession = ["error":= String "undecryptable"]
+
 -- I would really like to know how all this setting of defaults
 -- affects memory use. Testing will be required.
 defaultReport :: Report
@@ -40,7 +56,7 @@ defaultReport = Report  { request = Nothing
                         , shownRequest = ""
                         , key = Nothing
                         , iv = Nothing
-                        , session = Nothing
+                        , session = defaultSession 
                         , actBson = [] 
                         , actRoute = defaultRoute
                         , viewRoute = defaultRoute
