@@ -36,7 +36,8 @@ app = \req-> do
                     else  id
                   )
                .  getReqCookies...rep'
-  reqString <- showRequest $ lift.return.fromJust $ request finalRep 
+  reqString <- showRequest $ 
+    lift.return.fromMaybe (error "app: no Request") $ request finalRep 
   lift.return.respond...
     if    Hell.Lib.appMode == Production
     then  finalRep
@@ -49,7 +50,7 @@ getReqCookies rep =
   else  rep { reqCookies  = cookieHeadersToKVs
                           .onlyCookieHeaders
                           .requestHeaders
-                          .fromMaybe (error "getReqCookies: no request") 
+                          .fromMaybe (error "getReqCookies: no Request") 
                           .request...rep
             }
 
@@ -67,7 +68,7 @@ initSession maybeKey maybeIv rep = rep
         Nothing           -> Hell.Lib.defaultSession 
         Just cookieValue  ->
           case  decrypt 
-                (fromMaybe (error "initSession: no encryption key") maybeKey) 
+                (fromMaybe (error "initSession: no encryption Key") maybeKey) 
                 cookieValue of
             Nothing         -> Hell.Lib.undecryptableSession
             Just decrypted  -> 
@@ -81,7 +82,7 @@ initSession maybeKey maybeIv rep = rep
 --  Maybe add a hook from here, to Hell.Conf.
 --  Maybe replace this with a regex-style actRouter, as many other frameworks have.
 actRouter :: ReportHandler
-actRouter rep = case pathInfo.fromJust.request...rep of
+actRouter rep = case pathInfo.fromMaybe (error "actRouter: no Request").request...rep of
   []        -> rep  { actRoute = Hell.Lib.defaultRoute }
   "":[]     -> rep  { actRoute = Hell.Lib.defaultRoute }
   con:[]    -> rep  { actRoute = (tToLower con, Hell.Lib.indexAction) }
@@ -100,11 +101,18 @@ confirmAct rep =
   in  if    aR == Hell.Lib.staticFileRoute
       then  rep { static = True }
       else  case getAct aR of
-        Just act  -> rep { action = act }
+        Just act  -> rep 
+          { action = act
+          , viewRoute = aR
+          }
         Nothing   -> rep 
           { actRoute  = Hell.Lib.missingActionRoute
+          , viewRoute = Hell.Lib.missingActionRoute
           , meta      = tConcat [ meta rep , Hell.Lib.metaNoSuchAction ]
-          , action    = fromJust.getAct...(Hell.Lib.missingActionRoute)
+          , action    = fromMaybe 
+                        (error "confirmAct: Hell.Lib.missingActionRoute is\
+                        \ itself missing. Shucks.") $
+                        getAct (Hell.Lib.missingActionRoute)
           }
           -- Perhaps unnecessarily wordy?
           -- Does GHC optimise-away messes like this?
@@ -237,14 +245,12 @@ setResSessionCookie rep = rep
           then  "deleted"
           else  let maybeKey  = key rep
                     maybeIv   = iv rep
-                    key'      = if    isJust maybeKey
-                                then  fromJust maybeKey
-                                else  error 
-                                  "setResSessionCookie: report's key is Nothing"
-                    iv'       = if    isJust maybeIv
-                                then  fromJust maybeIv
-                                else  error 
-                                  "setResSessionCookie: report's iv is Nothing"
+                    key'      = fromMaybe 
+                                (error "setResSessionCookie: Report has no encryption Key")
+                                maybeKey
+                    iv'       = fromMaybe
+                                (error "setResSessionCookie: Report has no encryption IV")
+                                maybeIv
                 in  encrypt key' iv' $ encdoc $ session rep
 
 -- | To help devs with testing:
@@ -268,9 +274,13 @@ setResCookieHeaders rep =
 
 -- | Takes Report from a Controller, returns a Text.
 repToText :: Report -> Text
-repToText r = fromMaybe
-  (fromJust $ getView Hell.Lib.missingViewRoute)
-  (getView  $ viewRoute r)
+repToText r = 
+  fromMaybe
+  ( fromMaybe 
+    (error "repToText: Hell.Lib.missingViewRoute is itself missing. Shucks.") $
+    getView Hell.Lib.missingViewRoute
+  )
+  ( getView $ viewRoute r )
   r
 
 getAct :: Route -> Maybe Action

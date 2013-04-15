@@ -100,7 +100,9 @@ assembleViews = do
   let cs = keysAL al
       eachC = \c -> do 
         createDirectoryIfMissing False $ toPath Views ++ c
-        let vs = fromJust $ lookup c al 
+        let vs = fromMaybe 
+              (error "confirmAct: Hell.Lib.missingActionRoute is\
+                        \ itself missing. Shucks.") $ lookup c al 
         mapM_ (eachV c) vs
       eachV = \c v -> do
         unsplicedText <- tReadFile $ concat 

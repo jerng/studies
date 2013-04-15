@@ -38,7 +38,9 @@ buildSlice s = case s of
   Slice Server ImportViews -> do  
     al <- views
     let cs = keysAL al
-        eachC = \c -> tConcat $ map (eachV c) $ fromJust $ lookup c al 
+        eachC = \c -> tConcat $ map (eachV c) $ fromMaybe 
+          (error "buildSlice: controller not found in list of views") $
+          lookup c al 
         eachV = \c v ->
           tConcat ["import qualified Views.", tPack c, ".", tPack v, "\n"]
     return $ tConcat $ map eachC cs 
@@ -79,7 +81,9 @@ buildSlice s = case s of
     al <- views
     let cs = keysAL al
         eachC = \c-> 
-          map (eachV c) $ fromJust $ lookup c al 
+          map (eachV c) $ fromMaybe 
+          (error "buildSlice: controller not found in list of views") $ 
+          lookup c al 
         eachV = \c v->
           let c' = tPack c
               v' = tPack v
@@ -130,7 +134,7 @@ unrenderedToModuleText count acc remainingList
   = tConcat 
     [ acc 
     , "main :: Report -> Text\n\
-      \main report =\n\
+      \main rep =\n\
       \  tConcat\n\
       \  [ "
     , tIntercalate "\n  , " $ map 
@@ -138,7 +142,7 @@ unrenderedToModuleText count acc remainingList
                             tConcat 
                             [ "text" 
                             , (tPack $ show x)
-                            , " report"
+                            , " rep"
                             ]
                           ) 
                           [1..(count-1)] 
@@ -172,7 +176,7 @@ unrenderedToModuleText count acc remainingList
       , tPack $ show count
       , " :: Report -> Text\ntext"
       , tPack $ show count
-      , " report = "
+      , " rep = "
       , tConcat 
           [ " toText (\n" 
           , tUnlines $ map (tAppend "    ") $ tLines text

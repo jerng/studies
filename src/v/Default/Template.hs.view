@@ -15,7 +15,7 @@ tConcat [ "<blockquote style = \"background-color:#cfc\">"
 
   </hs>
     <blockquote style="border:5px solid #000;">
-      <hs>fromJust $ view Hell.Lib.keyOfTemplatedView :: Text</hs>
+      <hs>fromMaybe (error "Default.Template") $ view Hell.Lib.keyOfTemplatedView :: Text</hs>
     </blockquote>
   </body>
 </html>

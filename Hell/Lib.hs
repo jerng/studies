@@ -53,7 +53,6 @@ module Hell.Lib (
   , keysAL 
 
   -- | Defined in Data.Maybe:
-  , fromJust
   , fromMaybe
   , isJust
 
@@ -98,6 +97,7 @@ module Hell.Lib (
   , defaultHeaders
   , defaultStatus
   , defaultViewTemplate
+  , defaultCookieName
   , indexAction
   , defaultRoute
   , missingActionRoute
@@ -230,7 +230,7 @@ import Data.Conduit ({-Source,-}Sink,yield,await,($$))
 import Data.Dynamic (fromDyn, fromDynamic, toDyn)
 import Data.List (nub,intercalate)
 import Data.List.Utils (hasKeyAL, keysAL)
-import Data.Maybe (fromJust,fromMaybe,isJust)
+import Data.Maybe (fromMaybe,isJust)
 import Data.String.Utils (replace)
 import qualified 
        Data.Text as T (concat, pack, toLower, intercalate, lines, unlines,
@@ -484,9 +484,9 @@ debugfps a = debugf.tPack.show...a
 
 -- | Updates the (debug) field of a report
 addDebug :: Text -> Report -> Report
-addDebug text report =  if    Hell.Conf.appMode == Production
-                        then  report
-                        else  report { debug = text : debug report }
+addDebug text rep =  if    Hell.Conf.appMode == Production
+                        then  rep
+                        else  rep { debug = text : debug rep }
 
 (?>>) :: Text -> Report -> Report 
 infixr 2 ?>>

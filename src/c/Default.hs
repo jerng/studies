@@ -5,7 +5,6 @@ index rep =
 
   rep
   { status = ok200
-  , viewRoute = ("default","index")
   , viewBson = 
     [ "someInt" :=Int32 999
     , "someFloat" :=Float 3.132
@@ -34,7 +33,6 @@ index2 :: Report -> Report
 index2 rep = 
   rep
   { status = ok200
-  , viewRoute = ("default","index2")
   , viewTemplate = Nothing
   }
 
@@ -43,14 +41,12 @@ nosuchaction :: Report -> Report
 nosuchaction rep =
   rep
   { status = ok200
-  , viewRoute = ("default","nosuchaction")
   }
 
 inner :: Report -> Report 
 inner rep =
   rep
   { status = ok200
-  , viewRoute = ("default","inner")
   , subReports = [("insideinnerkey",rep {actRoute = ("default","insideinner")} )]
   }
 
@@ -58,5 +54,4 @@ insideinner :: Report->Report
 insideinner rep = 
   rep
   { status = ok200
-  , viewRoute = ("default","insideinner")
   }

@@ -1,13 +1,13 @@
     <h1>a simple view (Default.Index): </h1> 
     Following this is an attempt to interpolate some Haskell expressions<br/>
     Haskell script "1 +1" : <hs>(1+1 :: Int)</hs><br/>
-    a Document label called (someInt) : <hs>fromJust $ view "someInt" :: Int</hs><br/>
-    a Document label called (someFloat) : <hs>fromJust $ view "someFloat" :: Float</hs><br/>
-    a Document label called (someText) : <hs>fromJust $ view "someText" :: Text</hs><br/>
-    a Document label called (someIntList) : <hs>fromJust $ view "someIntList" :: [Int]</hs><br/>
+    a Document label called (someInt) : <hs>fromMaybe (error .show.viewRoute...rep) $ view "someInt" :: Int</hs><br/>
+    a Document label called (someFloat) : <hs>fromMaybe (error .show.viewRoute...rep) $ view "someFloat" :: Float</hs><br/>
+    a Document label called (someText) : <hs>fromMaybe (error .show.viewRoute...rep) $ view "someText" :: Text</hs><br/>
+    a Document label called (someIntList) : <hs>fromMaybe (error .show.viewRoute...rep) $ view "someIntList" :: [Int]</hs><br/>
     a Document label called (x) : <hs>fromMaybe "\"x\" not found" (view "x") :: Text</hs><br/>
     <b>bold</b> <i>italicised</i> 
     <br/>
-    <hs>fromJust $  (view "innerkey")::Text</hs>
+    <hs>fromMaybe (error .show.viewRoute...rep) $  (view "innerkey")::Text</hs>
     <hs>debugfps 123 </hs>
     <hs>debugf "debugging from views\\; used (debugf) for Text; (debugfps) for other showables" </hs>

@@ -83,12 +83,15 @@ defaultReport = Report  { request = Nothing
                         , action = id 
                         }
 
+defaultCookieName :: ByteString
+defaultCookieName = "Hell"
+
 sessionCookieName :: ByteString
 sessionCookieName = "FsbD"
 
 defaultCookie :: Cookie
                                         -- CHANGE THIS!!!
-defaultCookie = Cookie  { cookieName = sessionCookieName
+defaultCookie = Cookie  { cookieName = defaultCookieName
                         , cookieValue = "" 
                         , cookieHttpOnly = False
                         , cookieSecure = False
@@ -244,15 +247,15 @@ messageJobDone = "... and the job is done.\n"
 
 viewBsonHelpers :: Text 
 viewBsonHelpers = 
-  "  view label = lookupBsonVal label (viewBson report)"
---  "   viewInt key = fromMaybe (error $ \"viewInt key missing in action, and view: \" ++ show (actRoute report) ++ show (viewRoute report)) $\
---  \     lookupBsonVal key (viewBson report) :: Int\n\
---  \   viewFloat key = fromMaybe (error $ \"viewFloat key missing in action, and view: \" ++ show (actRoute report) ++ show (viewRoute report))  $\
---  \     lookupBsonVal key (viewBson report) :: Float\n\
---  \   viewText key = fromMaybe (error $ \"viewText key missing in action, and view: \" ++ show (actRoute report) ++ show (viewRoute report))  $\
---  \     lookupBsonVal key (viewBson report) :: Text\n\
---  \   viewIntList key = fromMaybe (error $ \"viewIntList key missing in action, and view: \" ++ show (actRoute report) ++ show (viewRoute report))  $\
---  \     lookupBsonVal key (viewBson report) :: [Int]\n"
+  "  view label = lookupBsonVal label (viewBson rep)"
+--  "   viewInt key = fromMaybe (error $ \"viewInt key missing in action, and view: \" ++ show (actRoute rep) ++ show (viewRoute rep)) $\
+--  \     lookupBsonVal key (viewBson rep) :: Int\n\
+--  \   viewFloat key = fromMaybe (error $ \"viewFloat key missing in action, and view: \" ++ show (actRoute rep) ++ show (viewRoute rep))  $\
+--  \     lookupBsonVal key (viewBson rep) :: Float\n\
+--  \   viewText key = fromMaybe (error $ \"viewText key missing in action, and view: \" ++ show (actRoute rep) ++ show (viewRoute rep))  $\
+--  \     lookupBsonVal key (viewBson rep) :: Text\n\
+--  \   viewIntList key = fromMaybe (error $ \"viewIntList key missing in action, and view: \" ++ show (actRoute rep) ++ show (viewRoute rep))  $\
+--  \     lookupBsonVal key (viewBson rep) :: [Int]\n"
 
   -- TODO: Try and see if a class can introduce ad hoc polymorphism here.
 
