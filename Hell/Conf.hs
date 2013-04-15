@@ -33,14 +33,23 @@ appMode = --Development0
           -- Development2
           -- Production
 
-useCookies :: Bool
-useCookies = True
-
+-- ****************************************************************************
+-- Incompatible settings here should be caught by makeHell at pre-compile time.
+--
 useEncryption :: Bool
 useEncryption = True
 
+-- Implemented as a softer switch: if useCookies=True and useSession=False
+-- then the session cookie's value will be set to "deleted"
 useSessions :: Bool
-useSessions = True
+useSessions = True 
+
+-- Implemented as a harder switch: simply stops adding Request {resCookies} to
+-- Request {resHeaders}
+useCookies :: Bool
+useCookies = True
+--
+-- ****************************************************************************
 
 defaultSession :: Session
 defaultSession = ["data" := Null ] 

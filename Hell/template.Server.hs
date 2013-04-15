@@ -15,27 +15,27 @@ main =  Hell.Lib.warpServer
         -- $ logStdoutDev 
         app
 
+-- |  TODO: Allow per-action sessionless behaviour.
+--    TODO: Allow per-action cookieless behaviour.
 app :: Request -> ResourceT IO Response 
 app = \req-> do
   (maybeKey, maybeIv) <-  
-        if    Hell.Lib.useEncryption
-        then  lift $ do key <- getDefaultKey
-                        iv <- randomIV
-                        return (Just key, Just iv)
-        else  lift.return...(Nothing, Nothing)
+    if    not Hell.Lib.useEncryption
+    then  lift.return...(Nothing, Nothing)
+    else  lift $ do key <- getDefaultKey
+                    iv <- randomIV
+                    return (Just key, Just iv)
   let rep' = Hell.Lib.defaultReport {request = Just req}
       finalRep =  setResCookieHeaders
-               .  actOnRep
-               .  confirmAct
-               .  actRouter
-               .  ( if    Hell.Lib.useSessions
+                . setResSessionCookie
+                . actOnRep
+                . confirmAct
+                . actRouter
+                . ( if    Hell.Lib.useSessions
                     then  initSession maybeKey maybeIv 
                     else  id
                   )
                .  getReqCookies...rep'
-
-  -- | TODO: Allow per-action sessionless behaviour.
-  -- | TODO: Allow per-action cookieless behaviour.
   reqString <- showRequest $ lift.return.fromJust $ request finalRep 
   lift.return.respond...
     if    Hell.Lib.appMode == Production
@@ -44,14 +44,14 @@ app = \req-> do
 
 getReqCookies :: Report -> Report
 getReqCookies rep = 
-  if    Hell.Lib.useCookies  
-  then  rep { reqCookies  = cookieHeadersToKVs
+  if    not Hell.Lib.useCookies  
+  then  rep
+  else  rep { reqCookies  = cookieHeadersToKVs
                           . onlyCookieHeaders
                           . requestHeaders
                           . fromMaybe (error "getReqCookies: no request") 
                           . request...rep
             }
-  else  rep
 
 -- | The key file should be stored somewhere outside ./app, otherwise
 -- it is deleted every time MakeHell.main is run.
@@ -78,7 +78,6 @@ initSession maybeKey maybeIv rep = rep
   } 
 
 -- | This function sets a Report's (actRoute) based on its (request)'s (pathInfo)
---
 --  Maybe add a hook from here, to Hell.Conf.
 --  Maybe replace this with a regex-style actRouter, as many other frameworks have.
 actRouter :: Report -> Report
@@ -92,7 +91,6 @@ actRouter rep = case pathInfo.fromJust.request...rep of
                     }
 
 -- | This function sets a Report's (action) based on its (actRoute)
---
 -- i)   Requests for static files are acknowledged here.
 -- ii)  The Action's Route is checked against the list of existing Actions.
 -- iii)  If that Action isn't found, the Report is rerouted to a fail page.
@@ -124,12 +122,10 @@ actOnSubRep rep = AppController.subMain rep
 -- ****************************************************************************
 
 {- for reference:
-
 data Response = 
-ResponseFile Status ResponseHeaders FilePath (Maybe FilePart)	 
-ResponseBuilder Status ResponseHeaders Builder	 
-ResponseSource Status ResponseHeaders (Source (ResourceT IO) (Flush Builder))	
-
+  ResponseFile Status ResponseHeaders FilePath (Maybe FilePart)	 
+  ResponseBuilder Status ResponseHeaders Builder	 
+  ResponseSource Status ResponseHeaders (Source (ResourceT IO) (Flush Builder))	
 Hell.Server.(respond) should have branches to deal with all the above,
 eventually.  FilePath, FilePart, Source, etc. should be passed in the
 ViewBson.  (respond) should be able to determine, from the Report,
@@ -149,7 +145,7 @@ respondWithFile :: Report -> Response
 respondWithFile rep = 
   ResponseFile status' headers filePath Nothing where
     status'   = status rep
-    headers   = getResHeaders rep 
+    headers   = resHeaders rep 
     filePath  = "./Files/" ++ (tUnpack $ tIntercalate "/" $ pathVars rep)
 
 -- | I haven't properly studied Builders, but they're probably useless if 
@@ -159,7 +155,7 @@ respondWithBuilder :: Report -> Response
 respondWithBuilder rep = 
   let reqString = shownRequest rep
       rep'      = renderSubReps $ renderDebug rep
-      headers   =  getResHeaders rep'
+      headers   =  resHeaders rep'
   in  ResponseBuilder (status rep') headers $ fromText $ 
         case viewTemplate rep of
           Nothing     -> repToText rep'
@@ -221,35 +217,45 @@ renderSubReps rep =
             (viewBson rep) ++ (map subRepToText subReps)
           }
 
-getResHeaders :: Report -> [Header]
-getResHeaders rep = 
-  let maybeKey  = key rep
-      maybeIv   = iv rep
-      key'      = if    isJust maybeKey
-                  then  fromJust maybeKey
-                  else  error "getResHeaders: report's key is Nothing"
-      iv'       = if    isJust maybeIv
-                  then  fromJust maybeIv
-                  else  error "getResHeaders: report's iv is Nothing"
-      encrypted = encrypt key' iv' $ encdoc $ session rep
+-- Explore difference between (concat) and (++) here
+setResSessionCookie :: Report -> Report 
+setResSessionCookie rep = rep
+  { resCookies = flip (:) (resCookies rep) 
+      ( Hell.Lib.defaultCookie 
+        { cookieName = Hell.Lib.sessionCookieName
+        , cookieValue =
+          if    not Hell.Lib.useSessions
+          then  "deleted"
+          else  let maybeKey  = key rep
+                    maybeIv   = iv rep
+                    key'      = if    isJust maybeKey
+                                then  fromJust maybeKey
+                                else  error 
+                                  "setResSessionCookie: report's key is Nothing"
+                    iv'       = if    isJust maybeIv
+                                then  fromJust maybeIv
+                                else  error 
+                                  "setResSessionCookie: report's iv is Nothing"
+                in  encrypt key' iv' $ encdoc $ session rep
 
-  in  concat 
-      [ resHeaders rep
-      , [ cookieToHeader Hell.Lib.defaultCookie 
-            { cookieName = Hell.Lib.sessionCookieName
-            , cookieValue = encrypted
-  --          , cookiePairs = [ ("path","/")
-  --                          , ("Max-Age","0")
-  --                          , ("Domain","localhost")
-  --                          , ("expires","Thu, 01 Jan 1970 00:00:00 GMT")
-  --                          ]
-            } 
-        ]
-      ]
+-- | To help devs with testing:
+--        , cookiePairs = [ ("path","/")
+--                        , ("Max-Age","0")
+--                        , ("Domain","localhost")
+--                        , ("expires","Thu, 01 Jan 1970 00:00:00 GMT")
+--                        ]
 
+        } 
+      )
+  }
+
+-- Explore difference between (concat) and (++) here
 setResCookieHeaders :: Report -> Report
-setResCookieHeaders rep = rep 
-  { resHeaders = resHeaders rep ++ map cookieToHeader (resCookies rep) }
+setResCookieHeaders rep = 
+  if    not Hell.Lib.useCookies 
+  then  rep 
+  else  rep
+    { resHeaders = resHeaders rep ++ map cookieToHeader (resCookies rep) }
 
 -- | Takes Report from a Controller, returns a Text.
 repToText :: Report -> Text

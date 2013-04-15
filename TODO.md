@@ -6,12 +6,11 @@
 
 ### Miscellany
 
+Implement redirection, from one action, to another action.
 Implement a URL helper.
 Implement a simple form helper.
-Make a session helper
-Make a cookie helper
-Implement redirection, from one action, to another action.
-Following these, implement authentication.
+
+Implement authentication.
 
 Make giant re-exportation library to turn T.append into tAppend, 
   BS.append into bsAppend, etc.
@@ -25,6 +24,9 @@ Replace all association lists, with Data.Map.Map
 user Builders properly! (no idea about this yet)
 
 Wherever Document is used, include a type synonym as an abstraction "interface"
+
+Make a session helper
+Make a cookie helper
 
 ## Design questions  
 
