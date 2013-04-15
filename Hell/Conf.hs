@@ -29,8 +29,8 @@ warpServer app = runSettings defaultSettings app
 
 appMode :: AppMode
 appMode = --Development0
-           Development1
-          -- Development2
+          -- Development1
+           Development2
           -- Production
 
 -- ****************************************************************************

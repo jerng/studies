@@ -47,10 +47,10 @@ getReqCookies rep =
   if    not Hell.Lib.useCookies  
   then  rep
   else  rep { reqCookies  = cookieHeadersToKVs
-                          . onlyCookieHeaders
-                          . requestHeaders
-                          . fromMaybe (error "getReqCookies: no request") 
-                          . request...rep
+                          .onlyCookieHeaders
+                          .requestHeaders
+                          .fromMaybe (error "getReqCookies: no request") 
+                          .request...rep
             }
 
 -- | The key file should be stored somewhere outside ./app, otherwise
@@ -155,14 +155,14 @@ respondWithBuilder :: Report -> Response
 respondWithBuilder rep = 
   let reqString = shownRequest rep
       rep'      = renderSubReps $ renderDebug rep
-      headers   =  resHeaders rep'
+      headers   = resHeaders rep'
   in  ResponseBuilder (status rep') headers $ fromText $ 
         case viewTemplate rep of
           Nothing     -> repToText rep'
-          Just route  -> repToText rep' -- rendered outer view
+          Just route  -> repToText rep' -- rendered template wrapper ("outer view") 
             { viewTemplate = Nothing
             , viewRoute = route
-            , viewBson =              -- rendered inner view
+            , viewBson =              -- rendered template contents ("inner view")
                 ( Hell.Lib.keyOfTemplatedView := String (repToText rep') )
                 -- DEBUG to VIEW: happens here.
               : ( Hell.Lib.keyOfMetaView := String (meta rep') )
@@ -207,15 +207,16 @@ renderDebug rep =
 renderSubReps :: Report -> Report
 renderSubReps rep = 
   let subRepToText (key,subReport) = 
-        key := String (repToText $ actOnSubRep subRep)
-        where subRep = confirmAct subReport 
+        key := String ( repToText
+                      .renderSubReps
+                      .renderDebug
+                      .actOnSubRep
+                      .confirmAct...subReport
+                      )
   in  case subReports rep of 
         []      -> rep
         subReps -> rep
-          { subReports = []
-          , viewBson = 
-            (viewBson rep) ++ (map subRepToText subReps)
-          }
+          { viewBson = (viewBson rep) ++ (map subRepToText subReps) }
 
 -- Explore difference between (concat) and (++) here
 setResSessionCookie :: Report -> Report 

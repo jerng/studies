@@ -2,6 +2,7 @@ index :: Report -> Report
 index report = 
   "more debuggable stuff (because if you do, you have to type from right to left)" ?>> 
   "debuggable stuff (I don't recommend you use the (?>>) operator)" ?>> 
+
   report
   { status = ok200
   , viewRoute = ("default","index")
@@ -11,13 +12,15 @@ index report =
     , "someText" :=String "I_AM_TEXT"
     , "someIntList" := Array [Int32 1,Int32 2, Int32 3]
     ]
-  , subReports = [("innerkey", report {actRoute = ("default", "inner")}) ] 
+  , subReports = [("innerkey", report { actRoute = ("default", "inner") })] 
   , viewTemplate = Just ("default","template")
   , resCookies = defaultCookie 
     { cookieName = "newCookie"
     , cookieValue = "newValue"
     } : resCookies report
-  }   <<? "even more debuggable stuff"
+  }
+
+      <<? "even more debuggable stuff"
       <<? "lastly, for good measure" 
       <<? "default.hs line 14" 
       <<? tPack.show...666 
@@ -43,12 +46,17 @@ nosuchaction report =
   , viewRoute = ("default","nosuchaction")
   }
 
-
 inner :: Report -> Report 
 inner report =
   report
   { status = ok200
   , viewRoute = ("default","inner")
+  , subReports = [("insideinnerkey",report {actRoute = ("default","insideinner")} )]
   }
 
-
+insideinner :: Report->Report
+insideinner report = 
+  report
+  { status = ok200
+  , viewRoute = ("default","insideinner")
+  }
