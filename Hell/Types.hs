@@ -64,12 +64,14 @@ module Hell.Types (
   -- | Defined in Network.HTTP.Types
   , accepted202
   , ok200
+  , found302
 
   -- | Defined in Web.ClientSession
   , IV
   , Key
 
   -- | Defined below:
+  , ReportHandler
   , Session
   , Action
   , ResourceName (..)
@@ -100,13 +102,13 @@ import qualified Data.ByteString.Char8 as BS (ByteString)
 import qualified Data.ByteString.Lazy.Char8 as LBS (ByteString)
 import Data.Map (Map)
 import Data.Text (Text)
---import Data.Dynamic (Dynamic, Typeable)
 import Data.Vault as V (Vault(..))
 import Data.Word (Word8)
 import Network.HTTP.Types 
   ( Status
   , accepted202
   , ok200
+  , found302
   )
 import Network.HTTP.Types.Header ( Header{-,RequestHeaders-}) 
 import Network.Wai (RequestBodyLength(..),Request(..),Response(..))
@@ -122,7 +124,8 @@ type Route = (ControllerName,ActionName)
 type ReportM = [(Text,Report)]
 type Session = Document
 
-type Action = Report -> Report
+type ReportHandler = Report -> Report
+type Action = ReportHandler 
 
 type CookieAttribute = BS.ByteString
 type CookieValue = BS.ByteString

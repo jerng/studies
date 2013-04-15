@@ -154,8 +154,10 @@ module Hell.Lib (
   , Header
   , accepted202
   , ok200
+  , found302
   , Settings
 
+  , ReportHandler
   , Action
   , ResourceNameText
   , ControllerName
@@ -177,7 +179,8 @@ module Hell.Lib (
   , Cookie (..)
   
   -- | Defined in Network.HTTP.Types.Header
-  , hCookie
+  --, hCookie
+  , hLocation
 
   -- | Defined in Web.ClientSession 
   , randomIV 
@@ -203,6 +206,8 @@ module Hell.Lib (
   , showDoc
   , debugf
   , debugfps
+  , redirectTo
+  , (-->)
 )  where
 
 import Blaze.ByteString.Builder.Char.Utf8 (fromText)
@@ -235,7 +240,7 @@ import qualified
 import Data.Text.Encoding (decodeUtf8{-, encodeUtf8-})
 import Hell.Conf 
 import Hell.Types
-import Network.HTTP.Types.Header ( hCookie ) 
+import Network.HTTP.Types.Header ( hCookie, hLocation ) 
 -- import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Web.ClientSession (randomIV, encrypt, encryptIO, decrypt, getDefaultKey)
 
@@ -574,3 +579,9 @@ showVal ind val = case val of
 --  : []
 
 --------------------------------------------------------------------------------
+
+redirectTo :: Report -> ByteString -> Report
+redirectTo rep loc = rep { status = found302, resHeaders = [(hLocation,loc)] }
+
+(-->) :: Report -> ByteString -> Report
+(-->) = redirectTo

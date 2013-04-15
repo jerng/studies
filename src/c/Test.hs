@@ -1,14 +1,16 @@
-subtest1 :: Report -> Report
-subtest1 report = do 
-  -- let x = Controllers.Default.inner report
-  report  
+redirect :: Action 
+redirect rep = rep --> "/default/index" 
+
+subtest1 :: Action 
+subtest1 rep = do 
+  rep  
     { status = ok200
     , viewRoute = ("test","subtest1") 
     }
 
-subtest2 :: Report -> Report
-subtest2 report = 
-  report
+subtest2 :: Action
+subtest2 rep = 
+  rep
   { status = ok200
   , viewRoute = ("test","subtest2") 
   }

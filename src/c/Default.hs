@@ -1,9 +1,9 @@
 index :: Report -> Report
-index report = 
+index rep = 
   "more debuggable stuff (because if you do, you have to type from right to left)" ?>> 
   "debuggable stuff (I don't recommend you use the (?>>) operator)" ?>> 
 
-  report
+  rep
   { status = ok200
   , viewRoute = ("default","index")
   , viewBson = 
@@ -12,12 +12,12 @@ index report =
     , "someText" :=String "I_AM_TEXT"
     , "someIntList" := Array [Int32 1,Int32 2, Int32 3]
     ]
-  , subReports = [("innerkey", report { actRoute = ("default", "inner") })] 
+  , subReports = [("innerkey", rep { actRoute = ("default", "inner") })] 
   , viewTemplate = Just ("default","template")
   , resCookies = defaultCookie 
     { cookieName = "newCookie"
     , cookieValue = "newValue"
-    } : resCookies report
+    } : resCookies rep
   }
 
       <<? "even more debuggable stuff"
@@ -31,8 +31,8 @@ index report =
     -- TODO: have the rendered create a default viewRoute if it's not specified
 
 index2 :: Report -> Report
-index2 report = 
-  report
+index2 rep = 
+  rep
   { status = ok200
   , viewRoute = ("default","index2")
   , viewTemplate = Nothing
@@ -40,23 +40,23 @@ index2 report =
 
 
 nosuchaction :: Report -> Report
-nosuchaction report =
-  report
+nosuchaction rep =
+  rep
   { status = ok200
   , viewRoute = ("default","nosuchaction")
   }
 
 inner :: Report -> Report 
-inner report =
-  report
+inner rep =
+  rep
   { status = ok200
   , viewRoute = ("default","inner")
-  , subReports = [("insideinnerkey",report {actRoute = ("default","insideinner")} )]
+  , subReports = [("insideinnerkey",rep {actRoute = ("default","insideinner")} )]
   }
 
 insideinner :: Report->Report
-insideinner report = 
-  report
+insideinner rep = 
+  rep
   { status = ok200
   , viewRoute = ("default","insideinner")
   }

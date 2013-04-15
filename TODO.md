@@ -6,7 +6,7 @@
 
 ### Miscellany
 
-Implement redirection, from one action, to another action.
+Parse GET and POST queries
 Implement a URL helper.
 Implement a simple form helper.
 

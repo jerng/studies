@@ -42,7 +42,7 @@ app = \req-> do
     then  finalRep
     else  finalRep { shownRequest = reqString }
 
-getReqCookies :: Report -> Report
+getReqCookies :: ReportHandler
 getReqCookies rep = 
   if    not Hell.Lib.useCookies  
   then  rep
@@ -55,7 +55,7 @@ getReqCookies rep =
 
 -- | The key file should be stored somewhere outside ./app, otherwise
 -- it is deleted every time MakeHell.main is run.
-initSession :: Maybe Key -> Maybe IV -> Report -> Report
+initSession :: Maybe Key -> Maybe IV -> ReportHandler
 initSession maybeKey maybeIv rep = rep 
   { key     = maybeKey
   , iv      = maybeIv
@@ -80,7 +80,7 @@ initSession maybeKey maybeIv rep = rep
 -- | This function sets a Report's (actRoute) based on its (request)'s (pathInfo)
 --  Maybe add a hook from here, to Hell.Conf.
 --  Maybe replace this with a regex-style actRouter, as many other frameworks have.
-actRouter :: Report -> Report
+actRouter :: ReportHandler
 actRouter rep = case pathInfo.fromJust.request...rep of
   []        -> rep  { actRoute = Hell.Lib.defaultRoute }
   "":[]     -> rep  { actRoute = Hell.Lib.defaultRoute }
@@ -94,7 +94,7 @@ actRouter rep = case pathInfo.fromJust.request...rep of
 -- i)   Requests for static files are acknowledged here.
 -- ii)  The Action's Route is checked against the list of existing Actions.
 -- iii)  If that Action isn't found, the Report is rerouted to a fail page.
-confirmAct :: Report -> Report
+confirmAct :: ReportHandler
 confirmAct rep = 
   let aR = actRoute rep
   in  if    aR == Hell.Lib.staticFileRoute
@@ -113,10 +113,10 @@ confirmAct rep =
 -- These two functions have been abstracted and grouped together, because their
 --  uses are rather similar, whereas they are called in very different places.
 --
-actOnRep :: Report -> Report
+actOnRep :: ReportHandler
 actOnRep rep = AppController.main rep
 
-actOnSubRep :: Report -> Report
+actOnSubRep :: ReportHandler
 actOnSubRep rep = AppController.subMain rep
 --
 -- ****************************************************************************
@@ -141,9 +141,11 @@ respond rep = ( if    static rep
 
 --  | Perhaps, included the ability to render Report { debug } to the
 -- ResponseHeaders; currently debug only happens in (respondWithBuilder).
+-- Does not send cookies with files; not sure if this is ideal.
 respondWithFile :: Report -> Response
 respondWithFile rep = 
-  ResponseFile status' headers filePath Nothing where
+  ResponseFile status' headers filePath Nothing 
+  where
     status'   = status rep
     headers   = resHeaders rep 
     filePath  = "./Files/" ++ (tUnpack $ tIntercalate "/" $ pathVars rep)
@@ -152,25 +154,31 @@ respondWithFile rep =
 -- used this way. At some point, I guess I'll refactor Hell so that they're
 -- utilised properly.
 respondWithBuilder :: Report -> Response
-respondWithBuilder rep = 
-  let reqString = shownRequest rep
-      rep'      = renderSubReps $ renderDebug rep
-      headers   = resHeaders rep'
-  in  ResponseBuilder (status rep') headers $ fromText $ 
-        case viewTemplate rep of
-          Nothing     -> repToText rep'
-          Just route  -> repToText rep' -- rendered template wrapper ("outer view") 
-            { viewTemplate = Nothing
-            , viewRoute = route
-            , viewBson =              -- rendered template contents ("inner view")
-                ( Hell.Lib.keyOfTemplatedView := String (repToText rep') )
-                -- DEBUG to VIEW: happens here.
-              : ( Hell.Lib.keyOfMetaView := String (meta rep') )
-              : viewBson rep' 
-            }
+respondWithBuilder rep = let { s = status rep } in
+  if    s == found302
+  then  ResponseBuilder found302 (resHeaders rep) $ fromText ""
+        -- CONSIDER: should a body of "click here etc." be included?
+  else
+    let reqString = shownRequest rep
+        rep'      = renderSubReps $ renderDebug rep
+        headers   = resHeaders rep'
+    in  ResponseBuilder (status rep') headers $ fromText $ 
+          case viewTemplate rep of
+            Nothing     -> repToText rep'
+            Just route  -> repToText rep' 
+              -- rendered template wrapper ("outer view") 
+              { viewTemplate = Nothing
+              , viewRoute = route
+              , viewBson =              
+                  -- rendered template contents ("inner view")
+                  ( Hell.Lib.keyOfTemplatedView := String (repToText rep') )
+                  -- DEBUG to VIEW: happens here.
+                : ( Hell.Lib.keyOfMetaView := String (meta rep') )
+                : viewBson rep' 
+              }
 
 -- | Append Report { debug } to Report { meta }.
-renderDebug :: Report -> Report
+renderDebug :: ReportHandler
 renderDebug rep =
   if  Hell.Lib.appMode == Production
   then rep
@@ -204,7 +212,7 @@ renderDebug rep =
     }
 
 -- | Render sub-reports, if any exist.
-renderSubReps :: Report -> Report
+renderSubReps :: ReportHandler
 renderSubReps rep = 
   let subRepToText (key,subReport) = 
         key := String ( repToText
@@ -219,7 +227,7 @@ renderSubReps rep =
           { viewBson = (viewBson rep) ++ (map subRepToText subReps) }
 
 -- Explore difference between (concat) and (++) here
-setResSessionCookie :: Report -> Report 
+setResSessionCookie :: ReportHandler 
 setResSessionCookie rep = rep
   { resCookies = flip (:) (resCookies rep) 
       ( Hell.Lib.defaultCookie 
@@ -251,7 +259,7 @@ setResSessionCookie rep = rep
   }
 
 -- Explore difference between (concat) and (++) here
-setResCookieHeaders :: Report -> Report
+setResCookieHeaders :: ReportHandler
 setResCookieHeaders rep = 
   if    not Hell.Lib.useCookies 
   then  rep 
