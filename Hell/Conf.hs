@@ -28,10 +28,10 @@ warpServer :: Application -> IO ()
 warpServer app = runSettings defaultSettings app
 
 appMode :: AppMode
-appMode = --Development0
-          -- Development1
-           Development2
-          -- Production
+appMode = Development0 -- auto includes more Report data
+          -- Development1 -- auto includes some Report data
+          -- Development2 -- manual debugs only
+          -- Production -- no debug messages
 
 -- ****************************************************************************
 -- Incompatible settings here should be caught by makeHell at pre-compile time.
@@ -76,7 +76,8 @@ defaultReport = Report  { request = Nothing
                         , reqCookies = []
                         , resCookies = []
                         , resHeaders = defaultHeaders
-                        , viewTemplate = defaultViewTemplate
+                        , viewTemplateRoute = defaultViewTemplate
+                        , postVars = []
                         , pathVars = []
                         , static = False
                         , debug = []

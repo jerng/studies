@@ -14,6 +14,9 @@ module Hell.Lib (
   -- | Defined in Control.Monad.Trans.Class:
   , lift
   
+  -- | Defined in Control.Monad.Trans.Resouce:
+  , runResourceT
+
   -- | Defined in Data.Bson:
   , (Bson.!?)
   , Bson.look
@@ -38,12 +41,14 @@ module Hell.Lib (
   , bsEmpty
   , bsConcat
   --, bsFindIndex
-  --, bsSplitAt
+  , bsSplit
   , bsTail
   , bsSpan
   , bsTakeWhile
 
   -- | Defined in Data.ByteString.Lazy:
+  -- | Defined in Data.Conduit:
+  , ($$)
 
   -- | Defined in Data.List:
   , nub
@@ -208,6 +213,7 @@ module Hell.Lib (
   , debugfps
   , redirectTo
   , (-->)
+  , sinkForRequestBody
 )  where
 
 import Blaze.ByteString.Builder.Char.Utf8 (fromText)
@@ -498,6 +504,8 @@ infixl 1 <<?
 
 -- | Invented for use where it is less noisy to use (a.b.c...d)
 -- instead of (a.b.c $ d) 
+--
+-- Also achieves things like (map ... T.pack.show $ fst (1,2) )
 --
 -- Perhaps to be avoided where it may be too subtle to use (a b... c.d.e... f g)
 -- instead of (a b $ c.d.e $ f g)

@@ -138,33 +138,51 @@ data Cookie = Cookie  { cookieName :: CookieAttribute -- essential
                       }
 
 {- I am giving serious thought to naming this data structure: (Hell).
-
 Record syntax may be useful in this context, as the Report will be updated
 at various points during the (Hell.Server) response.
-
+CONSIDER: a single BSON containing postVars, pathVars, and queryString
+such as CakePHP's $this->data
 -}
 
 data Report = Report
-  { session :: Session 
-  , request :: Maybe Request
+  { 
+    -- REQUEST ****************************************************************
+    request :: Maybe Request
       -- Network.Wai.Request
+  , reqCookies :: [(CookieAttribute,CookieValue)]
+  , session :: Session 
   , shownRequest :: String
-  , key :: Maybe Key
-  , iv :: Maybe IV
+  , pathVars :: [Text]
+      -- (pathInfo someRequest) less the first two heads (con:act:pathVars)
+  , postVars :: [(BS.ByteString, Maybe BS.ByteString)]
+      -- synonymous with Query from Network.HTTP.Types.URI
+
+    -- BUSINESS LOGIC ********************************************************
+  , static :: Bool
+      -- for serving static files
   , actRoute :: Route -- of Action
       -- We should only ever need one. To redirect from one to another, use a
       -- status300!
+  , actBson :: Document -- ActionDictionary
+      -- This should be the medium of communicating data within the Controller 
+      --  layer.
+  , action :: Action
+  , subReports :: ReportM
+      -- Outstanding views, which need to be rendered, then inserted into the
+      -- current View stipulated in viewRoute.
+
+    -- RESPONSE **************************************************************
   , viewRoute :: Route -- of View
       -- Again, we should only ever need one.  Addresses of subViews/widgets,
       -- in future development, should be communicated via the ViewDictionary.
-  , actBson :: Document -- ActionDictionary
-      -- This should be the medium of communicating most data from the 
-      -- Server through to the Controller layer.
-      -- Perhaps rename to (dataA).
-  , viewBson :: Document -- ViewDictionary
-      -- This should be the medium of communicating most data from the 
-      -- Controller layer to the View layer.
-      -- Perhaps rename to (dataV).
+  , viewTemplateRoute :: Maybe Route
+      -- experiments with templates.
+  , status :: Status
+      -- Network.Wai.Status
+  , resCookies :: [Cookie]
+      -- At some point these get added to resHeaders
+  , resHeaders :: [Header]
+      -- Network.HTTP.Headers.Header
   , meta :: Text
       -- This should move into the session when we have that.
       --
@@ -173,30 +191,17 @@ data Report = Report
       -- should contain metadata (information) about the Request/Response, 
       -- which  will be shown to the User regardless of which View is ultimately
       -- rendered to the User. CakePHP calls this a Flash message. 
-  , status :: Status
-      -- Network.Wai.Status
-  , reqCookies :: [(CookieAttribute,CookieValue)]
-  , resCookies :: [Cookie]
-      -- At some point these get added to resHeaders
-  , resHeaders :: [Header]
-      -- Network.HTTP.Headers.Header
-  , subReports :: ReportM
-      -- Outstanding views, which need to be rendered, then inserted into the
-      -- current View stipulated in viewRoute.
-  , viewTemplate :: Maybe Route
-      -- experiments with templates.
-  , pathVars :: [Text]
-      -- (pathInfo someRequest) less the first two heads (con:act:pathVars)
-  , static :: Bool
-      -- for serving static files
+  , viewBson :: Document -- ViewDictionary
+      -- This should be the medium of communicating most data from the 
+      -- Controller layer to the View layer.
+      -- Perhaps rename to (dataV).
+
   , debug :: [Text]
       -- bit'o'a dumpy arrangement for now
-  , action :: Action
-      -- Seems to help make Hell.Server functions more regular, i.e. like
-      -- each other... if we make pass everything through Report. I have no
-      -- idea at this time how this affects performance. Must test later.
-      -- 2013-04-13
 
+    -- UTILITY HEAP **********************************************************
+  , key :: Maybe Key
+  , iv :: Maybe IV
   } 
   --deriving (Show)
 

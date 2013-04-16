@@ -1,1 +1,31 @@
-sdsdf
+<form id="TheFormID" action="/test/form">
+  <fieldset>
+    <legend>The legend tag lables the fieldset; the fieldset tag draws a box.</legend>
+    <label for="text1" form="TheFormID">label1</label>
+    <input  id="text1" 
+            name="TheFieldName1"
+            value="sometextz"
+            form="TheFormID" 
+            autofocus 
+            required 
+            placeholder="I hold place." 
+            autocomplete="on"/>
+    <label for="text2" form="TheFormID">label2</label>
+    <input  id="text2" 
+            --name="TheFieldName2"
+            value="sometext"
+            form="TheFormID" 
+            autofocus 
+            placeholder="I hold place." 
+            autocomplete="on"/>
+    <label for="text3" form="TheFormID">label3</label>
+    <input  id="text3" 
+            name="TheFieldName3"
+            form="TheFormID" 
+            autofocus 
+            placeholder="I hold place." 
+            autocomplete="on"/>
+  </fieldset>
+  <input type="submit" formmethod="post" value="Submit using POST"/>
+  <input type="submit" formmethod="get" value="Submit using GET"/>
+</form>

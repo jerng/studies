@@ -12,7 +12,7 @@ index rep =
     , "someIntList" := Array [Int32 1,Int32 2, Int32 3]
     ]
   , subReports = [("innerkey", rep { actRoute = ("default", "inner") })] 
-  , viewTemplate = Just ("default","template")
+  , viewTemplateRoute = Just ("default","template")
   , resCookies = defaultCookie 
     { cookieName = "newCookie"
     , cookieValue = "newValue"
@@ -33,7 +33,7 @@ index2 :: Report -> Report
 index2 rep = 
   rep
   { status = ok200
-  , viewTemplate = Nothing
+  , viewTemplateRoute = Nothing
   }
 
 

@@ -19,6 +19,11 @@ main =  Hell.Lib.warpServer
 --    TODO: Allow per-action cookieless behaviour.
 app :: Request -> ResourceT IO Response 
 app = \req-> do
+  let post = "POST" == requestMethod req
+  reqBod <-
+    if    post 
+    then  lift.runResourceT...(requestBody req $$ sinkForRequestBody)
+    else  lift.return..."" -- Not sure if this is safer than "ignored"
   (maybeKey, maybeIv) <-  
     if    not Hell.Lib.useEncryption
     then  lift.return...(Nothing, Nothing)
@@ -29,8 +34,21 @@ app = \req-> do
       finalRep =  setResCookieHeaders
                 . setResSessionCookie
                 . actOnRep
+                  -- Within the Action, further authorisations may happen.
+                
+                -- . authorisationHere (in AppController?) 
+                  --  (depends on Authentication & details of Request)
+                
+                . ( if    post
+                    then  getPostVars reqBod
+                    else  id
+                  )
                 . confirmAct
                 . actRouter
+                  -- Based on normalised path variables
+
+                -- . authenticationHere (depends only on Session)
+                
                 . ( if    Hell.Lib.useSessions
                     then  initSession maybeKey maybeIv 
                     else  id
@@ -117,6 +135,17 @@ confirmAct rep =
           -- Perhaps unnecessarily wordy?
           -- Does GHC optimise-away messes like this?
 
+-- Use the same rules as Wai does for the Request {pathInfo}, where "key="
+-- gets translated to ("key", Just ""), and "key" to ("key",Nothing)
+getPostVars :: ByteString -> ReportHandler
+getPostVars reqBod rep = rep 
+  { postVars = map  ( \bs-> case bsSpan (/='=') bs of
+                        -- ("",_)  -> ("",Nothing) -- this should never happen
+                        (k,"")  -> (k, Nothing)
+                        (k,v)   -> (k, Just $ bsTail v) 
+                    ) $ bsSplit '&' reqBod 
+  }
+
 -- ****************************************************************************
 -- These two functions have been abstracted and grouped together, because their
 --  uses are rather similar, whereas they are called in very different places.
@@ -171,11 +200,11 @@ respondWithBuilder rep = let { s = status rep } in
         rep'      = renderSubReps $ renderDebug rep
         headers   = resHeaders rep'
     in  ResponseBuilder (status rep') headers $ fromText $ 
-          case viewTemplate rep of
+          case viewTemplateRoute rep of
             Nothing     -> repToText rep'
             Just route  -> repToText rep' 
               -- rendered template wrapper ("outer view") 
-              { viewTemplate = Nothing
+              { viewTemplateRoute = Nothing
               , viewRoute = route
               , viewBson =              
                   -- rendered template contents ("inner view")
@@ -194,27 +223,30 @@ renderDebug rep =
     { meta = tConcat 
         [ meta rep
         , tConcat
-          [ "<span class=\"debug\">Debug\
-          \ (Hell.Conf.appMode == "
-          , tPack.show...Hell.Lib.appMode
-          , ")</span>"
+          [ "<span class=\"debug\">Debug (Hell.Conf.appMode == "
+          , tPack.show...Hell.Lib.appMode , ")</span>"
           , tConcat $ map debugf $
             -- Finalise Report {debug} here. (?) 
             -- (After this, changes won't be output to View.)
               if    Hell.Lib.appMode > Development1
               then  reverse.debug...rep
-              else  
-                    tAppend (tPack.shownRequest...rep) "<br/>"
-                  : ( tIntercalate "<br/>  " $ "request cookies" :
-                      
-                      ( --- MOVE to Hell.Lib.showCookie or Show instance
-                        map (\(k,v)-> tConcat 
-                              [ tPack.show...k, " : " , tPack.show...v] ) $
-                        reqCookies rep
+              else  tAppend (tPack.shownRequest...rep) "<br/>"
+                    : tAppend "session<br/>" (showDoc 0 $ session rep)
+                    : ( tIntercalate "<br/>  " $ 
+                        "Request { postVars }" 
+                        : ( map ... tPack.show $ postVars rep )
                       )
-                    )
-                  : tAppend "session<br/>" (showDoc 0 $ session rep)
-                  : reverse.debug...rep
+                    : ( tIntercalate "<br/>  " $ 
+                        "Request { reqCookies }" 
+                        : ( map 
+                            (\(k,v)-> tConcat [ tPack.show...k
+                                              , " : " 
+                                              , tPack.show...v
+                                              ] 
+                            ) $ reqCookies rep 
+                          ) --- MOVE to Hell.Lib.showCookie or Show instance
+                      )
+                    : reverse.debug...rep
           ]  
         ]
     }
@@ -246,10 +278,12 @@ setResSessionCookie rep = rep
           else  let maybeKey  = key rep
                     maybeIv   = iv rep
                     key'      = fromMaybe 
-                                (error "setResSessionCookie: Report has no encryption Key")
+                                (error "setResSessionCookie:\
+                                \ Report has no encryption Key")
                                 maybeKey
                     iv'       = fromMaybe
-                                (error "setResSessionCookie: Report has no encryption IV")
+                                (error "setResSessionCookie:\
+                                \ Report has no encryption IV")
                                 maybeIv
                 in  encrypt key' iv' $ encdoc $ session rep
 
