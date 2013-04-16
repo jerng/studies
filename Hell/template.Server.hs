@@ -262,7 +262,7 @@ renderDebug rep =
           , tConcat $ map debugf $
             -- Finalise Report {debug} here. (?) 
             -- (After this, changes won't be output to View.)
-              if    Hell.Lib.appMode > Development1
+              if    Hell.Lib.appMode > SemiAutoDebug
               then  reverse.debug...rep
               else  tAppend (tPack.shownRequest...rep) "<br/>"
                     : ( tIntercalate "<br/>  " $ 
@@ -275,7 +275,7 @@ renderDebug rep =
                             ) $ reqCookies rep 
                           ) --- MOVE to Hell.Lib.showCookie or Show instance
                       )
-                    : tAppend "session<br/>" (showDoc 0 $ session rep)
+                    : tAppend "session<br/>" (showDoc False 0 $ session rep)
                     : ( tIntercalate "<br/>  " $ 
                         "Request { postVars }" 
                         : ( map ... tPack.show $ postVars rep )

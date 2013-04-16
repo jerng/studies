@@ -240,7 +240,7 @@ import Data.Maybe (fromMaybe,isJust)
 import Data.String.Utils (replace)
 import qualified 
        Data.Text as T (concat, pack, toLower, intercalate, lines, unlines,
-       splitOn, replace, append, take, words, unpack, replicate )
+       splitOn, replace, append, take, words, unpack, replicate, tail )
 import qualified 
        Data.Text.IO as T (readFile,writeFile,putStrLn)
 import Data.Text.Encoding (decodeUtf8{-, encodeUtf8-})
@@ -291,6 +291,9 @@ bsTail = BS.tail
 
 bsTakeWhile :: (Char -> Bool) -> ByteString -> ByteString
 bsTakeWhile = BS.takeWhile
+
+tTail :: Text -> Text
+tTail = T.tail
 
 tConcat :: [Text] -> Text
 tConcat = T.concat
@@ -423,33 +426,33 @@ showRequest resIOreq = do
   -- This is so not-optimised :P
   lift.return.concat $
     [ "Request {"
-    , if Hell.Conf.appMode > Development0 then " <b>(set appMode ==\
-      \ Development0 to see more fields)</b>" else "", "\n  "
-    , if Hell.Conf.appMode > Development0 then "" else
+    , if Hell.Conf.appMode > FullAutoDebug then " <b>(set appMode ==\
+      \ FullAutoDebug to see more fields)</b>" else "", "\n  "
+    , if Hell.Conf.appMode > FullAutoDebug then "" else
       concat ["<b>vault</b> = ", vault'', ", \n\n  "]
 
     , "<b>remoteHost</b> = ", remoteHost'', ", \n  "
     , "<b>isSecure</b> = ", isSecure'', ","
-    , if Hell.Conf.appMode > Development0 then "" else "\n", "\n  "  
+    , if Hell.Conf.appMode > FullAutoDebug then "" else "\n", "\n  "  
 
     , "<b>serverName</b> = ", serverName'', ", \n  " 
     , "<b>serverPort</b> = ", serverPort'' , ","
-    , if Hell.Conf.appMode > Development0 then "" else "\n", "\n  "  
+    , if Hell.Conf.appMode > FullAutoDebug then "" else "\n", "\n  "  
 
     , "<b>rawPathInfo</b> = ", rawPathInfo'', ", \n  "
-    , if Hell.Conf.appMode > Development0 then "" else
+    , if Hell.Conf.appMode > FullAutoDebug then "" else
       concat ["<b>pathInfo</b> = ", pathInfo'', ", \n\n  "]
 
     , "<b>rawQueryString</b> = ", rawQueryString'', ", \n  "
-    , if Hell.Conf.appMode > Development0 then "" else
+    , if Hell.Conf.appMode > FullAutoDebug then "" else
       concat ["<b>queryString</b> = ", queryString'', ", \n\n  "]
 
     , "<b>httpVersion</b> = ", httpVersion'', ", \n  "
     , "<b>requestMethod</b> = ", requestMethod'', ", \n  "
     , "<b>requestHeaders</b> = ", requestHeaders'' , ","
-    , if Hell.Conf.appMode > Development0 then "" else "\n", "\n  "  
+    , if Hell.Conf.appMode > FullAutoDebug then "" else "\n", "\n  "  
 
-    , if Hell.Conf.appMode > Development0 then "" else
+    , if Hell.Conf.appMode > FullAutoDebug then "" else
       concat ["<b>requestBodyLength</b> = ", requestBodyLength'', ", \n  "]
 
     , "<b>requestBody</b> = ", requestBody'', " \n"
@@ -523,60 +526,57 @@ infixr 8 ...
 -- fld : fields
 -- val : values
 -- col : collection
-showBson :: [Document] -> Text
-showBson docList = tIntercalate "\n" (map (showDoc 0) docList)
 
 -- Indentation token could be moved to Hell.Conf
 showInd :: Int -> Text
-showInd ind = tReplicate ind "\t"
+showInd ind = tReplicate ind "    "
 
-showDoc :: Int -> Document -> Text
-showDoc ind doc = tConcat $! "[\n"
-  : tIntercalate ",\n" (map (showFld (ind+1)) doc)
+showDoc :: Bool -> Int -> Document -> Text
+showDoc types ind doc = tConcat $ (tConcat ["\n", showInd ind,"["])
+  : tIntercalate (tConcat ["\n",showInd ind,","] ) 
+    (map (showFld types (ind+1)) doc)
   : "\n"
   : showInd ind
-  : "]\n"
-  : ( showInd ind )
+  : "]<span class=\"type-signature\"> :: [Document]</span>"
   : []  
 
-showArr :: Int -> [Value] -> Text
-showArr ind arr = tConcat $! "[\n"
-  : tIntercalate ",\n"
-    (map (\v -> tConcat [ showInd (ind+1), showVal (ind+1) v ]) arr)
+showArr :: Bool->Int -> [Value] -> Text
+showArr types ind arr = tConcat $ (tConcat ["\n", showInd ind,"["])
+  : tIntercalate (tConcat ["\n",showInd ind,","] )
+    (map (\v -> tConcat [ showInd 1, showVal types (ind+1) v ]) arr)
   : "\n"
   : showInd ind
-  : "]\n"
-  : showInd ind 
+  : "]"
   : []
 
-showFld :: Int -> Field -> Text
-showFld ind fld@((:=) {label=l, value=v }) = tConcat $! showInd ind
+showFld :: Bool->Int -> Field -> Text
+showFld types ind fld@((:=) {label=l, value=v }) = tConcat $ (tTail $ showInd 1)
   : T.pack(show l)
   : " =: "
-  : showVal ind v
+  : showVal types ind v
   : []
 
-showVal :: Int -> Value -> Text
-showVal ind val = case val of 
-  Float v     -> tConcat [T.pack(show v)," (Float Double)"]
-  String v    -> tConcat [T.pack(show v)," (String Text)"]
-  Doc v       -> tConcat [showDoc ind v,"(Doc Document)"]
-  Array v     -> tConcat [showArr ind v,"(Array [Value])"]
-  Bin v       -> tConcat [T.pack(show v)," (Bin Binary)"]
-  Fun v       -> tConcat [T.pack(show v)," (Fun Function)"]
-  Uuid v      -> tConcat [T.pack(show v)," (Uuid UUID)"]
-  Md5 v       -> tConcat [T.pack(show v)," (Md5 MD5)"]
-  UserDef v   -> tConcat [T.pack(show v)," (UserDef UserDefined)"]
-  ObjId v     -> tConcat [T.pack(show v)," (ObjId ObjectId)"]
-  UTC v       -> tConcat [T.pack(show v)," (UTC UTCTime)"]
-  Null        ->                          "Null (Null)"
-  RegEx v     -> tConcat [T.pack(show v)," (RegEx Regex)"]
-  JavaScr v   -> tConcat [T.pack(show v)," (JavaScr Javascript)"]
-  Sym v       -> tConcat [T.pack(show v)," (Sym Symbol)"]
-  Int32 v     -> tConcat [T.pack(show v)," (Int32 Int32)"]
-  Int64 v     -> tConcat [T.pack(show v)," (Int64 Int64)"]
-  Stamp v     -> tConcat [T.pack(show v)," (Stamp MongoStamp)"]
-  MinMax v    -> tConcat [T.pack(show v)," (MinMax MinMaxKey)"]
+showVal :: Bool -> Int -> Value -> Text
+showVal types ind val = case val of 
+  Float v     -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: Float Double</span>"else ""]
+  String v    -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: String Text</span>"else ""]
+  Doc v       -> showDoc types ind v
+  Array v     -> tConcat [showArr types ind v,if types then "<span class=\"type-signature\"> :: Array [Value]</span>"else""]
+  Bin v       -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: Bin Binary</span>"else ""]
+  Fun v       -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: Fun Function</span>"else ""]
+  Uuid v      -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: Uuid UUID</span>"else ""]
+  Md5 v       -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: Md5 MD5</span>"else ""]
+  UserDef v   -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: UserDef UserDefined</span>"else ""]
+  ObjId v     -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: ObjId ObjectId</span>"else ""]
+  UTC v       -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: UTC UTCTime</span>"else ""]
+  Null        -> tConcat ["Null",if types then "<span class=\"type-signature\"> :: Null</span>"else""]
+  RegEx v     -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: RegEx Regex</span>"else ""]
+  JavaScr v   -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: JavaScr Javascript</span>"else ""]
+  Sym v       -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: Sym Symbol</span>"else ""]
+  Int32 v     -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: Int32 Int32</span>"else ""]
+  Int64 v     -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: Int64 Int64</span>"else ""]
+  Stamp v     -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: Stamp MongoStamp</span>"else ""]
+  MinMax v    -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: MinMax MinMaxKey</span>"else ""]
 
 -- | Collections; maybe later.
 -- Data.MongoDB.Query.Collection 

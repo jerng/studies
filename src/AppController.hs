@@ -12,7 +12,7 @@ import Hell.Lib
 main :: Report -> Report
 main rep = 
   let r = action rep $ rep
-  in  r <<? tAppend "Request {easy}:" ... showDoc 0 ... easy r    
+  in  r <<? tAppend "Request {easy}:" ... showDoc True 0 ... easy r    
 
 -- | Hell.Server.applyActionToSubReport calls this.
 subMain :: Report -> Report

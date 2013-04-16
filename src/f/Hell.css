@@ -54,6 +54,17 @@ body {
   }
 
 .debug span:hover {
-  font-size: 1.3em;
-  background: #ff5500
+  --font-size: 1.3em;
+  background: #ffaa00
+  }
+
+.debug .type-signature {
+  font-size: 0.6em;
+  background:#0000ff;
+  color:#fff;
+  }
+
+.debug .type-signature:hover {
+  font-size: 1em;
+  background:#0000ff;
   }

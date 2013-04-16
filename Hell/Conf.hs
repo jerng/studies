@@ -28,10 +28,10 @@ warpServer :: Application -> IO ()
 warpServer app = runSettings defaultSettings app
 
 appMode :: AppMode
-appMode = -- Development0 -- auto includes more Report data
-          -- Development1 -- auto includes some Report data
-           Development2 -- manual debugs only
-          -- Production -- no debug messages
+appMode = -- FullAutoDebug 
+          -- SemiAutoDebug
+            ManualDebug
+          -- Production
 
 easyMode :: Bool
 easyMode = True

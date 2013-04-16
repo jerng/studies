@@ -233,9 +233,9 @@ data Unrendered = Plain Text
                 | Exp Text
                 deriving (Show)
 
-data AppMode  = Development0
-              | Development1
-              | Development2
+data AppMode  = FullAutoDebug
+              | SemiAutoDebug
+              | ManualDebug 
               | Production
               deriving (Eq,Ord,Show)
 
