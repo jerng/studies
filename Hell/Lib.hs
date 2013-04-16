@@ -122,7 +122,6 @@ module Hell.Lib (
   , messageJobDone
   , scriptExtension
   , viewExtension
-  , viewBsonHelpers
   , ViewExpression
 
   , toText

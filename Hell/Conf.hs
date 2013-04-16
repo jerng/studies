@@ -246,20 +246,6 @@ messageStartTryHell = "Running source code of ./app/Server.hs ...\n"
 messageJobDone :: Text
 messageJobDone = "... and the job is done.\n"
 
-viewBsonHelpers :: Text 
-viewBsonHelpers = 
-  "  view label = lookupBsonVal label (viewBson rep)"
---  "   viewInt key = fromMaybe (error $ \"viewInt key missing in action, and view: \" ++ show (actRoute rep) ++ show (viewRoute rep)) $\
---  \     lookupBsonVal key (viewBson rep) :: Int\n\
---  \   viewFloat key = fromMaybe (error $ \"viewFloat key missing in action, and view: \" ++ show (actRoute rep) ++ show (viewRoute rep))  $\
---  \     lookupBsonVal key (viewBson rep) :: Float\n\
---  \   viewText key = fromMaybe (error $ \"viewText key missing in action, and view: \" ++ show (actRoute rep) ++ show (viewRoute rep))  $\
---  \     lookupBsonVal key (viewBson rep) :: Text\n\
---  \   viewIntList key = fromMaybe (error $ \"viewIntList key missing in action, and view: \" ++ show (actRoute rep) ++ show (viewRoute rep))  $\
---  \     lookupBsonVal key (viewBson rep) :: [Int]\n"
-
-  -- TODO: Try and see if a class can introduce ad hoc polymorphism here.
-
 class ViewExpression a where
   toText :: a -> Text
 

@@ -133,8 +133,8 @@ unrenderedToModuleText count acc remainingList
   | [] <- remainingList
   = tConcat 
     [ acc 
-    , "main :: Report -> Text\n\
-      \main rep =\n\
+    , "main :: Document -> Text\n\
+      \main doc =\n\
       \  tConcat\n\
       \  [ "
     , tIntercalate "\n  , " $ map 
@@ -142,7 +142,7 @@ unrenderedToModuleText count acc remainingList
                             tConcat 
                             [ "text" 
                             , (tPack $ show x)
-                            , " rep"
+                            , " doc"
                             ]
                           ) 
                           [1..(count-1)] 
@@ -158,7 +158,7 @@ unrenderedToModuleText count acc remainingList
       [ acc 
       , "text"
       , tPack $ show count
-      , " :: Report -> Text\ntext"
+      , " :: Document -> Text\ntext"
       , tPack $ show count
       , " _ = \""
       , ( textToHsSyntax text )
@@ -174,15 +174,14 @@ unrenderedToModuleText count acc remainingList
       [ acc 
       , "text"
       , tPack $ show count
-      , " :: Report -> Text\ntext"
+      , " :: Document -> Text\ntext"
       , tPack $ show count
-      , " rep = "
+      , " doc = "
       , tConcat 
           [ " toText (\n" 
           , tUnlines $ map (tAppend "    ") $ tLines text
           , "  )\n\
-            \  where\n"
-          , viewBsonHelpers
+            \  where view label = lookupBsonVal label doc"
           ,"\n\n"
           ]
       ]

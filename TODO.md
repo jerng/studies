@@ -6,15 +6,10 @@
 
 ### Miscellany
 
-Parse GET and POST queries
+Simplify the Report datatype.
+
 Implement a URL helper.
 Implement a simple form helper.
-
-Rewire Views so that Reports never get sent to View.
-Perhaps only send Report { viewBson } to Views.
-Consider sending only Text, Int, and Float, to views. 
-  (Perhaps a new type, limited BSON)
-
 Implement authentication.
 
 Make giant re-exportation library to turn T.append into tAppend, 

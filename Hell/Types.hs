@@ -162,7 +162,7 @@ data Report = Report
       -- for serving static files
   , actRoute :: Route -- of Action
       -- We should only ever need one. To redirect from one to another, use a
-      -- status300!
+      -- status302!
   , actBson :: Document -- ActionDictionary
       -- This should be the medium of communicating data within the Controller 
       --  layer.
@@ -195,7 +195,6 @@ data Report = Report
       -- This should be the medium of communicating most data from the 
       -- Controller layer to the View layer.
       -- Perhaps rename to (dataV).
-
   , debug :: [Text]
       -- bit'o'a dumpy arrangement for now
 

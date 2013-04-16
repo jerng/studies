@@ -27,9 +27,16 @@ app = \req-> do
   (maybeKey, maybeIv) <-  
     if    not Hell.Lib.useEncryption
     then  lift.return...(Nothing, Nothing)
-    else  lift $ do key <- getDefaultKey
-                    iv <- randomIV
-                    return (Just key, Just iv)
+    else  lift $ do 
+            key <- getDefaultKey
+                  -- This method generates & uses ./app/client_session_key.aes
+                  -- Alternatively, this could be stored in Hell.Conf, like
+                  -- CakePHP 1.2 did, I suppose.
+            iv <- randomIV
+                  -- This method generates a new IV upon every request. 
+                  -- Alternatively, this could be stored in Hell.Conf, like
+                  -- CakePHP 1.2 did, I suppose.
+            return (Just key, Just iv)
   let rep' = Hell.Lib.defaultReport {request = Just req}
       finalRep =  setResCookieHeaders
                 . setResSessionCookie
@@ -231,11 +238,6 @@ renderDebug rep =
               if    Hell.Lib.appMode > Development1
               then  reverse.debug...rep
               else  tAppend (tPack.shownRequest...rep) "<br/>"
-                    : tAppend "session<br/>" (showDoc 0 $ session rep)
-                    : ( tIntercalate "<br/>  " $ 
-                        "Request { postVars }" 
-                        : ( map ... tPack.show $ postVars rep )
-                      )
                     : ( tIntercalate "<br/>  " $ 
                         "Request { reqCookies }" 
                         : ( map 
@@ -245,6 +247,11 @@ renderDebug rep =
                                               ] 
                             ) $ reqCookies rep 
                           ) --- MOVE to Hell.Lib.showCookie or Show instance
+                      )
+                    : tAppend "session<br/>" (showDoc 0 $ session rep)
+                    : ( tIntercalate "<br/>  " $ 
+                        "Request { postVars }" 
+                        : ( map ... tPack.show $ postVars rep )
                       )
                     : reverse.debug...rep
           ]  
@@ -309,20 +316,20 @@ setResCookieHeaders rep =
 -- | Takes Report from a Controller, returns a Text.
 repToText :: Report -> Text
 repToText r = 
-  fromMaybe
-  ( fromMaybe 
-    (error "repToText: Hell.Lib.missingViewRoute is itself missing. Shucks.") $
-    getView Hell.Lib.missingViewRoute
-  )
-  ( getView $ viewRoute r )
-  r
+  ( fromMaybe
+    ( fromMaybe 
+      (error "repToText: Hell.Lib.missingViewRoute is itself missing. Shucks.") $
+      getView Hell.Lib.missingViewRoute
+    )
+    ( getView $ viewRoute r )
+  ) $ viewBson r 
 
 getAct :: Route -> Maybe Action
 getAct r 
   {-makeHell:ListActions-}
   | _ <- r = Nothing
 
-getView :: Route -> Maybe (Report -> Text)
+getView :: Route -> Maybe (Document -> Text)
 getView r 
   {-makeHell:ListViews-}
   | _ <- r = Nothing
