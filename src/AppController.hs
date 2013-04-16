@@ -10,8 +10,10 @@ import Hell.Lib
 
 -- | Hell.Server.applyActionToReport calls this.
 main :: Report -> Report
-main report = action report $ report
+main rep = 
+  let r = action rep $ rep
+  in  r <<? tAppend "Request {easy}:" ... showDoc 0 ... easy r    
 
 -- | Hell.Server.applyActionToSubReport calls this.
 subMain :: Report -> Report
-subMain report = action report $ report
+subMain rep = action rep $ rep

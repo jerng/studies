@@ -28,10 +28,13 @@ warpServer :: Application -> IO ()
 warpServer app = runSettings defaultSettings app
 
 appMode :: AppMode
-appMode = Development0 -- auto includes more Report data
+appMode = -- Development0 -- auto includes more Report data
           -- Development1 -- auto includes some Report data
-          -- Development2 -- manual debugs only
+           Development2 -- manual debugs only
           -- Production -- no debug messages
+
+easyMode :: Bool
+easyMode = True
 
 -- ****************************************************************************
 -- Incompatible settings here should be caught by makeHell at pre-compile time.
@@ -62,6 +65,7 @@ undecryptableSession = ["error":= String "undecryptable"]
 -- affects memory use. Testing will be required.
 defaultReport :: Report
 defaultReport = Report  { request = Nothing
+                        , easy = []
                         , shownRequest = ""
                         , key = Nothing
                         , iv = Nothing

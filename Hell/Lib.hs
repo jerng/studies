@@ -86,6 +86,7 @@ module Hell.Lib (
   , decodeUtf8
 
   -- | Defined in Hell.Conf:
+  , easyMode
   , defaultSession
   , undecryptableSession
   , useCookies
@@ -527,7 +528,7 @@ showBson docList = tIntercalate "\n" (map (showDoc 0) docList)
 
 -- Indentation token could be moved to Hell.Conf
 showInd :: Int -> Text
-showInd ind = tReplicate ind "  "
+showInd ind = tReplicate ind "\t"
 
 showDoc :: Int -> Document -> Text
 showDoc ind doc = tConcat $! "[\n"

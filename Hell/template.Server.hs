@@ -46,6 +46,10 @@ app = \req-> do
                 -- . authorisationHere (in AppController?) 
                   --  (depends on Authentication & details of Request)
                 
+                . ( if    easyMode 
+                    then  populateEasy
+                    else  id 
+                  )
                 . ( if    post
                     then  getPostVars reqBod
                     else  id
@@ -152,6 +156,29 @@ getPostVars reqBod rep = rep
                         (k,v)   -> (k, Just $ bsTail v) 
                     ) $ bsSplit '&' reqBod 
   }
+
+populateEasy :: ReportHandler
+populateEasy rep = rep { easy = easy'} where 
+  easy' = 
+    [ "controller"  := String ... fst ... actRoute rep
+    , "action"      := String ... snd ... actRoute rep
+    , "session"     := Doc ... session rep 
+    , "request"     := Doc 
+      [ "path" := Array ... map String ... pathVars rep
+      , "query" := Doc 
+        ... map 
+            ( \(bs,maybeBs)-> 
+              decodeUtf8 bs := maybe Null ((String).decodeUtf8) maybeBs )
+        ... queryString
+        ... fromMaybe (error "populateEasy: no Request")
+        ... request rep
+      , "post" := Doc
+        ... map 
+            ( \(bs,maybeBs)-> 
+              decodeUtf8 bs := maybe Null ((String).decodeUtf8) maybeBs )
+        ... postVars rep
+      ]
+    ]
 
 -- ****************************************************************************
 -- These two functions have been abstracted and grouped together, because their
