@@ -63,7 +63,7 @@ undecryptableSession =  ["error":= String "undecryptable"]
 -- affects memory use. Testing will be required.
 defaultReport :: Report
 defaultReport = Report  { request = Nothing
-                        , bson = 
+                        , data_ = 
                           [ "session" := Doc defaultSession ]
                         , shownRequest = ""
                         , key = Nothing

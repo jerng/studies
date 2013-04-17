@@ -20,7 +20,7 @@ module Hell.Lib (
   -- | Defined in Data.Bson:
   , (Bson.!?)
   , Bson.look
-  --, bsonLookup {-is a synonym -}
+  --, data_Lookup {-is a synonym -}
   , Bson.valueAt
   , Bson.at
   , Bson.include
@@ -212,6 +212,8 @@ module Hell.Lib (
   , (?>>)
   , (<<?)
   , (...)
+  , (>...)
+  , (>.)
   , showDoc
   , debugf
   , debugfps
@@ -480,6 +482,7 @@ showHeader :: Header -> String
 showHeader (headerName,headerValue) =
   concat  [ show headerName , " : " , show headerValue ]
 
+-- TODO: At least, we should be able to print Vault keys...
 instance Show Vault where
   show _ = "a :: Vault"
 
@@ -517,8 +520,20 @@ infixl 1 <<?
 --
 -- Perhaps to be avoided where it may be too subtle to use (a b... c.d.e... f g)
 -- instead of (a b $ c.d.e $ f g)
+(...) :: (a -> b) -> a -> b
 f ... a = f a
 infixr 8 ...
+
+-- The mirror of (...)
+(>...) :: a -> (a -> b) -> b
+a >... f = f a
+infixl 8 <...
+
+
+-- The mirror of (.)
+(>.) :: (a -> b) -> (b -> c) -> a -> c 	-- Defined in `GHC.Base'
+g >. f = \x -> f (g x)
+infixl 9 <.
 
 --------------------------------------------------------------------------------
 -- Could be rewritten to be somewhat more Haskellian. Consider.

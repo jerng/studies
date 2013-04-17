@@ -11,8 +11,6 @@ Framework already does most hard stuff.
 Make data access more ergonomic.
 See http://localhost:3000/test/form and proceed.
 
-Simplify the Report datatype.
-
 Implement a URL helper.
 Implement a simple form helper.
 Implement authentication.

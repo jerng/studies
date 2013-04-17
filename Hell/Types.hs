@@ -160,7 +160,7 @@ data Report = Report
     -- BUSINESS LOGIC ********************************************************
   , static :: Bool
       -- for serving static files
-  , bson :: Document
+  , data_ :: Document
       -- Goto for form data, model data, like CakePHP's $controller->data 
   , actRoute :: Route -- of Action
       -- We should only ever need one. To redirect from one to another, use a

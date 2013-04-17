@@ -144,9 +144,9 @@ getPostVars :: ByteString -> ReportHandler
 getPostVars reqBod rep = rep { postQuery = parseQuery reqBod }
 
 populateBson :: ReportHandler
-populateBson rep = rep { bson = merge bson' $ bson rep} where 
-  bson' = 
-    [ "TEMP (until Request {bson} is normalised from forms to models)"     := Doc 
+populateBson rep = rep { data_ = merge data_' $ data_ rep} where 
+  data_' = 
+    [ "TEMP (until Request {data_} is normalised from forms to models)"     := Doc 
       [ "path" := Array ... map String ... pathVars rep
       , "query" := Doc 
         ... map 
