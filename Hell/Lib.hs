@@ -86,7 +86,6 @@ module Hell.Lib (
   , decodeUtf8
 
   -- | Defined in Hell.Conf:
-  , easyMode
   , defaultSession
   , undecryptableSession
   , useCookies

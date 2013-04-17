@@ -158,7 +158,7 @@ data Report = Report
       -- synonymous with Query from Network.HTTP.Types.URI
 
     -- BUSINESS LOGIC ********************************************************
-  , easy :: Document
+  , bson :: Document
       -- experimental shorthand for developers
   , static :: Bool
       -- for serving static files

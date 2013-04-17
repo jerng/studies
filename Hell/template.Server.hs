@@ -38,35 +38,26 @@ app = \req-> do
                   -- CakePHP 1.2 did, I suppose.
             return (Just key, Just iv)
   let rep' = Hell.Lib.defaultReport {request = Just req}
-      finalRep =  setResCookieHeaders
-                . setResSessionCookie
-                . actOnRep
-                  -- Within the Action, further authorisations may happen.
-                
-                -- . authorisationHere (in AppController?) 
-                  --  (depends on Authentication & details of Request)
-                
-                . ( if    easyMode 
-                    then  populateEasy
-                    else  id 
-                  )
-                . ( if    post
-                    then  getPostVars reqBod
-                    else  id
-                  )
-                . confirmAct
-                . actRouter
-                  -- Based on normalised path variables
-
-                -- . authenticationHere (depends only on Session)
-                
-                . ( if    Hell.Lib.useSessions
-                    then  initSession maybeKey maybeIv 
-                    else  id
-                  )
-               .  getReqCookies...rep'
-  reqString <- showRequest $ 
-    lift.return.fromMaybe (error "app: no Request") $ request finalRep 
+      finalRep =  
+        setResCookieHeaders
+        .setResSessionCookie
+        .actOnRep
+          -- Within the Action, further authorisations may happen.
+        -- . authorisationHere (in AppController?) 
+          --  (depends on Authentication & details of Request)
+        .populateBson
+        .( if post then getPostVars reqBod else id )
+        .confirmAct
+        .actRouter
+          -- Based on normalised path variables
+        -- . authenticationHere (depends only on Session)
+        .( if Hell.Lib.useSessions then initSession maybeKey maybeIv else id)
+        .getReqCookies...rep'
+  reqString <- 
+      showRequest
+      .lift
+      .return
+      .fromMaybe (error "app: no Request")...request finalRep 
   lift.return.respond...
     if    Hell.Lib.appMode == Production
     then  finalRep
@@ -157,9 +148,9 @@ getPostVars reqBod rep = rep
                     ) $ bsSplit '&' reqBod 
   }
 
-populateEasy :: ReportHandler
-populateEasy rep = rep { easy = easy'} where 
-  easy' = 
+populateBson :: ReportHandler
+populateBson rep = rep { bson = bson'} where 
+  bson' = 
     [ "controller"  := String ... fst ... actRoute rep
     , "action"      := String ... snd ... actRoute rep
     , "session"     := Doc ... session rep 
@@ -170,7 +161,7 @@ populateEasy rep = rep { easy = easy'} where
             ( \(bs,maybeBs)-> 
               decodeUtf8 bs := maybe Null ((String).decodeUtf8) maybeBs )
         ... queryString
-        ... fromMaybe (error "populateEasy: no Request")
+        ... fromMaybe (error "populateBson: no Request")
         ... request rep
       , "post" := Doc
         ... map 

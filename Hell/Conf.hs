@@ -33,9 +33,6 @@ appMode = -- FullAutoDebug
             ManualDebug
           -- Production
 
-easyMode :: Bool
-easyMode = True
-
 -- ****************************************************************************
 -- Incompatible settings here should be caught by makeHell at pre-compile time.
 --
@@ -65,7 +62,7 @@ undecryptableSession = ["error":= String "undecryptable"]
 -- affects memory use. Testing will be required.
 defaultReport :: Report
 defaultReport = Report  { request = Nothing
-                        , easy = []
+                        , bson = []
                         , shownRequest = ""
                         , key = Nothing
                         , iv = Nothing
