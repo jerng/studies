@@ -527,13 +527,13 @@ infixr 8 ...
 -- The mirror of (...)
 (>...) :: a -> (a -> b) -> b
 a >... f = f a
-infixl 8 <...
+infixl 8 >...
 
 
 -- The mirror of (.)
 (>.) :: (a -> b) -> (b -> c) -> a -> c 	-- Defined in `GHC.Base'
 g >. f = \x -> f (g x)
-infixl 9 <.
+infixl 9 >.
 
 --------------------------------------------------------------------------------
 -- Could be rewritten to be somewhat more Haskellian. Consider.

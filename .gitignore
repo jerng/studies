@@ -6,3 +6,5 @@ MakeHell
 TryHell
 *.swp
 *.vim
+cabal-dev
+dist
