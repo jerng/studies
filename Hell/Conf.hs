@@ -10,6 +10,7 @@ import qualified
        Data.Text as T
 import Hell.Types
 import System.Directory
+import Network.HTTP.Types.Header
 import Network.Wai
 import Network.Wai.Handler.Warp
 
@@ -51,34 +52,33 @@ useCookies = True
 --
 -- ****************************************************************************
 
-defaultSession :: Session
-defaultSession = ["data" := Null ] 
+defaultSession :: Document -- Session
+defaultSession = ["data":=Null] 
 
 -- | This is probably a temporary solution/mechanism
-undecryptableSession :: Session
-undecryptableSession = ["error":= String "undecryptable"]
+undecryptableSession :: Document -- Session
+undecryptableSession =  ["error":= String "undecryptable"]
 
 -- I would really like to know how all this setting of defaults
 -- affects memory use. Testing will be required.
 defaultReport :: Report
 defaultReport = Report  { request = Nothing
-                        , bson = []
+                        , bson = 
+                          [ "session" := Doc defaultSession ]
                         , shownRequest = ""
                         , key = Nothing
                         , iv = Nothing
                         , session = defaultSession 
-                        , actBson = [] 
                         , actRoute = defaultRoute
                         , viewRoute = defaultRoute
                         , viewBson = []
                         , subReports = []
-                        , meta = ""
                         , status = defaultStatus 
                         , reqCookies = []
                         , resCookies = []
                         , resHeaders = defaultHeaders
                         , viewTemplateRoute = defaultViewTemplate
-                        , postVars = []
+                        , postQuery = []
                         , pathVars = []
                         , static = False
                         , debug = []
@@ -126,7 +126,9 @@ defaultViewTemplate :: Maybe Route
 defaultViewTemplate = Just ("default","template")
 
 defaultHeaders :: [Header]
-defaultHeaders = []
+defaultHeaders = 
+  [ (hContentType,"text/html")
+  ]
 
 defaultStatus :: Status
 defaultStatus = accepted202

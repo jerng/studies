@@ -182,6 +182,11 @@ module Hell.Lib (
   , CookieAVPair
   , Cookie (..)
   
+  -- | Defined in Network.HTTP.Types
+  --, urlDecode
+  --, urlEncode
+  , parseQuery
+
   -- | Defined in Network.HTTP.Types.Header
   --, hCookie
   , hLocation
@@ -245,6 +250,7 @@ import qualified
 import Data.Text.Encoding (decodeUtf8{-, encodeUtf8-})
 import Hell.Conf 
 import Hell.Types
+import Network.HTTP.Types ( {-urlDecode,urlEncode,-} parseQuery ) 
 import Network.HTTP.Types.Header ( hCookie, hLocation ) 
 -- import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Web.ClientSession (randomIV, encrypt, encryptIO, decrypt, getDefaultKey)

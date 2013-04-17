@@ -4,7 +4,7 @@ redirect rep = rep --> "/default/index"
 form :: Action
 form rep = rep
   { status = ok200
-  }
+  } 
 
 subtest1 :: Action 
 subtest1 rep = do 

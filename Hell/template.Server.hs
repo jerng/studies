@@ -83,19 +83,18 @@ initSession maybeKey maybeIv rep = rep
                 -- If we want to (error) when Conf.useSession is true,
                 -- but when the (key) or (iv) is not obtained, here would 
                 -- be the place to do it.
-  , session = 
-      case lookup Hell.Lib.sessionCookieName $ reqCookies rep of
-        Nothing           -> Hell.Lib.defaultSession 
-        Just cookieValue  ->
-          case  decrypt 
-                (fromMaybe (error "initSession: no encryption Key") maybeKey) 
-                cookieValue of
-            Nothing         -> Hell.Lib.undecryptableSession
-            Just decrypted  -> 
-              let decoded = decdoc decrypted
-              in  if    decoded == Hell.Lib.undecryptableSession
-                  then  Hell.Lib.defaultSession
-                  else  decoded 
+  , session = case lookup Hell.Lib.sessionCookieName $ reqCookies rep of
+      Nothing           -> Hell.Lib.defaultSession 
+      Just cookieValue  ->
+        case  decrypt 
+              (fromMaybe (error "initSession: no encryption Key") maybeKey) 
+              cookieValue of
+          Nothing         -> Hell.Lib.undecryptableSession
+          Just decrypted  -> 
+            let decoded = decdoc decrypted
+            in  if    decoded == Hell.Lib.undecryptableSession
+                then  Hell.Lib.defaultSession
+                else  decoded 
   } 
 
 -- | This function sets a Report's (actRoute) based on its (request)'s (pathInfo)
@@ -128,7 +127,9 @@ confirmAct rep =
         Nothing   -> rep 
           { actRoute  = Hell.Lib.missingActionRoute
           , viewRoute = Hell.Lib.missingActionRoute
-          , meta      = tConcat [ meta rep , Hell.Lib.metaNoSuchAction ]
+          , session   = merge 
+                        ["meta":=String Hell.Lib.metaNoSuchAction ] $ 
+                        session rep
           , action    = fromMaybe 
                         (error "confirmAct: Hell.Lib.missingActionRoute is\
                         \ itself missing. Shucks.") $
@@ -140,21 +141,12 @@ confirmAct rep =
 -- Use the same rules as Wai does for the Request {pathInfo}, where "key="
 -- gets translated to ("key", Just ""), and "key" to ("key",Nothing)
 getPostVars :: ByteString -> ReportHandler
-getPostVars reqBod rep = rep 
-  { postVars = map  ( \bs-> case bsSpan (/='=') bs of
-                        -- ("",_)  -> ("",Nothing) -- this should never happen
-                        (k,"")  -> (k, Nothing)
-                        (k,v)   -> (k, Just $ bsTail v) 
-                    ) $ bsSplit '&' reqBod 
-  }
+getPostVars reqBod rep = rep { postQuery = parseQuery reqBod }
 
 populateBson :: ReportHandler
-populateBson rep = rep { bson = bson'} where 
+populateBson rep = rep { bson = merge bson' $ bson rep} where 
   bson' = 
-    [ "controller"  := String ... fst ... actRoute rep
-    , "action"      := String ... snd ... actRoute rep
-    , "session"     := Doc ... session rep 
-    , "request"     := Doc 
+    [ "TEMP (until Request {bson} is normalised from forms to models)"     := Doc 
       [ "path" := Array ... map String ... pathVars rep
       , "query" := Doc 
         ... map 
@@ -167,7 +159,7 @@ populateBson rep = rep { bson = bson'} where
         ... map 
             ( \(bs,maybeBs)-> 
               decodeUtf8 bs := maybe Null ((String).decodeUtf8) maybeBs )
-        ... postVars rep
+        ... postQuery rep
       ]
     ]
 
@@ -204,12 +196,13 @@ respond rep = ( if    static rep
 --  | Perhaps, included the ability to render Report { debug } to the
 -- ResponseHeaders; currently debug only happens in (respondWithBuilder).
 -- Does not send cookies with files; not sure if this is ideal.
+-- CHECK: also not sending headers. Is this ok?
 respondWithFile :: Report -> Response
 respondWithFile rep = 
   ResponseFile status' headers filePath Nothing 
   where
     status'   = status rep
-    headers   = resHeaders rep 
+    headers   = []--resHeaders rep 
     filePath  = "./Files/" ++ (tUnpack $ tIntercalate "/" $ pathVars rep)
 
 -- | I haven't properly studied Builders, but they're probably useless if 
@@ -219,62 +212,62 @@ respondWithBuilder :: Report -> Response
 respondWithBuilder rep = let { s = status rep } in
   if    s == found302
   then  ResponseBuilder found302 (resHeaders rep) $ fromText ""
-        -- CONSIDER: should a body of "click here etc." be included?
+        -- CONSIDER: should a body of "click here if you are 
+        --  not redirected etc." be included?
   else
     let reqString = shownRequest rep
-        rep'      = renderSubReps $ renderDebug rep
+        rep'      = renderSubReps rep
         headers   = resHeaders rep'
-    in  ResponseBuilder (status rep') headers $ fromText $ 
+    in  ResponseBuilder (status rep') headers $ fromText $  
           case viewTemplateRoute rep of
             Nothing     -> repToText rep'
             Just route  -> repToText rep' 
               -- rendered template wrapper ("outer view") 
               { viewTemplateRoute = Nothing
               , viewRoute = route
-              , viewBson =              
+              , viewBson = flip merge (viewBson rep')            
+
+                [ Hell.Lib.keyOfTemplatedView := 
+                    String ( repToText rep' { debug=[], shownRequest="" } )
                   -- rendered template contents ("inner view")
-                  ( Hell.Lib.keyOfTemplatedView := String (repToText rep') )
-                  -- DEBUG to VIEW: happens here.
-                : ( Hell.Lib.keyOfMetaView := String (meta rep') )
-                : viewBson rep' 
+                , Hell.Lib.keyOfMetaView := 
+                    maybe Null String ( session rep !? "meta" )
+                ]
+
               }
 
--- | Append Report { debug } to Report { meta }.
-renderDebug :: ReportHandler
+-- | Most of this should probably go into the CSS file, with :before, etc.
+renderDebug :: Report -> Text
 renderDebug rep =
   if  Hell.Lib.appMode == Production
-  then rep
-  else rep 
-    { meta = tConcat 
-        [ meta rep
-        , tConcat
-          [ "<span class=\"debug\">Debug (Hell.Conf.appMode == "
-          , tPack.show...Hell.Lib.appMode , ")</span>"
-          , tConcat $ map debugf $
-            -- Finalise Report {debug} here. (?) 
-            -- (After this, changes won't be output to View.)
-              if    Hell.Lib.appMode > SemiAutoDebug
-              then  reverse.debug...rep
-              else  tAppend (tPack.shownRequest...rep) "<br/>"
-                    : ( tIntercalate "<br/>  " $ 
-                        "Request { reqCookies }" 
-                        : ( map 
-                            (\(k,v)-> tConcat [ tPack.show...k
-                                              , " : " 
-                                              , tPack.show...v
-                                              ] 
-                            ) $ reqCookies rep 
-                          ) --- MOVE to Hell.Lib.showCookie or Show instance
-                      )
-                    : tAppend "session<br/>" (showDoc False 0 $ session rep)
-                    : ( tIntercalate "<br/>  " $ 
-                        "Request { postVars }" 
-                        : ( map ... tPack.show $ postVars rep )
-                      )
-                    : reverse.debug...rep
-          ]  
-        ]
-    }
+  then ""
+  else tConcat
+    [ "<hr/><b class=\"debug\">Debug in viewRoute "
+    , tPack.show.viewRoute...rep, " (Hell.Conf.appMode == "
+    , tPack.show...Hell.Lib.appMode , ")</b>"
+    , tConcat $ map debugf $
+      -- Finalise Report {debug} here. (?) 
+      -- (After this, changes won't be output to View.)
+        if    Hell.Lib.appMode > SemiAutoDebug
+        then  reverse.debug...rep
+        else  tAppend (tPack.shownRequest...rep) "<br/>"
+              : ( tIntercalate "<br/>  " $ 
+                  "Request {reqCookies}:" 
+                  : ( map 
+                      (\(k,v)-> tConcat [ tPack.show...k
+                                        , " : " 
+                                        , tPack.show...v
+                                        ] 
+                      ) $ reqCookies rep 
+                    ) --- MOVE to Hell.Lib.showCookie or Show instance
+                )
+              : tAppend "Request {session}:" (showDoc False 0 $ session rep)
+              : ( tIntercalate "<br/>  " $ 
+                  "Request {postQuery}:" 
+                  : ( map ... tPack.show $ postQuery rep )
+                )
+              : reverse.debug...rep
+    ]  
 
 -- | Render sub-reports, if any exist.
 renderSubReps :: ReportHandler
@@ -282,7 +275,6 @@ renderSubReps rep =
   let subRepToText (key,subReport) = 
         key := String ( repToText
                       .renderSubReps
-                      .renderDebug
                       .actOnSubRep
                       .confirmAct...subReport
                       )
@@ -299,7 +291,7 @@ setResSessionCookie rep = rep
         { cookieName = Hell.Lib.sessionCookieName
         , cookieValue =
           if    not Hell.Lib.useSessions
-          then  "deleted"
+          then  "deleted" -- TODO: also set negative age, etc.?
           else  let maybeKey  = key rep
                     maybeIv   = iv rep
                     key'      = fromMaybe 
@@ -310,7 +302,7 @@ setResSessionCookie rep = rep
                                 (error "setResSessionCookie:\
                                 \ Report has no encryption IV")
                                 maybeIv
-                in  encrypt key' iv' $ encdoc $ session rep
+                in  encrypt key' iv' $ encdoc $ session rep 
 
 -- | To help devs with testing:
 --        , cookiePairs = [ ("path","/")
@@ -333,7 +325,7 @@ setResCookieHeaders rep =
 
 -- | Takes Report from a Controller, returns a Text.
 repToText :: Report -> Text
-repToText r = 
+repToText r = flip tAppend (renderDebug r) $
   ( fromMaybe
     ( fromMaybe 
       (error "repToText: Hell.Lib.missingViewRoute is itself missing. Shucks.") $

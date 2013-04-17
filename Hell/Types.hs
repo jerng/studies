@@ -72,7 +72,7 @@ module Hell.Types (
 
   -- | Defined below:
   , ReportHandler
-  , Session
+  --, Session
   , Action
   , ResourceName (..)
   , ControllerName
@@ -106,6 +106,7 @@ import Data.Vault as V (Vault(..))
 import Data.Word (Word8)
 import Network.HTTP.Types 
   ( Status
+  , Query
   , accepted202
   , ok200
   , found302
@@ -122,7 +123,7 @@ type ControllerName = Text
 type ActionName = Text
 type Route = (ControllerName,ActionName)
 type ReportM = [(Text,Report)]
-type Session = Document
+--type Session = Document
 
 type ReportHandler = Report -> Report
 type Action = ReportHandler 
@@ -140,7 +141,7 @@ data Cookie = Cookie  { cookieName :: CookieAttribute -- essential
 {- I am giving serious thought to naming this data structure: (Hell).
 Record syntax may be useful in this context, as the Report will be updated
 at various points during the (Hell.Server) response.
-CONSIDER: a single BSON containing postVars, pathVars, and queryString
+CONSIDER: a single BSON containing postQuery, pathVars, and queryString
 such as CakePHP's $this->data
 -}
 
@@ -150,24 +151,20 @@ data Report = Report
     request :: Maybe Request
       -- Network.Wai.Request
   , reqCookies :: [(CookieAttribute,CookieValue)]
-  , session :: Session 
+  , session :: Document 
   , shownRequest :: String
   , pathVars :: [Text]
       -- (pathInfo someRequest) less the first two heads (con:act:pathVars)
-  , postVars :: [(BS.ByteString, Maybe BS.ByteString)]
-      -- synonymous with Query from Network.HTTP.Types.URI
+  , postQuery :: Query 
 
     -- BUSINESS LOGIC ********************************************************
-  , bson :: Document
-      -- experimental shorthand for developers
   , static :: Bool
       -- for serving static files
+  , bson :: Document
+      -- Goto for form data, model data, like CakePHP's $controller->data 
   , actRoute :: Route -- of Action
       -- We should only ever need one. To redirect from one to another, use a
       -- status302!
-  , actBson :: Document -- ActionDictionary
-      -- This should be the medium of communicating data within the Controller 
-      --  layer.
   , action :: Action
   , subReports :: ReportM
       -- Outstanding views, which need to be rendered, then inserted into the
@@ -185,14 +182,6 @@ data Report = Report
       -- At some point these get added to resHeaders
   , resHeaders :: [Header]
       -- Network.HTTP.Headers.Header
-  , meta :: Text
-      -- This should move into the session when we have that.
-      --
-      -- This should be a single message. (Feel free to debate the merits of a
-      -- list of messages that gets processed into one, later.) The message
-      -- should contain metadata (information) about the Request/Response, 
-      -- which  will be shown to the User regardless of which View is ultimately
-      -- rendered to the User. CakePHP calls this a Flash message. 
   , viewBson :: Document -- ViewDictionary
       -- This should be the medium of communicating most data from the 
       -- Controller layer to the View layer.

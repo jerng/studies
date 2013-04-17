@@ -3,7 +3,7 @@
     <legend>The legend tag lables the fieldset; the fieldset tag draws a box.</legend>
     <label for="text1" form="TheFormID">label1</label>
     <input  id="text1" 
-            name="TheFieldName1"
+            name="data.key1.key2:Text"
             value="sometextz"
             form="TheFormID" 
             autofocus 
@@ -12,7 +12,7 @@
             autocomplete="on"/>
     <label for="text2" form="TheFormID">label2</label>
     <input  id="text2" 
-            --name="TheFieldName2"
+            name="data.key1.key2:Int32"
             value="sometext"
             form="TheFormID" 
             autofocus 
@@ -20,7 +20,7 @@
             autocomplete="on"/>
     <label for="text3" form="TheFormID">label3</label>
     <input  id="text3" 
-            name="TheFieldName3"
+            name="data.key2.:Bool"
             form="TheFormID" 
             autofocus 
             placeholder="I hold place." 
