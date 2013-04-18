@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-} 
 
-module MakeHell where
+module Main where
 
 import Hell.Lib
 
@@ -34,35 +34,29 @@ main = do
 
 resetAppDir :: IO ()
 resetAppDir = do 
-  bool <- doesDirectoryExist (toPath App)
-  case bool of  
-    False ->  return ()
-    True  ->  do
-      removeDirectoryRecursive (toPath App)
-
---      bool' <- doesDirectoryExist (toPath App)
-          -- When the directory existed and was deleted, bool' is True.
-          -- I'm not sure if the result of (doesDirectoryExist) is 
-          -- cached and reused, or if the filesystem has not yet
-          -- registered the deletion, before this check occurs.
---      case bool of  
---        False ->  return ()
---        True  ->  error "\nERROR: (resetAppDir) \
---          \ could not remove the existing App directory."
-  
-  mapM_ (createDirectoryIfMissing True) 
-        [ toPath Hell
-        , toPath Controllers
-        , toPath Views
-        , toPath Models
-        , toPath Files
-        ]
+  let dir = [ toPath Hell
+            , toPath Controllers
+            , toPath Views
+            , toPath Models
+            , toPath Files
+            ]
+      delete dir = do
+	putStrLn $ "resetting " ++ dir
+        bool <- doesDirectoryExist dir
+        case bool of  
+          False ->  return ()
+          True  ->  do
+            removeDirectoryRecursive dir
+  mapM_ delete dir
+  mapM_ (createDirectoryIfMissing True) dir
+    -- combining deletion and creation of directories in the same map
+      -- appears to result in non-sequential execution
 
 copyStaticResources :: IO ()
 copyStaticResources = mapM_ copy staticResources
-  where copy = \module'-> copyFile 
-                          (fromPath module')
-                          (toPath module')
+  where copy = \module'-> do 
+	  putStrLn $ "copying " ++ (show module')
+	  copyFile (fromPath module') (toPath module')
 
 -- | Unoptimised, but frankly this file has a low priority for optimisation.
 copyStaticFiles :: IO ()

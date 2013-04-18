@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-} 
 
-module Hell.Server () where
+module Main (main) where
 
 import Hell.Lib
 

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-} 
 
-module TryHell where
+module Main where
 
 import Control.Concurrent
 import Control.DeepSeq (rnf)

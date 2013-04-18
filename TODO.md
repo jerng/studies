@@ -57,3 +57,13 @@ Eviscerate common errors with no messages / uninformative messages.
   Beware incidences of (fromJust)
 Write tests
 Write documentation
+
+## Development is currently on
+
+Ubuntu 12.04 LTS 64-bit
+GHC 7.4.2
+"sudo apt-get install haskell-platform" gets Cabal-1.16.0.3
+
+### After reinstallations ...
+
+... of GHC and Haskell-Platform, ALWAYS DELETE `~/.cabal` and `~/.ghc`
