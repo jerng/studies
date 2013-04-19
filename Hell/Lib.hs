@@ -11,6 +11,9 @@ module Hell.Lib (
   , foldM
   --, liftM
 
+  -- | Defined in Control.Monad.IO.Class:
+  , liftIO
+
   -- | Defined in Control.Monad.Trans.Class:
   , lift
   
@@ -221,9 +224,9 @@ module Hell.Lib (
   , (-->)
   , sinkForRequestBody
 )  where
-
 import Blaze.ByteString.Builder.Char.Utf8 (fromText)
 import Control.Monad (foldM{-, liftM-})
+import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.Trans.Resource (runResourceT)
 import Data.Binary.Get (runGet)

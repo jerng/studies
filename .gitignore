@@ -1,5 +1,6 @@
 cabal-dev
 dist
+app/Server
 app/Controllers
 app/Views
 app/Models

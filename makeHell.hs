@@ -24,12 +24,12 @@ main :: IO ()
 main = do 
   tPutStrLn messageStartMakeHell
   resetAppDir
-  copyStaticResources
   copyStaticFiles -- combine with above?
+  copyStaticResources
+  assembleTemplatedResources
   assembleControllers
   assembleViews
   assembleModels
-  assembleTemplates
   tPutStrLn messageJobDone 
 
 resetAppDir :: IO ()
@@ -41,7 +41,7 @@ resetAppDir = do
             , toPath Files
             ]
       delete dir = do
-	putStrLn $ "resetting " ++ dir
+--        putStrLn $ "resetting directory: " ++ dir
         bool <- doesDirectoryExist dir
         case bool of  
           False ->  return ()
@@ -54,9 +54,10 @@ resetAppDir = do
 
 copyStaticResources :: IO ()
 copyStaticResources = mapM_ copy staticResources
-  where copy = \module'-> do 
-	  putStrLn $ "copying " ++ (show module')
-	  copyFile (fromPath module') (toPath module')
+  where 
+    copy = \module'-> do
+--      putStrLn $ "copying static resource: " ++ (show module')
+      copyFile (fromPath module') (toPath module')
 
 -- | Unoptimised, but frankly this file has a low priority for optimisation.
 copyStaticFiles :: IO ()
@@ -65,14 +66,18 @@ copyStaticFiles = do
   let paths' = map (replace "//" "/") paths
   (dirs,files) <- partitionM doesDirectoryExist paths'
   flip mapM_ dirs 
-    (\p-> createDirectoryIfMissing True $ replace (fromPath Files) (toPath Files) p)
+    (\p-> createDirectoryIfMissing True $ 
+            replace (fromPath Files) (toPath Files) p)
   flip mapM_ files 
-    (\p-> copyFile p $ replace (fromPath Files) (toPath Files) p)
+    (\p-> do  
+--      putStrLn $ "copying static file: " ++ (show p)
+      copyFile p $ replace (fromPath Files) (toPath Files) p)
 
 assembleControllers :: IO ()
 assembleControllers = do
   cs <- controllers
   let assemble c =  do
+--        putStrLn $ "assembling controller: " ++ c
         splicedText <- spliceController c
         tWriteFile (toPath Controllers ++ c ++ scriptExtension) $
           tConcat  [ "{-# LANGUAGE OverloadedStrings #-}\n\n\
@@ -82,9 +87,10 @@ assembleControllers = do
 
 assembleModels :: IO ()
 assembleModels = (mapM_ copy) =<< models
-  where copy = \m ->  copyFile  
-                      (fromPath Models ++ m ++ scriptExtension)
-                      (toPath Models ++ m ++ scriptExtension)  
+  where copy = \m -> do
+--          putStrLn $ "assembling model: " ++ m
+          copyFile  (fromPath Models ++ m ++ scriptExtension)
+                    (toPath Models ++ m ++ scriptExtension)  
 
 -- TODO: WARN for all actions without views.
 --       WARN for all views without actions.
@@ -99,6 +105,7 @@ assembleViews = do
                         \ itself missing. Shucks.") $ lookup c al 
         mapM_ (eachV c) vs
       eachV = \c v -> do
+--        putStrLn $ "assembling view: " ++ c ++ "." ++ v
         unsplicedText <- tReadFile $ concat 
           [fromPath Views, c, "/", v, scriptExtension, viewExtension]
         let splicedText = spliceView c v unsplicedText
@@ -107,8 +114,9 @@ assembleViews = do
         tWriteFile toFilePath splicedText 
   mapM_ eachC cs
   
-assembleTemplates :: IO ()
-assembleTemplates = mapM_ assemble templatedResources 
+assembleTemplatedResources :: IO ()
+assembleTemplatedResources = mapM_ assemble templatedResources 
   where assemble =  \module' -> do
+--          putStrLn $ "assembling templated resource: " ++ (show module')
           splicedText <- spliceTemplate module'
           tWriteFile (toPath module') splicedText
