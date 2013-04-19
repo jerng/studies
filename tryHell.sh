@@ -20,6 +20,7 @@ cd app
 echo ""
 echo "************************************************************************"
 echo "Switched working directory to ./app"
+echo ""
 echo "Removing any existing ./Server"
 rm ./Server
 echo "Trying to compile ./Server.hs with GHC"

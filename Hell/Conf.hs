@@ -52,11 +52,11 @@ useCookies = True
 --
 -- ****************************************************************************
 
-defaultSession :: Document -- Session
+defaultSession :: Document 
 defaultSession = ["data":=Null] 
 
 -- | This is probably a temporary solution/mechanism
-undecryptableSession :: Document -- Session
+undecryptableSession :: Document 
 undecryptableSession =  ["error":= String "undecryptable"]
 
 -- I would really like to know how all this setting of defaults
@@ -157,6 +157,7 @@ staticResources =
   , Lib
   , Types
   , AppController
+  , AppModel
   ]
 
 templatedResources :: [ResourceName]
@@ -174,17 +175,18 @@ sliceIDsOf Server =
 
 fromPath :: ResourceName -> FilePath
 fromPath r = case r of
-  Files          -> "./src/f/"
-  Controllers    -> "./src/c/"
-  Models         -> "./src/m/"
-  Views          -> "./src/v/"
-  Hell           -> "./Hell/"
-  Conf           -> "./Hell/Conf.hs"
-  Lib            -> "./Hell/Lib.hs"
-  Splice         -> "./Hell/Splice.hs"
-  Types          -> "./Hell/Types.hs"
-  Server         -> "./Hell/template.Server.hs"
-  AppController  -> "./src/AppController.hs"
+  Files         -> "./src/f/"
+  Controllers   -> "./src/c/"
+  Models        -> "./src/m/"
+  Views         -> "./src/v/"
+  Hell          -> "./Hell/"
+  Conf          -> "./Hell/Conf.hs"
+  Lib           -> "./Hell/Lib.hs"
+  Splice        -> "./Hell/Splice.hs"
+  Types         -> "./Hell/Types.hs"
+  Server        -> "./Hell/template.Server.hs"
+  AppController -> "./src/AppController.hs"
+  AppModel      -> "./src/AppModel.hs"
 
 toPath :: ResourceName -> FilePath
 toPath r = case r of
@@ -200,6 +202,7 @@ toPath r = case r of
   Types           -> "./app/Hell/Types.hs"
   Server          -> "./app/Server.hs"
   AppController   -> "./app/AppController.hs"
+  AppModel        -> "./app/AppModel.hs"
 
 controllers :: IO [FilePath]
 controllers = do  

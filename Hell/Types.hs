@@ -1,6 +1,5 @@
 module Hell.Types (
   
-
   -- | Defined in Control.Monad.Trans.Resource:
     ResourceT
 
@@ -8,7 +7,6 @@ module Hell.Types (
   , Bin.Binary 
 
   -- | Defined in Data.Bson:
-  
   , Document
   , Field(..)
   , Label
@@ -35,10 +33,6 @@ module Hell.Types (
   -- | Defined in Data.Text:
   , Text
   
-  -- | Defined in Data.Dynamic:
---  , Dynamic
---  , Typeable
-
   -- | Defined in Data.Map:
   , Map
 
@@ -72,7 +66,6 @@ module Hell.Types (
 
   -- | Defined below:
   , ReportHandler
-  --, Session
   , Action
   , ResourceName (..)
   , ControllerName
@@ -123,27 +116,55 @@ type ControllerName = Text
 type ActionName = Text
 type Route = (ControllerName,ActionName)
 type ReportM = [(Text,Report)]
---type Session = Document
-
 type ReportHandler = Report -> Report
 type Action = ReportHandler 
-
 type CookieAttribute = BS.ByteString
 type CookieValue = BS.ByteString
 type CookieAVPair = (CookieAttribute, CookieValue)
+
+-- Hell.Splice.Types
+data SliceTag = ImportControllers 
+              | ImportViews
+              | ListActions
+              | ListViews
+              deriving (Eq,Show)
+
+-- Hell.Splice.Types
+data Slice  = Slice ResourceName SliceTag
+              deriving (Show)
+
+-- Hell.Splice.Types
+data Unrendered = Plain Text 
+                | Exp Text
+                deriving (Show)
+
+data ResourceName = Controllers
+                  | Models
+                  | Views
+                  | App
+                  | Hell
+                  | Server 
+                  | Conf
+                  | Lib
+                  | Splice
+                  | Types
+                  | AppController
+                  | AppModel
+                  | Files
+                  deriving (Eq,Show) 
+
+data AppMode  = FullAutoDebug
+              | SemiAutoDebug
+              | ManualDebug 
+              | Production
+              deriving (Eq,Ord,Show)
+
 data Cookie = Cookie  { cookieName :: CookieAttribute -- essential
                       , cookieValue :: CookieValue -- essential
                       , cookieSecure :: Bool
                       , cookieHttpOnly :: Bool
                       , cookiePairs :: [CookieAVPair]
                       }
-
-{- I am giving serious thought to naming this data structure: (Hell).
-Record syntax may be useful in this context, as the Report will be updated
-at various points during the (Hell.Server) response.
-CONSIDER: a single BSON containing postQuery, pathVars, and queryString
-such as CakePHP's $this->data
--}
 
 data Report = Report
   { 
@@ -194,37 +215,4 @@ data Report = Report
   , iv :: Maybe IV
   } 
   --deriving (Show)
-
-data ResourceName = Controllers
-                  | Models
-                  | Views
-                  | App
-                  | Hell
-                  | Server 
-                  | Conf
-                  | Lib
-                  | Splice
-                  | Types
-                  | AppController
-                  | Files
-                  deriving (Eq,Show) 
-
-data SliceTag = ImportControllers 
-              | ImportViews
-              | ListActions
-              | ListViews
-              deriving (Eq,Show)
-
-data Slice  = Slice ResourceName SliceTag
-              deriving (Show)
-
-data Unrendered = Plain Text 
-                | Exp Text
-                deriving (Show)
-
-data AppMode  = FullAutoDebug
-              | SemiAutoDebug
-              | ManualDebug 
-              | Production
-              deriving (Eq,Ord,Show)
 
