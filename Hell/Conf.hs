@@ -63,8 +63,8 @@ undecryptableSession =  ["error":= String "undecryptable"]
 -- affects memory use. Testing will be required.
 defaultReport :: Report
 defaultReport = Report  { request = Nothing
-                        , data_ = 
-                          [ "session" := Doc defaultSession ]
+                        , form_ = []
+                        , data_ = [] 
                         , shownRequest = ""
                         , key = Nothing
                         , iv = Nothing
@@ -91,8 +91,7 @@ defaultCookieName = "Hell"
 sessionCookieName :: ByteString
 sessionCookieName = "FsbD"
 
-defaultCookie :: Cookie
-                                        -- CHANGE THIS!!!
+defaultCookie :: Cookie -- CHANGE THIS!!!
 defaultCookie = Cookie  { cookieName = defaultCookieName
                         , cookieValue = "" 
                         , cookieHttpOnly = False

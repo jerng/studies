@@ -46,7 +46,8 @@ app = \req-> do
         -- . authorisationHere (in AppController?) 
           --  (depends on Authentication & details of Request)
         .populateBson
-        .( if post then getPostVars reqBod else id )
+        .populateForm
+        .( if post then getPostQuery reqBod else id )
         .confirmAct
         .actRouter
           -- Based on normalised path variables
@@ -140,28 +141,38 @@ confirmAct rep =
 
 -- Use the same rules as Wai does for the Request {pathInfo}, where "key="
 -- gets translated to ("key", Just ""), and "key" to ("key",Nothing)
-getPostVars :: ByteString -> ReportHandler
-getPostVars reqBod rep = rep { postQuery = parseQuery reqBod }
+getPostQuery :: ByteString -> ReportHandler
+getPostQuery reqBod rep = rep { postQuery = parseQuery reqBod }
+
+populateForm :: ReportHandler
+populateForm rep = rep 
+  { form_ = 
+    let req = rep >... request >. fromMaybe (error "populateForm: no Request") 
+--    in  map queryItemToField $ 
+--          case requestMethod req of
+--            "POST"  -> postQuery rep
+--            "GET"   -> queryString req
+    in  [  "temp " := Doc ... 
+              --map parseInputValue...
+              --mapMaybe parseInputName ...
+              mapMaybe queryItemToMaybeField ...
+              case requestMethod req of
+                "POST"  -> postQuery rep
+                "GET"   -> queryString req
+        ]
+  }
 
 populateBson :: ReportHandler
 populateBson rep = rep { data_ = merge data_' $ data_ rep} where 
   data_' = 
-    [ "TEMP (until Request {data_} is normalised from forms to models)"     := Doc 
+    [ "TEMP (until Request {data_} is normalised from forms to models)" := Doc 
       [ "path" := Array ... map String ... pathVars rep
-      , "query" := Doc 
-        ... map 
-            ( \(bs,maybeBs)-> 
-              decodeUtf8 bs := maybe Null ((String).decodeUtf8) maybeBs )
-        ... queryString
-        ... fromMaybe (error "populateBson: no Request")
-        ... request rep
-      , "post" := Doc
-        ... map 
-            ( \(bs,maybeBs)-> 
-              decodeUtf8 bs := maybe Null ((String).decodeUtf8) maybeBs )
-        ... postQuery rep
       ]
     ]
+
+queryItemToField :: QueryItem -> Field
+queryItemToField (bs,maybeBs) = 
+  decodeUtf8 bs := maybe Null ((String).decodeUtf8) maybeBs
 
 -- ****************************************************************************
 -- These two functions have been abstracted and grouped together, because their

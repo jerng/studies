@@ -56,6 +56,7 @@ module Hell.Types (
 --  , RequestHeaders
 
   -- | Defined in Network.HTTP.Types
+  , QueryItem
   , accepted202
   , ok200
   , found302
@@ -100,6 +101,7 @@ import Data.Word (Word8)
 import Network.HTTP.Types 
   ( Status
   , Query
+  , QueryItem
   , accepted202
   , ok200
   , found302
@@ -181,6 +183,8 @@ data Report = Report
     -- BUSINESS LOGIC ********************************************************
   , static :: Bool
       -- for serving static files
+  , form_ :: Document
+      -- a construct, that depends on the request method; TODO: validate this
   , data_ :: Document
       -- Goto for form data, model data, like CakePHP's $controller->data 
   , actRoute :: Route -- of Action

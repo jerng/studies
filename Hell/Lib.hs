@@ -39,7 +39,6 @@ module Hell.Lib (
   , Bson.genObjectId
 
   -- | Defined in Data.ByteString:
-  --, bsSplit 
   , bsAppend
   , bsEmpty
   , bsConcat
@@ -63,6 +62,7 @@ module Hell.Lib (
   -- | Defined in Data.Maybe:
   , fromMaybe
   , isJust
+  , mapMaybe
 
   -- | Defined in Data.String.Utils:
   , replace
@@ -159,6 +159,7 @@ module Hell.Lib (
   , Response (..)
   , Status (..)
   , Header
+  , QueryItem
   , accepted202
   , ok200
   , found302
@@ -223,6 +224,8 @@ module Hell.Lib (
   , redirectTo
   , (-->)
   , sinkForRequestBody
+  , readMaybe
+  , queryItemToMaybeField
 )  where
 import Blaze.ByteString.Builder.Char.Utf8 (fromText)
 import Control.Monad (foldM{-, liftM-})
@@ -241,11 +244,13 @@ import qualified
        Data.ByteString.Lazy.Char8 as LBS (toChunks,fromChunks,split,span,tail)
 import qualified Data.ByteString.Search as BSS (replace)
 import Data.ByteString.Search.Substitution
+import qualified 
+       Data.ByteString.UTF8 as BS (toString)
 import Data.Conduit ({-Source,-}Sink,yield,await,($$))
 import Data.Dynamic (fromDyn, fromDynamic, toDyn)
 import Data.List (nub,intercalate)
 import Data.List.Utils (hasKeyAL, keysAL)
-import Data.Maybe (fromMaybe,isJust)
+import Data.Maybe (fromMaybe,isJust,mapMaybe)
 import Data.String.Utils (replace)
 import qualified 
        Data.Text as T (concat, pack, toLower, intercalate, lines, unlines,
@@ -591,6 +596,7 @@ showVal types ind val = case val of
   Md5 v       -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: Md5 MD5</span>"else ""]
   UserDef v   -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: UserDef UserDefined</span>"else ""]
   ObjId v     -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: ObjId ObjectId</span>"else ""]
+  Bool v      -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: Bool Bool</span>"else ""]
   UTC v       -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: UTC UTCTime</span>"else ""]
   Null        -> tConcat ["Null",if types then "<span class=\"type-signature\"> :: Null</span>"else""]
   RegEx v     -> tConcat [T.pack(show v),if types then "<span class=\"type-signature\"> :: RegEx Regex</span>"else ""]
@@ -616,3 +622,97 @@ redirectTo rep loc = rep { status = found302, resHeaders = [(hLocation,loc)] }
 
 (-->) :: Report -> ByteString -> Report
 (-->) = redirectTo
+infix 1 -->
+
+{- 
+
+Psuedo-code:
+
+Consider a QueryItem == (ByteString, Maybe ByteString) as (A, B):
+
+IF  A doesn't expand to (a,b,c)
+    OR a /= "data"
+    OR b expands to ( x:xs
+                      where ANY x == "" )
+
+THEN  Nothing
+
+ELSE use c to cast b to a (Maybe Value) 
+
+-}
+
+
+-- Not sure if this can be made simpler.
+queryItemToMaybeField :: (ByteString, Maybe ByteString) -> Maybe Field
+queryItemToMaybeField (name,maybeValue) = case bsSplit ':' name of
+  ["data",ks,t] ->
+    let labels = reverse $ bsSplit '.' ks
+        v `foldOp` k = decodeUtf8 k := Doc [v]
+    in  case labels of
+        []    -> Nothing -- add Debug "no collection/sub-keys found"
+        x:[]  -> Nothing -- add Debug "a collection found; no sub-keys found" 
+        x:xs  ->  
+          Just
+          ( foldl foldOp
+            
+            ( decodeUtf8 x :=
+              ( maybe 
+                Null -- "key&" situation (no =)
+                ( textToBsonValue t )
+                maybeValue
+              ) -- starting value
+            )
+
+            xs
+          )
+
+  otherwise -> Nothing
+--  "input[name]: did not match the \"data:dot-notation-key:val-type\" pattern"
+              -- add Debug here, later
+
+-- | HTML form, input element, where input[name] is of the form "data:ks:t"
+-- and input[value] as submitted to the server is v.
+-- This documentation can be improved.
+textToBsonValue :: ByteString -> ByteString -> Value
+textToBsonValue t v = 
+  let f x y = (maybe Null y) . readMaybe . BS.toString ... x
+  in  case t of
+      "Text"    ->  String . decodeUtf8 ... v
+      otherwise ->  
+        case t of
+          "Int32"   -> f v Int32
+          "Double"  -> f v Float 
+          "Bool"    -> f v Bool
+--            "Document"
+--            "[Value]"
+--            "Function"
+--            "UUID"
+--            "MD5"
+--            "UserDefined"
+--            "ObjectId"
+--            "Bool"
+--            "UTCTime"
+--            " Null"
+--            "Regex"
+--            "Javascript"
+--            "Symbol"
+--            "Int64"
+--            "MongoStamp"
+--            "MinMaxKey"
+          otherwise -> Null
+-- add Debug here, later
+
+-- | Key -> Value -> DocumentVJj
+--nestValue :: ByteString -> Value -> Document
+--nestValue ks v = 
+--  let keys = bsSplit '.' ks
+--  in  case keys of
+--      [] -> [] --
+
+
+-- base-4.6.0.1 has (readMaybe), but meanwhile this is an alternative
+-- from http://stackoverflow.com/posts/8067014/revisions
+readMaybe :: (Read a) => String -> Maybe a
+readMaybe s = case reads s of
+              [(x, "")] -> Just x
+              _ -> Nothing

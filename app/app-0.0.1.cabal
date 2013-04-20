@@ -34,3 +34,4 @@ Executable Server
     , stringsearch == 0.3.6.4
     , transformers == 0.3.0.0
     , blaze-builder == 0.3.1.1
+    , utf8-string == 0.3.7
