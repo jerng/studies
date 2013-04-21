@@ -29,9 +29,9 @@ warpServer :: Application -> IO ()
 warpServer app = runSettings defaultSettings app
 
 appMode :: AppMode
-appMode = -- FullAutoDebug 
+appMode =  FullAutoDebug 
           -- SemiAutoDebug
-            ManualDebug
+          --  ManualDebug
           -- Production
 
 -- ****************************************************************************

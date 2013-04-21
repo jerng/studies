@@ -215,9 +215,6 @@ module Hell.Lib (
   , addDebug
   , (?>>)
   , (<<?)
-  , (...)
-  , (>...)
-  , (>.)
   , showDoc
   , debugf
   , debugfps
@@ -383,8 +380,8 @@ headerValueToKVs (_,bs) =
     ( \lbs->  
         case lbsSpan (/='=') lbs of
           ("",_)  -> ("","")
-          (k,"")  -> (bsConcat.LBS.toChunks...k,"")
-          (k,v)   -> (bsConcat.LBS.toChunks...k, bsConcat.LBS.toChunks.lbsTail...v)
+          (k,"")  -> (bsConcat.LBS.toChunks $ k,"")
+          (k,v)   -> (bsConcat.LBS.toChunks $ k, bsConcat.LBS.toChunks.lbsTail $ v)
     ) $ 
     lbsSplit ';' $ bssReplace " " (""::ByteString) bs
 
@@ -392,7 +389,7 @@ cookieAVPairToBS :: CookieAVPair -> ByteString
 cookieAVPairToBS (attr,val) = BS.concat [attr,"=",val] 
 
 encdoc :: Document -> ByteString
-encdoc doc = BS.concat.LBS.toChunks.runPut...putDocument doc 
+encdoc doc = BS.concat.LBS.toChunks.runPut $ putDocument doc 
 
 decdoc :: ByteString -> Document
 decdoc bin = runGet getDocument $ LBS.fromChunks [ bin ]
@@ -417,8 +414,10 @@ partitionM p xs = foldM f ([], []) xs
 --
 -- ****************************************************************************
 
-showRequest :: ResourceT IO Request -> ResourceT IO String
-showRequest resIOreq = do
+-- | extract the request body before calling this function,
+-- using the commented-out method, so that it can be reused, variously.
+showRequest :: ByteString -> ResourceT IO Request -> ResourceT IO String
+showRequest reqBod resIOreq = do
   req <- lift.runResourceT $ resIOreq
   let requestMethod'' = show.requestMethod $ req
       httpVersion'' = show.httpVersion $ req
@@ -433,9 +432,10 @@ showRequest resIOreq = do
       pathInfo'' = intercalate "\n    " $ "" : (map show $ pathInfo req)
       queryString'' = intercalate "\n    " $ "" : (map show $ queryString req)
 
-  requestBody'' 
-    <- lift.runResourceT.showResIO $ (requestBody req $$ sinkForRequestBody)
+--  requestBody'' 
+--    <- lift.runResourceT.showResIO $ (requestBody req $$ sinkForRequestBody)
   let vault'' = show.vault $ req
+      requestBody'' = BS.toString reqBod
       requestBodyLength'' = show.requestBodyLength $ req
 
   -- This is so not-optimised :P
@@ -490,7 +490,7 @@ showHeader :: Header -> String
 showHeader (headerName,headerValue) =
   concat  [ show headerName , " : " , show headerValue ]
 
--- TODO: At least, we should be able to print Vault keys...
+-- TODO: At least, we should be able to print Vault keys $ 
 instance Show Vault where
   show _ = "a :: Vault"
 
@@ -505,7 +505,7 @@ debugf a = tConcat
   [ "<pre class=\"debug\"><b>debug: </b> <span>" , a , "</span></pre>" ]
 
 debugfps :: Show a => a -> Text
-debugfps a = debugf.tPack.show...a
+debugfps a = debugf.tPack.show $ a
 
 -- | Updates the (debug) field of a report
 addDebug :: Text -> Report -> Report
@@ -520,28 +520,6 @@ infixr 2 ?>>
 (<<?) :: Report -> Text -> Report 
 infixl 1 <<?
 (<<?) = flip addDebug
-
--- | Invented for use where it is less noisy to use (a.b.c...d)
--- instead of (a.b.c $ d) 
---
--- Also achieves things like (map ... T.pack.show $ fst (1,2) )
---
--- Perhaps to be avoided where it may be too subtle to use (a b... c.d.e... f g)
--- instead of (a b $ c.d.e $ f g)
-(...) :: (a -> b) -> a -> b
-f ... a = f a
-infixr 8 ...
-
--- The mirror of (...)
-(>...) :: a -> (a -> b) -> b
-a >... f = f a
-infixl 8 >...
-
-
--- The mirror of (.)
-(>.) :: (a -> b) -> (b -> c) -> a -> c 	-- Defined in `GHC.Base'
-g >. f = \x -> f (g x)
-infixl 9 >.
 
 --------------------------------------------------------------------------------
 -- Could be rewritten to be somewhat more Haskellian. Consider.
@@ -675,9 +653,9 @@ queryItemToMaybeField (name,maybeValue) = case bsSplit ':' name of
 -- This documentation can be improved.
 textToBsonValue :: ByteString -> ByteString -> Value
 textToBsonValue t v = 
-  let f x y = (maybe Null y) . readMaybe . BS.toString ... x
+  let f x y = (maybe Null y) . readMaybe . BS.toString  $  x
   in  case t of
-      "Text"    ->  String . decodeUtf8 ... v
+      "Text"    ->  String . decodeUtf8  $  v
       otherwise ->  
         case t of
           "Int32"   -> f v Int32

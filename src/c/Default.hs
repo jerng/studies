@@ -22,7 +22,7 @@ index rep =
       <<? "even more debuggable stuff"
       <<? "lastly, for good measure" 
       <<? "default.hs line 14" 
-      <<? tPack.show...666 
+      <<? ( tPack.show $ 666 )
       <<? "just trying to debug an int"
     --  TODO :Try to make a helper function for sending variables to the
     --  ViewableList.

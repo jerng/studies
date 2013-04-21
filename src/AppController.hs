@@ -11,7 +11,7 @@ import Hell.Lib
 main :: Report -> Report
 main rep = 
   let r = action rep $ rep
-  in  r <<? tAppend "Request {bson}:" ... showDoc True 0 ... data_ r    
+  in  r <<? ( tAppend "Request {bson}:" $ showDoc True 0 $ data_ r )
 
 -- | Hell.Server.applyActionToSubReport calls this.
 subMain :: Report -> Report

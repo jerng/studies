@@ -22,11 +22,11 @@ app = \req-> do
   let post = "POST" == requestMethod req
   reqBod <-
     if    post 
-    then  lift.runResourceT...(requestBody req $$ sinkForRequestBody)
-    else  lift.return..."" -- Not sure if this is safer than "ignored"
+    then  lift.runResourceT$(requestBody req $$ sinkForRequestBody)
+    else  lift.return$"" -- Not sure if this is safer than "ignored"
   (maybeKey, maybeIv) <-  
     if    not Hell.Lib.useEncryption
-    then  lift.return...(Nothing, Nothing)
+    then  lift.return$(Nothing, Nothing)
     else  lift $ do 
             key <- getDefaultKey
                   -- This method generates & uses ./app/client_session_key.aes
@@ -53,13 +53,13 @@ app = \req-> do
           -- Based on normalised path variables
         -- . authenticationHere (depends only on Session)
         .( if Hell.Lib.useSessions then initSession maybeKey maybeIv else id)
-        .getReqCookies...rep'
+        .getReqCookies$rep'
   reqString <- 
-      showRequest
+      showRequest reqBod
       .lift
       .return
-      .fromMaybe (error "app: no Request")...request finalRep 
-  lift.return.respond...
+      .fromMaybe (error "app: no Request")$request finalRep 
+  lift.return.respond$
     if    Hell.Lib.appMode == Production
     then  finalRep
     else  finalRep { shownRequest = reqString }
@@ -72,7 +72,7 @@ getReqCookies rep =
                           .onlyCookieHeaders
                           .requestHeaders
                           .fromMaybe (error "getReqCookies: no Request") 
-                          .request...rep
+                          .request$rep
             }
 
 -- | The key file should be stored somewhere outside ./app, otherwise
@@ -102,7 +102,7 @@ initSession maybeKey maybeIv rep = rep
 --  Maybe add a hook from here, to Hell.Conf.
 --  Maybe replace this with a regex-style actRouter, as many other frameworks have.
 actRouter :: ReportHandler
-actRouter rep = case pathInfo.fromMaybe (error "actRouter: no Request").request...rep of
+actRouter rep = case pathInfo.fromMaybe (error "actRouter: no Request").request$rep of
   []        -> rep  { actRoute = Hell.Lib.defaultRoute }
   "":[]     -> rep  { actRoute = Hell.Lib.defaultRoute }
   con:[]    -> rep  { actRoute = (tToLower con, Hell.Lib.indexAction) }
@@ -147,18 +147,12 @@ getPostQuery reqBod rep = rep { postQuery = parseQuery reqBod }
 populateForm :: ReportHandler
 populateForm rep = rep 
   { form_ = 
-    let req = rep >... request >. fromMaybe (error "populateForm: no Request") 
---    in  map queryItemToField $ 
---          case requestMethod req of
---            "POST"  -> postQuery rep
---            "GET"   -> queryString req
-    in  [  "temp " := Doc ... 
-              --map parseInputValue...
-              --mapMaybe parseInputName ...
-              mapMaybe queryItemToMaybeField ...
-              case requestMethod req of
-                "POST"  -> postQuery rep
-                "GET"   -> queryString req
+    let req = fromMaybe (error "populateForm: no Request") $ request rep
+    in  [  "temp " := Doc ( mapMaybe queryItemToMaybeField $
+                              case requestMethod req of
+                                "POST"  -> postQuery rep
+                                "GET"   -> queryString req
+                          )
         ]
   }
 
@@ -166,13 +160,8 @@ populateBson :: ReportHandler
 populateBson rep = rep { data_ = merge data_' $ data_ rep} where 
   data_' = 
     [ "TEMP (until Request {data_} is normalised from forms to models)" := Doc 
-      [ "path" := Array ... map String ... pathVars rep
-      ]
+      [ "path" := ( Array $ map String $ pathVars rep ) ]
     ]
-
-queryItemToField :: QueryItem -> Field
-queryItemToField (bs,maybeBs) = 
-  decodeUtf8 bs := maybe Null ((String).decodeUtf8) maybeBs
 
 -- ****************************************************************************
 -- These two functions have been abstracted and grouped together, because their
@@ -254,20 +243,20 @@ renderDebug rep =
   then ""
   else tConcat
     [ "<hr/><b class=\"debug\">Debug in viewRoute "
-    , tPack.show.viewRoute...rep, " (Hell.Conf.appMode == "
-    , tPack.show...Hell.Lib.appMode , ")</b>"
+    , tPack.show.viewRoute$rep, " (Hell.Conf.appMode == "
+    , tPack.show$Hell.Lib.appMode , ")</b>"
     , tConcat $ map debugf $
       -- Finalise Report {debug} here. (?) 
       -- (After this, changes won't be output to View.)
         if    Hell.Lib.appMode > SemiAutoDebug
-        then  reverse.debug...rep
-        else  tAppend (tPack.shownRequest...rep) "<br/>"
+        then  reverse.debug$rep
+        else  tAppend (tPack.shownRequest$rep) "<br/>"
               : ( tIntercalate "<br/>  " $ 
                   "Request {reqCookies}:" 
                   : ( map 
-                      (\(k,v)-> tConcat [ tPack.show...k
+                      (\(k,v)-> tConcat [ tPack.show$k
                                         , " : " 
-                                        , tPack.show...v
+                                        , tPack.show$v
                                         ] 
                       ) $ reqCookies rep 
                     ) --- MOVE to Hell.Lib.showCookie or Show instance
@@ -275,9 +264,9 @@ renderDebug rep =
               : tAppend "Request {session}:" (showDoc False 0 $ session rep)
               : ( tIntercalate "<br/>  " $ 
                   "Request {postQuery}:" 
-                  : ( map ... tPack.show $ postQuery rep )
+                  : ( map (tPack.show) $ postQuery rep )
                 )
-              : reverse.debug...rep
+              : ( reverse.debug $ rep )
     ]  
 
 -- | Render sub-reports, if any exist.
@@ -287,7 +276,7 @@ renderSubReps rep =
         key := String ( repToText
                       .renderSubReps
                       .actOnSubRep
-                      .confirmAct...subReport
+                      .confirmAct$subReport
                       )
   in  case subReports rep of 
         []      -> rep
