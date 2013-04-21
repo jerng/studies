@@ -13,6 +13,7 @@ import System.Directory
 import Network.HTTP.Types.Header
 import Network.Wai
 import Network.Wai.Handler.Warp
+import Network.Wai.Parse
 
 -- Network.Wai.Handler.Warp.defaultSettings { settingsPort is 3000 }
 --
@@ -63,6 +64,8 @@ undecryptableSession =  ["error":= String "undecryptable"]
 -- affects memory use. Testing will be required.
 defaultReport :: Report
 defaultReport = Report  { request = Nothing
+                        , params = []
+                        , files = []
                         , form_ = []
                         , data_ = [] 
                         , shownRequest = ""
@@ -78,7 +81,6 @@ defaultReport = Report  { request = Nothing
                         , resCookies = []
                         , resHeaders = defaultHeaders
                         , viewTemplateRoute = defaultViewTemplate
-                        , postQuery = []
                         , pathVars = []
                         , static = False
                         , debug = []
@@ -265,3 +267,9 @@ instance ViewExpression Text where
 
 instance ViewExpression [Int] where
   toText a = T.pack $ show a
+
+-- If you change the BackEnd, you may have to change the BackEnd type argument.
+parseRequestBodyBackEnd :: BackEnd LByteString
+parseRequestBodyBackEnd = lbsBackEnd
+                          -- tempFileBackEnd
+                          -- tempFileBackEndOpts

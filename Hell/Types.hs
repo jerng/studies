@@ -61,6 +61,11 @@ module Hell.Types (
   , ok200
   , found302
 
+  -- | Defined in Network.Wai.Parse
+  , File
+  , Param
+  , BackEnd
+
   -- | Defined in Web.ClientSession
   , IV
   , Key
@@ -109,6 +114,7 @@ import Network.HTTP.Types
 import Network.HTTP.Types.Header ( Header{-,RequestHeaders-}) 
 import Network.Wai (RequestBodyLength(..),Request(..),Response(..))
 import Network.Wai.Handler.Warp (Settings)
+import Network.Wai.Parse (Param, File,BackEnd)
 import Web.ClientSession (IV,Key)
 
 type LByteString = LBS.ByteString
@@ -172,13 +178,13 @@ data Report = Report
   { 
     -- REQUEST ****************************************************************
     request :: Maybe Request
-      -- Network.Wai.Request
-  , reqCookies :: [(CookieAttribute,CookieValue)]
-  , session :: Document 
   , shownRequest :: String
   , pathVars :: [Text]
       -- (pathInfo someRequest) less the first two heads (con:act:pathVars)
-  , postQuery :: Query 
+  , reqCookies :: [(CookieAttribute,CookieValue)]
+  , session :: Document 
+  , params :: [Param]
+  , files :: [File LBS.ByteString]
 
     -- BUSINESS LOGIC ********************************************************
   , static :: Bool

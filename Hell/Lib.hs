@@ -47,10 +47,16 @@ module Hell.Lib (
   , bsTail
   , bsSpan
   , bsTakeWhile
+  , bsTake
 
   -- | Defined in Data.ByteString.Lazy:
+  , LBS.fromChunks
+
   -- | Defined in Data.Conduit:
   , ($$)
+
+  -- | Defined in Data.Conduit:
+  , sourceLbs
 
   -- | Defined in Data.List:
   , nub
@@ -128,6 +134,7 @@ module Hell.Lib (
   , ViewExpression
 
   , toText
+  , parseRequestBodyBackEnd
 
   -- | Defined in Hell.Types:
   , IV
@@ -195,6 +202,9 @@ module Hell.Lib (
   --, hCookie
   , hLocation
 
+  -- | Defined in Network.Wai.Parse
+  , parseRequestBody
+
   -- | Defined in Web.ClientSession 
   , randomIV 
   , encrypt
@@ -236,7 +246,7 @@ import qualified
 import Data.Bson.Binary (putDocument, getDocument)
 import qualified 
        Data.ByteString.Char8 as BS (concat, intercalate, empty, tail, span,
-       takeWhile,split,append)
+       takeWhile,split,append,take)
 import qualified
        Data.ByteString.Lazy.Char8 as LBS (toChunks,fromChunks,split,span,tail)
 import qualified Data.ByteString.Search as BSS (replace)
@@ -244,6 +254,7 @@ import Data.ByteString.Search.Substitution
 import qualified 
        Data.ByteString.UTF8 as BS (toString)
 import Data.Conduit ({-Source,-}Sink,yield,await,($$))
+import Data.Conduit.Binary (sourceLbs)
 import Data.Dynamic (fromDyn, fromDynamic, toDyn)
 import Data.List (nub,intercalate)
 import Data.List.Utils (hasKeyAL, keysAL)
@@ -260,6 +271,7 @@ import Hell.Types
 import Network.HTTP.Types ( {-urlDecode,urlEncode,-} parseQuery ) 
 import Network.HTTP.Types.Header ( hCookie, hLocation ) 
 -- import Network.Wai.Middleware.RequestLogger (logStdoutDev)
+import Network.Wai.Parse (parseRequestBody)
 import Web.ClientSession (randomIV, encrypt, encryptIO, decrypt, getDefaultKey)
 
 bsAppend :: ByteString -> ByteString -> ByteString
@@ -303,6 +315,9 @@ bsTail = BS.tail
 
 bsTakeWhile :: (Char -> Bool) -> ByteString -> ByteString
 bsTakeWhile = BS.takeWhile
+
+bsTake :: Int -> ByteString -> ByteString 
+bsTake = BS.take 
 
 tTail :: Text -> Text
 tTail = T.tail
@@ -379,9 +394,11 @@ headerValueToKVs (_,bs) =
     map 
     ( \lbs->  
         case lbsSpan (/='=') lbs of
-          ("",_)  -> ("","")
-          (k,"")  -> (bsConcat.LBS.toChunks $ k,"")
-          (k,v)   -> (bsConcat.LBS.toChunks $ k, bsConcat.LBS.toChunks.lbsTail $ v)
+          ("",_)  -> ( "", "" )
+          (k,"")  -> ( bsConcat.LBS.toChunks $ k, "" )
+          (k,v)   -> ( bsConcat.LBS.toChunks $ k
+                     , bsConcat.LBS.toChunks.lbsTail $ v
+                     ) -- where '=' is the head 
     ) $ 
     lbsSplit ';' $ bssReplace " " (""::ByteString) bs
 

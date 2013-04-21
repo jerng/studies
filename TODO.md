@@ -22,11 +22,8 @@ Look into ResponseSource usage for Hell.Server.respond
 
 Make ./src/* file names case insensitive.
 
-Cabalise this.
 Replace all association lists, with Data.Map.Map
-user Builders properly! (no idea about this yet)
-
-Wherever Document is used, include a type synonym as an abstraction "interface"
+user Builders properly! 
 
 Make a session helper
 Make a cookie helper

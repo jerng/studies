@@ -19,14 +19,18 @@ main =  Hell.Lib.warpServer
 --    TODO: Allow per-action cookieless behaviour.
 app :: Request -> ResourceT IO Response 
 app = \req-> do
+  
   let post = "POST" == requestMethod req
+
+  -- Sink the requestBody, and use it to construct multiple Sources later
   reqBod <-
     if    post 
-    then  lift.runResourceT$(requestBody req $$ sinkForRequestBody)
-    else  lift.return$"" -- Not sure if this is safer than "ignored"
+    then  lift.runResourceT $ (requestBody req $$ sinkForRequestBody)
+    else  lift.return $ "" -- Not sure if this is safer than "ignored"
+
   (maybeKey, maybeIv) <-  
     if    not Hell.Lib.useEncryption
-    then  lift.return$(Nothing, Nothing)
+    then  lift.return $ (Nothing, Nothing)
     else  lift $ do 
             key <- getDefaultKey
                   -- This method generates & uses ./app/client_session_key.aes
@@ -37,7 +41,26 @@ app = \req-> do
                   -- Alternatively, this could be stored in Hell.Conf, like
                   -- CakePHP 1.2 did, I suppose.
             return (Just key, Just iv)
-  let rep' = Hell.Lib.defaultReport {request = Just req}
+  
+  (params', files') <-
+    if    not post
+    then  lift.return $ ([],[])
+    else  parseRequestBody 
+          Hell.Lib.parseRequestBodyBackEnd
+          req { requestBody = sourceLbs $ fromChunks [reqBod] }
+                -- Since we sank the source, above, here we must recreate it 
+                -- if "it" is to be used again. (-_- wtf mutable data)
+
+  let rep' =  Hell.Lib.defaultReport 
+              { request = Just req  
+                { requestBody = sourceLbs $ fromChunks [reqBod] }
+                -- Since we sank the source, above, here we must recreate it 
+                -- if "it" is to be used again. (-_- wtf mutable data)
+              , key = maybeKey
+              , iv = maybeIv
+              , params = params'
+              , files = files'
+              } 
       finalRep =  
         setResCookieHeaders
         .setResSessionCookie
@@ -47,19 +70,19 @@ app = \req-> do
           --  (depends on Authentication & details of Request)
         .populateBson
         .populateForm
-        .( if post then getPostQuery reqBod else id )
         .confirmAct
         .actRouter
           -- Based on normalised path variables
         -- . authenticationHere (depends only on Session)
-        .( if Hell.Lib.useSessions then initSession maybeKey maybeIv else id)
-        .getReqCookies$rep'
+        .( if Hell.Lib.useSessions then initSession else id)
+        .getReqCookies $ rep'
+
   reqString <- 
       showRequest reqBod
       .lift
       .return
-      .fromMaybe (error "app: no Request")$request finalRep 
-  lift.return.respond$
+      .fromMaybe (error "app: no Request") $ request finalRep 
+  lift.return.respond $
     if    Hell.Lib.appMode == Production
     then  finalRep
     else  finalRep { shownRequest = reqString }
@@ -72,37 +95,36 @@ getReqCookies rep =
                           .onlyCookieHeaders
                           .requestHeaders
                           .fromMaybe (error "getReqCookies: no Request") 
-                          .request$rep
+                          .request $ rep
             }
 
 -- | The key file should be stored somewhere outside ./app, otherwise
 -- it is deleted every time MakeHell.main is run.
-initSession :: Maybe Key -> Maybe IV -> ReportHandler
-initSession maybeKey maybeIv rep = rep 
-  { key     = maybeKey
-  , iv      = maybeIv
                 -- If we want to (error) when Conf.useSession is true,
                 -- but when the (key) or (iv) is not obtained, here would 
                 -- be the place to do it.
-  , session = case lookup Hell.Lib.sessionCookieName $ reqCookies rep of
+initSession :: ReportHandler
+initSession rep = rep 
+  { session = 
+      case lookup Hell.Lib.sessionCookieName $ reqCookies rep of
       Nothing           -> Hell.Lib.defaultSession 
       Just cookieValue  ->
         case  decrypt 
-              (fromMaybe (error "initSession: no encryption Key") maybeKey) 
+              (fromMaybe (error "initSession: no encryption Key") $ key rep) 
               cookieValue of
-          Nothing         -> Hell.Lib.undecryptableSession
-          Just decrypted  -> 
-            let decoded = decdoc decrypted
-            in  if    decoded == Hell.Lib.undecryptableSession
-                then  Hell.Lib.defaultSession
-                else  decoded 
+        Nothing         -> Hell.Lib.undecryptableSession
+        Just decrypted  -> 
+          let decoded = decdoc decrypted
+          in  if    decoded == Hell.Lib.undecryptableSession
+              then  Hell.Lib.defaultSession
+              else  decoded 
   } 
 
 -- | This function sets a Report's (actRoute) based on its (request)'s (pathInfo)
 --  Maybe add a hook from here, to Hell.Conf.
 --  Maybe replace this with a regex-style actRouter, as many other frameworks have.
 actRouter :: ReportHandler
-actRouter rep = case pathInfo.fromMaybe (error "actRouter: no Request").request$rep of
+actRouter rep = case pathInfo.fromMaybe (error "actRouter: no Request").request $ rep of
   []        -> rep  { actRoute = Hell.Lib.defaultRoute }
   "":[]     -> rep  { actRoute = Hell.Lib.defaultRoute }
   con:[]    -> rep  { actRoute = (tToLower con, Hell.Lib.indexAction) }
@@ -139,19 +161,14 @@ confirmAct rep =
           -- Perhaps unnecessarily wordy?
           -- Does GHC optimise-away messes like this?
 
--- Use the same rules as Wai does for the Request {pathInfo}, where "key="
--- gets translated to ("key", Just ""), and "key" to ("key",Nothing)
-getPostQuery :: ByteString -> ReportHandler
-getPostQuery reqBod rep = rep { postQuery = parseQuery reqBod }
-
 populateForm :: ReportHandler
 populateForm rep = rep 
   { form_ = 
     let req = fromMaybe (error "populateForm: no Request") $ request rep
-    in  [  "temp " := Doc ( mapMaybe queryItemToMaybeField $
+    in  [ "temp " := Doc  ( mapMaybe queryItemToMaybeField $
                               case requestMethod req of
-                                "POST"  -> postQuery rep
-                                "GET"   -> queryString req
+                              "GET"   -> queryString req
+                              "POST"  -> map (\(n,v)->(n,Just v)) $ params rep
                           )
         ]
   }
@@ -262,10 +279,10 @@ renderDebug rep =
                     ) --- MOVE to Hell.Lib.showCookie or Show instance
                 )
               : tAppend "Request {session}:" (showDoc False 0 $ session rep)
-              : ( tIntercalate "<br/>  " $ 
-                  "Request {postQuery}:" 
-                  : ( map (tPack.show) $ postQuery rep )
-                )
+--              : ( tIntercalate "<br/>  " $ 
+--                  "Request {postQuery}:" 
+--                  : ( map (tPack.show) $ postQuery rep )
+--                )
               : ( reverse.debug $ rep )
     ]  
 

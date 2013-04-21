@@ -1,4 +1,4 @@
-<form id="TheFormID" action="/test/form">
+<form id="TheFormID" action="/test/form2">
   <fieldset>
     <legend>The legend tag lables the fieldset; the fieldset tag draws a box.</legend>
     <label for="text1" form="TheFormID">label1</label>
