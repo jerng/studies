@@ -30,9 +30,9 @@ warpServer :: Application -> IO ()
 warpServer app = runSettings defaultSettings app
 
 appMode :: AppMode
-appMode =  FullAutoDebug 
+appMode = -- FullAutoDebug 
           -- SemiAutoDebug
-          --  ManualDebug
+           ManualDebug
           -- Production
 
 -- ****************************************************************************
@@ -128,7 +128,7 @@ defaultViewTemplate = Just ("default","template")
 
 defaultHeaders :: [Header]
 defaultHeaders = 
-  [ (hContentType,"text/html")
+  [ (hContentType,"text/html; charset=utf-8")
   ]
 
 defaultStatus :: Status
@@ -268,8 +268,12 @@ instance ViewExpression Text where
 instance ViewExpression [Int] where
   toText a = T.pack $ show a
 
+-- DO NOT CHANGE THIS NAIVELY.
 -- If you change the BackEnd, you may have to change the BackEnd type argument.
-parseRequestBodyBackEnd :: BackEnd LByteString
+-- Also, nothing but (lbsBackEnd) is currently supported.
+parseRequestBodyBackEnd :: BackEnd 
+                              LByteString
+                              --FilePath
 parseRequestBodyBackEnd = lbsBackEnd
                           -- tempFileBackEnd
                           -- tempFileBackEndOpts

@@ -63,6 +63,7 @@ module Hell.Types (
 
   -- | Defined in Network.Wai.Parse
   , File
+  , FileInfo (..)
   , Param
   , BackEnd
 
@@ -114,7 +115,7 @@ import Network.HTTP.Types
 import Network.HTTP.Types.Header ( Header{-,RequestHeaders-}) 
 import Network.Wai (RequestBodyLength(..),Request(..),Response(..))
 import Network.Wai.Handler.Warp (Settings)
-import Network.Wai.Parse (Param, File,BackEnd)
+import Network.Wai.Parse (Param, File, FileInfo(..), BackEnd)
 import Web.ClientSession (IV,Key)
 
 type LByteString = LBS.ByteString

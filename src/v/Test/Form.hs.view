@@ -30,7 +30,7 @@
             autocomplete="on"/>
     <label for="text5" form="TheFormID">label5</label>
     <input  id="text5" 
-            name="data:collection.key2.key3:ByteString"
+            name="data:collection.key2.key3:Document"
             type="file"
             form="TheFormID" 
             autofocus 

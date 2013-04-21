@@ -20,6 +20,7 @@ main =  Hell.Lib.warpServer
 app :: Request -> ResourceT IO Response 
 app = \req-> do
   
+  -- We'll use this flag a couple of times below.
   let post = "POST" == requestMethod req
 
   -- Sink the requestBody, and use it to construct multiple Sources later
@@ -28,6 +29,13 @@ app = \req-> do
     then  lift.runResourceT $ (requestBody req $$ sinkForRequestBody)
     else  lift.return $ "" -- Not sure if this is safer than "ignored"
 
+  -- Get stuff for use in pure code.
+  reqString <- 
+    if    Hell.Lib.appMode == Production
+    then  lift.return $ ""
+    else  showRequest reqBod . lift . return $ req 
+
+  -- Get stuff for use in pure code.
   (maybeKey, maybeIv) <-  
     if    not Hell.Lib.useEncryption
     then  lift.return $ (Nothing, Nothing)
@@ -42,6 +50,7 @@ app = \req-> do
                   -- CakePHP 1.2 did, I suppose.
             return (Just key, Just iv)
   
+  -- Get stuff for use in pure code.
   (params', files') <-
     if    not post
     then  lift.return $ ([],[])
@@ -51,7 +60,9 @@ app = \req-> do
                 -- Since we sank the source, above, here we must recreate it 
                 -- if "it" is to be used again. (-_- wtf mutable data)
 
-  let rep' =  Hell.Lib.defaultReport 
+  let
+      -- This is the initialised Report - pass it down the pipeline...
+      rep' =  Hell.Lib.defaultReport 
               { request = Just req  
                 { requestBody = sourceLbs $ fromChunks [reqBod] }
                 -- Since we sank the source, above, here we must recreate it 
@@ -61,6 +72,8 @@ app = \req-> do
               , params = params'
               , files = files'
               } 
+
+      -- The pipeline:
       finalRep =  
         setResCookieHeaders
         .setResSessionCookie
@@ -68,7 +81,7 @@ app = \req-> do
           -- Within the Action, further authorisations may happen.
         -- . authorisationHere (in AppController?) 
           --  (depends on Authentication & details of Request)
-        .populateBson
+        .populateData
         .populateForm
         .confirmAct
         .actRouter
@@ -77,11 +90,6 @@ app = \req-> do
         .( if Hell.Lib.useSessions then initSession else id)
         .getReqCookies $ rep'
 
-  reqString <- 
-      showRequest reqBod
-      .lift
-      .return
-      .fromMaybe (error "app: no Request") $ request finalRep 
   lift.return.respond $
     if    Hell.Lib.appMode == Production
     then  finalRep
@@ -164,20 +172,28 @@ confirmAct rep =
 populateForm :: ReportHandler
 populateForm rep = rep 
   { form_ = 
-    let req = fromMaybe (error "populateForm: no Request") $ request rep
-    in  [ "temp " := Doc  ( mapMaybe queryItemToMaybeField $
-                              case requestMethod req of
-                              "GET"   -> queryString req
-                              "POST"  -> map (\(n,v)->(n,Just v)) $ params rep
-                          )
-        ]
+    [ "temp" := Array
+      (
+        let req = fromMaybe (error "populateForm: no Request") $ request rep
+            paramToQuery = \(n,v)->(n,Just v)
+        in  ( mapMaybe queryItem'ToMaybeValue $
+                case requestMethod req of
+                "GET"   -> queryString req
+                "POST"  -> map paramToQuery $ params rep
+            ) ++
+            ( mapMaybe file'ToMaybeValue $ files rep )
+      )
+    ]
   }
 
-populateBson :: ReportHandler
-populateBson rep = rep { data_ = merge data_' $ data_ rep} where 
+populateData :: ReportHandler
+populateData rep = rep { data_ = merge data_' $ data_ rep} where 
   data_' = 
     [ "TEMP (until Request {data_} is normalised from forms to models)" := Doc 
-      [ "path" := ( Array $ map String $ pathVars rep ) ]
+      [ "path" := ( Array $ map String $ pathVars rep ) 
+      , "form" := ( Doc $ form_ rep )
+      , "TODO" := String "debugging some of these above ^^"
+      ]
     ]
 
 -- ****************************************************************************

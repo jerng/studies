@@ -171,6 +171,7 @@ module Hell.Lib (
   , ok200
   , found302
   , Settings
+  , FileInfo (..)
 
   , ReportHandler
   , Action
@@ -232,7 +233,8 @@ module Hell.Lib (
   , (-->)
   , sinkForRequestBody
   , readMaybe
-  , queryItemToMaybeField
+  , queryItem'ToMaybeValue
+  , file'ToMaybeValue
 )  where
 import Blaze.ByteString.Builder.Char.Utf8 (fromText)
 import Control.Monad (foldM{-, liftM-})
@@ -619,52 +621,51 @@ redirectTo rep loc = rep { status = found302, resHeaders = [(hLocation,loc)] }
 (-->) = redirectTo
 infix 1 -->
 
-{- 
 
-Psuedo-code:
+-- MODULARISE: Hell.Parse.Forms
+-- Labels, if any are found, are returned with the inner-most label first.
+-- Also returns Type.
+inputName'ToMaybeKeys'AndType :: ByteString -> Maybe ([ByteString],ByteString)
+inputName'ToMaybeKeys'AndType inputName = 
+  let tuple = case bsSplit ':' inputName of
+              ["data",ls,t]   -> ( reverse $ bsSplit '.' ls, t )
+              otherwise       -> ( [], "" )
+  in  case tuple of
+      ( []    , _ ) -> Nothing -- Debug "no collection/sub-keys found"
+      ( l:[]  , _ ) -> Nothing -- Debug "collection, but no sub-keys, found"
+      x             -> Just x
 
-Consider a QueryItem == (ByteString, Maybe ByteString) as (A, B):
+-- MODULARISE: Hell.Parse.Forms
+file'ToMaybeValue :: File LByteString -> Maybe Value  
+file'ToMaybeValue (inputName, fInfo) = 
+  case inputName'ToMaybeKeys'AndType inputName of
+  Nothing     -> Nothing
+  Just (ls,_) -> Just $ -- (_) ought to be "Document", but assume it is.
+    ( let foldSeed      = Array 
+            [ Bin $ Bson.Binary $ fileName fInfo
+            , Bin $ Bson.Binary $ fileContentType fInfo
+            , Bin $ Bson.Binary $ bsConcat $ LBS.toChunks $ fileContent fInfo
+            ]
+      in  foldl nestValuesl foldSeed ls
+    )
 
-IF  A doesn't expand to (a,b,c)
-    OR a /= "data"
-    OR b expands to ( x:xs
-                      where ANY x == "" )
-
-THEN  Nothing
-
-ELSE use c to cast b to a (Maybe Value) 
-
--}
-
-
+-- MODULARISE: Hell.Parse.Forms
 -- Not sure if this can be made simpler.
-queryItemToMaybeField :: (ByteString, Maybe ByteString) -> Maybe Field
-queryItemToMaybeField (name,maybeValue) = case bsSplit ':' name of
-  ["data",ks,t] ->
-    let labels = reverse $ bsSplit '.' ks
-        v `foldOp` k = decodeUtf8 k := Doc [v]
-    in  case labels of
-        []    -> Nothing -- add Debug "no collection/sub-keys found"
-        x:[]  -> Nothing -- add Debug "a collection found; no sub-keys found" 
-        x:xs  ->  
-          Just
-          ( foldl foldOp
-            
-            ( decodeUtf8 x :=
-              ( maybe 
-                Null -- "key&" situation (no =)
-                ( textToBsonValue t )
-                maybeValue
-              ) -- starting value
-            )
+queryItem'ToMaybeValue :: (ByteString, Maybe ByteString) -> Maybe Value 
+queryItem'ToMaybeValue (inputName, maybeUnparsedValue) = 
+  case inputName'ToMaybeKeys'AndType inputName of
+  Nothing     -> Nothing
+  Just (ls,t) -> Just $ 
+    ( let foldSeed = maybe Null ( textToBsonValue t ) maybeUnparsedValue
+                    -- Null would imply a "key&" situation (no =)
+      in  foldl nestValuesl foldSeed ls
+    )
 
-            xs
-          )
+-- MODULARISE: Hell.Parse.Forms
+nestValuesl :: Value -> ByteString -> Value
+nestValuesl v l = Doc [ decodeUtf8 l := v ]
 
-  otherwise -> Nothing
---  "input[name]: did not match the \"data:dot-notation-key:val-type\" pattern"
-              -- add Debug here, later
-
+-- MODULARISE: Hell.Parse.Forms
 -- | HTML form, input element, where input[name] is of the form "data:ks:t"
 -- and input[value] as submitted to the server is v.
 -- This documentation can be improved.
@@ -697,14 +698,7 @@ textToBsonValue t v =
           otherwise -> Null
 -- add Debug here, later
 
--- | Key -> Value -> DocumentVJj
---nestValue :: ByteString -> Value -> Document
---nestValue ks v = 
---  let keys = bsSplit '.' ks
---  in  case keys of
---      [] -> [] --
-
-
+-- MODULARISE: Hell.Parse.Forms
 -- base-4.6.0.1 has (readMaybe), but meanwhile this is an alternative
 -- from http://stackoverflow.com/posts/8067014/revisions
 readMaybe :: (Read a) => String -> Maybe a
