@@ -1,3 +1,5 @@
+import Network.HTTP.Types (ok200)
+
 redirect :: Action 
 redirect rep =  rep --> "/default/index" 
 

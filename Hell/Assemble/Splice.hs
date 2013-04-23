@@ -1,49 +1,78 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hell.Splice (
+module Hell.Assemble.Splice (
     spliceController
   , spliceTemplate
   , spliceView
 ) where
 
-import Hell.Lib
+import Control.Monad (foldM)
+import Data.List (nub)
+import Data.List.Utils (keysAL)
+import Data.Maybe (fromMaybe)
+import qualified Data.Text as T
+import qualified Data.Text.IO as T (readFile)
+import Hell.Assemble.Primitives
+import Hell.Types
+import Hell.Conf
+
+data SliceTag = ImportControllers 
+              | ImportViews
+              | ListActions
+              | ListViews
+              deriving (Eq,Show)
+
+data Slice  = Slice ResourceName SliceTag
+              deriving (Show)
+
+data Unrendered = Plain T.Text 
+                | Exp T.Text
+                deriving (Show)
+
+sliceIDsOf :: ResourceName -> [Slice]
+sliceIDsOf Server = 
+  [ Slice Server ImportControllers 
+  , Slice Server ImportViews 
+  , Slice Server ListActions 
+  , Slice Server ListViews
+  ]
 
 spliceController :: FilePath -> IO ResourceNameText 
 spliceController c = do
-  templateText <- tReadFile $ (fromPath Controllers) ++ c ++ scriptExtension
+  templateText <- T.readFile $ (fromPath Controllers) ++ c ++ scriptExtension
   return templateText
 
 spliceTemplate :: ResourceName -> IO ResourceNameText 
 spliceTemplate module' = do 
-  templateText <- tReadFile $ fromPath module'
+  templateText <- T.readFile $ fromPath module'
   let moduleSlices = sliceIDsOf module'
   let buildSlices = \text sliceID -> do
         let Slice _ slice = sliceID
-        let tag = (tPack $ "{-makeHell:"++ show slice ++"-}" )
+        let tag = (T.pack $ "{-makeHell:"++ show slice ++"-}" )
         builtSlice <- buildSlice sliceID 
-        return $ tReplace tag builtSlice text
+        return $ T.replace tag builtSlice text
   foldM buildSlices templateText moduleSlices
 
 -- | This function builds slices of text.
 
-buildSlice :: Slice -> IO Text
+buildSlice :: Slice -> IO T.Text
 buildSlice s = case s of 
 
   Slice Server ImportControllers -> do  
     cs <- controllers
     return $ 
-      tIntercalate "\n" $ 
-      map ((tAppend "import qualified Controllers.").(tPack)) cs 
+      T.intercalate "\n" $ 
+      map ((T.append "import qualified Controllers.").(T.pack)) cs 
 
   Slice Server ImportViews -> do  
     al <- views
     let cs = keysAL al
-        eachC = \c -> tConcat $ map (eachV c) $ fromMaybe 
+        eachC = \c -> T.concat $ map (eachV c) $ fromMaybe 
           (error "buildSlice: controller not found in list of views") $
           lookup c al 
         eachV = \c v ->
-          tConcat ["import qualified Views.", tPack c, ".", tPack v, "\n"]
-    return $ tConcat $ map eachC cs 
+          T.concat ["import qualified Views.", T.pack c, ".", T.pack v, "\n"]
+    return $ T.concat $ map eachC cs 
 
  {- This is crufty. It take the unique first words that start at zero
      indent, in eac ./scr/c/* . It needs to be improved to parse out non
@@ -54,24 +83,24 @@ buildSlice s = case s of
 
   Slice Server ListActions -> do
     actions <- (mapM eachC) =<< controllers 
-    return $ tIntercalate "\n  " $ concat $ actions
+    return $ T.intercalate "\n  " $ concat $ actions
       where 
 
         eachC c = do 
-          text <- tReadFile $ (fromPath Controllers) ++ c ++ scriptExtension
-          return $ map f'' $ nub $ map f' $ filter f $ tLines text
+          text <- T.readFile $ (fromPath Controllers) ++ c ++ scriptExtension
+          return $ map f'' $ nub $ filter (flip notElem ["import"]) $ map f' $ filter f $ T.lines text
           where
 
-            f = \line-> elem (tTake 1 line)  [ "a" , "b" , "c" , "d" , "e"
+            f = \line-> elem (T.take 1 line)  [ "a" , "b" , "c" , "d" , "e"
                 , "f" , "g" , "h" , "i" , "j" , "k" , "l" , "m" , "n" , "o"
                 , "p" , "q" , "r" , "s" , "t" , "u" , "v" , "w" , "x" , "y"
                 , "z" , "_" ]
-            f' = \line -> head $ tWords line
-            f'' = \a -> tConcat  [ "| (\""
-                                  , tToLower $ tPack c
+            f' = \line -> head $ T.words line
+            f'' = \a -> T.concat  [ "| (\""
+                                  , T.toLower $ T.pack c
                                   , "\", \""
                                   , a,"\") <- r = Just (Controllers."
-                                  , tPack c
+                                  , T.pack c
                                   , "."
                                   , a
                                   , ")"
@@ -85,27 +114,33 @@ buildSlice s = case s of
           (error "buildSlice: controller not found in list of views") $ 
           lookup c al 
         eachV = \c v->
-          let c' = tPack c
-              v' = tPack v
-          in  tConcat  [ "| (\""
-                        , tToLower c'
+          let c' = T.pack c
+              v' = T.pack v
+          in  T.concat  [ "| (\""
+                        , T.toLower c'
                         , "\", \""
-                        , tToLower v'
+                        , T.toLower v'
                         , "\") <- r = Just (Views."
                         , c'
                         , "."
                         , v'
                         , ".main)"
                         ]
-    return $ tIntercalate "\n  " $ concat $ map eachC cs 
+    return $ T.intercalate "\n  " $ concat $ map eachC cs 
 
-spliceView :: FilePath -> FilePath -> Text -> Text
+spliceView :: FilePath -> FilePath -> T.Text -> T.Text
 spliceView c v unsplicedText = 
   unrenderedToModuleText  
   1 
-  ( tPack $  "{-# LANGUAGE OverloadedStrings #-}\n\
+  ( T.pack $  "{-# LANGUAGE OverloadedStrings #-}\n\
               \module Views." ++ c ++ "." ++ v ++ " where\n\n\
-              \import Hell.Lib\n\n" 
+              \import Data.Bson (Document)\n\ 
+              \import Data.Maybe\n\ 
+              \import qualified Data.Text as T\n\
+              \import Hell.Conf\n\ 
+              \import Hell.Lib\n\ 
+              \import Hell.Show\n\ 
+              \import Hell.Types\n\n" 
   ) 
   ( textToUnrendereds unsplicedText )
 
@@ -122,7 +157,7 @@ spliceView c v unsplicedText =
 -- solving all these problems for us behind the scenes.
 --
 -- TODO: test and decide if a better approach is feasible.
-unrenderedToModuleText :: Int -> Text -> [Unrendered] -> ResourceNameText
+unrenderedToModuleText :: Int -> T.Text -> [Unrendered] -> ResourceNameText
 unrenderedToModuleText count acc remainingList  
 
   | True <- count < 1 
@@ -131,17 +166,17 @@ unrenderedToModuleText count acc remainingList
   -- | Final Unrendered
 
   | [] <- remainingList
-  = tConcat 
+  = T.concat 
     [ acc 
-    , "main :: Document -> Text\n\
+    , "main :: Document -> T.Text\n\
       \main doc =\n\
-      \  tConcat\n\
+      \  T.concat\n\
       \  [ "
-    , tIntercalate "\n  , " $ map 
+    , T.intercalate "\n  , " $ map 
                           (\x->
-                            tConcat 
+                            T.concat 
                             [ "text" 
-                            , (tPack $ show x)
+                            , (T.pack $ show x)
                             , " doc"
                             ]
                           ) 
@@ -154,12 +189,12 @@ unrenderedToModuleText count acc remainingList
   | ((Plain text) :remainingList) <- remainingList
   = unrenderedToModuleText 
     (count+1) 
-    ( tConcat
+    ( T.concat
       [ acc 
       , "text"
-      , tPack $ show count
-      , " :: Document -> Text\ntext"
-      , tPack $ show count
+      , T.pack $ show count
+      , " :: Document -> T.Text\ntext"
+      , T.pack $ show count
       , " _ = \""
       , ( textToHsSyntax text )
       , "\"\n\n"
@@ -170,16 +205,16 @@ unrenderedToModuleText count acc remainingList
   | ((Exp text) :remainingList) <- remainingList
   = unrenderedToModuleText 
     (count+1) 
-    ( tConcat
+    ( T.concat
       [ acc 
       , "text"
-      , tPack $ show count
-      , " :: Document -> Text\ntext"
-      , tPack $ show count
+      , T.pack $ show count
+      , " :: Document -> T.Text\ntext"
+      , T.pack $ show count
       , " doc = "
-      , tConcat 
+      , T.concat 
           [ " toText (\n" 
-          , tUnlines $ map (tAppend "    ") $ tLines text
+          , T.unlines $ map (T.append "    ") $ T.lines text
           , "  )\n\
             \  where view label = lookupBsonVal label doc"
           ,"\n\n"
@@ -188,16 +223,16 @@ unrenderedToModuleText count acc remainingList
     )      
     remainingList
 
-textToUnrendereds :: Text -> [Unrendered]
+textToUnrendereds :: T.Text -> [Unrendered]
 textToUnrendereds text =  
-  case tSplitOn "<hs>" text of
+  case T.splitOn "<hs>" text of
     [text]
       ->  [Plain text]
     text:remainder
       ->  ( Plain text ) : 
           ( concat 
           $ map
-            ( \t-> case tSplitOn "</hs>" t of
+            ( \t-> case T.splitOn "</hs>" t of
                 [withinTag, withoutTag]
                   ->  [Exp withinTag, Plain withoutTag]
                 [_]
@@ -207,9 +242,9 @@ textToUnrendereds text =
             )
             remainder )
 
-textToHsSyntax :: Text -> Text
+textToHsSyntax :: T.Text -> T.Text
 textToHsSyntax text = 
-  (tIntercalate "\\\n  \\" ) $ tLines $ 
+  (T.intercalate "\\\n  \\" ) $ T.lines $ 
                     -- Formats multiline text.
-  tReplace "\"" "\\\"" text
+  T.replace "\"" "\\\"" text
                     -- Escapes double-quotes

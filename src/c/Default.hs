@@ -1,3 +1,7 @@
+import Data.Bson (Document, Field (..), Value (..))
+import qualified Data.Text as T
+import Network.HTTP.Types (ok200)
+
 index :: Report -> Report
 index rep = 
   "more debuggable stuff (because if you do, you have to type from right to left)" ?>> 
@@ -22,7 +26,7 @@ index rep =
       <<? "even more debuggable stuff"
       <<? "lastly, for good measure" 
       <<? "default.hs line 14" 
-      <<? ( tPack.show $ 666 )
+      <<? ( T.pack.show $ 666 )
       <<? "just trying to debug an int"
     --  TODO :Try to make a helper function for sending variables to the
     --  ViewableList.

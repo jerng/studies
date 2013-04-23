@@ -1,19 +1,20 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleInstances #-}
 
+-- Implicit export list, because well, this should only contain exported things?
 module Hell.Conf where
 
-import Data.List
-import qualified 
-       Data.ByteString as BS
-import qualified 
-       Data.Text as T
+import Data.Bson (Document,Field(..),Value(..)) 
+import qualified Data.ByteString as BS (ByteString) 
+import qualified Data.ByteString.Lazy as LBS
+import Data.List ()
+import qualified Data.Text as T (pack,Text,append)
 import Hell.Types
-import System.Directory
-import Network.HTTP.Types.Header
-import Network.Wai
-import Network.Wai.Handler.Warp
-import Network.Wai.Parse
+import Network.HTTP.Types (Status,accepted202) 
+import Network.HTTP.Types.Header (hContentType,Header)
+import Network.Wai (Application)
+import Network.Wai.Handler.Warp (runSettings,defaultSettings)
+import Network.Wai.Parse (BackEnd,lbsBackEnd)
 
 -- Network.Wai.Handler.Warp.defaultSettings { settingsPort is 3000 }
 --
@@ -37,7 +38,7 @@ appMode = -- FullAutoDebug
 
 -- ****************************************************************************
 -- Incompatible settings here should be caught by makeHell at pre-compile time.
---
+-- FIXME- : THEY CURRENTLY ARE NOT... are they?
 useEncryption :: Bool
 useEncryption = True
 
@@ -54,11 +55,11 @@ useCookies = True
 -- ****************************************************************************
 
 defaultSession :: Document 
-defaultSession = ["data":=Null] 
+defaultSession = ["data" := Null] 
 
 -- | This is probably a temporary solution/mechanism
 undecryptableSession :: Document 
-undecryptableSession =  ["error":= String "undecryptable"]
+undecryptableSession =  ["error" := String "undecryptable"]
 
 -- I would really like to know how all this setting of defaults
 -- affects memory use. Testing will be required.
@@ -87,10 +88,10 @@ defaultReport = Report  { request = Nothing
                         , action = id 
                         }
 
-defaultCookieName :: ByteString
+defaultCookieName :: BS.ByteString
 defaultCookieName = "Hell"
 
-sessionCookieName :: ByteString
+sessionCookieName :: BS.ByteString
 sessionCookieName = "FsbD"
 
 defaultCookie :: Cookie -- CHANGE THIS!!!
@@ -107,20 +108,20 @@ defaultCookie = Cookie  { cookieName = defaultCookieName
                           ]
                         }
 
-metaNoSuchAction :: Text
+metaNoSuchAction :: T.Text
 metaNoSuchAction = "We could not find the page that you are looking for." 
   `T.append` if appMode == Production then "" else 
     "<div class=\"debug\">Hell.Server.confirmAction did not find the\
     \ requested action in Hell.Server.actionList. This is the list assembled\
     \ by ./makeHell.hs and spliced into ./app/Server.hs.</div>"
 
-keyOfMetaView :: Text
+keyOfMetaView :: T.Text
 keyOfMetaView = "metaView"
 
 -- | The key in a viewBson of a view template, whose value is the text 
 -- of a view that has been full rendered, along with any of its subviews. 
 -- (Report and sub Reports) by Hell.Server.renderReport.
-keyOfTemplatedView :: Text
+keyOfTemplatedView :: T.Text
 keyOfTemplatedView = "viewContent"
 
 defaultViewTemplate :: Maybe Route
@@ -150,129 +151,18 @@ missingViewRoute = ("default","nosuchview")
 staticFileRoute :: Route
 staticFileRoute = ("default","files")
 
--- | Notice that (Hell.Splice) isn't included here.
--- That's because it's not used in ./app .
-staticResources :: [ResourceName]
-staticResources = 
-  [ Conf
-  , Lib
-  , Types
-  , AppController
-  , AppModel
-  ]
-
-templatedResources :: [ResourceName]
-templatedResources = 
-  [ Server
-  ]
-
-sliceIDsOf :: ResourceName -> [Slice]
-sliceIDsOf Server = 
-  [ Slice Server ImportControllers 
-  , Slice Server ImportViews 
-  , Slice Server ListActions 
-  , Slice Server ListViews
-  ]
-
-fromPath :: ResourceName -> FilePath
-fromPath r = case r of
-  Files         -> "./src/f/"
-  Controllers   -> "./src/c/"
-  Models        -> "./src/m/"
-  Views         -> "./src/v/"
-  Hell          -> "./Hell/"
-  Conf          -> "./Hell/Conf.hs"
-  Lib           -> "./Hell/Lib.hs"
-  Splice        -> "./Hell/Splice.hs"
-  Types         -> "./Hell/Types.hs"
-  Server        -> "./Hell/template.Server.hs"
-  AppController -> "./src/AppController.hs"
-  AppModel      -> "./src/AppModel.hs"
-
-toPath :: ResourceName -> FilePath
-toPath r = case r of
-  App             -> "./app/"
-  Files           -> "./app/Files/"
-  Controllers     -> "./app/Controllers/"
-  Models          -> "./app/Models/"
-  Views           -> "./app/Views/"
-  Hell            -> "./app/Hell/"
-  Conf            -> "./app/Hell/Conf.hs"
-  Lib             -> "./app/Hell/Lib.hs"
-  Splice          -> "./app/Hell/Splice.hs"
-  Types           -> "./app/Hell/Types.hs"
-  Server          -> "./app/Server.hs"
-  AppController   -> "./app/AppController.hs"
-  AppModel        -> "./app/AppModel.hs"
-
-controllers :: IO [FilePath]
-controllers = do  
-  contents <- getDirectoryContents $ fromPath Controllers 
-  return $ map takeUntilDot $ filterInScripts contents
-
-models :: IO [FilePath]
-models = do  
-  contents <- getDirectoryContents $ fromPath Models 
-  return $ map takeUntilDot $ filterInScripts contents
-
-views :: IO [(FilePath, [FilePath])]
-views = (mapM eachCdir) =<< cDirs
-  where
-    cDirs = do 
-      contents <- getDirectoryContents $ fromPath Views
-      return $ delete ".." $ delete "." contents
-    eachCdir cDir = do
-      contents' <- getDirectoryContents $ fromPath Views ++ cDir
-      return  
-        ( cDir
-        , map takeUntilDot $ filterInViews contents' 
-        )
-
-scriptExtension :: FilePath
-scriptExtension = ".hs"
-
-viewExtension :: FilePath
-viewExtension = ".view"
-
-filterInScripts :: [FilePath] -> [FilePath]
-filterInScripts filePathList = filter (isSuffixOf scriptExtension) filePathList
-
-filterInViews :: [FilePath] -> [FilePath]
-filterInViews filePathList = filter (isSuffixOf viewExtension) filePathList
-
-takeUntilDot :: FilePath -> FilePath
-takeUntilDot filePath = takeWhile ('.'/=) filePath
-
-messageStartMakeHell :: Text
-messageStartMakeHell = 
-  "\nAssembling app. Reading from ./src and writing to ./app ..."
-
-messageStartTryHell :: Text
-messageStartTryHell = "Running source code of ./app/Server.hs ...\n"
-
-messageJobDone :: Text
-messageJobDone = "... and the job is done.\n"
-
-class ViewExpression a where
-  toText :: a -> Text
-
-instance ViewExpression Int where
-  toText a = T.pack $ show a
-
-instance ViewExpression Float where
-  toText a = T.pack $ show a
-
-instance ViewExpression Text where
-  toText a = a
-
-instance ViewExpression [Int] where
-  toText a = T.pack $ show a
+class ViewExpression a where toText :: a -> T.Text
+instance ViewExpression Int where toText a = T.pack $ show a
+instance ViewExpression Float where toText a = T.pack $ show a
+instance ViewExpression T.Text where toText a = a
+instance ViewExpression [Int] where toText a = T.pack $ show a
 
 -- DO NOT CHANGE THIS NAIVELY.
 -- If you change the BackEnd, you may have to change the BackEnd type argument.
 -- Also, nothing but (lbsBackEnd) is currently supported.
+-- So it's only useful in the future.
 parseRequestBodyBackEnd :: BackEnd 
-                              LByteString
+                              LBS.ByteString
                               --FilePath
 parseRequestBodyBackEnd = lbsBackEnd
                           -- tempFileBackEnd

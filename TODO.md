@@ -11,12 +11,10 @@ Framework already does most hard stuff.
 Make data access more ergonomic.
 See http://localhost:3000/test/form and proceed.
 
-Implement a URL helper.
-Implement a simple form helper.
+Implement a URL generator/parser.
+Implement a simple form generator (parser is mostly done).
 Implement authentication.
 
-Make giant re-exportation library to turn T.append into tAppend, 
-  BS.append into bsAppend, etc.
 Make Report showable.
 Look into ResponseSource usage for Hell.Server.respond
 
@@ -27,6 +25,9 @@ user Builders properly!
 
 Make a session helper
 Make a cookie helper
+
+Improve how view data lookups behave.
+
 
 ## Design questions  
 
@@ -50,10 +51,20 @@ In Hell.Conf, (controllers), (views), etc. should return a list of type
 (HellResource { name :: x ,  type ::, fromPath ::, toPath ::} ; of course,
 first define this in Hell.Types
 
+Comb through functions in the Hell.X namespace. 
+There's no point in censoring things for security purposes, since
+developers who really want to use particular functions will import them
+anyway.
+Consider it nevertheless.
+
 Eviscerate common errors with no messages / uninformative messages.
   Beware incidences of (fromJust)
 Write tests
 Write documentation
+
+DSL?
+Make giant re-exportation library to turn T.append into tAppend, 
+  BS.append into bsAppend, etc.
 
 ## Development is currently on
 
