@@ -12,6 +12,7 @@ Make data access more ergonomic.
 See http://localhost:3000/test/form and proceed.
 
 Implement a URL generator/parser.
+  - include concept of a webroot.
 Implement a simple form generator (parser is mostly done).
 Implement authentication.
 

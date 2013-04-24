@@ -132,15 +132,13 @@ spliceView :: FilePath -> FilePath -> T.Text -> T.Text
 spliceView c v unsplicedText = 
   unrenderedToModuleText  
   1 
-  ( T.pack $  "{-# LANGUAGE OverloadedStrings #-}\n\
-              \module Views." ++ c ++ "." ++ v ++ " where\n\n\
-              \import Data.Bson (Document)\n\ 
-              \import Data.Maybe\n\ 
-              \import qualified Data.Text as T\n\
-              \import Hell.Conf\n\ 
-              \import Hell.Lib\n\ 
-              \import Hell.Show\n\ 
-              \import Hell.Types\n\n" 
+  ( T.concat  [ "{-# LANGUAGE OverloadedStrings #-}\n\
+                \module Views.", T.pack c, ".", T.pack v, " where\n\n\
+                \import Hell.Conf\n\ 
+                \import Hell.Lib\n\ 
+                \import Hell.Show\n\ 
+                \import Hell.Types\n",
+                Hell.Conf.viewImports, "\n" ]
   ) 
   ( textToUnrendereds unsplicedText )
 

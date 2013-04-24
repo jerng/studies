@@ -88,7 +88,8 @@ assembleControllers = do
                       \module Controllers.", T.pack c, " where\n\n\
                       \import Hell.Conf\n\
                       \import Hell.Lib\n\
-                      \import Hell.Types\n\n", splicedText ]
+                      \import Hell.Types\n",
+                      Hell.Conf.controllerImports, "\n", splicedText ]
   mapM_ assemble cs
 
 assembleModels :: IO ()

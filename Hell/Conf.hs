@@ -167,3 +167,20 @@ parseRequestBodyBackEnd :: BackEnd
 parseRequestBodyBackEnd = lbsBackEnd
                           -- tempFileBackEnd
                           -- tempFileBackEndOpts
+
+controllerImports :: T.Text
+controllerImports = 
+  "\
+  \import Data.Bson (Document, Field (..), Value (..))\n\
+  \import qualified Data.Text as T\n\
+  \import Network.HTTP.Types (ok200)\n\
+
+  \ "
+
+viewImports :: T.Text
+viewImports = 
+  "\
+  \import Data.Bson (Document)\n\ 
+  \import Data.Maybe\n\ 
+  \import qualified Data.Text as T\n\
+  \ "

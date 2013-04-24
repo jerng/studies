@@ -1,7 +1,3 @@
-import Data.Bson (Document, Field (..), Value (..))
-import qualified Data.Text as T
-import Network.HTTP.Types (ok200)
-
 index :: Report -> Report
 index rep = 
   "more debuggable stuff (because if you do, you have to type from right to left)" ?>> 
