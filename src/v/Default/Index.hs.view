@@ -1,13 +1,13 @@
     <h1>a simple view (Default.Index): </h1> 
     Following this is an attempt to interpolate some Haskell expressions<br/>
-    Haskell script "1 +1" : <hs>(1+1 :: Int)</hs><br/>
-    a Document label called (someInt) : <hs>fromMaybe (error $ T.unpack $ showDoc True 0 doc) $ maybeVal "someInt" :: Int</hs><br/>
-    a Document label called (someFloat) : <hs>fromMaybe (error $ T.unpack $ showDoc True 0 doc) $ maybeVal "someFloat" :: Float</hs><br/>
-    a Document label called (someText) : <hs>fromMaybe (error $ T.unpack $ showDoc True 0 doc) $ maybeVal "someText" :: T.Text</hs><br/>
-    a Document label called (someIntList) : <hs>fromMaybe (error $ T.unpack $ showDoc True 0 doc) $ maybeVal "someIntList" :: [Int]</hs><br/>
-    a Document label called (x) : <hs>fromMaybe "\"x\" not found" (maybeVal "x") :: T.Text</hs><br/>
+    Haskell script "1 +1" :                   <hs>1+1 :: Int</hs><br/>
+    a Document label called (someInt) :       <hs>fromv 0 "someInt" :: Int</hs><br/>
+    a Document label called (someFloat) :     <hs>fromv 0 "someFloat" :: Double</hs><br/>
+    a Document label called (someText) :      <hs>fromv "" "someText" :: T.Text</hs><br/>
+    a Document label called (someIntList) :   <hs>fromv [] "someIntList" :: [Int]</hs><br/>
+    a Document label called (x) :             <hs>fromv "{{there is a missing val}}" "x" :: T.Text</hs><br/>
     <b>bold</b> <i>italicised</i> 
     <br/>
-    <hs>fromMaybe (error $ T.unpack $ showDoc True 0 doc) $  (maybeVal "innerkey")::T.Text</hs>
-    <hs>debugfps 123 </hs>
-    <hs>debugf "debugging from views\\; used (debugf) for Text; (debugfps) for other showables" </hs>
+    <hs>fromv "there is a missing val" "innerkey" ::T.Text</hs>
+    <hs>debugf "debugging from views\\; used (debugf) for Text" </hs>
+    <hs>debugf . T.pack . show $ 123 </hs>

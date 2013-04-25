@@ -198,7 +198,7 @@ staticFileRoute = ("default","files")
 class ViewExp a where toText :: a -> T.Text
 instance ViewExp () where toText a = "\"()\"" 
 instance ViewExp Int where toText a = T.pack $ show a
-instance ViewExp Float where toText a = T.pack $ show a
+instance ViewExp Double where toText a = T.pack $ show a
 instance ViewExp T.Text where toText a = a
 instance ViewExp [Int] where toText a = T.pack $ show a
 
@@ -225,8 +225,9 @@ controllerImports =
 viewImports :: T.Text
 viewImports = 
   "\
-  \import Data.Bson as Bson -- (Document)\n\ 
+  \import Data.Bson (Document)\n\ 
   \import Data.Maybe\n\ 
   \import qualified Data.Text as T\n\
+  \import Debug.Trace\n\
   \ "
 

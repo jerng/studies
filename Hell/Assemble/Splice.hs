@@ -213,10 +213,10 @@ unrenderedToModuleText count acc remainingList
           , T.unlines $ map (T.append "    ") $ T.lines text
           , "  )\n\
             \  where\n\
-            \    maybeVal label = lookupBsonVal label doc\n"
-          -- \   printMaybe maybeVal'  = case maybeVal' of\n\
-          --  \     Nothing   -> debugMissingViewData \"Nothing\"\n\
-          --   \     Just val  -> toText $ val"
+            \    getMaybeVal label = lookupBsonVal label doc\n\
+            \    fromMaybeVal defVal label = fromMaybe defVal $ getMaybeVal label\n\
+            \    getv a = getMaybeVal a\n\
+            \    fromv a b = fromMaybeVal a b\n"
           , "\n\n"
           ]
       ]

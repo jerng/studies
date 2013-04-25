@@ -1,6 +1,6 @@
 <div style="background-color:#fcc;border:5px #f00 solid">{{{contents of a view, which is embedded in another view;
 
 
-<hs> fromMaybe (error "Default.Inner") $  (maybeVal "insideinnerkey")::T.Text </hs> 
+<hs> fromMaybeVal "{{Default.Inner}}" "insideinnerkey" ::T.Text </hs>
 
 }}}</div>

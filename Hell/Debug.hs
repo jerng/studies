@@ -10,9 +10,6 @@ debugf :: T.Text -> T.Text
 debugf a = T.concat 
   [ "<pre class=\"debug\"><b>debug: </b> <span>" , a , "</span></pre>" ]
 
-debugfps :: Show a => a -> T.Text
-debugfps a = debugf.T.pack.show $ a
-
 debugMissingViewData :: T.Text -> T.Text
 debugMissingViewData t  = if    appMode == Production
                           then  ""
