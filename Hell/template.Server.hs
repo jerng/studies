@@ -1,3 +1,4 @@
+{-  For HTTPS, refer to the (tls) and (warp-tls) packages.  -}
 {-# LANGUAGE OverloadedStrings #-} 
 
 module Main (main) where

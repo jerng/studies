@@ -1,10 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Hell.Assemble.Splice (
-    spliceController
+module Hell.Assemble.Splice 
+  ( module Hell.Assemble.Primitives
+  , module Hell.Conf
+  , spliceController
   , spliceTemplate
   , spliceView
-) where
+  ) where
 
 import Control.Monad (foldM)
 import Data.List (nub)
@@ -13,7 +15,6 @@ import Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T (readFile)
 import Hell.Assemble.Primitives
-import Hell.Types
 import Hell.Conf
 
 data SliceTag = ImportControllers 
@@ -134,10 +135,7 @@ spliceView c v unsplicedText =
   1 
   ( T.concat  [ "{-# LANGUAGE OverloadedStrings #-}\n\
                 \module Views.", T.pack c, ".", T.pack v, " where\n\n\
-                \import Hell.Conf\n\ 
-                \import Hell.Lib\n\ 
-                \import Hell.Show\n\ 
-                \import Hell.Types\n",
+                \import Hell.Lib\n",
                 Hell.Conf.viewImports, "\n" ]
   ) 
   ( textToUnrendereds unsplicedText )
@@ -214,8 +212,12 @@ unrenderedToModuleText count acc remainingList
           [ " toText (\n" 
           , T.unlines $ map (T.append "    ") $ T.lines text
           , "  )\n\
-            \  where view label = lookupBsonVal label doc"
-          ,"\n\n"
+            \  where\n\
+            \    maybeVal label = lookupBsonVal label doc\n"
+          -- \   printMaybe maybeVal'  = case maybeVal' of\n\
+          --  \     Nothing   -> debugMissingViewData \"Nothing\"\n\
+          --   \     Just val  -> toText $ val"
+          , "\n\n"
           ]
       ]
     )      

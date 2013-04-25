@@ -37,6 +37,7 @@ data ResourceName = Controllers
                   | HellParse
                   | Attributed
                   | Conf
+                  | Debug
                   | ParseForms
                   | ParseHeaders
                   | Lib

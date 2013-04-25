@@ -1,5 +1,6 @@
 module Hell.Assemble.Primitives
-  ( controllers
+  ( module Hell.Types
+  , controllers
   , models
   , views
   , scriptExtension
@@ -12,7 +13,6 @@ module Hell.Assemble.Primitives
 
 import Data.List (isSuffixOf,delete)
 import Hell.Types
---import Hell.Conf
 import System.Directory (getDirectoryContents)
 
 -- | Notice that (Hell.Splice) isn't included here.
@@ -21,6 +21,7 @@ staticResources :: [ResourceName]
 staticResources = 
   [ Attributed
   , Conf
+  , Debug
   , ParseForms
   , ParseHeaders
   , Lib
@@ -45,6 +46,7 @@ fromPath r = case r of
   HellParse       -> "./Hell/Parse/"
   Attributed      -> "./Hell/Attributed.hs"
   Conf            -> "./Hell/Conf.hs"
+  Debug           -> "./Hell/Debug.hs"
   ParseForms      -> "./Hell/Parse/Forms.hs"
   ParseHeaders    -> "./Hell/Parse/Headers.hs"
   Lib             -> "./Hell/Lib.hs"
@@ -66,6 +68,7 @@ toPath r = case r of
   HellParse       -> "./app/Hell/Parse/"
   Attributed      -> "./app/Hell/Attributed.hs"
   Conf            -> "./app/Hell/Conf.hs"
+  Debug           -> "./app/Hell/Debug.hs"
   ParseForms      -> "./app/Hell/Parse/Forms.hs"
   ParseHeaders    -> "./app/Hell/Parse/Headers.hs"
   Lib             -> "./app/Hell/Lib.hs"

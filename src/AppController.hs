@@ -7,8 +7,6 @@
 module AppController where
 
 import Hell.Lib
-import Hell.Show
-import Hell.Types
 import qualified Data.Text as T (Text,pack,append)
 
 -- | Hell.Server.applyActionToReport calls this.

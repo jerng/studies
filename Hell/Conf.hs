@@ -1,8 +1,36 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleInstances #-}
 
--- Implicit export list, because well, this should only contain exported things?
-module Hell.Conf where
+module Hell.Conf 
+  ( module Hell.Types
+  , warpServer
+  , appMode
+  , appWebRoot
+  , useCookies
+  , useEncryption
+  , useSessions
+  , defaultSession
+  , undecryptableSession
+  , defaultReport
+  , defaultCookieName
+  , sessionCookieName
+  , defaultCookie
+  , metaNoSuchAction
+  , keyOfMetaView
+  , keyOfTemplatedView
+  , defaultViewTemplate
+  , defaultHeaders
+  , defaultStatus
+  , indexAction
+  , defaultRoute
+  , missingViewRoute
+  , staticFileRoute
+  , ViewExp (..)
+  , parseRequestBodyBackEnd
+  , missingActionRoute
+  , controllerImports
+  , viewImports
+  ) where
 
 import Data.Bson (Document,Field(..),Value(..)) 
 import qualified Data.ByteString as BS (ByteString) 
@@ -35,6 +63,22 @@ appMode = -- FullAutoDebug
           -- SemiAutoDebug
            ManualDebug
           -- Production
+
+appWebRoot :: [T.Text]
+appWebRoot = []
+
+{- Not sure that the following are useful.
+
+appHostname :: T.Text
+appHostname = "localhost"
+
+appScheme :: T.Text
+appScheme = "http"
+
+appPort :: Int
+appPort = 3000
+
+-}
 
 -- ****************************************************************************
 -- Incompatible settings here should be caught by makeHell at pre-compile time.
@@ -151,11 +195,12 @@ missingViewRoute = ("default","nosuchview")
 staticFileRoute :: Route
 staticFileRoute = ("default","files")
 
-class ViewExpression a where toText :: a -> T.Text
-instance ViewExpression Int where toText a = T.pack $ show a
-instance ViewExpression Float where toText a = T.pack $ show a
-instance ViewExpression T.Text where toText a = a
-instance ViewExpression [Int] where toText a = T.pack $ show a
+class ViewExp a where toText :: a -> T.Text
+instance ViewExp () where toText a = "\"()\"" 
+instance ViewExp Int where toText a = T.pack $ show a
+instance ViewExp Float where toText a = T.pack $ show a
+instance ViewExp T.Text where toText a = a
+instance ViewExp [Int] where toText a = T.pack $ show a
 
 -- DO NOT CHANGE THIS NAIVELY.
 -- If you change the BackEnd, you may have to change the BackEnd type argument.
@@ -180,7 +225,8 @@ controllerImports =
 viewImports :: T.Text
 viewImports = 
   "\
-  \import Data.Bson (Document)\n\ 
+  \import Data.Bson as Bson -- (Document)\n\ 
   \import Data.Maybe\n\ 
   \import qualified Data.Text as T\n\
   \ "
+

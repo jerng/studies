@@ -17,14 +17,7 @@ import Data.Maybe
 import qualified Data.Text as T
 import qualified Data.Text.IO as T (writeFile,readFile)
 import Hell.Attributed
-import Hell.Assemble.Primitives
 import Hell.Assemble.Splice 
-  ( spliceController
-  , spliceTemplate
-  , spliceView
-  )
-import Hell.Conf
-import Hell.Types
 import System.Directory 
   ( copyFile
   , removeDirectoryRecursive
@@ -86,10 +79,8 @@ assembleControllers = do
         T.writeFile (toPath Controllers ++ c ++ scriptExtension) $
           T.concat  [ "{-# LANGUAGE OverloadedStrings #-}\n\n\
                       \module Controllers.", T.pack c, " where\n\n\
-                      \import Hell.Conf\n\
-                      \import Hell.Lib\n\
-                      \import Hell.Types\n",
-                      Hell.Conf.controllerImports, "\n", splicedText ]
+                      \import Hell.Lib\n",
+                      Hell.Assemble.Splice.controllerImports, "\n", splicedText ]
   mapM_ assemble cs
 
 assembleModels :: IO ()
