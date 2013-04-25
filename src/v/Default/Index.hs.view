@@ -11,3 +11,6 @@
     <hs>fromv "there is a missing val" "innerkey" ::T.Text</hs>
     <hs>debugf "debugging from views\\; used (debugf) for Text" </hs>
     <hs>debugf . T.pack . show $ 123 </hs>
+    <br/>
+    Testing (Hell.Lib.url):
+    <hs>url ("test","subtest1") "stuff_after_the_action" </hs>

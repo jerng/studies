@@ -64,8 +64,10 @@ appMode = -- FullAutoDebug
            ManualDebug
           -- Production
 
-appWebRoot :: [T.Text]
-appWebRoot = []
+-- Path segments before the /controller/action;
+-- mainly used by Hell.Lib.url
+appWebRoot :: T.Text
+appWebRoot = ""
 
 {- Not sure that the following are useful.
 
