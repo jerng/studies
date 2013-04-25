@@ -194,16 +194,18 @@ confirmAct rep =
 populateForm :: ReportHandler
 populateForm rep = rep 
   { form_ = 
-    [ "temp" := Array
+    [ "temp" := Doc 
       (
         let req = fromMaybe (error "populateForm: no Request") $ request rep
             paramToQuery = \(n,v)->(n,Just v)
-        in  ( mapMaybe queryItem'ToMaybeValue $
+            nestedDocs = 
+              ( mapMaybe queryItem'ToMaybeValue $
                 case requestMethod req of
                 "GET"   -> queryString req
                 "POST"  -> map paramToQuery $ params rep
-            ) ++
-            ( mapMaybe file'ToMaybeValue $ files rep )
+              ) ++
+              ( mapMaybe file'ToMaybeValue $ files rep )
+        in  mergeRecursivel1 nestedDocs
       )
     ]
   }
@@ -304,23 +306,19 @@ renderDebug rep =
       -- Finalise Report {debug} here. (?) 
       -- (After this, changes won't be output to View.)
         if    Hell.Conf.appMode > SemiAutoDebug
-        then  reverse.debug$rep
-        else  T.append (T.pack.shownRequest$rep) "<br/>"
+        then  reverse.debug $ rep
+        else  T.append (T.pack.shownRequest $ rep) "<br/>"
               : ( T.intercalate "<br/>  " $ 
                   "Request {reqCookies}:" 
                   : ( map 
-                      (\(k,v)-> T.concat [ T.pack.show$k
-                                        , " : " 
-                                        , T.pack.show$v
-                                        ] 
+                      (\(k,v)-> T.concat  [ T.pack.show $ k
+                                          , " : " 
+                                          , T.pack.show $ v
+                                          ] 
                       ) $ reqCookies rep 
                     ) --- MOVE to Hell.Lib.showCookie or Show instance
                 )
               : T.append "Request {session}:" (showDoc False 0 $ session rep)
---              : ( T.intercalate "<br/>  " $ 
---                  "Request {postQuery}:" 
---                  : ( map (T.pack.show) $ postQuery rep )
---                )
               : ( reverse.debug $ rep )
     ]  
 

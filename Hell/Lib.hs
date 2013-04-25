@@ -21,6 +21,9 @@ import Hell.Show
 import Network.HTTP.Types.Header ( hLocation ) 
 import Network.HTTP.Types (found302)
 
+
+-- **** VIEWS: 
+
 lookupBsonVal :: Val a => Label -> Document -> Maybe a
 lookupBsonVal _key [] = Nothing
 lookupBsonVal  key (field:exhead)

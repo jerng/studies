@@ -9,13 +9,13 @@
     <hs>
 
 T.concat [ "<blockquote style = \"background-color:#cfc\">" 
-        , fromMaybeVal "" Hell.Lib.keyOfMetaView 
+        , fromv "" Hell.Lib.keyOfMetaView 
         , "</blockquote>" 
         ] 
 
   </hs>
     <blockquote style="border:5px solid #000;">
-      <hs>fromMaybeVal "{{Default.Template}}" Hell.Lib.keyOfTemplatedView :: T.Text</hs>
+      <hs>fromv "{{Default.Template}}" Hell.Lib.keyOfTemplatedView :: T.Text</hs>
     </blockquote>
   </body>
 </html>

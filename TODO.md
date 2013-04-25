@@ -6,7 +6,6 @@
 
 ### Miscellany
 
-Implement a URL generator/parser.
 Implement a simple form generator (parser is mostly done).
 Implement authentication.
 Link up data_ passing from models and to views.
@@ -14,10 +13,8 @@ Link up data_ passing from models and to views.
 Make Report showable.
 Look into ResponseSource usage for Hell.Server.respond
 
-Make ./src/* file names case insensitive.
-
 Replace all association lists, with Data.Map.Map
-user Builders properly! 
+use Builders properly! 
 
 Make a session helper
 Make a cookie helper
@@ -42,6 +39,8 @@ Caching and/or keeping state, to share data across request-response pairs
 ( refer to note in Hell.Conf.warpServer)
 
 ## Chore-like:
+
+Make ./src/* file names case insensitive.
 
 In Hell.Conf, (controllers), (views), etc. should return a list of type
 (HellResource { name :: x ,  type ::, fromPath ::, toPath ::} ; of course,

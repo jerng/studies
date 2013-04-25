@@ -3,12 +3,14 @@
 module Hell.Parse.Forms
   ( file'ToMaybeValue
   , queryItem'ToMaybeValue
+  , mergeRecursivel1
   ) where
 
-import Data.Bson as Bson (Document, Field(..), Value (..),Binary(..))
+import Data.Bson as Bson (Document, Field(..), Value (..), Label, Binary(..), look)
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
 import qualified Data.ByteString.UTF8 as BS.UTF8 
+import Data.List (nub)
 import qualified Data.Text.Encoding as T
 import Hell.Attributed
 import Hell.Types
@@ -58,6 +60,34 @@ queryItem'ToMaybeValue (inputName, maybeUnparsedValue) =
 
 nestValuesl :: Value -> BS.ByteString -> Value
 nestValuesl v l = Doc [ T.decodeUtf8 l := v ]
+
+-- Takes the output of a document processed with (nestValuesl).
+-- Fugly: optimise later.
+mergeRecursivel1 :: [Value] -> Document
+mergeRecursivel1 docs = foldl f [] docs
+
+  where
+  f d d'Value = map f' labels
+
+    where
+    Doc d' = d'Value
+    labels = nub $ getLabels d ++ getLabels d'
+    f' l = case (e,e') of
+      (Just (Doc val), Just (Doc val')) -> l := Doc ( f val $ Doc val' )
+        -- if they are both Docs, then recurse
+      (Just value, Just value')         -> l := value' 
+        -- take the second / RHS
+      (Nothing, Just value')            -> l := value'
+      (Just value, Nothing)             -> l := value
+
+      where 
+      e = Bson.look l d :: Maybe Value
+      e'= Bson.look l d':: Maybe Value 
+      -- this is so unintuitive, it's disgusting
+
+
+getLabels :: Document -> [Label]
+getLabels doc = map (\(l := _)->l) doc
 
 -- | HTML form, input element, where input[name] is of the form "data:ks:t"
 -- and input[value] as submitted to the server is v.
