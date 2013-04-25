@@ -5,7 +5,6 @@ module Hell.Lib
   ( module Hell.Conf
   , module Hell.Debug
   , module Hell.Show
-  , lookupBsonVal
   , redirectTo
   , (-->)
   , url
@@ -23,12 +22,6 @@ import Network.HTTP.Types (found302)
 
 
 -- **** VIEWS: 
-
-lookupBsonVal :: Val a => Label -> Document -> Maybe a
-lookupBsonVal _key [] = Nothing
-lookupBsonVal  key (field:exhead)
-  | key == (label field) =  (cast' =<< Just (value field))
-  | otherwise = lookupBsonVal key exhead
 
 redirectTo :: Report -> BS.ByteString -> Report
 redirectTo rep loc = rep { status = found302, resHeaders = [(hLocation,loc)] }

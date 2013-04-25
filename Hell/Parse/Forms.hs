@@ -67,11 +67,14 @@ mergeRecursivel1 :: [Value] -> Document
 mergeRecursivel1 docs = foldl f [] docs
 
   where
-  f d d'Value = map f' labels
+  f :: Document -> Value -> Document
+  f d dValue' = map f' labels
 
     where
-    Doc d' = d'Value
+    Doc d' = dValue'
     labels = nub $ getLabels d ++ getLabels d'
+    
+    f' :: Label -> Field
     f' l = case (e,e') of
       (Just (Doc val), Just (Doc val')) -> l := Doc ( f val $ Doc val' )
         -- if they are both Docs, then recurse
@@ -84,7 +87,6 @@ mergeRecursivel1 docs = foldl f [] docs
       e = Bson.look l d :: Maybe Value
       e'= Bson.look l d':: Maybe Value 
       -- this is so unintuitive, it's disgusting
-
 
 getLabels :: Document -> [Label]
 getLabels doc = map (\(l := _)->l) doc

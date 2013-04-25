@@ -13,14 +13,11 @@ Link up data_ passing from models and to views.
 Make Report showable.
 Look into ResponseSource usage for Hell.Server.respond
 
-Replace all association lists, with Data.Map.Map
-use Builders properly! 
-
 Make a session helper
 Make a cookie helper
 
-Improve how view data lookups behave.
-
+Replace all association lists, with Data.Map.Map
+use Builders properly! 
 
 ## Design questions  
 

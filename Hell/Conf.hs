@@ -36,7 +36,7 @@ import Data.Bson (Document,Field(..),Value(..))
 import qualified Data.ByteString as BS (ByteString) 
 import qualified Data.ByteString.Lazy as LBS
 import Data.List ()
-import qualified Data.Text as T (pack,Text,append)
+import qualified Data.Text as T (pack,Text,append,intercalate)
 import Hell.Types
 import Network.HTTP.Types (Status,accepted202) 
 import Network.HTTP.Types.Header (hContentType,Header)
@@ -216,20 +216,16 @@ parseRequestBodyBackEnd = lbsBackEnd
                           -- tempFileBackEndOpts
 
 controllerImports :: T.Text
-controllerImports = 
-  "\
-  \import Data.Bson (Document, Field (..), Value (..))\n\
-  \import qualified Data.Text as T\n\
-  \import Network.HTTP.Types (ok200)\n\
-
-  \ "
+controllerImports = T.intercalate "\n"
+  [ "import Data.Bson (Document, Field (..), Value (..))"
+  , "import qualified Data.Text as T"
+  , "import Network.HTTP.Types (ok200)"
+  ]
 
 viewImports :: T.Text
-viewImports = 
-  "\
-  \import Data.Bson (Document)\n\ 
-  \import Data.Maybe\n\ 
-  \import qualified Data.Text as T\n\
-  \import Debug.Trace\n\
-  \ "
-
+viewImports = T.intercalate "\n"
+  [ "import Data.Bson (Document,lookup,Val,Label)"
+  , "import Data.Maybe"
+  , "import qualified Data.Text as T"
+  , "import Debug.Trace"
+  ]

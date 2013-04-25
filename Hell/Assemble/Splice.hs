@@ -213,7 +213,9 @@ unrenderedToModuleText count acc remainingList
           , T.unlines $ map (T.append "    ") $ T.lines text
           , "  )\n\
             \  where\n\
-            \    getMaybeVal label = lookupBsonVal label doc\n\
+            \    getMaybeVal :: (Val a) => Label -> Maybe a\n\
+            \    getMaybeVal label = Data.Bson.lookup label doc\n\
+            \    fromMaybeVal :: (Val a) => a -> Label -> a\n\
             \    fromMaybeVal defVal label = fromMaybe defVal $ getMaybeVal label\n\
             \    getv a = getMaybeVal a\n\
             \    fromv a b = fromMaybeVal a b\n"
