@@ -2,20 +2,38 @@
 <html>
   <head>
     <title>Hell Framework: R&D</title>
-    <link rel="shortcut icon" href="/default/files/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="/default/files/Hell.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/default/files/img/favicon.ico" />
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/default/files/css/bootstrap.min.css" media="screen">
+    <script src="/default/files/js/jquery-1.9.1.min.js"></script>
+    <script src="/default/files/js/bootstrap.min.js"></script>
+
+    <!-- Hell -->
+    <link rel="stylesheet" type="text/css" href="/default/files/css/Hell.css"/ >
   </head>
   <body>
-    <hs>
+    <div class="container-fluid"> 
 
-T.concat [ "<blockquote style = \"background-color:#cfc\">" 
-        , fromv "" Hell.Lib.keyOfMetaView 
-        , "</blockquote>" 
-        ] 
+      <div class="row-fluid">
+        <div class="span12">
+          <hs>
+T.concat 
+  [ "<blockquote style = \"background-color:#cfc\">" 
+  , fromv "" Hell.Lib.keyOfMetaView 
+  , "</blockquote>" 
+  ] 
+          </hs>
+        </div>
+      </div>
 
-  </hs>
-    <blockquote style="border:5px solid #000;">
-      <hs>fromv "{{Default.Template}}" Hell.Lib.keyOfTemplatedView :: T.Text</hs>
-    </blockquote>
+      <div class="row-fluid">
+        <div class="span10 offset1 well">
+<hs>fromv "{{Default.Template}}" Hell.Lib.keyOfTemplatedView :: T.Text</hs>
+        </div>
+      </div>
+
+    </div>
   </body>
 </html>

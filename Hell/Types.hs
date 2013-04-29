@@ -107,7 +107,7 @@ data Report = Report
       -- At some point these get added to resHeaders
   , resHeaders :: [Header]
       -- Network.HTTP.Headers.Header
-  , viewBson :: Document -- ViewDictionary
+  , viewData_ :: Document -- ViewDictionary
       -- This should be the medium of communicating most data from the 
       -- Controller layer to the View layer.
       -- Perhaps rename to (dataV).

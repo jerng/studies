@@ -109,7 +109,7 @@ app = \req-> do
         .actRouter
           -- Based on normalised path variables
         -- . authenticationHere (depends only on Session)
-        .( if Hell.Conf.useSessions then initSession else id)
+        .initSession
         .getReqCookies $ rep'
 
   lift.return.respond $
@@ -134,7 +134,10 @@ getReqCookies rep =
                 -- but when the (key) or (iv) is not obtained, here would 
                 -- be the place to do it.
 initSession :: ReportHandler
-initSession rep = rep 
+initSession rep = 
+  if not Hell.Conf.useSessions
+  then rep 
+  else rep
   { session = 
       case lookup Hell.Conf.sessionCookieName $ reqCookies rep of
       Nothing           -> Hell.Conf.defaultSession 
@@ -282,7 +285,7 @@ respondWithBuilder rep = let { s = status rep } in
               -- rendered template wrapper ("outer view") 
               { viewTemplateRoute = Nothing
               , viewRoute = route
-              , viewBson = flip merge (viewBson rep')            
+              , viewData_ = flip merge (viewData_ rep')            
 
                 [ Hell.Conf.keyOfTemplatedView := 
                     String ( repToText rep' { debug=[], shownRequest="" } )
@@ -334,7 +337,7 @@ renderSubReps rep =
   in  case subReports rep of 
         []      -> rep
         subReps -> rep
-          { viewBson = (viewBson rep) ++ (map subRepToText subReps) }
+          { viewData_ = (viewData_ rep) ++ (map subRepToText subReps) }
 
 -- Explore difference between (concat) and (++) here
 setResSessionCookie :: ReportHandler 
@@ -385,7 +388,7 @@ repToText r = flip T.append (renderDebug r) $
       getView Hell.Conf.missingViewRoute
     )
     ( getView $ viewRoute r )
-  ) $ viewBson r 
+  ) $ viewData_ r 
 
 getAct :: Route -> Maybe Action
 getAct r 

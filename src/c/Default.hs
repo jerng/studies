@@ -5,7 +5,7 @@ index rep =
 
   rep
   { status = ok200
-  , viewBson = 
+  , viewData_ = 
     [ "someInt" :=Int32 999
     , "someFloat" :=Float 3.132
     , "someText" :=String "I_AM_TEXT"

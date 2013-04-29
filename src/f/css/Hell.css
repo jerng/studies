@@ -1,11 +1,11 @@
 @font-face { 
   font-family: Roboto Light;
-  src: url(./fonts/Roboto/Roboto-Light.ttf);
+  src: url(../fonts/Roboto/Roboto-Light.ttf);
   }
 
 @font-face { 
   font-family: DejaVu Sans Mono ;
-  src: url(./fonts/DejaVu/DejaVuSansMono.ttf);
+  src: url(../fonts/DejaVu/DejaVuSansMono.ttf);
   }
 
 

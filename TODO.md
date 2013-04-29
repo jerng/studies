@@ -16,7 +16,6 @@ Look into ResponseSource usage for Hell.Server.respond
 Make a session helper
 Make a cookie helper
 
-Replace all association lists, with Data.Map.Map
 use Builders properly! 
 
 ## Design questions  
@@ -34,6 +33,8 @@ ultimately converted to Builder)?
 
 Caching and/or keeping state, to share data across request-response pairs
 ( refer to note in Hell.Conf.warpServer)
+
+Use Data.Map.Map as a generic data interface, instead of Bson.
 
 ## Chore-like:
 

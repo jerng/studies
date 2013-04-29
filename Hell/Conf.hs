@@ -121,7 +121,7 @@ defaultReport = Report  { request = Nothing
                         , session = defaultSession 
                         , actRoute = defaultRoute
                         , viewRoute = defaultRoute
-                        , viewBson = []
+                        , viewData_ = []
                         , subReports = []
                         , status = defaultStatus 
                         , reqCookies = []
@@ -164,7 +164,7 @@ metaNoSuchAction = "We could not find the page that you are looking for."
 keyOfMetaView :: T.Text
 keyOfMetaView = "metaView"
 
--- | The key in a viewBson of a view template, whose value is the text 
+-- | The key in a viewData_ of a view template, whose value is the text 
 -- of a view that has been full rendered, along with any of its subviews. 
 -- (Report and sub Reports) by Hell.Server.renderReport.
 keyOfTemplatedView :: T.Text
