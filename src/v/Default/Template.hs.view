@@ -3,7 +3,7 @@
   <head>
     <title>Hell Framework: R&D</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="/default/files/img/favicon.ico" />
+    <link rel="shortcut icon" href="/default/files/img/favicon.ico" >
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="/default/files/css/bootstrap.min.css" media="screen">
@@ -11,7 +11,7 @@
     <script src="/default/files/js/bootstrap.min.js"></script>
 
     <!-- Hell -->
-    <link rel="stylesheet" type="text/css" href="/default/files/css/Hell.css"/ >
+    <link rel="stylesheet" type="text/css" href="/default/files/css/Hell.css" >
   </head>
   <body>
     <div class="container-fluid"> 

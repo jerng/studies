@@ -7,7 +7,7 @@ module Hell.Lib
   , module Hell.Show
   , redirectTo
   , (-->)
-  , url
+  , urlH
   )  where
 import Data.Bson as Bson (Document, Field(..), Val,Label,cast')
 import qualified Data.ByteString as BS (ByteString)
@@ -30,8 +30,8 @@ redirectTo rep loc = rep { status = found302, resHeaders = [(hLocation,loc)] }
 (-->) = redirectTo
 infix 1 -->
 
-url :: Route -> T.Text -> T.Text
-url (c,a) afterA = T.concat
+urlH :: Route -> T.Text -> T.Text
+urlH (c,a) afterA = T.concat
   [ if    Hell.Conf.appWebRoot == ""
     then  ""
     else  "/"

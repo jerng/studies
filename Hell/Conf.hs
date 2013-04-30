@@ -154,11 +154,12 @@ defaultCookie = Cookie  { cookieName = defaultCookieName
                           ]
                         }
 
-metaNoSuchAction :: T.Text
-metaNoSuchAction = "We could not find the page that you are looking for." 
-  `T.append` if appMode == Production then "" else 
+metaNoSuchAction :: Route -> T.Text
+metaNoSuchAction r = "We could not find the page that you are looking for." 
+  `T.append` if appMode == Production then "" else T.pack $
     "<div class=\"debug\">Hell.Server.confirmAction did not find the\
-    \ requested action in Hell.Server.actionList. This is the list assembled\
+    \ requested action " ++ show r ++ " in Hell.Server.actionList.\
+    \ This is the list assembled\
     \ by ./makeHell.hs and spliced into ./app/Server.hs.</div>"
 
 keyOfMetaView :: T.Text
@@ -197,11 +198,12 @@ missingViewRoute = ("default","nosuchview")
 staticFileRoute :: Route
 staticFileRoute = ("default","files")
 
+-- Crufty. FIXME. Maybe require manual parsing to Text in view.
 class ViewExp a where toText :: a -> T.Text
+instance ViewExp T.Text where toText a = a
 instance ViewExp () where toText a = "\"()\"" 
 instance ViewExp Int where toText a = T.pack $ show a
 instance ViewExp Double where toText a = T.pack $ show a
-instance ViewExp T.Text where toText a = a
 instance ViewExp [Int] where toText a = T.pack $ show a
 
 -- DO NOT CHANGE THIS NAIVELY.
@@ -226,6 +228,5 @@ viewImports :: T.Text
 viewImports = T.intercalate "\n"
   [ "import Data.Bson (Document,lookup,Val,Label)"
   , "import Data.Maybe"
-  , "import qualified Data.Text as T"
-  , "import Debug.Trace"
+  , "import qualified Data.Text as T", "import Debug.Trace"
   ]

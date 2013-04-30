@@ -175,7 +175,8 @@ confirmAct rep =
   let aR = actRoute rep
   in  if    aR == Hell.Conf.staticFileRoute
       then  rep { static = True }
-      else  case getAct aR of
+      else  
+        case getAct aR of
         Just act  -> rep 
           { action = act
           , viewRoute = aR
@@ -184,7 +185,7 @@ confirmAct rep =
           { actRoute  = Hell.Conf.missingActionRoute
           , viewRoute = Hell.Conf.missingActionRoute
           , session   = merge 
-                        ["meta":=String Hell.Conf.metaNoSuchAction ] $ 
+                        ["meta":=String (Hell.Conf.metaNoSuchAction aR)] $ 
                         session rep
           , action    = fromMaybe 
                         (error "confirmAct: Hell.Conf.missingActionRoute is\

@@ -100,7 +100,8 @@ buildSlice s = case s of
             f'' = \a -> T.concat  [ "| (\""
                                   , T.toLower $ T.pack c
                                   , "\", \""
-                                  , a,"\") <- r = Just (Controllers."
+                                  , T.toLower a
+                                  , "\") <- r = Just (Controllers."
                                   , T.pack c
                                   , "."
                                   , a
@@ -210,7 +211,9 @@ unrenderedToModuleText count acc remainingList
       , " doc = "
       , T.concat 
           [ " toText (\n" 
-          , T.unlines $ map (T.append "    ") $ T.lines text
+          , if    T.strip text == ""
+            then  "    \"\" :: T.Text "
+            else  T.unlines $ map (T.append "    ") $ T.lines text
           , "  )\n\
             \  where\n\
             \    getMaybeVal :: (Val a) => Label -> Maybe a\n\

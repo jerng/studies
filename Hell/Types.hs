@@ -1,3 +1,5 @@
+-- {-# LANGUAGE ExistentialQuantification #-}
+
 module Hell.Types 
   ( CookieAttribute
   , CookieValue
@@ -56,15 +58,15 @@ data AppMode  = FullAutoDebug
               | Production
               deriving (Eq,Ord,Show)
 
-type CookieAttribute = BS.ByteString
-type CookieValue = BS.ByteString
-type CookieAVPair = (CookieAttribute, CookieValue)
 data Cookie = Cookie  { cookieName :: CookieAttribute -- essential
                       , cookieValue :: CookieValue -- essential
                       , cookieSecure :: Bool
                       , cookieHttpOnly :: Bool
                       , cookiePairs :: [CookieAVPair]
                       }
+type CookieAttribute = BS.ByteString
+type CookieValue = BS.ByteString
+type CookieAVPair = (CookieAttribute, CookieValue)
 
 type Action = ReportHandler 
 type ReportHandler = Report -> Report
