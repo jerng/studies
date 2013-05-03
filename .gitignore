@@ -1,2 +1,4 @@
 *.aes
 *.swp
+*cabal-dev
+*dist

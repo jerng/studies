@@ -1,0 +1,19 @@
+Name:                MongoTest
+Version:             0.1
+Description:        
+License:             WTFPL
+Author:              
+Maintainer:          
+Build-Type:          Simple
+Cabal-Version:       >=1.16.0.3
+
+Executable makeHell
+  Default-Language: Haskell2010
+  Main-Is:          temp.hs
+  Hs-Source-Dirs:   .
+  Build-Depends:    
+      base == 4.5.1.0
+    , mongoDB == 1.3.2
+    , text == 0.11.2.3
+    , random == 1.0.1.1
+    , mtl == 2.1.2

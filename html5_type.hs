@@ -1,6 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
 
---import Data.Maybe
 import qualified Data.Text as T
 
 type Html5'Document = [ Html5'Element ]
@@ -26,6 +25,7 @@ instance Show Html5'Element where
     [ "<"
     , t
     , T.concat $ map (\(a,v)->T.concat [" ",a,"=\"",v,"\""]) as
+      -- note the rule 'attr' and 'attr=""' are equivalent
     , ">"
     , maybe "" (\x->T.pack $ (concatMap show x) ++ "</" ++ T.unpack t ++ ">") mECs
     ]
@@ -37,7 +37,7 @@ instance Show Html5'ElementContent where
     Cc c -> show c
 
 main = return $
-  show body -- div' -- comment
+  show body 
 
 body :: Html5'Element
 body = E "body" [] $ Just 
