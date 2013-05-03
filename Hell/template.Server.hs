@@ -26,6 +26,7 @@ import Network.Wai.Parse (parseRequestBody)
 import Web.ClientSession (randomIV, encrypt, encryptIO, decrypt, getDefaultKey)
 
 import qualified AppController
+import qualified AppModel
 
 {-makeHell:ImportControllers-}
 
