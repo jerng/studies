@@ -132,6 +132,8 @@ defaultReport = Report  { request = Nothing
                         , static = False
                         , debug = []
                         , action = id 
+                        , modelData_ = []
+                        , modelArgs = []
                         }
 
 defaultCookieName :: BS.ByteString

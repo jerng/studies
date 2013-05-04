@@ -96,6 +96,8 @@ data Report = Report
   , subReports :: [(Text,Report)] 
       -- Outstanding views, which need to be rendered, then inserted into the
       -- current View stipulated in viewRoute.
+  , modelArgs :: Document
+  , modelData_ :: Document
 
     -- RESPONSE **************************************************************
   , viewRoute :: Route -- of View

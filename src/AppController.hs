@@ -7,15 +7,13 @@
 module AppController where
 
 import Hell.Lib
-import qualified Data.Text as T (Text,pack,append)
+import qualified Data.Text as T (Text,pack,append,concat)
 
 -- | Hell.Server.applyActionToReport calls this.
 main :: Report -> Report
 main rep = 
   let r = action rep $ rep
   in  r <<? ( T.append "Request {data_}:" $ showDoc True 0 $ data_ r )
-        <<? ( T.append "Request {files}:" $ T.pack.show $ files r ) 
-        <<? "test unicode:한인"
 
 -- | Hell.Server.applyActionToSubReport calls this.
 subMain :: Report -> Report

@@ -1,32 +1,35 @@
 index :: Report -> Report
-index rep = 
-  "more debuggable stuff (because if you do, you have to type from right to left)" ?>> 
-  "debuggable stuff (I don't recommend you use the (?>>) operator)" ?>> 
+index rep =
+  let   -- A bunch of declarations:
+    a = 1 
+  in    -- A single expression:
+    rep
+    { status = ok200
+    , modelArgs = 
+      [ "someText" := Doc 
+          [ "actionType" := String "findAll"
+          , "selector" := Doc []
+          , "collection" := String "testcollection"
+          ]  
+      ]
+    , viewData_ = 
+      [ "someInt" :=Int32 999
+      , "someFloat" :=Float 3.132
 
-  rep
-  { status = ok200
-  , viewData_ = 
-    [ "someInt" :=Int32 999
-    , "someFloat" :=Float 3.132
-    , "someText" :=String "I_AM_TEXT"
-    , "someIntList" := Array [Int32 1,Int32 2, Int32 3]
-    ]
-  , subReports = [("innerkey", rep { actRoute = ("default", "inner") })] 
-  , viewTemplateRoute = Just ("default","template")
-  , resCookies = defaultCookie 
-    { cookieName = "newCookie"
-    , cookieValue = "newValue"
-    } : resCookies rep
-  }
+      , "someText" :=String (debugf "I_AM_TEXT")
+        -- replace this
 
-      <<? "even more debuggable stuff"
-      <<? "lastly, for good measure" 
-      <<? "default.hs line 14" 
-      <<? ( T.pack.show $ 666 )
-      <<? "just trying to debug an int"
+      , "someIntList" := Array [Int32 1,Int32 2, Int32 3]
+      ]
+    , subReports = [("innerkey", rep { actRoute = ("default", "inner") })] 
+    , viewTemplateRoute = Just ("default","template")
+    , resCookies = defaultCookie 
+      { cookieName = "newCookie"
+      , cookieValue = "newValue"
+      } : resCookies rep
+    }
     --  TODO :Try to make a helper function for sending variables to the
     --  ViewableList.
-
     -- TODO: have the rendered create a default viewRoute if it's not specified
 
 index2 :: Report -> Report

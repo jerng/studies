@@ -11,8 +11,10 @@ import Data.Bson as Bson (Document,Field(..),Value(..),merge,(!?))
 import qualified Data.ByteString.Lazy.Char8 as LBS (fromChunks)
 import Data.Conduit (($$))
 import Data.Conduit.Binary (sourceLbs)
+--import Data.Either (rights)
 import Data.Maybe
 import qualified Data.Text as T
+import qualified Database.MongoDB as M
 import qualified Hell.Conf
 import Hell.Lib
 import Hell.Parse.Forms
@@ -96,11 +98,9 @@ app = \req-> do
               , files = files'
               } 
 
-      -- The pipeline:
-      finalRep =  
-        setResCookieHeaders
-        .setResSessionCookie
-        .actOnRep
+      -- The pipeline (i):
+      actedRep = 
+        actOnRep
           -- Within the Action, further authorisations may happen.
         -- . authorisationHere (in AppController?) 
           --  (depends on Authentication & details of Request)
@@ -112,6 +112,20 @@ app = \req-> do
         -- . authenticationHere (depends only on Session)
         .initSession
         .getReqCookies $ rep'
+      
+  -- By this stage, the controller should have added to the Report some logic
+  -- to be processed by the model. The model should then set the Report's
+  -- { viewData_, viewRoute } according to the provided logic.
+                -- :: IO (Either M.Failure [M.Document])
+  
+  -- The pipeline (ii):
+  modeledRep <- lift $ modelsVsRep actedRep
+
+  let
+      -- The pipeline (n):
+      finalRep =  
+        setResCookieHeaders
+        .setResSessionCookie $ modeledRep 
 
   lift.return.respond $
     if    Hell.Conf.appMode == Production
@@ -237,6 +251,79 @@ actOnSubRep rep = AppController.subMain rep
 --
 -- ****************************************************************************
 
+modelsVsRep :: Report -> IO Report
+modelsVsRep rep =
+  let f (k := Doc d) = 
+        case M.look "actionType" d of
+        
+        -- DONE (error)
+        Nothing -> error $ 
+          "` \"" ++ T.unpack k ++ "\" := [ \"actionType\" <- MISSING KEY! ]"
+
+        -- DONE (move to sub-branches)
+        Just (String t) ->
+          case t of
+          -- Each branch needs to pull out specific data from the Document
+          -- then following this, return a (Text, M.Action) pair.
+
+          -- WIP
+          "findAll" ->
+            let 
+                selector = fromMaybe [] $ M.lookup "selector" d :: M.Selector
+                  -- silent default! (design decision to reconsider)
+                collection = 
+                  fromMaybe 
+                  ( error $ 
+                      "\"" ++ T.unpack k ++ 
+                      "\" := Doc [ \"findAll\" := Doc [ \"collection\" <- MISSING KEY! ] ]"
+                  ) 
+                  ( M.lookup "collection" d )
+                  :: M.Collection
+                query = M.select selector collection :: M.Query
+                action =  M.rest =<< 
+                          ( M.find query 
+                            --  :: (MonadIO m, MonadBaseControl IO m) 
+                            --  => M.Action m M.Cursor
+                          )
+                          --  :: (MonadIO m, MonadBaseControl IO m, Functor m) 
+                          --  => M.Action m [M.Document]
+            in  
+                (k,action) 
+          {-
+
+          "other"->
+          "action"->
+          "types"-> 
+
+          -}
+          
+          -- DONE (error)
+          otherwise -> error $ 
+            "` \"" ++ T.unpack k ++ 
+            "\" := Doc [\"actionType\" := String (Text wasn't recognised) ]"
+        
+        -- DONE (error)
+        otherwise -> error $ 
+          "` \"" ++ T.unpack k ++ "\" := [ \"actionType\" := " ++ 
+          "(Value: should be a (String Text), but it is not) ]"
+      
+      f' (k',a') = do 
+        fromModel <- AppModel.main a' -- IO Either Failure [Document]  
+        return  (   k':= Array   
+                          
+                           ( either
+                             (\l->[String "Failure", String (T.pack $ show l)]) 
+                             (map Doc)  
+                             fromModel 
+                           )
+                   
+                )
+                :: IO Field 
+
+  in  do  md <- mapM f' $ map f $ modelArgs rep
+          return $ rep { modelData_ = md }
+
+
 {- for reference:
 data Response = 
   ResponseFile Status ResponseHeaders FilePath (Maybe FilePart)	 
@@ -253,7 +340,14 @@ which data constructor of Response is required by the Controller.
 respond :: Report -> Response
 respond rep = ( if    static rep 
                 then  respondWithFile
-                else  respondWithBuilder ) rep
+                else  respondWithBuilder ) 
+              ( rep
+                    <<? "Server.respond: "
+                    <<? ( T.append 
+                          "Request {modelData_}: " $ 
+                           showDoc True 0 $ modelData_ rep 
+                        )
+              )
 
 --  | Perhaps, included the ability to render Report { debug } to the
 -- ResponseHeaders; currently debug only happens in (respondWithBuilder).
