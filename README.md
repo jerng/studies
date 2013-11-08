@@ -3,7 +3,71 @@
 An aspiring MVC web application development framework, for the Haskell
 programming platform.
 
+### Quick Start
+
+1. Clone into the GitHub repository. https://github.com/jerng/Hell.git
+
+E.g.
+    mkdir ~/temp
+    cd ~/temp
+    git clone https://github.com/jerng/Hell.git
+
+2. Enter your local Hell directory and resolve the local module dependencies
+with cabal-dev (which will refer to the Hell/hell-VERSION.NUMBER.cabal)
+
+E.g.
+   cd ~/temp/Hell
+   cabal-dev install
+
+3. Run the Hell/tryHell.sh bash script.
+
+E.g.
+    cd ~/temp/Hell
+    ./tryHell.sh
+
+(The script tried this - assembling then running `Hell/cabal-dev/bin/makeHell`;
+assembling then running code from `Hell/Hell` and `Hell/src` as
+`Hell/app/Server`.)
+
+If you see the terminal stop at the following message, then all should be well.
+    Trying to execute ./Server (Hit Ctrl+c to kill the Server...)
+
+4. Navigate a web browser to http://localhost:3000/server
+
+If you see any response, then you're in a good spot, for now.
+
+## Intro
+
+Like Yesod, Hell will pre-assemble your application's source code. Unlike
+Yesod, Hell does not use Template Haskell (which compiles to Haskell AST), and
+instead compiles your application into a bunch of plain Haskell scripts which
+you can open up to read (read:check) if necessary. It should be noted that 
+I do use a lot of libraries writted by the Yesod developers.
+
+### Dependencies
+
+[Haskell Platform](http://www.haskell.org/platform/) and `cabal-dev` on Ubuntu
+12.04 is the current development platform, so I'm not sure if this will work
+elsewhere.
+
+### Framework 
+
+`./Hell` contains libraries, and some templates.
+`./src` would be where you write your application code.
+
+### Example
+
+The only thing to look at right now, is `./src/c/Default.hs`, which is the 
+Default controller, containing the (index) action. This corresponds to 
+`./src/v/Default/index.hs.view`
+
 ## Status
+
+2013-11-09 :
+
+Finally settled the cafe client, and now I have time to get back to this
+project. I cloned into the repository, in order to debug the Quick Start
+process.
 
 2013-04-18 : 
 
@@ -60,39 +124,6 @@ calls the controller-action, the controller-action passes a reaction back to
 the server, the server renders the reaction into the respective view, and
 serves this as a response. 
 
-
-## Intro
-
-Like Yesod, Hell will pre-assemble your application's source code. Unlike
-Yesod, Hell does not use Template Haskell (which compiles to Haskell AST), and
-instead compiles your application into a bunch of plain Haskell scripts which
-you can open up to read (read:check) if necessary. It should be noted that 
-I do use a lot of libraries writted by the Yesod developers.
-
-### Dependencies
-
-[Haskell Platform](http://www.haskell.org/platform/) will suffice. If a
-required module is missing, I'm afraid that, for now, you'll just have to
-Google to find the respective package, and get it via `cabal install`.
-
-### Framework 
-
-`./Hell` contains libraries, and some templates.
-`./src` would be where you write your application code.
-
-Running `runghc ./makeHell.hs` would assemble code from the two directories
-mentioned above. The assembled code would be written to `./app`.
-
-Running `runghc ./tryHell.hs` would run `./app/Server.hs`.
-
-By default, the server's port in Hell.Conf is set to 3000, so check 
-[localhost:3000](http://localhost:3000)
-
-### Example
-
-The only thing to look at right now, is `./src/c/Default.hs`, which is the 
-Default controller, containing the (index) action. This corresponds to 
-`./src/v/Default/index.hs.view`
 
 ## Background
 

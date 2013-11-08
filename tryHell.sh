@@ -25,7 +25,7 @@ echo "Removing any existing ./Server"
 rm ./Server
 echo "Trying to compile ./Server.hs with GHC"
 echo "If there are missing dependencies, check the ./hell-version.cabal and rerun 'cabal-dev install' in this directory."
-ghc -package-conf ./cabal-dev/packages-7.4.2.conf/ ./Server.hs
+ghc -package-conf ../cabal-dev/packages-7.4.2.conf/ ./Server.hs
 rm ./Hell/*.hi
 rm ./Hell/*.o
 rm *.hi
