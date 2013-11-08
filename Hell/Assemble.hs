@@ -59,7 +59,11 @@ copyStaticResources = mapM_ copy staticResources
 -- | Unoptimised, but frankly this file has a low priority for optimisation.
 copyStaticFiles :: IO ()
 copyStaticFiles = do
-  paths <- recurseDir SystemFS $ fromPath Files
+
+  -- 'init' is required below, because recurseDir calls 
+  -- System.Directory.getPermissions which does not tolerate trailing "/" -_-
+  paths <- recurseDir SystemFS $ init $ fromPath Files
+  
   let paths' = map (replace "//" "/") paths
   (dirs,files) <- partitionM doesDirectoryExist paths'
   flip mapM_ dirs 

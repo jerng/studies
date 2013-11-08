@@ -7,6 +7,8 @@ app/Models
 app/Files
 app/Hell
 app/*.hs
+app/*.exe
+*.exe
 *.aes
 *.o
 *.hi

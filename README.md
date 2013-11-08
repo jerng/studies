@@ -3,38 +3,87 @@
 An aspiring MVC web application development framework, for the Haskell
 programming platform.
 
+### Infrastructure
+
+1.  Ubuntu (a Linux distribution)
+    
+    ### Language Platform    
+
+    1.  `sudo apt-get install haskell-platform` or install Haskell Platform
+        from sources.  (when compiling GHC from source, some soft linking of
+        `/usr/lib/*.so*` files might be required; e.g.
+        `/usr/lib/x86somethingseomthing/from` `/usr/lib/to`)
+    2.  `sudo cabal update`
+    3.  `sudo cabal install cabal-install`
+    4.  `sudo cabal install cabal-dev`
+    5.  edit `~/.bashrc` and add `export PATH=~/.cabal/bin/:$PATH` or do whatever else it takes to refer to the `cabal-dev` executable, later
+
+    ### Database
+
+    1.  `sudo apt-get install mongodb-server` or install MongoDB some other way
+    2.  Get the `mongod` daemon up and running (some Googling may be required if it doesn't "just work").
+    3.  `mongo` to enter the mongo shell (success will prove that the daemon is working)
+    4.  In the shell: `use testdb` to create a new database with this name.
+    5.  In the shell: `db.createCollection("testcollection")`
+    6.  In the shell: `db.testcollection.insert({"testkey":"testvalue"})`
+
+2.  Windows
+
+    Refer to the Ubuntu documentation above, with the following addenda.
+
+    ### Language Platform    
+
+    -   Try Haskell Platform [for Windows]
+        (https://www.haskell.org/platform/windows.html), or compile it from
+        sources.
+    -   Install [Cygwin](http://www.cygwin.com/install.html) as Cabal seems to
+        need it (or an alternative called MinGW).
+
+    ### Database
+
+    - Install and run MongoDB [for
+      Windows](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-windows/).
+
+3.  Mac
+
+    Try Google.
+
 ### Quick Start
 
-1. Clone into the GitHub repository. https://github.com/jerng/Hell.git
+1.  Clone into the GitHub repository. [https://github.com/jerng/Hell.git](https://github.com/jerng/Hell.git)
 
-E.g.
-    mkdir ~/temp
-    cd ~/temp
-    git clone https://github.com/jerng/Hell.git
+    E.g.
 
-2. Enter your local Hell directory and resolve the local module dependencies
-with cabal-dev (which will refer to the Hell/hell-VERSION.NUMBER.cabal)
+        mkdir ~/temp
+        cd ~/temp
+        git clone https://github.com/jerng/Hell.git
 
-E.g.
-   cd ~/temp/Hell
-   cabal-dev install
+2.  Enter your local Hell directory and resolve the local module dependencies
+    with cabal-dev (which will refer to the Hell/hell-VERSION.NUMBER.cabal)
 
-3. Run the Hell/tryHell.sh bash script.
+    E.g.
 
-E.g.
-    cd ~/temp/Hell
-    ./tryHell.sh
+        cd ~/temp/Hell
+        cabal-dev install
 
-(The script tried this - assembling then running `Hell/cabal-dev/bin/makeHell`;
-assembling then running code from `Hell/Hell` and `Hell/src` as
-`Hell/app/Server`.)
+3.  Run the Hell/tryHell.sh bash script.
 
-If you see the terminal stop at the following message, then all should be well.
-    Trying to execute ./Server (Hit Ctrl+c to kill the Server...)
+    E.g.
 
-4. Navigate a web browser to http://localhost:3000/server
+        cd ~/temp/Hell
+        ./tryHell.sh
 
-If you see any response, then you're in a good spot, for now.
+    (The script tried this - assembling then running `Hell/cabal-dev/bin/makeHell`;
+    assembling then running code from `Hell/Hell` and `Hell/src` as
+    `Hell/app/Server`.)
+
+    If you see the terminal stop at the following message, then all should be well.
+        
+        Trying to execute ./Server (Hit Ctrl+c to kill the Server...)
+
+4.  Navigate a web browser to [http://localhost:3000/server](http://localhost:3000/server)
+
+    If you see any response, then you're in a good spot, for now.
 
 ## Intro
 
@@ -46,8 +95,8 @@ I do use a lot of libraries writted by the Yesod developers.
 
 ### Dependencies
 
-[Haskell Platform](http://www.haskell.org/platform/) and `cabal-dev` on Ubuntu
-12.04 is the current development platform, so I'm not sure if this will work
+[Haskell Platform](http://www.haskell.org/platform/) and `cabal-dev` on `Ubuntu
+12.04` is the current development platform, so I'm not sure if this will work
 elsewhere.
 
 ### Framework 

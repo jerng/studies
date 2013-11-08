@@ -1,5 +1,5 @@
 Name:                Hell
-Version:             0.1.1
+Version:             0.1.2
 Description:         A web application development framework for Haskell users
 License:             WTFPL
 Author:              Yang Jerng HWA
@@ -40,3 +40,4 @@ Executable makeHell
     , utf8-string == 0.3.7
     , wai-extra == 1.3.4
     , mongoDB == 1.3.2
+    , void == 0.6.1
