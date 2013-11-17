@@ -1,0 +1,18 @@
+Name:                temp
+Version:             0.0
+Description:         Minimal bootstrapping to get `cabal-dev` to run here.
+License:             WTFPL
+Author:              Yang Jerng HWA
+Maintainer:          yangjerng@gmail.com
+Build-Type:          Simple
+Cabal-Version:       >=1.16.0.3
+
+Executable bson 
+  Default-Language: Haskell2010
+  Main-Is:          bson.hs
+  Hs-Source-Dirs:   .
+  Build-Depends:    
+      base >= 4.5.1.0
+    , bson >= 0.2.2
+    , mongoDB >= 1.3.2
+    , text

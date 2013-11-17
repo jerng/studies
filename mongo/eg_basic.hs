@@ -1,3 +1,5 @@
+-- example from basic docs
+
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ExtendedDefaultRules #-}
 
