@@ -7,13 +7,30 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
+    MathJax.Hub.Insert(MathJax.InputJax.TeX.Definitions.macros,{
+      cancel: ["Extension","cancel"],
+      bcancel: ["Extension","cancel"],
+      xcancel: ["Extension","cancel"],
+      cancelto: ["Extension","cancel"]
+    });
+  });
+
   MathJax.Hub.Config({
     showProcessingMessages: false,
     tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
-    TeX: { equationNumbers: { autoNumber: "AMS" } }
+    config: ["MMLorHTML.js"],
+    jax: ["input/TeX","input/MathML","output/HTML-CSS","output/NativeMML"],
+    extensions: ["tex2jax.js","mml2jax.js","MathMenu.js","MathZoom.js"],
+    TeX: {
+      extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"],
+      equationNumbers: { autoNumber: "AMS" } 
+    }
   });
+
 </script>
-<script type="text/javascript" src="../MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" src="../MathJax.js?config=default"></script>
 
 <script>
 var Preview = {
@@ -102,6 +119,7 @@ Preview.callback.autoReset = true;  // make sure it can run more than once
 
 <div style="float:left;width:50%;">
 Type text in the box below:<br/>
+(Automating equation line numbering seems to work for the first rendering, and then to fail upon reload, it looks like some counter isn't being reset.)<br/>
 
 <textarea id="MathInput" onkeyup="Preview.Update()" style="margin-top:5px;height:400px;height:100%;background-color:#ddd;">
 </textarea>
