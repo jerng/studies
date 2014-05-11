@@ -6,6 +6,7 @@ Author:              Developer
 Maintainer:          developer@example.com
 Build-Type:          Simple
 Cabal-Version:       >=1.16.0.3
+Compiler:            GHC >= 7.4.1 && <= 7.4.2
 
 Executable Server
   Default-Language: Haskell2010
@@ -16,10 +17,10 @@ Executable Server
     , Hell.Conf 
     , Hell.Lib 
   Build-Depends:    
-      base == 4.5.1.0
+      base == 4.5.0.0
     , MissingH == 1.2.0.0
     , directory == 1.1.0.2
-    , clientsession == 0.9
+    , clientsession == 0.9.0.3
     , http-types == 0.8.0
     , warp == 1.3.8
     , wai == 1.4.0
@@ -37,3 +38,4 @@ Executable Server
     , utf8-string == 0.3.7
     , wai-extra == 1.3.4
     , mongoDB == 1.3.2
+    , void == 0.6.1
