@@ -1,7 +1,13 @@
 # Hell
 
 An aspiring MVC web application development framework, for the Haskell
-programming platform.
+programming platform. A toy project for study.
+
+### Dockerised (2015)
+
+1. Build the Dockerfile
+2. Run it with (-p 3000:3000)
+3. View it a number of framework features at (host:3000/default)
 
 ### Infrastructure
 
