@@ -1,7 +1,7 @@
 # superails
 A study of popular computing technologies, that uses Ruby on Rails for glue.
 
-# involves
+# lately involving
 * Docker
 * jRuby
 * Ruby on Rails
@@ -41,3 +41,7 @@ In no particular order:
 * add continuous delivery methodologies (BDD? CI Server with process manual? Gitflow?)
 * add collaborative document editing
 * more...
+
+# motivation
+
+Slightly off kilter - but since I finally have time to write code for fun, I'll probably spend some nights working on this. Motivation - frankly, Rails is great in the way Java is great, but I want it to be a bit more like WordPress. 2015-Apr-15
