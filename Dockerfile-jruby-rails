@@ -1,4 +1,4 @@
-# Exact copy from a blog post: http://rockyj.in/2014/09/14/jruby_docker.html
+# Modified from a blog post: http://rockyj.in/2014/09/14/jruby_docker.html
 # This did not contain a license.
 
 FROM phusion/baseimage:0.9.13
@@ -36,10 +36,14 @@ RUN addgroup --gid 9999 app
 RUN adduser --uid 9999 --gid 9999 --disabled-password --gecos "Application" app
 RUN usermod -L app
 RUN mkdir -p /home/app/my_app
-ADD . /home/app/my_app
+# ADD . /home/app/my_app
 RUN chown -R app:app /home/app/
 
-USER app
+# USER app
+RUN gem install rails 
+RUN apt-get install -y mysql-server-5.5 
+RUN echo '\nservice mysql start' >> ~/.bashrc 
+RUN cd /home/app && rails new my_app -d mysql
 
 #JRuby options
 ENV PATH /opt/jruby-$JRUBY_VERSION/bin:$PATH
@@ -48,12 +52,12 @@ RUN echo invokedynamic.all=true >> /home/app/.jrubyrc
 
 #Get Rails running
 WORKDIR /home/app/my_app
-ENV RAILS_ENV staging
-RUN bundle exec rake db:reset
+# ENV RAILS_ENV staging
+RUN bundle exec rake db:create
 RUN bundle install --deployment --without test development
 ##################################################################
 #Remove these lines when using fig since fog will start the server
 ##################################################################
-RUN bundle exec rake db:reset
+# RUN bundle exec rake db:reset
 EXPOSE 3000
-ENTRYPOINT bundle exec rails server
+ENTRYPOINT bundle exec rails server -b 0.0.0.0
