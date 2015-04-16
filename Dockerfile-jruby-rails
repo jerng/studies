@@ -26,7 +26,8 @@ RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | s
   # (nvm) installation.
   # Set a version of nodejs as default. (Not sure if this persists through logout/login).
 
-ENV JRUBY_VERSION 1.7.18
+ENV JRUBY_VERSION 1.7.15 
+  # 1.7.18 works with Rails 4.2.1 but not ActiveRecord
 RUN curl http://jruby.org.s3.amazonaws.com/downloads/$JRUBY_VERSION/jruby-bin-$JRUBY_VERSION.tar.gz | tar xz -C /opt
 ENV PATH /opt/jruby-$JRUBY_VERSION/bin:$PATH
   # Get JRuby
@@ -44,7 +45,7 @@ RUN mkdir -p /home/app/my_app
 RUN chown -R app:app /home/app/
 
 # USER app
-RUN gem install rails 
+RUN gem install rails -v 4.1.8 # 4.1.9 failed with 1.7.18
 RUN echo '\nservice mysql start' >> ~/.bashrc 
 RUN cd /home/app && rails new my_app -d mysql
 

@@ -1,6 +1,13 @@
 # superails
 A study of popular computing technologies, that uses Ruby on Rails for glue.
 
+# stuck at
+
+Compatibility of
+- AR-JDBC https://github.com/jruby/activerecord-jdbc-adapter
+- jRuby version
+- Rails version
+
 # lately involving
 * Docker
 * jRuby
@@ -14,7 +21,6 @@ A study of popular computing technologies, that uses Ruby on Rails for glue.
 # roadmap
 In no particular order:
 * replace MySQL with Postgres
-* replace Phusion-baseimage with Debian
 * add Redis
 * add Raptor or TorqueBox
 * add drag-and-drop database modelling and generation
