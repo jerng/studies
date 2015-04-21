@@ -46,6 +46,7 @@ RUN chown -R app:app /home/app/
 
 # USER app
 RUN gem install rails -v 4.1.8 # 4.1.9 failed with 1.7.18
+RUN gem install activerecord-jdbcmysql-adapter
 RUN echo '\nservice mysql start' >> ~/.bashrc 
 RUN cd /home/app && rails new my_app -d mysql
 

@@ -2,11 +2,7 @@
 A study of popular computing technologies, that uses Ruby on Rails for glue.
 
 # stuck at
-
-Compatibility of
-- AR-JDBC https://github.com/jruby/activerecord-jdbc-adapter
-- jRuby version
-- Rails version
+Try this next: https://github.com/jruby/jruby/wiki/Improving-startup-time
 
 # lately involving
 * Docker
