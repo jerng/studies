@@ -1,8 +1,9 @@
 # superails
 A study of popular computing technologies, that uses Ruby on Rails for glue.
 
-# stuck at
-Try this next: https://github.com/jruby/jruby/wiki/Improving-startup-time
+# try it
+* Build the Dockerfile, and run the resulting image with 
+  `docker run --rm -it -p 3000:3000 TAG-OR-IMAGE-ID`
 
 # lately involving
 * Docker
@@ -10,13 +11,11 @@ Try this next: https://github.com/jruby/jruby/wiki/Improving-startup-time
 * Ruby on Rails
 * MySQL
 
-# try it
-* Build the Dockerfile, and run the resulting image with 
-  `docker run --rm -it -p 3000:3000 TAG-OR-IMAGE-ID`
+# work has stopped at
+* replace MySQL with Postgres
 
 # roadmap
 In no particular order:
-* replace MySQL with Postgres
 * add Redis
 * add Raptor or TorqueBox
 * add drag-and-drop database modelling and generation

@@ -47,6 +47,7 @@ RUN chown -R app:app /home/app/
 # USER app
 RUN gem install rails -v 4.1.8 # 4.1.9 failed with 1.7.18
 RUN gem install activerecord-jdbcmysql-adapter
+# RUN gem install jruby-launcher
 RUN echo '\nservice mysql start' >> ~/.bashrc 
 RUN cd /home/app && rails new my_app -d mysql
 
@@ -54,6 +55,11 @@ RUN cd /home/app && rails new my_app -d mysql
 ENV PATH /opt/jruby-$JRUBY_VERSION/bin:$PATH
 RUN echo compat.version=2.0 > /home/app/.jrubyrc
 RUN echo invokedynamic.all=true >> /home/app/.jrubyrc
+ENV JRUBY_OPTS -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF
+  # Partial implementation of methods to speed up JRuby start-time, from:
+  #   http://making.change.org/post/58250242540/a-journey-to-speed-up-jruby-startup-time
+  # Also consider:
+  #   https://github.com/jruby/jruby/wiki/Improving-startup-time
 
 RUN apt-get autoremove -y && apt-get clean
   # Cleanup.
@@ -61,11 +67,11 @@ RUN apt-get autoremove -y && apt-get clean
 #Get Rails running
 WORKDIR /home/app/my_app
 # ENV RAILS_ENV staging
-RUN bundle exec rake db:create
+RUN /bin/bash -ci 'bundle exec rake db:create'
 RUN bundle install --deployment --without test development
 ##################################################################
 #Remove these lines when using fig since fog will start the server
 ##################################################################
 # RUN bundle exec rake db:reset
 EXPOSE 3000
-ENTRYPOINT bundle exec rails server -b 0.0.0.0
+ENTRYPOINT bash -ci 'bundle exec rails server -b 0.0.0.0'
