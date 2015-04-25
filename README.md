@@ -12,7 +12,6 @@ A study of popular computing technologies, that uses Ruby on Rails for glue.
 * MySQL
 
 # work has stopped at
-* replace MySQL with Postgres
 
 # roadmap
 In no particular order:

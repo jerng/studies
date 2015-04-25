@@ -17,17 +17,17 @@ RUN apt-get update && \
         # utilities
       openjdk-7-jre 
 
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main' > \
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main' >> \
       /etc/apt/sources.list.d/pgdg.list && \
     curl -O https://www.postgresql.org/media/keys/ACCC4CF8.asc && \
     apt-key add ACCC4CF8.asc && \
     rm ACCC4CF8.asc && \
     apt-get update && \
-    apt-get install -y postgesql \
+    apt-get install -y postgresql 
       # 9.4.1 tested
 
 RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh && \
-    echo '\nPATH=$PATH:/root/.nvm' > ~/.bashrc && \
+    echo 'PATH=$PATH:/root/.nvm' >> ~/.bashrc && \
     /bin/bash -ci 'nvm install 0.10.33' && \
     /bin/bash -ci 'nvm alias default 0.10.33'
   # Install a version of nodejs.
@@ -56,14 +56,28 @@ RUN chown -R app:app /home/app/
 RUN gem install rails -v 4.1.8 # 4.1.9 failed with 1.7.18
 RUN gem install activerecord-jdbcpostgresql-adapter
 # RUN gem install jruby-launcher
-RUN echo '\nservice postgresql start' > ~/.bashrc && 
-    echo '\nPATH=$PATH:/usr/lib/postgresql/9.4/bin/' > ~/.bashrc
-RUN cd /home/app && rails new my_app -d postgresql
+RUN echo 'service postgresql start' >> ~/.bashrc && \
+    echo 'PATH=$PATH:/usr/lib/postgresql/9.4/bin/' >> ~/.bashrc
+USER postgres
+RUN service postgresql start && \
+    psql --command "CREATE USER my_app WITH SUPERUSER PASSWORD 'my_app';"  && \ 
+      # make a role (user)
+    psql --command "CREATE DATABASE template_unicode WITH TEMPLATE = template0 ENCODING = 'UNICODE';" && \
+    psql --command "UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template_unicode';" && \
+    psql --command "\c template_unicode \\ VACUUM FULL" 
+      # create a unicode template
+USER root
+RUN cd /home/app && \
+    rails new my_app -d postgresql && \
+    sed -r 's/  database: my_app_development/  database: my_app_development\n  template: template_unicode/' \
+      -i /home/app/my_app/config/database.yml && \
+    sed -r 's/#username/username/' -i /home/app/my_app/config/database.yml && \
+    sed -r 's/#password:/password: my_app/' -i /home/app/my_app/config/database.yml
 
 #JRuby options
 ENV PATH /opt/jruby-$JRUBY_VERSION/bin:$PATH
-RUN echo compat.version=2.0 > /home/app/.jrubyrc
-RUN echo invokedynamic.all=true > /home/app/.jrubyrc
+RUN echo compat.version=2.0 >> /home/app/.jrubyrc
+RUN echo invokedynamic.all=true >> /home/app/.jrubyrc
 ENV JRUBY_OPTS -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF
   # Partial implementation of methods to speed up JRuby start-time, from:
   #   http://making.change.org/post/58250242540/a-journey-to-speed-up-jruby-startup-time
