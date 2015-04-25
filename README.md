@@ -2,14 +2,15 @@
 A study of popular computing technologies, that uses Ruby on Rails for glue.
 
 # try it
-* Build the Dockerfile, and run the resulting image with 
-  `docker run --rm -it -p 3000:3000 TAG-OR-IMAGE-ID`
+* Build the Dockerfile, and run the resulting image with:
+    `docker run --rm -it -p 3000:3000 TAG-OR-IMAGE-ID`.
+  This took 6m29s on an AWS EC2 t2.micro instance, SSD (EBS, no provisioned IOPS).
 
 # lately involving
 * Docker
 * jRuby
 * Ruby on Rails
-* MySQL
+* PostgreSQL 
 
 # work has stopped at
 
