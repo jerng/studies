@@ -4,13 +4,13 @@ A study of popular computing technologies, that uses Ruby on Rails for glue.
 # try it
 * Build the Dockerfile, and run the resulting image with:
 
-      docker run --rm -it -p 3000:3000 TAG-OR-IMAGE-ID
+  `docker run --rm -it -p 3000:3000 TAG-OR-IMAGE-ID`
 
   This took 6m29s on an AWS EC2 t2.micro instance, SSD (EBS, no provisioned IOPS).
 
 * Or, pull the Docker image from [Docker Hub](https://registry.hub.docker.com/u/jerng/superails/).
 
-      docker pull jerng/superails
+  `docker pull jerng/superails`
 
 # lately involving
 * Docker
