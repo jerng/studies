@@ -92,6 +92,16 @@ WORKDIR /home/app/my_app
 # ENV RAILS_ENV staging
 RUN /bin/bash -ci 'bundle exec rake db:create'
 RUN bundle install --deployment --without test development
+
+# AUFS security work-around
+RUN mkdir /etc/ssl/private-copy; \
+    mv /etc/ssl/private/* /etc/ssl/private-copy/; \
+    rm -r /etc/ssl/private; \
+    mv /etc/ssl/private-copy /etc/ssl/private; \
+    chmod -R 0700 /etc/ssl/private; \
+    chown -R postgres /etc/ssl/private
+
+
 ##################################################################
 #Remove these lines when using fig since fog will start the server
 ##################################################################
