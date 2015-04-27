@@ -26,14 +26,6 @@ RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main' >> \
     apt-get install -y postgresql 
       # 9.4.1 tested
 
-# AUFS security work-around; run before we need to run Postgres
-RUN mkdir /etc/ssl/private-copy; \
-    mv /etc/ssl/private/* /etc/ssl/private-copy/; \
-    rm -r /etc/ssl/private; \
-    mv /etc/ssl/private-copy /etc/ssl/private; \
-    chmod -R 0700 /etc/ssl/private; \
-    chown -R postgres /etc/ssl/private
-
 RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh && \
     echo 'PATH=$PATH:/root/.nvm' >> ~/.bashrc && \
     /bin/bash -ci 'nvm install 0.10.33' && \
@@ -64,7 +56,15 @@ RUN chown -R app:app /home/app/
 RUN gem install rails -v 4.1.8 # 4.1.9 failed with 1.7.18
 RUN gem install activerecord-jdbcpostgresql-adapter
 # RUN gem install jruby-launcher
-RUN echo 'service postgresql start' >> ~/.bashrc && \
+
+# AUFS security work-around; run before we need to run Postgres
+RUN echo 'mkdir /etc/ssl/private-copy; \
+      mv /etc/ssl/private/* /etc/ssl/private-copy/; \
+      rm -r /etc/ssl/private; \
+      mv /etc/ssl/private-copy /etc/ssl/private; \
+      chmod -R 0700 /etc/ssl/private; \
+      chown -R postgres /etc/ssl/private' >> ~/.bashrc && \
+    echo 'service postgresql start' >> ~/.bashrc && \
     echo 'PATH=$PATH:/usr/lib/postgresql/9.4/bin/' >> ~/.bashrc
 USER postgres
 RUN service postgresql start && \
