@@ -19,12 +19,12 @@ A study of popular computing technologies, that uses Ruby on Rails for glue.
 * PostgreSQL 
 
 # work has stopped at
-* add WebSockets
+* try Debian 8.0
+* add TorqueBox 3 (4 is in alpha)
 
 # roadmap
 In no particular order:
-* add Redis
-* add Raptor or TorqueBox
+* add WebSockets
 * add drag-and-drop database modelling and generation
 * add Bootstrap, SASS, and LaTeX
 * add proper RBAC - both roles and assets in the DB (reconsider?)
