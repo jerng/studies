@@ -21,12 +21,34 @@ RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' >> \
     apt-get install -y postgresql 
       # 9.4.1 tested
 
-# Cleanup.
+# Aptitude cleanups.
 RUN apt-get autoremove -y && apt-get clean
 
+# AUFS security work-around; run before we need to run Postgres
+RUN echo '### begin AUFS workaround' >> /root/.bashrc && \
+    echo 'mkdir /etc/ssl/private-copy' >> /root/.bashrc && \
+    echo 'mv /etc/ssl/private/* /etc/ssl/private-copy/' >> /root/.bashrc && \
+    echo 'rm -r /etc/ssl/private' >> /root/.bashrc && \
+    echo 'mv /etc/ssl/private-copy /etc/ssl/private' >> /root/.bashrc && \
+    echo 'chmod -R 0700 /etc/ssl/private' >> /root/.bashrc && \
+    echo 'chown -R postgres /etc/ssl/private' >> /root/.bashrc && \
+    echo '### end AUFS workaround' >> /root/.bashrc && \
+    echo 'service postgresql start' >> /root/.bashrc && \
+    echo 'export PATH=$PATH:/usr/lib/postgresql/9.4/bin/' >> /root/.bashrc
+USER postgres
+RUN service postgresql start && \
+    psql --command "CREATE USER my_app WITH SUPERUSER PASSWORD 'my_app';"  && \ 
+      # make a role (user)
+    psql --command "CREATE DATABASE template_unicode WITH TEMPLATE = template0 ENCODING = 'UNICODE';" && \
+    psql --command "UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template_unicode';" && \
+    psql --command "\c template_unicode \\ VACUUM FULL" 
+      # create a unicode template
+#USER app 
+USER root 
+
 # Install NodeJS
-RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh && \
-    echo 'PATH=$PATH:/root/.nvm' >> /root/.bashrc && \
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.1/install.sh | bash && \ 
+    echo 'export PATH=$PATH:/root/.nvm' >> /root/.bashrc && \
     /bin/bash -ci 'nvm install 0.10.33' && \
     /bin/bash -ci 'nvm alias default 0.10.33'
     # Install a version of nodejs.
@@ -40,10 +62,24 @@ RUN curl http://jruby.org.s3.amazonaws.com/downloads/$JRUBY_VERSION/jruby-bin-$J
 ENV PATH /opt/jruby-$JRUBY_VERSION/bin:$PATH
     # Get JRuby
 
-# Install Bundler
+# JRuby development environment options.
+RUN echo 'compat.version=2.0' >> /root/.jrubyrc && \
+    echo 'invokedynamic.all=true' >> /root/.jrubyrc
+ENV PATH /opt/jruby-$JRUBY_VERSION/bin:$PATH
+ENV JRUBY_OPTS -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF
+  # Partial implementation of methods to speed up JRuby start-time, from:
+  #   http://making.change.org/post/58250242540/a-journey-to-speed-up-jruby-startup-time
+  # Also consider:
+  #   https://github.com/jruby/jruby/wiki/Improving-startup-time
+
+# Install Bundler & some gems
 RUN echo gem: --no-document >> /etc/gemrc && \
     gem update --system && \
-    gem install bundler
+    gem install bundler && \
+    gem install rails -v 4.1.8 && \
+      # 4.1.9 failed with 1.7.18
+    gem install activerecord-jdbcpostgresql-adapter
+      # RUN gem install jruby-launcher
 
 # Add & set user
 RUN addgroup --gid 9999 app
@@ -54,42 +90,6 @@ RUN usermod -L app
 # Prepare toy app directory.
 RUN mkdir -p /home/app/my_app
 RUN chown -R app:app /home/app/
-
-# Install gems
-RUN gem install rails -v 4.1.8 && \
-      # 4.1.9 failed with 1.7.18
-    gem install activerecord-jdbcpostgresql-adapter
-      # RUN gem install jruby-launcher
-
-# AUFS security work-around; run before we need to run Postgres
-RUN echo 'mkdir /etc/ssl/private-copy; \
-      mv /etc/ssl/private/* /etc/ssl/private-copy/; \
-      rm -r /etc/ssl/private; \
-      mv /etc/ssl/private-copy /etc/ssl/private; \
-      chmod -R 0700 /etc/ssl/private; \
-      chown -R postgres /etc/ssl/private' >> /root/.bashrc && \
-    echo 'service postgresql start' >> /root/.bashrc && \
-    echo 'PATH=$PATH:/usr/lib/postgresql/9.4/bin/' >> /root/.bashrc
-USER postgres
-RUN service postgresql start && \
-    psql --command "CREATE USER my_app WITH SUPERUSER PASSWORD 'my_app';"  && \ 
-      # make a role (user)
-    psql --command "CREATE DATABASE template_unicode WITH TEMPLATE = template0 ENCODING = 'UNICODE';" && \
-    psql --command "UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template_unicode';" && \
-    psql --command "\c template_unicode \\ VACUUM FULL" 
-      # create a unicode template
-#USER app 
-USER root 
-
-# JRuby options
-ENV PATH /opt/jruby-$JRUBY_VERSION/bin:$PATH
-RUN echo compat.version=2.0 >> /home/app/.jrubyrc
-RUN echo invokedynamic.all=true >> /home/app/.jrubyrc
-ENV JRUBY_OPTS -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:TieredStopAtLevel=1 -J-noverify -Xcompile.mode=OFF
-  # Partial implementation of methods to speed up JRuby start-time, from:
-  #   http://making.change.org/post/58250242540/a-journey-to-speed-up-jruby-startup-time
-  # Also consider:
-  #   https://github.com/jruby/jruby/wiki/Improving-startup-time
 
 # Generate a toy app.
 RUN cd /home/app && \
