@@ -5,7 +5,7 @@ FROM debian:8.0
 #FROM phusion/baseimage:0.9.13
 
 # Set correct environment variables.
-ENV HOME /root
+# ENV HOME /root
 
 # Use baseimage-docker's init system.
 # CMD ["/sbin/my_init"]
@@ -29,7 +29,7 @@ RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main' >> \
 
 # Install NodeJS
 RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh && \
-    echo 'PATH=$PATH:/root/.nvm' >> ~/.bashrc && \
+    echo 'PATH=$PATH:/root/.nvm' >> /root/.bashrc && \
     /bin/bash -ci 'nvm install 0.10.33' && \
     /bin/bash -ci 'nvm alias default 0.10.33'
   # Install a version of nodejs.
@@ -70,9 +70,9 @@ RUN echo 'mkdir /etc/ssl/private-copy; \
       rm -r /etc/ssl/private; \
       mv /etc/ssl/private-copy /etc/ssl/private; \
       chmod -R 0700 /etc/ssl/private; \
-      chown -R postgres /etc/ssl/private' >> ~/.bashrc && \
-    echo 'service postgresql start' >> ~/.bashrc && \
-    echo 'PATH=$PATH:/usr/lib/postgresql/9.4/bin/' >> ~/.bashrc
+      chown -R postgres /etc/ssl/private' >> /root/.bashrc && \
+    echo 'service postgresql start' >> /root/.bashrc && \
+    echo 'PATH=$PATH:/usr/lib/postgresql/9.4/bin/' >> /root/.bashrc
 USER postgres
 RUN service postgresql start && \
     psql --command "CREATE USER my_app WITH SUPERUSER PASSWORD 'my_app';"  && \ 
