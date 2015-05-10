@@ -2,13 +2,7 @@
 # This did not contain a license.
 
 FROM debian:8.0 
-#FROM phusion/baseimage:0.9.13
-
-# Set correct environment variables.
-# ENV HOME /root
-
-# Use baseimage-docker's init system.
-# CMD ["/sbin/my_init"]
+# FROM phusion/baseimage:0.9.13
 
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -18,7 +12,7 @@ RUN apt-get update && \
       openjdk-7-jre 
 
 # Install Postgres
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main' >> \
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' >> \
       /etc/apt/sources.list.d/pgdg.list && \
     curl -O https://www.postgresql.org/media/keys/ACCC4CF8.asc && \
     apt-key add ACCC4CF8.asc && \
@@ -27,21 +21,24 @@ RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main' >> \
     apt-get install -y postgresql 
       # 9.4.1 tested
 
+# Cleanup.
+RUN apt-get autoremove -y && apt-get clean
+
 # Install NodeJS
 RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh && \
     echo 'PATH=$PATH:/root/.nvm' >> /root/.bashrc && \
     /bin/bash -ci 'nvm install 0.10.33' && \
     /bin/bash -ci 'nvm alias default 0.10.33'
-  # Install a version of nodejs.
-  # (nvm) installation.
-  # Set a version of nodejs as default. (Not sure if this persists through logout/login).
+    # Install a version of nodejs.
+    # (nvm) installation.
+    # Set a version of nodejs as default. (Not sure if this persists through logout/login).
 
 # Install JRuby
 ENV JRUBY_VERSION 1.7.15 
-  # 1.7.18 works with Rails 4.2.1 but not ActiveRecord
+    # 1.7.18 works with Rails 4.2.1 but not ActiveRecord
 RUN curl http://jruby.org.s3.amazonaws.com/downloads/$JRUBY_VERSION/jruby-bin-$JRUBY_VERSION.tar.gz | tar xz -C /opt
 ENV PATH /opt/jruby-$JRUBY_VERSION/bin:$PATH
-  # Get JRuby
+    # Get JRuby
 
 # Install Bundler
 RUN echo gem: --no-document >> /etc/gemrc && \
@@ -101,9 +98,6 @@ RUN sed -r 's/  encoding: unicode/  encoding: unicode\n  template: template_unic
        -i /home/app/my_app/config/database.yml && \
     echo "gem 'torquebox', '4.0.0.alpha1'" >> /home/app/my_app/Gemfile 
       # Torquebox included here.
-
-# Cleanup.
-RUN apt-get autoremove -y && apt-get clean
 
 #Get Rails running
 WORKDIR /home/app/my_app
