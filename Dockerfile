@@ -17,6 +17,7 @@ RUN apt-get update && \
         # utilities
       openjdk-7-jre 
 
+# Install Postgres
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main' >> \
       /etc/apt/sources.list.d/pgdg.list && \
     curl -O https://www.postgresql.org/media/keys/ACCC4CF8.asc && \
@@ -26,6 +27,7 @@ RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main' >> \
     apt-get install -y postgresql 
       # 9.4.1 tested
 
+# Install NodeJS
 RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | sh && \
     echo 'PATH=$PATH:/root/.nvm' >> ~/.bashrc && \
     /bin/bash -ci 'nvm install 0.10.33' && \
@@ -34,28 +36,33 @@ RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.16.1/install.sh | s
   # (nvm) installation.
   # Set a version of nodejs as default. (Not sure if this persists through logout/login).
 
+# Install JRuby
 ENV JRUBY_VERSION 1.7.15 
   # 1.7.18 works with Rails 4.2.1 but not ActiveRecord
 RUN curl http://jruby.org.s3.amazonaws.com/downloads/$JRUBY_VERSION/jruby-bin-$JRUBY_VERSION.tar.gz | tar xz -C /opt
 ENV PATH /opt/jruby-$JRUBY_VERSION/bin:$PATH
   # Get JRuby
 
-RUN echo gem: --no-document >> /etc/gemrc
-RUN gem update --system
-RUN gem install bundler
+# Install Bundler
+RUN echo gem: --no-document >> /etc/gemrc && \
+    gem update --system && \
+    gem install bundler
 
-#Add user
+# Add & set user
 RUN addgroup --gid 9999 app
 RUN adduser --uid 9999 --gid 9999 --disabled-password --gecos "Application" app
 RUN usermod -L app
+# USER app
+
+# Prepare toy app directory.
 RUN mkdir -p /home/app/my_app
-# ADD . /home/app/my_app
 RUN chown -R app:app /home/app/
 
-# USER app
-RUN gem install rails -v 4.1.8 # 4.1.9 failed with 1.7.18
-RUN gem install activerecord-jdbcpostgresql-adapter
-# RUN gem install jruby-launcher
+# Install gems
+RUN gem install rails -v 4.1.8 && \
+      # 4.1.9 failed with 1.7.18
+    gem install activerecord-jdbcpostgresql-adapter
+      # RUN gem install jruby-launcher
 
 # AUFS security work-around; run before we need to run Postgres
 RUN echo 'mkdir /etc/ssl/private-copy; \
@@ -74,15 +81,10 @@ RUN service postgresql start && \
     psql --command "UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template_unicode';" && \
     psql --command "\c template_unicode \\ VACUUM FULL" 
       # create a unicode template
-USER root
-RUN cd /home/app && \
-    rails new my_app -d postgresql && \
-    sed -r 's/  database: my_app_development/  database: my_app_development\n  template: template_unicode/' \
-      -i /home/app/my_app/config/database.yml && \
-    sed -r 's/#username/username/' -i /home/app/my_app/config/database.yml && \
-    sed -r 's/#password:/password: my_app/' -i /home/app/my_app/config/database.yml
+#USER app 
+USER root 
 
-#JRuby options
+# JRuby options
 ENV PATH /opt/jruby-$JRUBY_VERSION/bin:$PATH
 RUN echo compat.version=2.0 >> /home/app/.jrubyrc
 RUN echo invokedynamic.all=true >> /home/app/.jrubyrc
@@ -92,14 +94,22 @@ ENV JRUBY_OPTS -Xcompile.invokedynamic=false -J-XX:+TieredCompilation -J-XX:Tier
   # Also consider:
   #   https://github.com/jruby/jruby/wiki/Improving-startup-time
 
+# Generate a toy app.
+RUN cd /home/app && \
+    rails new my_app -d postgresql  
+RUN sed -r 's/  encoding: unicode/  encoding: unicode\n  template: template_unicode\n  username: my_app\n  password: my_app/'  \
+       -i /home/app/my_app/config/database.yml && \
+    echo "gem 'torquebox', '4.0.0.alpha1'" >> /home/app/my_app/Gemfile 
+      # Torquebox included here.
+
+# Cleanup.
 RUN apt-get autoremove -y && apt-get clean
-  # Cleanup.
 
 #Get Rails running
 WORKDIR /home/app/my_app
-# ENV RAILS_ENV staging
-RUN /bin/bash -ci 'bundle exec rake db:create'
-RUN bundle install --deployment --without test development
+RUN bundle install --no-deployment  && \
+    bundle install --deployment --without test development && \
+    /bin/bash -ci 'bundle exec rake db:create'
 
 
 ##################################################################
@@ -107,4 +117,4 @@ RUN bundle install --deployment --without test development
 ##################################################################
 # RUN bundle exec rake db:reset
 EXPOSE 3000
-ENTRYPOINT bash -ci 'bundle exec rails server -b 0.0.0.0'
+ENTRYPOINT bash -ci 'bundle exec rails server torquebox -b 0.0.0.0'

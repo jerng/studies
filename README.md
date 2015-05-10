@@ -17,9 +17,9 @@ A study of popular computing technologies, that uses Ruby on Rails for glue.
 * jRuby
 * Ruby on Rails
 * PostgreSQL 
+* TorqueBox 4, alpha1 
 
 # work has stopped at
-* add TorqueBox 3 (4 is in alpha)
 
 # roadmap
 In no particular order:
