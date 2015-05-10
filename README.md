@@ -19,7 +19,6 @@ A study of popular computing technologies, that uses Ruby on Rails for glue.
 * PostgreSQL 
 
 # work has stopped at
-* try Debian 8.0
 * add TorqueBox 3 (4 is in alpha)
 
 # roadmap

@@ -1,7 +1,7 @@
 # Modified from a blog post: http://rockyj.in/2014/09/14/jruby_docker.html
 # This did not contain a license.
 
-FROM debian:7.8 
+FROM debian:8.0 
 #FROM phusion/baseimage:0.9.13
 
 # Set correct environment variables.
