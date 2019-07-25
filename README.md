@@ -1,3 +1,11 @@
+# CURRENT STATUS
+
+This project was last tested on 2015-05-10.
+
+As of 2019-07-26, it is known that the Dockerfile doesn't build.
+
+Consider this other, more recent, project instead: [Twitalytics is a rich Twitter client (JRuby - Rails - Sidekiq - PostgreSql - Docker)](https://github.com/victorhazbun/twitalytics)
+
 # superails
 A study of popular computing technologies, that uses Ruby on Rails for glue.
 
