@@ -20,11 +20,16 @@ RUN apt-get update && \
 
 RUN apt-get install -y haskell-platform
 
-RUN curl -LO https://downloads.haskell.org/~ghc/8.0.1/ghc-8.0.1-x86_64-deb8-linux.tar.xz && \
-    tar xf ghc-8.0.1-x86_64-deb8-linux.tar.xz 
+
+RUN curl -LO https://downloads.haskell.org/~ghc/8.0.1/ghc-8.0.1-x86_64-deb8-linux.tar.xz 
+# needs cleanup?
+
+RUN apt-get install -y xz-utils 
+
+RUN tar -xf ghc-8.0.1-x86_64-deb8-linux.tar.xz 
 
 RUN cd ghc-8.0.1 && \
-#    ln -s /usr/lib/x86_64-linux-gnu/libgmp.so.10 /usr/lib/libgmp.so.3 && \
+    ln -s /usr/lib/x86_64-linux-gnu/libgmp.so.10 /usr/lib/libgmp.so.3 && \
     ./configure && \
     make install && \
     rm -fr /ghc-8.0.1-x86_64-deb8-linux.tar.xz /ghc-8.0.1
@@ -47,7 +52,7 @@ RUN git clone https://github.com/jerng/Hell.git && \
     cd Hell && \
     cabal install -j4 -v
 
-RUN sed -i 's/4.2/4.1/g' Hell/tryHell.sh
+# RUN sed -i 's/4.2/4.1/g' Hell/tryHell.sh
 
 RUN mongod --fork --syslog && \
     sleep 3 && \
