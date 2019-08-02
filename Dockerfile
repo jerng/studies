@@ -18,6 +18,7 @@ RUN apt-get update && \
     zlib1g-dev
       # cabal compilation dependency
 
+<<<<<<< master
 RUN curl -LO http://www.haskell.org/ghc/dist/7.4.1/ghc-7.4.1-x86_64-unknown-linux.tar.bz2 && \
     tar xvfj ghc-7.4.1-x86_64-unknown-linux.tar.bz2
 
@@ -51,6 +52,25 @@ RUN export PATH=$PATH:/root/.cabal/bin && \
     cabal install cabal-dev
 
 RUN echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.0 main" | tee /etc/apt/sources.list.d/mongodb-org-3.0.list && \
+=======
+RUN apt-get install -y haskell-platform
+
+RUN curl -LO https://downloads.haskell.org/~ghc/8.0.1/ghc-8.0.1-x86_64-deb8-linux.tar.xz && \
+    tar xf ghc-8.0.1-x86_64-deb8-linux.tar.xz 
+
+RUN cd ghc-8.0.1 && \
+#    ln -s /usr/lib/x86_64-linux-gnu/libgmp.so.10 /usr/lib/libgmp.so.3 && \
+    ./configure && \
+    make install && \
+    rm -fr /ghc-8.0.1-x86_64-deb8-linux.tar.xz /ghc-8.0.1
+
+RUN cabal update
+
+# required to add Mongo repository; a space-heavy hack
+RUN apt-get install -y gnupg lsb-release 
+
+RUN echo "deb http://repo.mongodb.org/apt/debian "$(lsb_release -sc)"/mongodb-org/4.0 main" | tee /etc/apt/sources.list.d/mongodb.list && \
+>>>>>>> local
     apt-get update && \
     apt-get install -y --force-yes mongodb-org  && \
     mkdir -p /data/db 
@@ -61,8 +81,13 @@ RUN echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.0 main" | 
 
 RUN git clone https://github.com/jerng/Hell.git && \
     cd Hell && \
+<<<<<<< master
     export PATH=$PATH:/root/.cabal/bin && \
     cabal-dev install -j2
+=======
+#    export PATH=$PATH:/root/.cabal/bin && \
+    cabal install -j4 -v
+>>>>>>> local
 
 RUN sed -i 's/4.2/4.1/g' Hell/tryHell.sh
 
