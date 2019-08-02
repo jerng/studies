@@ -5,7 +5,7 @@
 
 # STACK
 
-FROM debian:7.8
+FROM debian:9
 MAINTAINER yangjerng@gmail.com
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -18,41 +18,6 @@ RUN apt-get update && \
     zlib1g-dev
       # cabal compilation dependency
 
-<<<<<<< master
-RUN curl -LO http://www.haskell.org/ghc/dist/7.4.1/ghc-7.4.1-x86_64-unknown-linux.tar.bz2 && \
-    tar xvfj ghc-7.4.1-x86_64-unknown-linux.tar.bz2
-
-RUN cd ghc-7.4.1 && \
-    ln -s /usr/lib/x86_64-linux-gnu/libgmp.so.10 /usr/lib/libgmp.so.3 && \
-    ./configure && \
-    make install && \
-    rm -fr /ghc-7.4.1-x86_64-unknown-linux.tar.bz2 /ghc-7.4.1
-
-RUN curl -LO  http://hackage.haskell.org/packages/archive/Cabal/1.16.0.3/Cabal-1.16.0.3.tar.gz && \
-    tar xaf Cabal-1.16.0.3.tar.gz 
-
-RUN cd Cabal-1.16.0.3 && \
-    ghc --make Setup && \
-    ./Setup configure --user && \
-    ./Setup build && \
-    ./Setup install && \
-    rm -fr /Cabal-1.16.0.3.tar.gz /Cabal-1.16.0.3
-
-RUN git clone https://github.com/haskell/cabal.git && \
-    cd cabal && \
-    git checkout tags/cabal-install-v1.16.0.2 && \
-    cd cabal-install && \
-    chmod 700 bootstrap.sh && \
-    sed -i 's/--fail/--fail -L/g' bootstrap.sh && \
-    ./bootstrap.sh && \
-    rm -fr /cabal
-
-RUN export PATH=$PATH:/root/.cabal/bin && \
-    cabal update && \
-    cabal install cabal-dev
-
-RUN echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.0 main" | tee /etc/apt/sources.list.d/mongodb-org-3.0.list && \
-=======
 RUN apt-get install -y haskell-platform
 
 RUN curl -LO https://downloads.haskell.org/~ghc/8.0.1/ghc-8.0.1-x86_64-deb8-linux.tar.xz && \
@@ -70,7 +35,6 @@ RUN cabal update
 RUN apt-get install -y gnupg lsb-release 
 
 RUN echo "deb http://repo.mongodb.org/apt/debian "$(lsb_release -sc)"/mongodb-org/4.0 main" | tee /etc/apt/sources.list.d/mongodb.list && \
->>>>>>> local
     apt-get update && \
     apt-get install -y --force-yes mongodb-org  && \
     mkdir -p /data/db 
@@ -81,13 +45,7 @@ RUN echo "deb http://repo.mongodb.org/apt/debian "$(lsb_release -sc)"/mongodb-or
 
 RUN git clone https://github.com/jerng/Hell.git && \
     cd Hell && \
-<<<<<<< master
-    export PATH=$PATH:/root/.cabal/bin && \
-    cabal-dev install -j2
-=======
-#    export PATH=$PATH:/root/.cabal/bin && \
     cabal install -j4 -v
->>>>>>> local
 
 RUN sed -i 's/4.2/4.1/g' Hell/tryHell.sh
 
