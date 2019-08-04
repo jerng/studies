@@ -1,3 +1,9 @@
+# Abandonment Notice
+
+As of 2019-08-04, this codebase is officially abandoned. The interfaces of this codebase's dependencies have mutated too much for the codebase to be effectively updated. 
+
+Apologies. We shall start again somewhere else.
+
 # Hell
 
 An aspiring MVC web application development framework, for the Haskell
