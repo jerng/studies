@@ -1,4 +1,4 @@
-# CURRENT STATUS
+# Archival Notice
 
 This project was last tested on 2015-05-10.
 
