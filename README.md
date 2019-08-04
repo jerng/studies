@@ -1,8 +1,13 @@
-# Abandonment Notice
+# Archival Notice
 
 As of 2019-08-04, this codebase is officially abandoned. The interfaces of this codebase's dependencies have mutated too much for the codebase to be effectively updated. 
 
 Apologies. We shall start again somewhere else.
+
+Meanwhile, at the time of writing, a last remaining example of working code is on [Docker Hub](https://cloud.docker.com/u/jerng/repository/docker/jerng/hell).
+
+- `docker pull jerng/hell`
+- `docker run -it --rm -p3000:3000 jerng/hell`
 
 # Hell
 
