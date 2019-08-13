@@ -3,13 +3,15 @@ import Data.Function
 import Data.Functor
 
 main =  do  
-            putStrLn "\n***Program Began.\n*\n*\n*\n\
-                \This module is a study of the expression \"(map.const)\
-                \ 1 [1,2,3]\""
-            putStrLn $ "... which as coded above, computes to: " ++ show x ++ 
-                "\n"
-            putStrLn $ "Now we attempt to inline all the code from (map), (.), \
-                \and (const) to see how it works:\n\n\
+            putStrLn $ "\n***Program Began.\n*\n*\n*\n\
+
+\This module is a study of the expression \"(map.const)\
+\ 1 [1,2,3]\"\n\
+\... which as coded above, computes to: " ++ show x ++ "\n \n\
+\That is equivalent to the expression \"1 <$ [1,2,3]\"\n\
+\... which as coded above, computes to: " ++ show (1 <$ [1,2,3]) ++ "\n \n\
+\Now we attempt to inline all the code from (map), (.), \
+\and (const) to see how it works:\n\n\
 
 \First, we define:\n\
 \\t\txDot f g = \\x -> f (g x)\n\
