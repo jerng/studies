@@ -13,20 +13,14 @@
         constructor (identity) {
             super ()
 
-            this.identity = identity
-
-            this.addEventListener ('beforeActorConstruction',   this.beforeActorConstructionListener ) 
-            this.addEventListener ('actorConstruction',         this.actorConstructionListener ) 
-            this.addEventListener ('afterActorConstruction',    this.afterActorConstructionListener )
-
-            this.dispatchEvent ( new Event ('beforeActorConstruction') )
-            this.dispatchEvent ( new Event ('actorConstruction') )
-            this.dispatchEvent ( new Event ('afterActorConstruction') )
+            this.beforeActorConstruction (identity)
+            this.actorConstruction ()
+            this.afterActorConstruction ()
         }    
 
-        beforeActorConstructionListener (event) {
+        beforeActorConstruction (identity) {
             try {
-                if ( (typeof this.identity !== 'string') || (this.identity.length == 0) ) {
+                if ( (typeof identity !== 'string') || (identity.length == 0) ) {
                     throw "Please provide the instance of Actor with a .identity which is a string of length > 0"
                 } 
             } catch (error) {
@@ -34,13 +28,13 @@
             }
         }
 
-        actorConstructionListener (event) {
+        actorConstruction () {
             this.inbox                      = []
             this.actorRegistryValidation    = this.validateActorRegistry()
             this.registerActor (this.actorRegistryValidation)
         }
 
-        afterActorConstructionListener (event) {
+        afterActorConstruction () {
             console.log (`NEWS: An instance of Actor has been constructed, identified as ${this.identity}.`)
         }
 
