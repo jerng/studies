@@ -1,6 +1,6 @@
 # JSF just stands for JavaScript Framework
 
-Currently a study of 2015-2019 JavaScript developments I've not beeng keeping up with.
+Currently a study of 2015-2019 JavaScript developments I've not been keeping up with.
 
 After reviewing a number of reactive-style web frameworks, I wasn't clear on how each 
 one was architectured.
