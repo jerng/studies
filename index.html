@@ -57,7 +57,7 @@
             console.log (`NEWS: An actor ${this.identity} received a message: ${message}, which has been pushed into ${this.identity}\'s inbox.`)
         }
 
-        sendMessage (message) {}
+        sendMessage (message) {
             // TODO: call the recipient actor's receiveMessage(message) ?
         }
 
@@ -269,7 +269,7 @@
 
     // Script cleanup
     delete pam.__proto__.__proto__.init
-
+    // TODO: this should occur in Postman's afterConstruction; there should be a dev-mode flag which copies out the keys for testing
 
 
 
