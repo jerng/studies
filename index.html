@@ -24,11 +24,11 @@
             this.actorRegistryValidation    = this.validateActorRegistry()
 
             this.registerActor (this.actorRegistryValidation)
-//            this.addEventListener ('inboxed', this.inbox)
+            this.addEventListener ('constructed', this.constructedListener)
 
 
             console.log (`NEWS: An instance of Actor has been constructed, identified as ${this.identity}.`)
-
+            this.dispatchEvent ( new Event ('constructed') )
         }    
 
 
@@ -50,6 +50,10 @@
         receiveMessage (message) {
             this.inbox.push (message)
             console.log (`NEWS: An actor ${this.identity} received a message: ${message}, which has been pushed into ${this.identity}\'s inbox.`)
+        }
+
+        async constructedListener (event) {
+            console.log(`${this.identity} has been constructed.`)
         }
 
 
@@ -75,12 +79,13 @@
                 contentKey   :  Symbol(),
             }
             
-            this.requiredKeys  = [
+            this.requiredKeys       = [
                 super.__proto__.__proto__.init.recipientKey, 
                 super.__proto__.__proto__.init.subjectKey, 
                 super.__proto__.__proto__.init.contentKey
             ]
-            this.registry      = {}
+            this.recipientRegistry  = { }
+            this.messageDrawer      = { }
 
             console.log (`NEWS: ... the new actor identified as ${this.identity}, is also an instance of Postman.`)
 
@@ -182,11 +187,11 @@
                     throw (`An instance of Postman tried to register an invalid recipient: ${actor} (an instance of Actor is expected)`)
                 }
 
-                if ( actor.identity in this.registry  ) {
+                if ( actor.identity in this.recipientRegistry  ) {
                     throw (`An instance of Postman may not register a recipient whose identity is already in the Postman\'s registry: ${actor.identity}.`)
                 }
 
-                this.registry[actor.identity] = actor
+                this.recipientRegistry[actor.identity] = actor
                 console.log (`NEWS: An instance of Postman registered a new recipient: ${actor.identity}`)
                 return true
 
@@ -211,6 +216,8 @@
 
         let joe1    = new Actor ('Joe')
         let joe2    = new Actor ('Joe')
+        let jee     = new Actor ('Jee')
+        let jae     = new Actor ('Jae')
         let pam     = new Postman ('Pam')
         let pat     = new Postman ('Pat')
 
