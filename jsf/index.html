@@ -12,13 +12,12 @@
     
         constructor (identity) {
             super ()
-
-            this.beforeActorConstruction (identity)
-            this.actorConstruction ()
-            this.afterActorConstruction ()
+            this.beforeConstruction (identity)
+            this.construction ()
+            this.afterConstruction ()
         }    
 
-        beforeActorConstruction (identity) {
+        beforeConstruction (identity) {
             try {
                 if ( (typeof identity !== 'string') || (identity.length == 0) ) {
                     throw "Please provide the instance of Actor with a .identity which is a string of length > 0"
@@ -28,13 +27,13 @@
             }
         }
 
-        actorConstruction () {
+        construction () {
             this.inbox                      = []
             this.actorRegistryValidation    = this.validateActorRegistry()
             this.registerActor (this.actorRegistryValidation)
         }
 
-        afterActorConstruction () {
+        afterConstruction () {
             console.log (`NEWS: An instance of Actor has been constructed, identified as ${this.identity}.`)
         }
 
@@ -58,6 +57,10 @@
             console.log (`NEWS: An actor ${this.identity} received a message: ${message}, which has been pushed into ${this.identity}\'s inbox.`)
         }
 
+        sendMessage (message) {}
+            // TODO: call the recipient actor's receiveMessage(message) ?
+        }
+
 
     }
 
@@ -66,11 +69,8 @@
 
     class Postman extends Actor {
    
-        constructor (identity) {
-            super (identity)
-
-
-
+        beforeConstruction () {
+            super.beforeConstruction()
 
             //  super.__proto__.__proto__ is the anonymous prototoype of the Actor class,
             //      so any assignments to that, will be inherited by all actors.
@@ -83,7 +83,10 @@
                 subjectKey   :  Symbol(),
                 contentKey   :  Symbol(),
             }
-            
+        }
+
+        construction () {
+            super.construction()
             this.requiredKeys       = [
                 super.__proto__.__proto__.init.recipientKey, 
                 super.__proto__.__proto__.init.subjectKey, 
@@ -91,10 +94,16 @@
             ]
             this.recipientRegistry  = { }
             this.messageDrawer      = { }
+        }
 
+        afterConstruction () {
+            super.afterConstruction()
             console.log (`NEWS: ... the new actor identified as ${this.identity}, is also an instance of Postman.`)
 
-        } 
+            // TODO:  go to actorRegistry, register all registered Actors as recipients
+
+            // TODO:  set Actor's Prototype afterConstruction() to : Find a postman, register self as a recipient.
+        }
         
         validateActorRegistry () {
             try {
