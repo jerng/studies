@@ -13,24 +13,36 @@
         constructor (identity) {
             super ()
 
-            
-            if ( (typeof identity !== 'string') || (identity.length == 0) ) {
-                throw "Please provide the instance of Actor with a .identity which is a string of length > 0"
-            } else {
-                this.identity               = identity
-            }
-            
-            this.inbox                      = []
-            this.actorRegistryValidation    = this.validateActorRegistry()
+            this.identity = identity
 
-            this.registerActor (this.actorRegistryValidation)
-            this.addEventListener ('constructed', this.constructedListener)
+            this.addEventListener ('beforeActorConstruction',   this.beforeActorConstructionListener ) 
+            this.addEventListener ('actorConstruction',         this.actorConstructionListener ) 
+            this.addEventListener ('afterActorConstruction',    this.afterActorConstructionListener )
 
-
-            console.log (`NEWS: An instance of Actor has been constructed, identified as ${this.identity}.`)
-            this.dispatchEvent ( new Event ('constructed') )
+            this.dispatchEvent ( new Event ('beforeActorConstruction') )
+            this.dispatchEvent ( new Event ('actorConstruction') )
+            this.dispatchEvent ( new Event ('afterActorConstruction') )
         }    
 
+        beforeActorConstructionListener (event) {
+            try {
+                if ( (typeof this.identity !== 'string') || (this.identity.length == 0) ) {
+                    throw "Please provide the instance of Actor with a .identity which is a string of length > 0"
+                } 
+            } catch (error) {
+                console.log(`WARNING: ${error}`)
+            }
+        }
+
+        actorConstructionListener (event) {
+            this.inbox                      = []
+            this.actorRegistryValidation    = this.validateActorRegistry()
+            this.registerActor (this.actorRegistryValidation)
+        }
+
+        afterActorConstructionListener (event) {
+            console.log (`NEWS: An instance of Actor has been constructed, identified as ${this.identity}.`)
+        }
 
         validateActorRegistry () {
             return { 'actorRegistryIsArray' : 'actorRegistry' in window && Array.isArray(window.actorRegistry) }
@@ -52,10 +64,6 @@
             console.log (`NEWS: An actor ${this.identity} received a message: ${message}, which has been pushed into ${this.identity}\'s inbox.`)
         }
 
-        async constructedListener (event) {
-            console.log(`${this.identity} has been constructed.`)
-        }
-
 
     }
 
@@ -66,6 +74,9 @@
    
         constructor (identity) {
             super (identity)
+
+
+
 
             //  super.__proto__.__proto__ is the anonymous prototoype of the Actor class,
             //      so any assignments to that, will be inherited by all actors.
@@ -214,6 +225,8 @@
 
         console.log ('// BEGIN //\n// TESTS // Let\'s do some simple tests.\n// TESTS //')
 
+
+        let nemo    = new Actor ()
         let joe1    = new Actor ('Joe')
         let joe2    = new Actor ('Joe')
         let jee     = new Actor ('Jee')
