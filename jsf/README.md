@@ -14,9 +14,9 @@ Erlang's VM-actor-messages model.
 Done:
 - window.actorRegistry
 - Actor superclass
+- - Actors have inboxes
 - Postman subclass
-- Actors have inboxes
-- Postman determines messaging protocol
 - - each window.actorRegistry can have one Postman, at most
+- - Postman determines messaging protocol between Actors
 - - each Postman carries another internal registry of message recipients; this is uniquely keyed by actor.identity 
 - - messages are Objects with symbol keys to prevent accidental mucking up
