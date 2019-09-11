@@ -7,6 +7,17 @@
 
 // TODO: EventTarget.dispatchEvent() is supposed to run listeners synchronously. Test to see if asynchronous handoff can be achieved.
 
+/* PREP: Review overall architecture in light of this patterning concern:
+ *
+ *          Moreover, a constructor should only create and initialize a new
+ *          instance. It should set up data structures and all instance-specific
+ *          properties, but not execute any tasks. It should be a pure function
+ *          without side effects if possible, with all the benefits that has.
+ *          
+ *          and
+ * 
+ *          https://stackoverflow.com/questions/43431550/async-await-class-constructor
+*/
 
     //  https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
     //      [ class, extends, super, constructor ] keywords are only syntactic 
@@ -16,20 +27,38 @@
         // (new Actor).constructor
         constructor (identity) {
             super ()
-                this.beforeConstruction (identity)
-                this.construction ()
-                this.afterConstruction ()
+
+/* PREP:
+            this.addEventListener ( 'beforeConstruction', this.beforeConstruction, { once : false } )
+            this.addEventListener ( 'construction', this.construction, { once : false } )
+            this.addEventListener ( 'afterConstruction', this.afterConstruction, { once : false } )
+
+            this.dispatchEvent ( new CustomEvent ('beforeConstruction', { detail: { identity  : identity } }  ) )
+            this.dispatchEvent ( new CustomEvent ('construction' ) )
+            this.dispatchEvent ( new CustomEvent ('afterConstruction' ) )
+*/
+
+            this.beforeConstruction (identity)
+            this.construction ()
+            this.afterConstruction ()
         }    
 
         // (new Actor).beforeConstruction
         beforeConstruction (identity) {
+// PREP:        beforeConstruction (event) {
+
             if ( (typeof identity !== 'string') || (identity.length == 0) ) {
+// PREP:    if ( (typeof event.detail.identity !== 'string') || (event.detail.identity.length == 0) ) {
+
                 throw new Error (`
                     (new Actor).constructor has been interrupted. Please provide 
                     the instance of Actor with a .identity which 
                     is a string of length > 0.`)
             } 
+
             this.identity                   = identity
+// PREP:            this.identity                   = event.detail.identity
+
             this.actorRegistryValidation    = this.validateActorRegistry()
             this.registerActor ( this.actorRegistryValidation )
         }
