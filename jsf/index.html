@@ -34,20 +34,20 @@ this.registerRecipient (actor)
 
         // (new Actor).beforeConstruction
         beforeConstruction (identity) {
-          if ( (typeof identity !== 'string') || (identity.length == 0) ) {
-              throw new Error (`
-                  (new Actor).constructor has been interrupted. Please provide 
-                  the instance of Actor with a .identity which 
-                  is a string of length > 0.`)
-          } 
-          this.identity = identity
+            if ( (typeof identity !== 'string') || (identity.length == 0) ) {
+                throw new Error (`
+                    (new Actor).constructor has been interrupted. Please provide 
+                    the instance of Actor with a .identity which 
+                    is a string of length > 0.`)
+            } 
+            this.identity                   = identity
+            this.actorRegistryValidation    = this.validateActorRegistry()
+            this.registerActor ( this.actorRegistryValidation )
         }
 
         // (new Actor).construction
         construction () {
             this.inbox                      = []
-            this.actorRegistryValidation    = this.validateActorRegistry()
-            this.registerActor ( this.actorRegistryValidation )
         }
 
         // (new Actor).afterConstruction
@@ -110,24 +110,27 @@ this.registerRecipient (actor)
         beforeConstruction (identity) {
             super.beforeConstruction(identity)
 
-            //  super.__proto__.__proto__ is the anonymous prototoype of the 
-            //      Actor class,
-            //      so any assignments to that, will be inherited by all actors.
-            //  CONSIDER: aliasing this to a shorter variable.
-            //
-            //  Initialised data is deleted when the script cleans up. 
-            //      This helps to reduce accidental contamination of objects i
-            //      via misused keys.
-            super.__proto__.__proto__.init = {
-                recipientKey :  Symbol(),
-                subjectKey   :  Symbol(),
-                contentKey   :  Symbol(),
-            }
         }
 
         // (new Postman).construction
         construction () {
             super.construction()
+
+            //  super.__proto__.__proto__ is the anonymous prototoype of the 
+            //      Actor class,
+            //      so any assignments to that, will be inherited by all actors.
+            //  CONSIDER: aliasing this to a shorter variable.
+            //  CONSIDER: switching this to use Symbol.for() and a global
+            //              registry instead
+            //
+            //  Initialised data is deleted when the script cleans up. 
+            //      This helps to reduce accidental contamination of objects i
+            //      via misused keys.
+            super.__proto__.__proto__.init = {
+                recipientKey :  Symbol('rk'),
+                subjectKey   :  Symbol('sk'),
+                contentKey   :  Symbol('ck'),
+            }
 
             this.requiredKeys       = [
                 super.__proto__.__proto__.init.recipientKey, 
@@ -270,7 +273,6 @@ this.registerRecipient (actor)
         validateMessage (message) {
             try {
 
-
                 if ( typeof message !== 'object'  ) {
                     throw new Error (`
                         An instance of Postman received an invalid message: 
@@ -278,9 +280,12 @@ this.registerRecipient (actor)
                 }
 
                 var keys = Object.getOwnPropertySymbols (message)
-                if  ( ! this.requiredKeys.every (
-                            key => { return keys.includes(key) } 
-                        ) ) 
+
+                var allRequiredKeysFound =  this.requiredKeys.every ( 
+                                                key => keys.includes(key) 
+                                            )
+
+                if  ( ! allRequiredKeysFound ) 
                 {
                     throw new Error (`
                         An instance of Postman received an invalid message: 
@@ -329,10 +334,11 @@ catch (error)   { console.error(error) }
         console.log ('TEST: A variable, m, has been declared with valid message keys.')
 
         console.log ('TEST: ... we then attempt to inbox pam, the postman, with m:')
+
         pam.receiveMessage(m)
 
         // Test cleanup
-        m = null 
+        // m = null 
 
         console.log ('TEST: ... after that, we then attempt to inbox Pam, the postman, with an empty object literal, {}:')
         pam.receiveMessage({})
