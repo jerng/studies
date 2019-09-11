@@ -105,13 +105,22 @@
             this.inbox.push (message)
             console.log (`NEWS:
                 An actor ${this.identity} received a message: ${message}, 
-                which has been pushed into ${this.identity}\'s inbox.`)
+                which has been pushed into ${this.identity}\'s inbox. Custom
+                events are dispatched when messages arrive at inboxes, based on
+                message subject.`)
+
+            this.dispatchEvent(new CustomEvent (
+                message[this.init.subjectKey], 
+                { detail : { 
+                    content : message[this.init.contentKey],
+                    subject : message[this.init.subjectKey]
+                } }
+            ) )
+
         }
 
         // (new Actor).sendMessage
-        sendMessage (message) {
-            // TODO: call the recipient actor's receiveMessage(message) ?
-        }
+        sendMessage ( recipient, subject, content ) { }
 
     }
 
@@ -151,12 +160,14 @@
             }
 
             this.requiredKeys       = [
-                super.__proto__.__proto__.init.recipientKey, 
-                super.__proto__.__proto__.init.subjectKey, 
-                super.__proto__.__proto__.init.contentKey
+                this.init.recipientKey, 
+                this.init.subjectKey, 
+                this.init.contentKey
             ]
 
-            this.messageDrawer      = { }
+            // TODO: the structure of the message drawer will depend on whether
+            // messaging is REST-ful, etc.
+            this.messageDrawer      = [ ]
 
             this.recipientRegistry  = { }
 
@@ -170,30 +181,50 @@
                 ... the new actor identified as ${this.identity}, is also 
                 an instance of Postman.`)
 
-            window.actorRegistry.forEach( actor =>{
+            // Registers existing actors as recipients
+            window.actorRegistry.forEach( actor => {
                     if ( ! (actor instanceof Postman) ) {
                         this.registerRecipient(actor)
                     }
                 } )
+            
+            setFutureActors: {
+                //  Registers future new instances of Actor as recipients
+                //
+                //  This sets the prototype of all Actors with new behaviours upon
+                //      afterConstruction.
+                //
+                //  Not clear if TACTIC001 is legit.
+                //
+                //  TACTIC001: step 1
+                var functionToOverwrite = super.afterConstruction
 
-            //  This sets the prototype of all Actors with new behaviours upon
-            //      afterConstruction.
-            //
-            //  Not clear if TACTIC001 is legit.
+                super.__proto__.__proto__.afterConstruction = function(){
 
-            //  TACTIC001: step 1
-            var functionToOverwrite = super.afterConstruction
+                    //  TACTIC001: step 2
+                    functionToOverwrite.bind(this)()
 
-            super.__proto__.__proto__.afterConstruction = function(){
-
-                //  TACTIC001: step 2
-                functionToOverwrite.bind(this)()
-
-                var postman = window.actorRegistry.find( actor => actor instanceof Postman )
-                if ( typeof postman != 'undefined') {
-                    postman.registerRecipient(this)
+                    var postman = window.actorRegistry.find( actor => actor instanceof Postman )
+                    if ( typeof postman != 'undefined') {
+                        postman.registerRecipient(this)
+                    }
                 }
             }
+
+            // Points all past and future actors to this postman
+            super.__proto__.__proto__.localPostman  = this
+            super.__proto__.__proto__.sendMessage   = 
+                ( recipient, subject, content ) => {
+                    let message = { }
+                    message[this.init.recipientKey]    
+                        = recipient
+                    message[this.init.subjectKey]
+                        = subject
+                    message[this.init.contentKey]
+                        = content
+                     
+                    this.receiveMessage( message ) 
+                }
         }
         
         // (new Postman).validateActorRegistry
@@ -293,18 +324,31 @@
 
         // (new Postman).receiveMessage
         receiveMessage (message) {
-            if ( this.validateMessage (message) ) {
-
-                super.receiveMessage (message)
-
-                console.log (`
-                    As ${this.identity} is a postman, inboxed messages are to
-                    be re-inboxed to the appropriate recipients, based on the 
-                    postman's recipient registry. If a recipient\'s identity is
-                    not in the registry, the message is moved from the postman's
-                    inbox, to the postman's drawer with the addition of a new
-                    key "recipient not in registry"`)
+            if ( ! this.validateMessage (message) ) {
+                return false
             }
+
+            if ( typeof
+                this.recipientRegistry[message[super.__proto__.__proto__.init.recipientKey]]
+                == 'undefined' ) {
+
+                this.messageDrawer.push (message)
+
+                console.log (`Warning:
+                    Postman received a message for an unregistered
+                    recipient,
+                    ${message[super.__proto__.__proto__.init.recipientKey]},
+                    it will be kept in the drawer.`)
+
+                return false
+
+            }
+
+            this
+                .recipientRegistry[message[super.__proto__.__proto__.init.recipientKey]]
+                .receiveMessage (message)
+
+            return true
         }
         
         // (new Postman).validateMessage
@@ -393,20 +437,30 @@ halt here, but this test script has been written to continue.`) }
         console.log(`TEST: window.actorRegistry identities: ${window.actorRegistry.map(x => x.identity)}`)
         console.log(`TEST: pam.recipientRegistry identities: ${Object.keys(pam.recipientRegistry)}`)
 
+        console.log(`TEST: add event listener to Joe, and get Jae to send Joe a message.`)
+        joe1.addEventListener (
+            'bye',
+             event => console.log (`I, ${this}, am triggered by the
+                 event, ${event.detail.subject}, and will now spew the content:
+                 ${event.detail.content}`)
+        )
+        jae.sendMessage('Joe','bye','so high')
+
 
 //*//
 
 
 
 
-    // Script cleanup
-    delete pam.__proto__.__proto__.init
-    // TODO: this should occur in Postman's afterConstruction; there should be a dev-mode flag which copies out the keys for testing
+    // TODO: can't do this yet, as we haven't figured out how to send messages
+    // without it.
+    //
+    // delete pam.__proto__.__proto__.init
 
 
 
 //*     More testing:
-        console.log ('TEST: After script cleanups deleted pam.__proto__.__proto__.init, pam.init now has the value of: ' + pam.init ) 
+        //console.log ('TEST: After script cleanups deleted pam.__proto__.__proto__.init, pam.init now has the value of: ' + pam.init ) 
         console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 //*//
 

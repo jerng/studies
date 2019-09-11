@@ -1,6 +1,20 @@
 //  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
 
 
+/* What a promise actually is. When you create a new Promise, you’re really just
+ * creating a plain old JavaScript object. This object can invoke two methods,
+ * then, and catch. Here’s the key. When the status of the promise changes to
+ * fulfilled, the function that was passed to .then will get invoked. When the
+ * status of a promise changes to rejected, the function that was passed to
+ * .catch will be invoked. What this means is that once you create a promise,
+ * you’ll pass the function you want to run if the async request is successful
+ * to .then. You’ll pass the function you want to run if the async request fails
+ * to .catch.
+ *
+ * FROM :
+ * https://medium.com/@paulrohan/converting-javascript-callbacks-to-promise-and-async-await-replacing-async-waterfall-method-with-3c8b7487e0b9
+ */
+
 
 
 
