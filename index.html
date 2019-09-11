@@ -146,9 +146,35 @@ this.registerRecipient (actor)
         // (new Postman).afterConstruction
         afterConstruction () {
             super.afterConstruction()
+
             console.log (`NEWS: 
                 ... the new actor identified as ${this.identity}, is also 
                 an instance of Postman.`)
+
+            window.actorRegistry.forEach( actor =>{
+                    if ( ! (actor instanceof Postman) ) {
+                        this.registerRecipient(actor)
+                    }
+                } )
+
+            //  This Set the prototype of all Actors with new behaviours upon
+            //  afterConstruction.
+            //
+            //  Not clear if TACTIC001 is legit.
+
+            //  TACTIC001: step 1
+            var functionToOverwrite = super.afterConstruction
+
+            super.__proto__.__proto__.afterConstruction = function(){
+
+                //  TACTIC001: step 2
+                functionToOverwrite.bind(this)()
+
+                var postman = window.actorRegistry.find( actor => actor instanceof Postman )
+                if ( typeof postman != 'undefined') {
+                    postman.registerRecipient(this)
+                }
+            }
 
 
 
@@ -334,11 +360,10 @@ catch (error)   { console.error(error) }
         console.log ('TEST: A variable, m, has been declared with valid message keys.')
 
         console.log ('TEST: ... we then attempt to inbox pam, the postman, with m:')
-
         pam.receiveMessage(m)
 
         // Test cleanup
-        // m = null 
+        m = null 
 
         console.log ('TEST: ... after that, we then attempt to inbox Pam, the postman, with an empty object literal, {}:')
         pam.receiveMessage({})
