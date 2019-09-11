@@ -3,33 +3,22 @@
 <script>
     "use strict"
 
+// TODO: Implement error handling  via Promise chains
 
-/* Possibly useful later.
-const validation = window.actorRegistry.some( actor => actor instanceof Postman )
+// TODO: EventTarget.dispatchEvent() is supposed to run listeners synchronously. Test to see if asynchronous handoff can be achieved.
 
-if ( ! validation ) {
-window.actorRegistry.forEach ( actor => {
-console.log(actor.identity)               
-this.registerRecipient (actor) 
-} )
-}
-*/
 
     //  https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
-    //  [ class, extends, super, constructor ] keywords are only syntactic 
-    //  sugar  (ES6) for prototype inheritence (see ES5)
+    //      [ class, extends, super, constructor ] keywords are only syntactic 
+    //      sugar  (ES6) for prototype inheritence (see ES5)
     class Actor extends EventTarget {
    
         // (new Actor).constructor
         constructor (identity) {
             super ()
-            try {
                 this.beforeConstruction (identity)
                 this.construction ()
                 this.afterConstruction ()
-            } catch (error) {
-                throw new Error (error) // Interrupt Actor construction.
-            }
         }    
 
         // (new Actor).beforeConstruction
@@ -47,7 +36,7 @@ this.registerRecipient (actor)
 
         // (new Actor).construction
         construction () {
-            this.inbox                      = []
+            this.inbox                  = [ ]
         }
 
         // (new Actor).afterConstruction
@@ -139,6 +128,7 @@ this.registerRecipient (actor)
             ]
 
             this.messageDrawer      = { }
+
             this.recipientRegistry  = { }
 
         }
@@ -157,8 +147,8 @@ this.registerRecipient (actor)
                     }
                 } )
 
-            //  This Set the prototype of all Actors with new behaviours upon
-            //  afterConstruction.
+            //  This sets the prototype of all Actors with new behaviours upon
+            //      afterConstruction.
             //
             //  Not clear if TACTIC001 is legit.
 
@@ -175,59 +165,52 @@ this.registerRecipient (actor)
                     postman.registerRecipient(this)
                 }
             }
-
-
-
-            // TODO:  set Actor's Prototype afterConstruction() to : Find a post
-            //  man, register self as a recipient.
         }
         
         // (new Postman).validateActorRegistry
         validateActorRegistry () {
             try {
 
+                // TODO: consider changing this to a proper OOP-style singleton
+                //      https://stackoverflow.com/questions/1479319/simplest-cleanest-way-to-implement-singleton-in-javascript
+                var selfValidity
+
                 var superValidity = super
                                     .validateActorRegistry()
                                     .actorRegistryIsArray
-                var selfValidity
 
                 if (    superValidity 
                         && 
-                        ! ( selfValidity 
-                            = ! 
-                            window.actorRegistry.some ( 
+                        !   (   selfValidity 
+                                = ! 
+                                window.actorRegistry.some ( 
                                 actor => actor.constructor.name == 'Postman' 
-                            ) 
-                         )
+                                ) 
+                            )
                    ) {
                         throw new Error (`
                             An instance of Postman pre-exists in 
                             window.actorRegistry; no other shall be 
                             registered.` )
                 }
-                return { 
-                    'actorRegistryIsArray'      : superValidity,    
-                    'noPreRegisteredPostman'    : selfValidity
-                }
+                return  {   'actorRegistryIsArray'      : superValidity,    
+                            'noPreRegisteredPostman'    : selfValidity
+                        }
 
                 /*  This will return EITHER,
 
                         {   'actorRegistryIsArray'      : true,
                             'noPreRegisteredPostman'    : false }
-  
                     OR,
-
                         {   'actorRegistryIsArray'      : false,
-                            'noPreRegisteredPostman'    : undefined }  
-
-                */
+                            'noPreRegisteredPostman'    : undefined }  */
 
             } catch (error) {
-                console.log(error)
-                return { 
-                    'actorRegistryIsArray'      : superValidity,    // true
-                    'noPreRegisteredPostman'    : selfValidity      // true
-                }
+
+                console.log(error) // merely warn the developer
+                return  {   'actorRegistryIsArray'      : superValidity,    // true
+                            'noPreRegisteredPostman'    : selfValidity      // true
+                        }
             }
         }
 
@@ -238,7 +221,7 @@ this.registerRecipient (actor)
             } else {
 
                 // TODO: consider changing this to a proper OOP-style singleton
-
+                //      https://stackoverflow.com/questions/1479319/simplest-cleanest-way-to-implement-singleton-in-javascript
                 throw new Error (`
                     (new Postman).constructor has been interrupted. An instance 
                     of Postman, identified as 
@@ -252,26 +235,29 @@ this.registerRecipient (actor)
 
 
                 if ( ! actor instanceof Actor  ) {
-                    throw new Error (`
+                    throw `Warning:
                         An instance of Postman tried to register an invalid 
-                        recipient: ${actor} (an instance of Actor is expected)`)
+                        recipient: ${actor} (an instance of Actor is expected)`
                 }
 
                 if ( actor.identity in this.recipientRegistry  ) {
-                    throw new Error (`An instance of Postman may not register a recipient 
+                    throw `Warning:
+                    An instance of Postman may not register a recipient 
                     whose identity is already in the Postman's registry: 
-                    ${actor.identity}.`)
+                    ${actor.identity}.`
                 }
 
                 this.recipientRegistry[actor.identity] = actor
                 console.log (`NEWS: 
                     An instance of Postman registered a new recipient: 
                     ${actor.identity}`)
+
                 return true
 
-
             } catch (error) {
+
                 console.error(error)
+
                 return false
             }
         }
@@ -279,7 +265,6 @@ this.registerRecipient (actor)
         // (new Postman).receiveMessage
         receiveMessage (message) {
             if ( this.validateMessage (message) ) {
-
 
                 super.receiveMessage (message)
 
@@ -290,8 +275,6 @@ this.registerRecipient (actor)
                     not in the registry, the message is moved from the postman's
                     inbox, to the postman's drawer with the addition of a new
                     key "recipient not in registry"`)
-                
-
             }
         }
         
@@ -300,9 +283,9 @@ this.registerRecipient (actor)
             try {
 
                 if ( typeof message !== 'object'  ) {
-                    throw new Error (`
+                    throw `Warning:
                         An instance of Postman received an invalid message: 
-                        ${message} (an object is expected)`)
+                        ${message} (an object is expected)`
                 }
 
                 var keys = Object.getOwnPropertySymbols (message)
@@ -311,18 +294,18 @@ this.registerRecipient (actor)
                                                 key => keys.includes(key) 
                                             )
 
-                if  ( ! allRequiredKeysFound ) 
-                {
-                    throw new Error (`
+                if  ( ! allRequiredKeysFound ) {
+                    throw `Warning:
                         An instance of Postman received an invalid message: 
-                        ${message} (required keys were missing)`)
+                        ${message} (required keys were missing)`
                 }
 
                 return true
 
-
             } catch (error) {
+
                 console.error(error)
+
                 return false
             }
         }
@@ -342,16 +325,17 @@ this.registerRecipient (actor)
 
 
 try             { let nemo    = new Actor () } 
-catch (error)   { console.error(error) }
+catch (error)   { console.error (error); console.error (`Execution would normally
+halt here, but this test script has been written to continue.`) }
         
         let joe1    = new Actor ('Joe')
-        let joe2    = new Actor ('Joe')
         let jee     = new Actor ('Jee')
         let jae     = new Actor ('Jae')
         let pam     = new Postman ('Pam')
 
 try             { let pat     = new Postman ('Pat') }
-catch (error)   { console.error(error) }
+catch (error)   { console.error (error); console.error (`Execution would normally
+halt here, but this test script has been written to continue.`) }
 
         let m       =  {}
             m[pam.__proto__.__proto__.init.recipientKey]    = 1
@@ -368,12 +352,11 @@ catch (error)   { console.error(error) }
         console.log ('TEST: ... after that, we then attempt to inbox Pam, the postman, with an empty object literal, {}:')
         pam.receiveMessage({})
 
-        console.log ('TEST: Next, we attempt to register actor Joe_1 as a recipient in postman Pam\'s registry.')
-        pam.registerRecipient(joe1)
         console.log ('TEST: ... then we attempt to register actor Joe_2 in the same.')
-        pam.registerRecipient(joe2)
-        console.log (`
-            TEST: Whereas, window.actorRegistry is an array that can hold multiple 
+        let joe2    = new Actor ('Joe')
+
+        console.log (`TEST:
+            Whereas, window.actorRegistry is an array that can hold multiple 
             discrete instances of Actor which each have the same .identity: 
             ${window.actorRegistry.map( actor => actor.identity).join(', ') }`
         )
@@ -398,7 +381,6 @@ catch (error)   { console.error(error) }
         console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 //*//
 
-// TODO: EventTarget.dispatchEvent() is supposed to run listeners synchronously. Test to see if asynchronous handoff can be achieved.
 
 </script>
 
