@@ -1,5 +1,19 @@
 # JSF just stands for JavaScript Framework
 
+## Motivations
+
+Currently a study of 2015-2019 JavaScript developments I've not been keeping up with.
+
+After reviewing a number of reactive-style web frameworks, I wasn't clear on how each 
+one was architectured.
+
+Instead of reading all the code for all of those, I decided to write a brief study in 
+the form. The architecture being developed here is loosely based on EventTarget and
+Erlang's VM-actor-messages model.
+
+** (I'm not sure if you should call this a polite protocol, but Erlang was
+designed by a Brit.) 
+
 ## Version
 
 v0.0.1 - representing a working version of the messaging infrastructure, albeit
@@ -98,21 +112,6 @@ RENDERING IN GENERAL (perhaps incoherent):
     includes things like Typescript, compiler hints/decorators, and templating
     syntax.
 
-## Motivations
-
-Currently a study of 2015-2019 JavaScript developments I've not been keeping up with.
-
-After reviewing a number of reactive-style web frameworks, I wasn't clear on how each 
-one was architectured.
-
-Instead of reading all the code for all of those, I decided to write a brief study in 
-the form. The architecture being developed here is loosely based on EventTarget and
-Erlang's VM-actor-messages model.
-
-** (I'm not sure if you should call this a polite protocol, but Erlang was
-designed by a Brit, after all.) 
-
 ## Tools
 
-I like vim.
-
+I like Vim.
