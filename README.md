@@ -88,20 +88,22 @@ RENDERING IN GENERAL (perhaps incoherent):
 -   -   Track (B_o)s and (B_p)s in a tree of actors
 
 -   -   Diff only (B_p)s for dynamic changes, ignoring (B_o)s
-        ((lit-html)[https://www.youtube.com/watch?v=ruql541T7gc],
-        (hyperHTML)[https://gist.github.com/WebReflection/ab43649d9e4a53ac900b5924c77a310e])
+        ([lit-html](https://www.youtube.com/watch?v=ruql541T7gc),
+        [hyperHTML](https://gist.github.com/WebReflection/ab43649d9e4a53ac900b5924c77a310e]))
 
 -   When checking (B_p)s for diffs, do it in a virtual DOM first.
 
 -   -   When dirty data is detected in (A_m)s, rerender only the relevant
-        subtrees. (React, Vue)[https://bitsofco.de/understanding-the-virtual-dom/],
-        (Hyperapp)[https://github.com/jorgebucaran/hyperapp])  
+        subtrees. ([React,
+        Vue](https://bitsofco.de/understanding-the-virtual-dom/),
+        [Hyperapp](https://github.com/jorgebucaran/hyperapp))  
 
 -   Edgy:   How about having generic code handle declarative configuration,
             WHILE allowing a background optimisation... a compiler which spits
             out more optimised code which is run in eval(), this code being
             cached for future use, until the next change in declarative
-            configuration. 
+            configuration. ([Svelte,
+            Sapper](https://svelte.dev/blog/svelte-3-rethinking-reactivity)) 
 
 ## Architectural Leanings
 
