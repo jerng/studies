@@ -1,0 +1,68 @@
+import { Actor, Postman } from './jsf.js'
+
+//*   Some simple pre-tests:
+
+console.log ('// BEGIN //\n// TESTS // Let\'s do some simple pre-tests.\n// TESTS //')
+
+try             { let nemo    = new Actor () } 
+catch (error)   { console.error (error); console.error (`Execution would normally
+halt here, but this test script has been written to continue.`) }
+
+let joe1    = new Actor ('Joe')
+let jee     = new Actor ('Jee')
+let jae     = new Actor ('Jae')
+let pam     = new Postman ('Pam')
+
+try             { let pat     = new Postman ('Pat') }
+catch (error)   { console.error (error); console.error (`Execution would normally
+halt here, but this test script has been written to continue.`) }
+
+let m       =  {}
+    m[pam.__proto__.__proto__.init.recipientKey]    = 1
+    m[pam.__proto__.__proto__.init.subjectKey]      = 2
+    m[pam.__proto__.__proto__.init.contentKey]      = 3
+console.log ('TEST: A variable, m, has been declared with valid message keys.')
+
+console.log ('TEST: ... we then attempt to inbox pam, the postman, with m:')
+pam.receiveMessage(m)
+
+// Test cleanup
+m = null 
+
+console.log ('TEST: ... after that, we then attempt to inbox Pam, the postman, with an empty object literal, {}:')
+pam.receiveMessage({})
+
+console.log ('TEST: ... then we attempt to register actor Joe_2 in the same.')
+let joe2    = new Actor ('Joe')
+
+console.log (`TEST:
+    Whereas, window.actorRegistry is an array that can hold multiple 
+    discrete instances of Actor which each have the same .identity: 
+    ${window.actorRegistry.map( actor => actor.identity).join(', ') }`
+)
+console.log(`TEST: window.actorRegistry identities: ${window.actorRegistry.map(x => x.identity)}`)
+console.log(`TEST: pam.recipientRegistry identities: ${Object.keys(pam.recipientRegistry)}`)
+
+console.log(`TEST: add event listener to Joe, and get Jae to send Joe a message.`)
+joe1.addEventListener (
+    'bye',
+     event => console.log (`
+         I, '${event.target.identity}', am triggered by the
+         event, '${event.detail.subject}', and will now spew the content:
+         '${event.detail.content}'`)
+)
+jae.sendMessage('Joe','bye','so high')
+
+console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
+
+//*//
+
+
+
+
+//  TODO: can't do this yet, as we haven't figured out how to send messages
+//  without it.
+//
+//      delete pam.__proto__.__proto__.init
+//
+//      console.log ('TEST: After script cleanups deleted pam.__proto__.__proto__.init, pam.init now has the value of: ' + pam.init ) 
