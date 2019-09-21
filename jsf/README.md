@@ -1,18 +1,11 @@
 # JSF just stands for JavaScript Framework
 
-## Motivations
+Check out this `README.md`, and the development demo at `index.html`.
 
-Currently a study of 2015-2019 JavaScript developments I've not been keeping up with.
-
-After reviewing a number of reactive-style web frameworks, I wasn't clear on how each 
-one was architectured.
-
-Instead of reading all the code for all of those, I decided to write a brief study in 
-the form. The architecture being developed here is loosely based on EventTarget and
-Erlang's VM-actor-messages model.
-
-** (I'm not sure if you should call this a polite protocol, but Erlang was
-designed by a Brit.) 
+Remember to host the directory containing `index.html` on a webserver, as [CORS
+security protocol will not allow your browser to simply open Javascript files
+from your
+filesystem](https://stackoverflow.com/questions/46992463/es6-module-support-in-chrome-62-chrome-canary-64-does-not-work-locally-cors-er).
 
 ## Version
 
@@ -26,11 +19,6 @@ themselves. We expect to see CustomEvent used in this way - the whole point of
 "messaging" is that an actor should never make these calls on
 another actor, instead, only sending messages requesting that other actors do as
 such. **
-
-### Disclaimers
-
-This is not a good example of OOP separation of concerns, in terms of how the
-functions were named.
 
 ### Progress
 
@@ -49,6 +37,11 @@ Done:
   of the Actor class to cause all future instatiations of Actor to register
   themselves to (new Postman).recipientRegistry on construction.
 - - messages are Objects with symbol keys to reduce accidental mucking up
+
+### Disclaimers (Technical Debt)
+
+This is not a good example of OOP separation of concerns, in terms of how the
+functions were named.
 
 ### Next Thoughts
 
@@ -98,12 +91,13 @@ RENDERING IN GENERAL (perhaps incoherent):
         Vue](https://bitsofco.de/understanding-the-virtual-dom/),
         [Hyperapp](https://github.com/jorgebucaran/hyperapp))  
 
--   Edgy:   How about having generic code handle declarative configuration,
-            WHILE allowing a background optimisation... a compiler which spits
-            out more optimised code which is run in eval(), this code being
-            cached for future use, until the next change in declarative
-            configuration. ([Svelte,
-            Sapper](https://svelte.dev/blog/svelte-3-rethinking-reactivity)) 
+-   Edgy:
+
+-   -   How about having generic code handle declarative configuration, WHILE
+    allowing a background optimisation... a compiler which spits out more
+    optimised code which is run in eval(), this code being cached for future
+    use, until the next change in declarative configuration. ([Svelte,
+    Sapper](https://svelte.dev/blog/svelte-3-rethinking-reactivity)) 
 
 ## Architectural Leanings
 
@@ -117,3 +111,17 @@ RENDERING IN GENERAL (perhaps incoherent):
 ## Tools
 
 I like Vim.
+
+## Motivations
+
+Currently a study of 2015-2019 JavaScript developments I've not been keeping up with.
+
+After reviewing a number of reactive-style web frameworks, I wasn't clear on how each 
+one was architectured.
+
+Instead of reading all the code for all of those, I decided to write a brief study in 
+the form. The architecture being developed here is loosely based on EventTarget and
+Erlang's VM-actor-messages model.
+
+** (I'm not sure if you should call this a polite protocol, but Erlang was
+designed by a Brit.) 
