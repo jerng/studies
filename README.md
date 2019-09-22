@@ -13,8 +13,8 @@ v0.0.1 - representing a working version of the messaging infrastructure, albeit
 with clunky implementation.
 
 Actors can now message each other via the Postman. Actors can therefore be
-configured to respond to mail by calling addEventListener() and
-removeEventListener() on themselves, or by calling despatchEvent() on
+configured to respond to mail by calling `addEventListener()` and
+`removeEventListener()` on themselves, or by calling `despatchEvent()` on
 themselves. We expect to see CustomEvent used in this way - the whole point of
 "messaging" is that an actor should never make these calls on
 another actor, instead, only sending messages requesting that other actors do as
@@ -125,3 +125,15 @@ Erlang's VM-actor-messages model.
 
 ** (I'm not sure if you should call this a polite protocol, but Erlang was
 designed by a Brit.) 
+
+> v0.0.1 - we now have (only) inter-actor messaging! The direction here is to
+> use Vanilla.js (NO required templating language, compiler decorators, or
+> TypeScript, nothing ex-ES!), NO required build step (optional SSR, optional
+> compilation of configuration into code at runtime, and cached compiled code
+> run in eval()), REACTIVITY... every datum ('field') will be modelled as an
+> Actor (extension of EventTarget) that can receive messages, and therefore each
+> Actor can use Event to talk to other Actors. The intention is to build this so
+> that server side Actors and client side Actors can message each other, and
+> that each light-weight Actor represents finely grained model-states (down to
+> the field) or view-states (down to the element). If you read so far, thanks
+> for following this noob attempt to brain 2019 JS features...
