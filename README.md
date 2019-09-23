@@ -15,7 +15,7 @@ with clunky implementation.
 Actors can now message each other via the Postman. Actors can therefore be
 configured to respond to mail by calling `addEventListener()` and
 `removeEventListener()` on themselves, or by calling `despatchEvent()` on
-themselves. We expect to see CustomEvent used in this way - the whole point of
+themselves. We expect to see `CustomEvent` used in this way - the whole point of
 "messaging" is that an actor should never make these calls on
 another actor, instead, only sending messages requesting that other actors do as
 such. **

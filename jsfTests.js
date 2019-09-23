@@ -66,3 +66,51 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 //      delete pam.__proto__.__proto__.init
 //
 //      console.log ('TEST: After script cleanups deleted pam.__proto__.__proto__.init, pam.init now has the value of: ' + pam.init ) 
+
+
+
+
+//* Building a reactive store...
+
+    // Consideration 1:
+    class Datum extends Actor {
+            
+        }
+
+    // Consideration 2:
+    let modelDefinition = {         // aka 'model' : one web component, maps to one model
+
+        dataDefinitions : {         // aka 'data' 
+
+            a : {                   // each datum's key is its unique identifier (UID)
+                type : Number,      // initialised or (undefined)
+                value : () => 1,    // initialised or (undefined)
+                neverCache : true   // initialised or (undefined)
+            },
+
+            b : {                   
+                type : Number,      
+                value : () => new Date,
+            },
+
+            c : {                   
+                type : Number,      
+                value : () => query('some syntax which refers to data UIDs'),
+                    // We have to write the query function.
+            }
+
+        },
+
+        cachedData : {              // To invalidate a datum, delete its cached
+                                    //  key.
+
+            a : {
+                value : undefined   // Initial parse of dataDefinition may
+                                    //  initialise a cache.
+            }
+
+        }
+
+    }
+
+//*/
