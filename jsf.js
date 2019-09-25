@@ -1,3 +1,9 @@
+//  WARNING:    reimplement without __proto__
+//              https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/proto
+//
+//                  Like this:
+//              https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain
+
 export { Actor, Postman }
 
 console.log('jsf.js side effect')

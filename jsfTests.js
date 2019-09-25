@@ -1,3 +1,9 @@
+//  WARNING:    reimplement without __proto__
+//              https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/proto
+//
+//                  Like this:
+//              https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain
+
 import { Actor, Postman } from './jsf.js'
 
 //*   Some simple pre-tests:
@@ -72,12 +78,18 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 
 //* Building a reactive store...
 
-    // Consideration 1:
+    //  Consideration 1:
     class Datum extends Actor {
             
         }
 
-    // Consideration 2:
+    //  Consideration 2:
+    //  
+    //      2.1.    Learnt about Object.defineProperty just in time to include it:
+    //      https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+    //
+    //      2.2.    Learnt about Proxy, Reflect.
+    //
     let modelDefinition = {         // aka 'model' : one web component, maps to one model
 
         dataDefinitions : {         // aka 'data' 
