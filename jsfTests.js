@@ -90,9 +90,13 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
     //
     //      2.2.    Learnt about Proxy, Reflect.
     //
-    let modelDefinition = {         // aka 'model' : one web component, maps to one model
+    let dataModel = {               // aka 'model' : one web component, maps to one model
 
-        dataDefinitions : {         // aka 'data' 
+        metadata : {
+
+        },        
+
+        dataDefinition : {         
 
             a : {                   // each datum's key is its unique identifier (UID)
                 type : Number,      // initialised or (undefined)
@@ -113,7 +117,33 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 
         },
 
-        cachedData : {              // To invalidate a datum, delete its cached
+
+    }
+
+    let dataImplementation = {
+
+        datastore : {
+
+            a : (new Datum),        // Something like this is probably going to happen
+
+            b : (new Datum),        // You could Proxy a Datum for sophistication
+
+            c : (new Datum),        /*  The model compiler should read the
+                                     *      dataModel, and write the
+                                     *      dataImplementation.
+                                     *
+                                     *      After creation of each Datum in the
+                                     *      datastore, dependencies can be
+                                     *      implemented between each Datum and
+                                     *      the other Datums. If lazy evaluation
+                                     *      is permitted, circular dependencies
+                                     *      could be enabled with JavaScript
+                                     *      generators. 
+                                     */
+
+        },
+    
+        cache : {                   // To invalidate a datum, delete its cached
                                     //  key.
 
             a : {
@@ -122,7 +152,7 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
             }
 
         }
-
+    
     }
 
 //*/
