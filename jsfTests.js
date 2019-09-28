@@ -83,6 +83,10 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
             
         }
 
+    class ViewNode extends Actor {
+            
+        }
+
     //  Consideration 2:
     //  
     //      2.1.    Learnt about Object.defineProperty just in time to include it:
@@ -98,21 +102,45 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 
         dataDefinition : {         
 
-            a : {                   // each datum's key is its unique identifier (UID)
-                type : Number,      // initialised or (undefined)
-                value : () => 1,    // initialised or (undefined)
-                neverCache : true   // initialised or (undefined)
+            a : {                       // each datum's key is its unique identifier (UID)
+                type : Number,          // initialised or (undefined)
+                evaluation : () => 1,   // initialised or (undefined)
+                neverCache : true       // initialised or (undefined)
             },
 
             b : {                   
                 type : Number,      
-                value : () => new Date,
+                evaluation : () => new Date,
             },
 
             c : {                   
                 type : Number,      
-                value : () => query('some syntax which refers to data UIDs'),
-                    // We have to write the query function.
+                evaluation : () => DSLQuery('some DSL query syntax which refers to data UIDs'),
+
+                                /*  We have to write the query function.
+                                 *
+                                 *  The query should not need to check if dependencies have
+                                 *  changed. 
+                                 *
+                                 *  In order for it to avoid doing that, the
+                                 *  implemented Datum will have to store a
+                                 *  cacheValid boolean. Each 'provider' datum (as
+                                 *  opposed to 'dependent') should (send
+                                 *  messages which) invalidate
+                                 *  the caches of all its dependents whenever
+                                 *  the provider's value is reevaluated. 
+                                 *  
+                                 *  When a Datum's cacheInvalidated event is
+                                 *  triggered, it may (subject to some logical
+                                 *  delay to avoid oversensitivity) recompute
+                                 *  and recache its new value.
+                                 *
+                                 *  Following a reevaluation event, a Datum should
+                                 *  dispatch rerendering events to the pertinent
+                                 *  ViewNodes, and invalidation events to the
+                                 *  pertinent Datums.
+                                 *
+                                 *  */
             }
 
         },
@@ -120,26 +148,32 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 
     }
 
-    let dataImplementation = {
+    /*  The model compiler should read the dataModel, and write the
+     *  dataImplementation. 
+     *
+     *     After creation of each Datum in the       datastore, dependencies can
+     *     be       implemented between each Datum and       the other Datums.
+     *     If lazy evaluation       is permitted, circular dependencies
+     *     could be enabled with JavaScript       generators.  
+     *      
+     *      Dependencies should be implemented using CustomEvent and
+     *      dispatchEvent of course. What each datum does upon receiving an
+     *      event should be compiled upon model implementation. It should not be
+     *      a generic algorithm that runs every time some datum is modified. */
+
+    let dataImplementation = {      // Something like this is probably going to happen
 
         datastore : {
 
-            a : (new Datum),        // Something like this is probably going to happen
+            a : (new Datum),        /* You could Proxy a Datum for sophistication
+                                     *  but I'm not sure that's going to be
+                                     *  necessary if the code for each Datum is
+                                     *  compiled into it upon model
+                                     *  implementation. */
 
-            b : (new Datum),        // You could Proxy a Datum for sophistication
+            b : (new Datum),        
 
-            c : (new Datum),        /*  The model compiler should read the
-                                     *      dataModel, and write the
-                                     *      dataImplementation.
-                                     *
-                                     *      After creation of each Datum in the
-                                     *      datastore, dependencies can be
-                                     *      implemented between each Datum and
-                                     *      the other Datums. If lazy evaluation
-                                     *      is permitted, circular dependencies
-                                     *      could be enabled with JavaScript
-                                     *      generators. 
-                                     */
+            c : (new Datum),  
 
         },
     
