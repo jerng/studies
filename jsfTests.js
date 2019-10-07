@@ -109,13 +109,13 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
             },
 
             b : {                   
-                type : Number,      
+                type : Date,      
                 evaluation : () => new Date,
             },
 
             c : {                   
                 type : Number,      
-                evaluation : () => DSLQuery('some DSL query syntax which refers to data UIDs'),
+                evaluation : () => DSLQuery(`some DSL query syntax which refers to dependency data UIDs`),
 
                                 /*  We have to write the query function.
                                  *
@@ -124,24 +124,40 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
                                  *
                                  *  In order for it to avoid doing that, the
                                  *  implemented Datum will have to store a
-                                 *  cacheValid boolean. Each 'provider' datum (as
-                                 *  opposed to 'dependent') should (send
-                                 *  messages which) invalidate
-                                 *  the caches of all its dependents whenever
-                                 *  the provider's value is reevaluated. 
-                                 *  
-                                 *  When a Datum's cacheInvalidated event is
-                                 *  triggered, it may (subject to some logical
-                                 *  delay to avoid oversensitivity) recompute
+                                 *  cacheValid boolean, for EACH of its
+                                 *  dependencies (for each 'provider' Datum). 
+                                 *
+                                 *  When a provider Datum's value is
+                                 *  reevaluated, and found to have changed from
+                                 *  a previous evaluation, then it should send that value to
+                                 *  all Data which depend upon it (to each
+                                 *  'dependent' Datum)
+                                 *
+                                 *  So it seems, providers and dependents need
+                                 *  to be aware of each other.
+                                 *
+                                 *  Upon receiving an update from a provider, a
+                                 *  dependent Datum may choose to reevaluate its
+                                 *  own value using the [updated provider
+                                 *  Datum's value, and uninvalidated cached data
+                                 *  from its other provider Data] (subject to some logical
+                                 *  delay to avoid oversensitivity) to recompute
                                  *  and recache its new value.
                                  *
                                  *  Following a reevaluation event, a Datum should
                                  *  dispatch rerendering events to the pertinent
-                                 *  ViewNodes, and invalidation events to the
-                                 *  pertinent Datums.
+                                 *  ViewNodes, 
+                                 *
                                  *
                                  *  */
-            }
+
+            },
+
+            d : {
+                type : Number,
+                evaluation : () => DSLQuery(`some DSL query syntax which refers to dependency data UIDs`),
+
+            },
 
         },
 
@@ -159,7 +175,34 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
      *      Dependencies should be implemented using CustomEvent and
      *      dispatchEvent of course. What each datum does upon receiving an
      *      event should be compiled upon model implementation. It should not be
-     *      a generic algorithm that runs every time some datum is modified. */
+     *      a generic algorithm that runs every time some datum is modified. 
+     *
+     *  - datum shall have a non-enumerable property, 
+            'providerCache' : {
+                'datastoreID' : value,
+                'datastoreID' : value,
+                'datastoreID' : value,
+            }
+        - datum shall have a non-enumerable property, 
+            'dependentIDs' : [
+                'datastoreID', 
+                'datastoreID', 
+                'datastoreID', 
+            ]
+        - datum shall have a non-enumerable property, 
+            'viewNodeIDs' : [
+                'ID', 
+                'ID', 
+                'ID', 
+            ]
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
 
     let dataImplementation = {      // Something like this is probably going to happen
 
