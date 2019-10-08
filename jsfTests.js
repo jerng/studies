@@ -4,7 +4,7 @@
 //                  Like this:
 //              https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain
 
-import { Actor, Postman } from './jsf.js'
+import { Actor, Postman, Datum } from './jsf.js'
 
 //*   Some simple pre-tests:
 
@@ -59,6 +59,8 @@ joe1.addEventListener (
 )
 jae.sendMessage('Joe','bye','so high')
 
+new Datum ('IAmAFieldname')
+
 console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 
 //*//
@@ -76,7 +78,7 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 
 
 
-//* Building a reactive store...
+/* Building a reactive store...
 
     //  Consideration 1:
     class Datum extends Actor {
@@ -117,39 +119,39 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
                 type : Number,      
                 evaluation : () => DSLQuery(`some DSL query syntax which refers to dependency data UIDs`),
 
-                                /*  We have to write the query function.
-                                 *
-                                 *  The query should not need to check if dependencies have
-                                 *  changed. 
-                                 *
-                                 *  In order for it to avoid doing that, the
-                                 *  implemented Datum will have to store a
-                                 *  cacheValid boolean, for EACH of its
-                                 *  dependencies (for each 'provider' Datum). 
-                                 *
-                                 *  When a provider Datum's value is
-                                 *  reevaluated, and found to have changed from
-                                 *  a previous evaluation, then it should send that value to
-                                 *  all Data which depend upon it (to each
-                                 *  'dependent' Datum)
-                                 *
-                                 *  So it seems, providers and dependents need
-                                 *  to be aware of each other.
-                                 *
-                                 *  Upon receiving an update from a provider, a
-                                 *  dependent Datum may choose to reevaluate its
-                                 *  own value using the [updated provider
-                                 *  Datum's value, and uninvalidated cached data
-                                 *  from its other provider Data] (subject to some logical
-                                 *  delay to avoid oversensitivity) to recompute
-                                 *  and recache its new value.
-                                 *
-                                 *  Following a reevaluation event, a Datum should
-                                 *  dispatch rerendering events to the pertinent
-                                 *  ViewNodes, 
-                                 *
-                                 *
-                                 *  */
+                                 //  We have to write the query function.
+                                 //
+                                 //  The query should not need to check if dependencies have
+                                 //  changed. 
+                                 //
+                                 //  In order for it to avoid doing that, the
+                                 //  implemented Datum will have to store a
+                                 //  cacheValid boolean, for EACH of its
+                                 //  dependencies (for each 'provider' Datum). 
+                                 //
+                                 //  When a provider Datum's value is
+                                 //  reevaluated, and found to have changed from
+                                 //  a previous evaluation, then it should send that value to
+                                 //  all Data which depend upon it (to each
+                                 //  'dependent' Datum)
+                                 //
+                                 //  So it seems, providers and dependents need
+                                 //  to be aware of each other.
+                                 //
+                                 //  Upon receiving an update from a provider, a
+                                 //  dependent Datum may choose to reevaluate its
+                                 //  own value using the [updated provider
+                                 //  Datum's value, and uninvalidated cached data
+                                 //  from its other provider Data] (subject to some logical
+                                 //  delay to avoid oversensitivity) to recompute
+                                 //  and recache its new value.
+                                 //
+                                 //  Following a reevaluation event, a Datum should
+                                 //  dispatch rerendering events to the pertinent
+                                 //  ViewNodes, 
+                                 //
+                                 //
+                                 // 
 
             },
 
@@ -164,20 +166,20 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 
     }
 
-    /*  The model compiler should read the dataModel, and write the
-     *  dataImplementation. 
-     *
-     *     After creation of each Datum in the       datastore, dependencies can
-     *     be       implemented between each Datum and       the other Datums.
-     *     If lazy evaluation       is permitted, circular dependencies
-     *     could be enabled with JavaScript       generators.  
-     *      
-     *      Dependencies should be implemented using CustomEvent and
-     *      dispatchEvent of course. What each datum does upon receiving an
-     *      event should be compiled upon model implementation. It should not be
-     *      a generic algorithm that runs every time some datum is modified. 
-     *
-     *  - datum shall have a non-enumerable property, 
+    //  The model compiler should read the dataModel, and write the
+    //  dataImplementation. 
+    //
+    //     After creation of each Datum in the       datastore, dependencies can
+    //     be       implemented between each Datum and       the other Datums.
+    //     If lazy evaluation       is permitted, circular dependencies
+    //     could be enabled with JavaScript       generators.  
+    //      
+    //      Dependencies should be implemented using CustomEvent and
+    //      dispatchEvent of course. What each datum does upon receiving an
+    //      event should be compiled upon model implementation. It should not be
+    //      a generic algorithm that runs every time some datum is modified. 
+    //
+    //  - datum shall have a non-enumerable property, 
             'providerCache' : {
                 'datastoreID' : value,
                 'datastoreID' : value,
@@ -195,41 +197,45 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
                 'ID', 
                 'ID', 
             ]
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     */
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
 
     let dataImplementation = {      // Something like this is probably going to happen
 
         datastore : {
 
-            a : (new Datum),        /* You could Proxy a Datum for sophistication
-                                     *  but I'm not sure that's going to be
-                                     *  necessary if the code for each Datum is
-                                     *  compiled into it upon model
-                                     *  implementation. */
+            a : (new Datum),        // You could Proxy a Datum for sophistication
+                                    //  but I'm not sure that's going to be
+                                    //  necessary if the code for each Datum is
+                                    //  compiled into it upon model
+                                    //  implementation. 
 
             b : (new Datum),        
 
             c : (new Datum),  
 
         },
-    
-        cache : {                   // To invalidate a datum, delete its cached
-                                    //  key.
 
-            a : {
-                value : undefined   // Initial parse of dataDefinition may
-                                    //  initialise a cache.
-            }
+/// This functionality should be moved into a cache property within each
+//  individual Datum
+//
+//        cache : {                   // To invalidate a datum, delete its cached
+//                                    //  key.
+//
+//            a : {
+//                value : undefined   // Initial parse of dataDefinition may
+//                                    //  initialise a cache.
+//            }
+//
+//        }
+//
 
-        }
-    
     }
 
 //*/

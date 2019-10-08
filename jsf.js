@@ -4,7 +4,7 @@
 //                  Like this:
 //              https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain
 
-export { Actor, Postman }
+export { Actor, Postman, Datum }
 
 console.log('jsf.js side effect')
 
@@ -144,7 +144,7 @@ class Actor extends EventTarget {
 
 
 
- class Postman extends Actor {
+class Postman extends Actor {
 
     // (new Postman).constructor
     constructor (identity) {
@@ -402,3 +402,58 @@ class Actor extends EventTarget {
     }
 
 } // end class Postman
+
+
+
+class Datum extends Actor {
+
+    // (new Datum).constructor
+    constructor (identity) {
+        super (identity)
+    }
+
+    // (new Datum).beforeConstruction
+    beforeConstruction (identity) {
+        super.beforeConstruction (identity)
+
+        this.datumRegistryValidation = this.validateDatumRegistry()
+        this.registerDatum ( this.datumRegistryValidation )
+    }
+
+    // (new Datum).afterConstruction
+    afterConstruction () {
+        console.log (`NEWS: 
+            An instance of Datum has been constructed, identified as 
+            ${this.identity}.`)
+    }
+    // (new Datum).validateDatumRegistry
+    validateDatumRegistry () {
+        return  {   'datumRegistryIsObject' : 
+
+                        'datumRegistry' in window 
+                        && 
+                        window.datumRegistry instanceof Map
+                }
+    }
+
+    // (new Datum).registerDatum
+    registerDatum (validation) {
+        if ( validation.datumRegistryIsArray ) {
+            window.datumRegistry.set ( this.identity, this )
+            console.log(`NEWS: 
+                window.datumRegistry map found; set an 
+                instance of Datum, using its identity as the key.`)
+        } else {
+            window.actorRegistry    = new Map ( [ [this.identity, this] ] ) 
+            console.log(`NEWS:
+                window.datumRegistry datum not found; created it, 
+                containing an instance of Datum, with its identity as the key.`)
+        }
+    }
+
+
+
+} // end class Datum
+
+
+
