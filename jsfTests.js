@@ -59,7 +59,8 @@ joe1.addEventListener (
 )
 jae.sendMessage('Joe','bye','so high')
 
-new Datum ('IAmAFieldname')
+new Datum ('field1')
+new Datum ('field2')
 
 console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 

@@ -428,7 +428,7 @@ class Datum extends Actor {
     }
     // (new Datum).validateDatumRegistry
     validateDatumRegistry () {
-        return  {   'datumRegistryIsObject' : 
+        return  {   'datumRegistryIsMap' : 
 
                         'datumRegistry' in window 
                         && 
@@ -438,13 +438,13 @@ class Datum extends Actor {
 
     // (new Datum).registerDatum
     registerDatum (validation) {
-        if ( validation.datumRegistryIsArray ) {
+        if ( validation.datumRegistryIsMap ) {
             window.datumRegistry.set ( this.identity, this )
             console.log(`NEWS: 
                 window.datumRegistry map found; set an 
                 instance of Datum, using its identity as the key.`)
         } else {
-            window.actorRegistry    = new Map ( [ [this.identity, this] ] ) 
+            window.datumRegistry    = new Map ( [ [this.identity, this] ] ) 
             console.log(`NEWS:
                 window.datumRegistry datum not found; created it, 
                 containing an instance of Datum, with its identity as the key.`)
