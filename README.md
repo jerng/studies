@@ -2,12 +2,32 @@
 
 Check out this `README.md`, and the development demo at `index.html`.
 
-Remember to host the directory containing `index.html` on a webserver, as [CORS
+## (Limited) Demo
+
+Open `jsfTests.html` in a browser, then pop open the developer console to see
+printed messages.
+
+Remember to host the directory containg `.html` files on a webserver, as [CORS
 security protocol will not allow your browser to simply open Javascript files
 from your
 filesystem](https://stackoverflow.com/questions/46992463/es6-module-support-in-chrome-62-chrome-canary-64-does-not-work-locally-cors-er).
 
-## Version
+### Demo: Example Web Service (Python 3, Linux)
+
+```
+sudo python3 -m http.server 80  2> /dev/null &
+
+# You may have to run this once, bring it to the foreground with `fg`,
+# authenticate your superuser, `Ctrl+c` to kill the process, then run it again.
+```
+
+## Versions
+
+### Versions: Current branch
+
+We're trying to build Datum, as a type of Actor.
+
+### Versions: Upstream
 
 v0.0.1 - representing a working version of the messaging infrastructure, albeit
 with clunky implementation.
@@ -20,7 +40,7 @@ themselves. We expect to see `CustomEvent` used in this way - the whole point of
 another actor, instead, only sending messages requesting that other actors do as
 such. **
 
-### Progress
+### Versions: Backlog Progress
 
 Done:
 - window.actorRegistry
@@ -38,12 +58,15 @@ Done:
   themselves to (new Postman).recipientRegistry on construction.
 - - messages are Objects with symbol keys to reduce accidental mucking up
 
-### Disclaimers (Technical Debt)
+### Versions: Disclaimers (Technical Debt)
 
 This is not a good example of OOP separation of concerns, in terms of how the
 functions were named.
 
-### Next Thoughts
+Tests are not professionally written; these are minimally viable tests, which
+would require further grooming to be maintainable by a new team.
+
+### Versions: Next Thoughts
 
 Given the messaging functionality achieved above (which could be grossly more
 performant after optimisation) I need to think briefly about how reactive data
@@ -99,7 +122,9 @@ RENDERING IN GENERAL (perhaps incoherent):
     use, until the next change in declarative configuration. ([Svelte,
     Sapper](https://svelte.dev/blog/svelte-3-rethinking-reactivity)) 
 
-## Architectural Leanings
+## Architecture
+
+### Architecture: Leanings
 
 -   I think a build-step should be optional. 
 -   I think server-side rendering optimisations should be optional. Hydration
@@ -108,11 +133,11 @@ RENDERING IN GENERAL (perhaps incoherent):
     includes things like Typescript, compiler hints/decorators, and templating
     syntax.
 
-## Tools
+### Architecture: Tools
 
 I like Vim.
 
-## Motivations
+### Architecture: Motivations
 
 Currently a study of 2015-2019 JavaScript developments I've not been keeping up with.
 
@@ -121,7 +146,8 @@ one was architectured.
 
 Instead of reading all the code for all of those, I decided to write a brief study in 
 the form. The architecture being developed here is loosely based on EventTarget and
-Erlang's VM-actor-messages model.
+Erlang's [VM-actor-messages
+model](http://erlang.org/doc/getting_started/conc_prog.html).
 
 ** (I'm not sure if you should call this a polite protocol, but Erlang was
 designed by a Brit.) 
