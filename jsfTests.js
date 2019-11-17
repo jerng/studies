@@ -69,14 +69,16 @@ new Datum ('field5')
 
 console.log(`PRINT: Whats in window.datumRegistry?`)
 
-window.datumRegistry.forEach( (v,k,m) => {
-    console.log(`key: ${k}, Object.getOwnPropertyNames(value):
-        ${  Object.getOwnPropertyNames(v).reduce( 
-                (acc,cur,idx,src) => `${acc}  '${cur}'` + '\n', '\n'
-        ) }`
-    )
-} )
-
+{
+    let pad = '\n'
+    window.datumRegistry.forEach( (v,k,m) => {
+        console.log(`key: ${k}, Object.getOwnPropertyNames(value):
+            ${  Object.getOwnPropertyNames(v).reduce( 
+                    (acc,cur,idx,src) => `${acc}  '${cur}'` + pad, pad
+            ) }`
+        )
+    } )
+}
 
 console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 

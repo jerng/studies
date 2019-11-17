@@ -420,6 +420,15 @@ class Datum extends Actor {
         this.registerDatum ( this.datumRegistryValidation )
     }
 
+    // (new Datum).construction
+    construction () {
+        super.construction ()
+
+        this.providerCache  =   {   }
+        this.dependentIDs   =   [   ]
+        this.viewNodeIDs    =   [   ]
+    }
+
     // (new Datum).afterConstruction
     afterConstruction () {
         console.log (`NEWS: 
