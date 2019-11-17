@@ -59,8 +59,24 @@ joe1.addEventListener (
 )
 jae.sendMessage('Joe','bye','so high')
 
+console.log(`TEST: Attempt to create five Datum objects.`)
+
 new Datum ('field1')
 new Datum ('field2')
+new Datum ('field3')
+new Datum ('field4')
+new Datum ('field5')
+
+console.log(`PRINT: Whats in window.datumRegistry?`)
+
+window.datumRegistry.forEach( (v,k,m) => {
+    console.log(`key: ${k}, Object.getOwnPropertyNames(value):
+        ${  Object.getOwnPropertyNames(v).reduce( 
+                (acc,cur,idx,src) => `${acc}  '${cur}'` + '\n', '\n'
+        ) }`
+    )
+} )
+
 
 console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 
@@ -82,13 +98,11 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 /* Building a reactive store...
 
     //  Consideration 1:
-    class Datum extends Actor {
-            
-        }
+    //  class Datum extends Actor { }
+        //
+        // This has now been implemented.
 
-    class ViewNode extends Actor {
-            
-        }
+    class ViewNode extends Actor { }
 
     //  Consideration 2:
     //  
