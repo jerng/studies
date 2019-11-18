@@ -4,7 +4,7 @@
 //                  Like this:
 //              https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain
 
-export { Actor, Postman, Datum }
+export { Actor, Postman, Datum, DataModel }
 
 console.log('jsf.js side effect')
 
@@ -75,6 +75,8 @@ class Actor extends EventTarget {
         } 
 
         this.identity                   = identity
+        this.toString                   = 
+            () => `Instance of Actor, identified as ${this.identity}`
 // PREP:            this.identity                   = event.detail.identity
 
         this.actorRegistryValidation    = this.validateActorRegistry()
@@ -424,9 +426,35 @@ class Datum extends Actor {
     construction () {
         super.construction ()
 
-        this.providerCache  =   {   }
-        this.dependentIDs   =   [   ]
-        this.viewNodeIDs    =   [   ]
+
+        // TODO: consider if the following properties should be not-enumerable
+
+        this.cache      =   {
+            'hit'   : false,
+            'value' : undefined
+        }
+        
+        this.dependencies   =   [   ]   
+            //  entries should be 
+            //  { 'id' : String, 'cache' : { 'hit' : Boolean, 'value' : someValue }
+            //
+            //  1.  Perhaps alias this to this.providers
+            //  2.  Perhaps create a Proxy?getter that grabs the provider's
+            //  Datum's value directly.
+        this.dependencies.toString = () => this.dependencies.reduce(
+            (acc,cur,idx,src) => `${acc}  '${cur.id}'`, ''
+        )
+        // TODO: consider generalising this pattern to the other functions below
+
+
+        this.dependents     =   [   ]
+            //  entries should be { 'id' : String } for consistency
+
+        this.viewNodes      =   [   ]
+            //  entries should be { 'id' : String } for consistency
+
+        this.evaluation =   () => undefined
+
     }
 
     // (new Datum).afterConstruction
@@ -465,4 +493,40 @@ class Datum extends Actor {
 } // end class Datum
 
 
+class DataModel {
+    
+    constructor ( _global ) {
 
+        let handler = {
+
+            set : function ( targ, prop, val, rcvr ) {
+
+            },
+
+            get : function ( targ, prop, rcvr ) {
+
+                if ( ! _global.datumRegistry.has (prop) ) {
+                    throw new Error (`An instance of DataModel was called with
+                    the property '${prop}', however no instance of Datum
+                    identified as such was found in the global datumRegistry.`)
+                } 
+
+                var result = _global.datumRegistry.get(prop).evaluation()
+
+                // targets a Datum
+                // checks if a there are dependencies
+                // checks if dependencies have their caches invalidated 
+                //
+
+                return result 
+            },
+
+        }
+
+        _global.$$ = new Proxy (this, handler)  
+        // TODO: consider disabling reassignment; 
+        //      also consider disabling reassignment for other globals
+
+    }
+    
+} // end class DataModel

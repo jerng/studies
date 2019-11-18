@@ -4,7 +4,7 @@
 //                  Like this:
 //              https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain
 
-import { Actor, Postman, Datum } from './jsf.js'
+import { Actor, Postman, Datum, DataModel } from './jsf.js'
 
 //*   Some simple pre-tests:
 
@@ -59,7 +59,7 @@ joe1.addEventListener (
 )
 jae.sendMessage('Joe','bye','so high')
 
-console.log(`TEST: Attempt to create five Datum objects.`)
+console.log(`TEST: Attempt to create five Datum objects...`)
 
 new Datum ('field1')
 new Datum ('field2')
@@ -67,18 +67,80 @@ new Datum ('field3')
 new Datum ('field4')
 new Datum ('field5')
 
-console.log(`PRINT: Whats in window.datumRegistry?`)
+console.log(`TEST: Attempt to specify Datums 'field2' and 'field3' as dependencies of 'field1'...`)
+
+window.datumRegistry.get('field1').dependencies.push({'id':'field2'},{'id':'field3'})
+
+console.log(`TEST: Attempt to (directly) specify Datums 'field2' and 'field3'
+evaluation()s to constants...`)
+
+window.datumRegistry.get('field2').evaluation = () => `(F2_PLACEHOLDER_VALUE)`
+window.datumRegistry.get('field3').evaluation = () => `(F3_PLACEHOLDER_VALUE)`
+
+console.log(`TEST: ... now whats in window.datumRegistry?`)
 
 {
     let pad = '\n'
     window.datumRegistry.forEach( (v,k,m) => {
+
         console.log(`key: ${k}, Object.getOwnPropertyNames(value):
             ${  Object.getOwnPropertyNames(v).reduce( 
                     (acc,cur,idx,src) => `${acc}  '${cur}'` + pad, pad
             ) }`
         )
+
+        console.log(`- dependencies' IDs: 
+            ${  v.dependencies.reduce( 
+                    (acc,cur,idx,src) => `${acc}  '${cur.id}'` + pad, pad
+            ) }`
+        )
+
+
     } )
 }
+
+console.log (`TEST: 
+                ... now whats each Datum's evaluation (accessed directly
+                from each Datum)?`)
+
+window.datumRegistry.forEach( 
+    (v,k,m) => console.log( 
+        `datumID: ${v.identity}, evaluates to: ${v.evaluation()}` 
+    ) 
+)
+
+console.log (`TEST: 
+                Creating a new DataModel with the 'window' object passed in a
+                the global object...`)
+
+new DataModel(window)
+
+
+
+try             {   console.log (`TEST: $$.undefinedfield: ${$$.undefinedfield}`)  } 
+catch (error)   {   console.error (error); console.error (`Execution would normally
+halt here, but this test script has been written to continue.`) }
+
+console.log (`TEST: $$.field1: ${$$.field1}`)
+
+console.log (`TEST: $$.field2: ${$$.field2}`)
+
+console.log(`TEST: Attempt to (directly) specify Datums 'field1' as computed 
+evaluation()s based on the dependencies 'field2' and 'field3'...`)
+
+window.datumRegistry.get('field1').evaluation = () => `[${$$.field2 + $$.field3}]`
+
+console.log (`TEST: 
+                ... now whats each Datum's evaluation (accessed directly
+                from each Datum)?`)
+
+window.datumRegistry.forEach( 
+    (v,k,m) => console.log( 
+        `datumID: ${v.identity}, evaluates to: ${v.evaluation()}` 
+    ) 
+)
+
+console.log('development paused at class DataModel')
 
 console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 
@@ -196,32 +258,13 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
     //      event should be compiled upon model implementation. It should not be
     //      a generic algorithm that runs every time some datum is modified. 
     //
-    //  - datum shall have a non-enumerable property, 
-            'providerCache' : {
-                'datastoreID' : value,
-                'datastoreID' : value,
-                'datastoreID' : value,
-            }
-        - datum shall have a non-enumerable property, 
-            'dependentIDs' : [
-                'datastoreID', 
-                'datastoreID', 
-                'datastoreID', 
-            ]
-        - datum shall have a non-enumerable property, 
-            'viewNodeIDs' : [
-                'ID', 
-                'ID', 
-                'ID', 
-            ]
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
+    //      (jsf.js class Datum has begun to implement this ^ )
+
+
+
+
+
+    //      (jsf.js class DataModel begin to implement this : )
 
     let dataImplementation = {      // Something like this is probably going to happen
 
