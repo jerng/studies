@@ -41,6 +41,9 @@ pam.receiveMessage({})
 console.log ('TEST: ... then we attempt to register actor Joe_2 in the same.')
 let joe2    = new Actor ('Joe')
 
+console.log ('TEST: ... then we attempt to register actor Joe_3 in the same.')
+let joe3    = new Actor ('Joe3')
+
 console.log (`TEST:
     Whereas, window.actorRegistry is an array that can hold multiple 
     discrete instances of Actor which each have the same .identity: 
@@ -113,7 +116,7 @@ console.log (`TEST:
                 Creating a new DataModel with the 'window' object passed in a
                 the global object...`)
 
-new DataModel(window)
+new DataModel ( 'store', {'global':window} )
 
 
 
@@ -140,9 +143,16 @@ window.datumRegistry.forEach(
     ) 
 )
 
+console.log(`TEST: window.actorRegistry identities: ${window.actorRegistry.map(x => x.identity)}`)
+console.log(`TEST: pam.recipientRegistry identities: ${Object.keys(pam.recipientRegistry)}`)
+
+//$$.sendMessage('store','y','z')
+
 console.log('development paused at class DataModel')
 
 console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
+
+
 
 //*//
 

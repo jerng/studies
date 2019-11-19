@@ -43,7 +43,7 @@ console.log('jsf.js side effect')
 class Actor extends EventTarget {
 
     // (new Actor).constructor
-    constructor (identity) {
+    constructor (identity, options) {
         super ()
 
 /* PREP:
@@ -57,7 +57,7 @@ class Actor extends EventTarget {
 */
 
         this.beforeConstruction (identity)
-        this.construction ()
+        this.construction (options)
         this.afterConstruction ()
     }    
 
@@ -85,13 +85,14 @@ class Actor extends EventTarget {
 
     // (new Actor).construction
     construction () {
-        this.inbox                  = [ ]
+        this.inbox                  = [ ] 
+        // consider moving this to the Postman class
     }
 
     // (new Actor).afterConstruction
     afterConstruction () {
         console.log (`NEWS: 
-            An instance of Actor has been constructed, identified as 
+            An instance of ${this.constructor.name} has been constructed, identified as 
             ${this.identity}.`)
     }
 
@@ -463,6 +464,7 @@ class Datum extends Actor {
             An instance of Datum has been constructed, identified as 
             ${this.identity}.`)
     }
+
     // (new Datum).validateDatumRegistry
     validateDatumRegistry () {
         return  {   'datumRegistryIsMap' : 
@@ -493,11 +495,25 @@ class Datum extends Actor {
 } // end class Datum
 
 
-class DataModel {
+class DataModel extends Actor {
     
-    constructor ( _global ) {
+    // (new DataModel).constructor
+    constructor (identity, options) {
+        super (identity, options)
+    }
 
-        let handler = {
+    // (new DataModel).beforeConstruction
+    beforeConstruction (identity) {
+        super.beforeConstruction (identity)
+    }
+
+    // (new DataModel).construction
+    construction (options) {
+        super.construction (options)
+
+        var _global = options.global
+
+        var handler = {
 
             set : function ( targ, prop, val, rcvr ) {
 
@@ -505,18 +521,46 @@ class DataModel {
 
             get : function ( targ, prop, rcvr ) {
 
+                // TODO: rewrite as if (prop in list) { return targ[prop]} ?
+                switch (prop) {
+
+                    case  'sendMessage' :
+                        return targ.sendMessage
+                        break 
+                    
+                    default:
+                }
+
                 if ( ! _global.datumRegistry.has (prop) ) {
                     throw new Error (`An instance of DataModel was called with
                     the property '${prop}', however no instance of Datum
                     identified as such was found in the global datumRegistry.`)
                 } 
 
-                var result = _global.datumRegistry.get(prop).evaluation()
+//* TODO: this should move into Datum logic, by the next commit
+{
+                var datum = _global.datumRegistry.get (prop)
+                if ( ! datum.cache.hit ) {
+                    datum.cache.value   = _global.datumRegistry.get(prop).evaluation() 
+                    //  datum.evaluation() is supposed to return the recomputed
+                    //  value of (datum). But if it hits an error, what happens?
+                    //  - It does not return - should this be handled by 'async'
+                    //      code?   (Currently: code will just block())
+                    //  - It encounters an error - should this be handled by
+                    //      'try'? (Currently: code will just halt.)
+                    //  TODO: (definitely before releasing v1.0)
+                    //
+
+                    datum.cache.hit     = true
+                }
+
+                var result = datum.cache.value
 
                 // targets a Datum
-                // checks if a there are dependencies
-                // checks if dependencies have their caches invalidated 
+                // checks if a there are dependencies                    
                 //
+ }
+ //*/               
 
                 return result 
             },
@@ -528,5 +572,11 @@ class DataModel {
         //      also consider disabling reassignment for other globals
 
     }
+
+    // (new DataModel).afterConstruction
+    afterConstruction () {
+        super.afterConstruction()
+    }
+    
     
 } // end class DataModel
