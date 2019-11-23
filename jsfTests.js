@@ -53,12 +53,12 @@ console.log(`TEST: window.actorRegistry identities: ${window.actorRegistry.map(x
 console.log(`TEST: pam.recipientRegistry identities: ${Object.keys(pam.recipientRegistry)}`)
 
 console.log(`TEST: add event listener to Joe, and get Jae to send Joe a message.`)
-joe1.addEventListener (
-    'bye',
-     event => console.log (`
+joe1.addEventListener ( 'bye', event => 
+    console.log (`
          I, '${event.target.identity}', am triggered by the
          event, '${event.detail.subject}', and will now spew the content:
-         '${event.detail.content}'`)
+         '${event.detail.content}'`
+    )
 )
 jae.sendMessage('Joe','bye','so high')
 
@@ -114,7 +114,8 @@ window.datumRegistry.forEach(
 
 console.log (`TEST: 
                 Creating a new DataModel with the 'window' object passed in a
-                the global object...`)
+                the global object ( any Datums previously tested should
+                henceforth behave differently...) ...`)
 
 new DataModel ( 'store', {'global':window} )
 
@@ -146,9 +147,12 @@ window.datumRegistry.forEach(
 console.log(`TEST: window.actorRegistry identities: ${window.actorRegistry.map(x => x.identity)}`)
 console.log(`TEST: pam.recipientRegistry identities: ${Object.keys(pam.recipientRegistry)}`)
 
-//$$.sendMessage('store','y','z')
+//console.log(    $$.sendMessage('field2','read','z') )
+console.log(    $$.field2   )
 
-console.log('development paused at class DataModel')
+console.log(`
+    development paused at class DataModel; we actually need to go back to
+    Postman and make messaging asynchronous first.`)
 
 console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 

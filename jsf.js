@@ -3,6 +3,9 @@
 //
 //                  Like this:
 //              https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain
+//  TODO:       Consider all queues,lists, registries, implemented with [] and {} and
+//              consider using Map instead.
+//              https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Keyed_collections
 
 export { Actor, Postman, Datum, DataModel }
 
@@ -125,22 +128,48 @@ class Actor extends EventTarget {
     receiveMessage (message) {
         this.inbox.push (message)
         console.log (`NEWS:
-            An actor ${this.identity} received a message: ${message}, 
+            An actor '${this.identity}' received a message: ${message}, 
             which has been pushed into ${this.identity}\'s inbox. Custom
             events are dispatched when messages arrive at inboxes, based on
             message subject.`)
 
+        // TODO: this should be refined to (new Actor).actOnMessage() or something...
+        //          ... and .actOnMessage happens before inbox.push, or after
+        //          inbox.pop...?
+        //
+        //  The message's .subject becomes the CustomEvent's name.
+        //  The message's .content is passed as a property of the CustomEvent's
+        //  customEventInit.detail (this property is from ECMA specifications)
+        //
+        //  Of course, all this logic is specific to this implementation of
+        //  Postman.
+        //
         this.dispatchEvent(new CustomEvent (
-            message[this.init.subjectKey], 
+
+            message[this.init.subjectKey],  
+
             { detail : { 
                 content : message[this.init.contentKey],
-                subject : message[this.init.subjectKey]
+                //subject : message[this.init.subjectKey]
             } }
+
         ) )
 
     }
 
-    // (new Actor).sendMessage
+    //  (new Actor).sendMessage
+    //  Future consideration: Perhaps, we want this interface to be defined
+    //  here, but implemented by
+    //  Postman. (Framework developers may rewrite Postman with different logic,
+    //  but we might want them to use .sendMessage() as a standard API. If we
+    //  made the framework super loose, we might not want to even define
+    //  sendMessage() here, as certain implementations of Postman might not even
+    //  want to use something called a sendMessage() or anything equivalent in
+    //  this way.
+    //
+    //  The proper ways is probably to implement the interface, with a parameter
+    //  for a customised function to be passed in as the implementation?
+    //
     sendMessage ( recipient, subject, content ) { }
 
 } // end class Actor
@@ -232,8 +261,10 @@ class Postman extends Actor {
             }
         }
 
-        // Points all past and future actors to this postman
+        // Points all (past, present, future) Actor instances to this Postman instance
         super.__proto__.__proto__.localPostman  = this
+
+        // Implements .sendMessage() for all p/p/f Actor instances 
         super.__proto__.__proto__.sendMessage   = 
             ( recipient, subject, content ) => {
                 let message = { }
@@ -245,6 +276,11 @@ class Postman extends Actor {
                     = content
                  
                 this.receiveMessage( message ) 
+                // this == the local Postman instance being constructed
+
+                return `
+                    [Placeholder: return value for Actor.sendMessage(), this
+                    needs to be designed later #TODO.]`
             }
     }
     
@@ -354,6 +390,8 @@ class Postman extends Actor {
             == 'undefined' ) {
 
             this.messageDrawer.push (message)
+            // Should this be done this way? Probably, the Postman is special,
+            // so it shouldn't need to message itself?
 
             console.log (`Warning:
                 Postman received a message for an unregistered
@@ -365,6 +403,8 @@ class Postman extends Actor {
 
         }
 
+        // Find the reference to the recipient Actor instance; trigger the
+        // recipient object's .receiveMessage() method.
         this
             .recipientRegistry[message[super.__proto__.__proto__.init.recipientKey]]
             .receiveMessage (message)
@@ -456,10 +496,40 @@ class Datum extends Actor {
 
         this.evaluation =   () => undefined
 
+        this.addEventListener ( 'read', event => {
+
+            if ( ! this.cache.hit ) {
+
+                this.cache.value = `
+                    [Placeholder: value assigned to 'value' in Datum instance's
+                    'read' ev-handler, when instance.cache.hit = false]`
+                
+                //  datum.evaluation() is supposed to return the recomputed
+                //  value of (datum). But if it hits an error, what happens?
+                //  - It does not return - should this be handled by 'async'
+                //      code?   (Currently: code will just block())
+                //  - It encounters an error - should this be handled by
+                //      'try'? (Currently: code will just halt.)
+                //  TODO: (definitely before releasing v1.0)
+                //
+
+                this.cache.hit     = true
+            }
+
+            console.log(`
+                An instance of Datum '${this.identity}', is handling a 'read'
+                event, presumably triggered by a received message.
+            `)
+
+            return this.cache.value
+        } )
+
     }
 
     // (new Datum).afterConstruction
     afterConstruction () {
+        super.afterConstruction()
+
         console.log (`NEWS: 
             An instance of Datum has been constructed, identified as 
             ${this.identity}.`)
@@ -521,7 +591,11 @@ class DataModel extends Actor {
 
             get : function ( targ, prop, rcvr ) {
 
-                // TODO: rewrite as if (prop in list) { return targ[prop]} ?
+                //  Here are methods on DataModel which are not data fields.
+                //  We may have to make all of these non-enumerable at some
+                //  point.
+                //
+                //  TODO: rewrite as if (prop in list) { return targ[prop]} ?
                 switch (prop) {
 
                     case  'sendMessage' :
@@ -529,40 +603,26 @@ class DataModel extends Actor {
                         break 
                     
                     default:
-                }
 
-                if ( ! _global.datumRegistry.has (prop) ) {
-                    throw new Error (`An instance of DataModel was called with
-                    the property '${prop}', however no instance of Datum
-                    identified as such was found in the global datumRegistry.`)
-                } 
+                        if ( ! _global.datumRegistry.has (prop) ) {
+                            throw new Error (`An instance of DataModel was called with
+                            the property '${prop}', however no instance of Datum
+                            identified as such was found in the global datumRegistry.`)
+                        } 
 
-//* TODO: this should move into Datum logic, by the next commit
 {
-                var datum = _global.datumRegistry.get (prop)
-                if ( ! datum.cache.hit ) {
-                    datum.cache.value   = _global.datumRegistry.get(prop).evaluation() 
-                    //  datum.evaluation() is supposed to return the recomputed
-                    //  value of (datum). But if it hits an error, what happens?
-                    //  - It does not return - should this be handled by 'async'
-                    //      code?   (Currently: code will just block())
-                    //  - It encounters an error - should this be handled by
-                    //      'try'? (Currently: code will just halt.)
-                    //  TODO: (definitely before releasing v1.0)
-                    //
+    // Er, this probably has to be asynchronous, so that we
+    // get the value back only later.
+    targ.sendMessage (prop, 'read', '[content placeholder]')
 
-                    datum.cache.hit     = true
+    var result = `
+        [Placeholder: return value for DataModel's Proxy's
+        getter-handler]`
+
+}
+
+                        return result
                 }
-
-                var result = datum.cache.value
-
-                // targets a Datum
-                // checks if a there are dependencies                    
-                //
- }
- //*/               
-
-                return result 
             },
 
         }
