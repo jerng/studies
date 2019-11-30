@@ -27,6 +27,7 @@ let m       =  {}
     m[pam.__proto__.__proto__.init.recipientKey]    = 1
     m[pam.__proto__.__proto__.init.subjectKey]      = 2
     m[pam.__proto__.__proto__.init.contentKey]      = 3
+    m[pam.__proto__.__proto__.init.senderKey]       = 'jsfTests.js'
 console.log ('TEST: A variable, m, has been declared with valid message keys.')
 
 console.log ('TEST: ... we then attempt to inbox pam, the postman, with m:')
@@ -56,11 +57,11 @@ console.log(`TEST: add event listener to Joe, and get Jae to send Joe a message.
 joe1.addEventListener ( 'bye', event => 
     console.log (`
          I, '${event.target.identity}', am triggered by the
-         event, '${event.detail.subject}', and will now spew the content:
-         '${event.detail.content}'`
+         event, '${event.detail.subject}', sent by '${event.detail.sender}' and
+         will now spew the content: '${event.detail.content}'`
     )
 )
-jae.sendMessage('Joe','bye','so high')
+jae.sendMessage('Joe','bye','so high', jae.identity)
 
 console.log(`TEST: Attempt to create five Datum objects...`)
 

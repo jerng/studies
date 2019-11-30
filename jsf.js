@@ -150,7 +150,7 @@ class Actor extends EventTarget {
 
             { detail : { 
                 content : message[this.init.contentKey],
-                //subject : message[this.init.subjectKey]
+                sender  : message[this.init.senderKey]
             } }
 
         ) )
@@ -167,10 +167,9 @@ class Actor extends EventTarget {
     //  want to use something called a sendMessage() or anything equivalent in
     //  this way.
     //
-    //  The proper ways is probably to implement the interface, with a parameter
-    //  for a customised function to be passed in as the implementation?
     //
-    sendMessage ( recipient, subject, content ) { }
+    //
+    sendMessage ( recipient, subject, content, senderId ) { }
 
 } // end class Actor
 
@@ -207,12 +206,14 @@ class Postman extends Actor {
             recipientKey :  Symbol('rk'),
             subjectKey   :  Symbol('sk'),
             contentKey   :  Symbol('ck'),
+            senderKey    :  Symbol('sek'),
         }
 
         this.requiredKeys       = [
             this.init.recipientKey, 
             this.init.subjectKey, 
-            this.init.contentKey
+            this.init.contentKey,
+            this.init.senderKey
         ]
 
         // TODO: the structure of the message drawer will depend on whether
@@ -266,7 +267,7 @@ class Postman extends Actor {
 
         // Implements .sendMessage() for all p/p/f Actor instances 
         super.__proto__.__proto__.sendMessage   = 
-            ( recipient, subject, content ) => {
+            ( recipient, subject, content, sender ) => {
                 let message = { }
                 message[this.init.recipientKey]    
                     = recipient
@@ -274,6 +275,8 @@ class Postman extends Actor {
                     = subject
                 message[this.init.contentKey]
                     = content
+                message[this.init.senderKey]
+                    = sender
                  
                 this.receiveMessage( message ) 
                 // this == the local Postman instance being constructed
@@ -390,8 +393,6 @@ class Postman extends Actor {
             == 'undefined' ) {
 
             this.messageDrawer.push (message)
-            // Should this be done this way? Probably, the Postman is special,
-            // so it shouldn't need to message itself?
 
             console.log (`Warning:
                 Postman received a message for an unregistered
@@ -494,7 +495,7 @@ class Datum extends Actor {
         this.viewNodes      =   [   ]
             //  entries should be { 'id' : String } for consistency
 
-        this.evaluation =   () => undefined
+        this.evaluation     =   () => undefined
 
         this.addEventListener ( 'read', event => {
 
@@ -518,10 +519,18 @@ class Datum extends Actor {
 
             console.log(`
                 An instance of Datum '${this.identity}', is handling a 'read'
-                event, presumably triggered by a received message.
+                event, presumably triggered by a received message, sent by
+                '${event.detail.sender}'
             `)
 
-            return this.cache.value
+            this.sendMessage( 
+                event.detail.sender, 
+                'readResponse',
+                this.cache.value,
+                this.identity
+            )
+
+            //return this.cache.value
         } )
 
     }
@@ -583,6 +592,10 @@ class DataModel extends Actor {
 
         var _global = options.global
 
+        this.addEventListener ( 'readResponse', event => {
+            console.log(event)
+        } )
+
         var handler = {
 
             set : function ( targ, prop, val, rcvr ) {
@@ -610,16 +623,36 @@ class DataModel extends Actor {
                             identified as such was found in the global datumRegistry.`)
                         } 
 
-{
-    // Er, this probably has to be asynchronous, so that we
-    // get the value back only later.
-    targ.sendMessage (prop, 'read', '[content placeholder]')
+                        // Er, this probably has to be asynchronous, so that we
+                        // get the value back only later.
 
-    var result = `
-        [Placeholder: return value for DataModel's Proxy's
-        getter-handler]`
+                        //let datumValue = new Promise ( ()=>{} )
+                        //targ.sendMessage (prop, 'read', datumValue)
 
-}
+                        targ.sendMessage (prop, 'read', 'content placeholder', targ.identity)
+
+                        var result = `
+                            [Placeholder: return value for DataModel's Proxy's
+                            getter-handler]`
+
+/*  Perhaps useful pattern:
+
+// example
+p = new Promise ( (ff) => {
+
+        var target = new EventTarget
+        target.addEventListener('bang', ()=>{ ff(1) })
+        setTimeout( () => { target.dispatchEvent(new
+                CustomEvent('bang')) }, 1000)
+
+} );
+(async () => {
+          var y = await p ;
+                  console.log(y);
+})();
+
+
+*/
 
                         return result
                 }
