@@ -160,6 +160,7 @@ console.log(`TEST: pam.recipientRegistry identities: ${Object.keys(pam.recipient
 
 //console.log(    $$.sendMessage('field2','read','z') )
 console.log(    $$.field2   )
+//$$.field2.then( value => console.log ( value) )
 
 console.log(`
     development paused at class DataModel; we actually need to go back to

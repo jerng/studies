@@ -523,12 +523,13 @@ class Datum extends Actor {
                 '${event.detail.sender}'
             `)
 
-            this.sendMessage( 
-                event.detail.sender, 
-                this.identity + 'ReadResponse',
-                this.cache.value,
-                this.identity
-            )
+            setTimeout( () => {
+                this.sendMessage( 
+                    event.detail.sender, 
+                    event.detail.content.responseId,
+                    this.cache.value,
+                    this.identity
+            ) }, 1000 )
 
             //return this.cache.value
         } )
@@ -624,67 +625,25 @@ class DataModel extends Actor {
                         } 
 
 
-                var f = () => {
-                    return new Promise ( (ff) => {
+                        var result = new Promise ( (ff, rj) => {
 
+                            var pseudoRandom        = Math.random().toString()
+                            var responseId          = prop + 'Response' + pseudoRandom
+                            var responseListener    = event => {
+console.log( `
+    DataModel Proxy Getter: ${responseId}Listener
+    triggered by ${event.detail.sender},
+    event.detail.content: '${event.detail.content}'`
+    ) 
+                                targ.removeEventListener ( responseId, responseListener )
+                                ff ( event.detail.content )
+                            }
+                            targ.addEventListener ( responseId, responseListener )
+                            targ.sendMessage(prop, 'read', {responseId:responseId},
+                                targ.identity)  
+                        })
 
-                        var listener = event => {
-                            // T3: receives the target's reply containing
-                            // the value
-console.log( `T3: receives event.detail.content ${event.detail.content}`)
-                            targ.removeEventListener ( prop +
-                            'ReadResponse', listener)
-                            // Not sure how listener references itself.
-                            // Check.
-                            ff ( event.detail.content )
-                        }
-                        // T2: waits for the target's reply providing the value
-                        targ.addEventListener ( prop + 'ReadResponse', listener )
-
-                        // T1: messages the target to get the value
-                        targ.sendMessage ( prop, 'read', 'content placeholder',
-                            targ.identity ) 
-
-                    } )
-                }
-
-                        // T4: Promise fulfills with the final value of p
-                        var result = (async () => {
-                            await f()
-                        })()
-
-/*
-                        var result = `
-                            [Placeholder: return value for DataModel's Proxy's
-                            getter-handler]`
-*/
                         return result
-
-/*  Perhaps useful pattern:
-
-// example
-p = new Promise ( (ff) => {
-
-        var target = new EventTarget
-            // (but here we just take targ as the target)
-
-        target.addEventListener('bang', ()=>{ ff(1) })
-            // (but here 'readResponse's listener is already added upon
-            // construction)
-
-        setTimeout( () => { target.dispatchEvent(new
-                CustomEvent('bang')) }, 1000)
-            //  (but here we need to wait for for the Datum to respond... if
-            //  that is possible...)
-
-} );
-(async () => {
-          var y = await p ;
-                  console.log(y);
-})();
-
-
-*/
 
                 }
             },
@@ -702,5 +661,5 @@ p = new Promise ( (ff) => {
         super.afterConstruction()
     }
     
-    
+  
 } // end class DataModel
