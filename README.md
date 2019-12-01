@@ -21,11 +21,44 @@ sudo python3 -m http.server 80  2> /dev/null &
 # authenticate your superuser, `Ctrl+c` to kill the process, then run it again.
 ```
 
+### Demo: Computed properties
+
+DEMO: Here's what you can now do. You can access an already declared
+instance of DataModel, via the global variable $$. This variable points to
+an instance of Proxy over the DataModel. 
+
+You may create, update, and read (but not yet delete) properties of
+DataModel e.g.:
+
+    >>> $$.newProp = 1  // create
+    >>> $$.newProp      // read : 1
+    >>> $$.newProp = 2  // update 
+    >>> $$.newProp      // read : 2
+
+You may also assign computed values to DataModel props, in the following
+manner:
+
+    >>> $$.newProp1 = 1         //  create
+    >>> $$.newProp2 = 2         //  create
+    >>> $$.newProp3 = () => $$.newProp1 + $$.newProp2 //  create
+    >>> $$.setDependencies('newProp3', ['newProp1', 'newProp2'])   // clunky registration, of dependencies AND dependents
+    >>> $$.newProp3             // read : 3
+    >>> $$.newProp2 = 4         // update
+    >>> $$.newProp3             // read : 5
+
 ## Versions
 
 ### Versions: Current branch
 
-We're trying to build Datum, as a type of Actor.
+v0.0.2 - synchronous data store, with computed properties
+
+We naively tested CustomEvents and dispatchEvent to see if they really are
+incapable of working with asynchronous code (as the MDN documentation
+indicates), and indeed this is true. 
+
+So, message passing and asynchronus computation will have to be implemented in
+another version written from scratch. This version serves just as a proof of
+concept for one way to handle computed properties.
 
 ### Versions: Upstream
 
@@ -42,7 +75,7 @@ such. **
 
 ### Versions: Backlog Progress
 
-Done:
+Done v0.0.1:
 - window.actorRegistry
 - Actor superclass
 - - this class extends EventTarget
@@ -57,6 +90,16 @@ Done:
   of the Actor class to cause all future instatiations of Actor to register
   themselves to (new Postman).recipientRegistry on construction.
 - - messages are Objects with symbol keys to reduce accidental mucking up
+
+Done v0.0.2:
+- We have created a Datum class, which extends Actor.
+- We have created a DataModel class, which acts as a 'store'. 
+- - Each field accessed by the store is a single Datum object 
+- Access to an instance of DataModel is via an instance of Proxy. 
+- - The Proxy traps any field getters and setters, and redirects them to the respective Datum
+objects. 
+- - Datum object values can be computed. (Datum object values can be cached.
+- - Datum objects can remember dependencies and dependents.) 
 
 ### Versions: Disclaimers (Technical Debt)
 

@@ -73,7 +73,7 @@ new Datum ('field5')
 
 console.log(`TEST: Attempt to specify Datums 'field2' and 'field3' as dependencies of 'field1'...`)
 
-window.datumRegistry.get('field1').dependencies.push({'id':'field2'},{'id':'field3'})
+window.datumRegistry.get('field1').dependencies.push('field2','field3')
 
 console.log(`TEST: Attempt to (directly) specify Datums 'field2' and 'field3'
 evaluation()s to constants...`)
@@ -136,8 +136,6 @@ try             {   console.log (`TEST: $$.undefinedfield: ${$$.undefinedfield}`
 catch (error)   {   console.error (error); console.error (`Execution would normally
 halt here, but this test script has been written to continue.`) }
 
-console.log (`TEST: $$.field1: ${$$.field1}`)
-
 console.log (`TEST: $$.field2: ${$$.field2}`)
 
 console.log(`TEST: Attempt to (directly) specify Datums 'field1' as computed 
@@ -158,13 +156,40 @@ window.datumRegistry.forEach(
 console.log(`TEST: window.actorRegistry identities: ${window.actorRegistry.map(x => x.identity)}`)
 console.log(`TEST: pam.recipientRegistry identities: ${Object.keys(pam.recipientRegistry)}`)
 
-//console.log(    $$.sendMessage('field2','read','z') )
-console.log(    $$.field2   )
-//$$.field2.then( value => console.log ( value) )
+console.log(`
+    DEMO: Here's what you can now do. You can access an already declared
+    instance of DataModel, via the global variable $$. This variable points to
+    an instance of Proxy over the DataModel. 
+
+    You may create, update, and read (but not yet delete) properties of
+    DataModel e.g.:
+
+    >>> $$.newProp = 1  // create
+    >>> $$.newProp      // read : 1
+    >>> $$.newProp = 2  // update 
+    >>> $$.newProp      // read : 2
+
+    You may also assign computed values to DataModel props, in the following
+    manner:
+
+    >>> $$.newProp1 = 1         //  create
+    >>> $$.newProp2 = 2         //  create
+
+    >>> $$.newProp3 = () => $$.newProp1 + $$.newProp2
+            //  create
+    >>> $$.setDependencies('newProp3', ['newProp1', 'newProp2'])   
+            // clunky registration, of dependencies AND dependents
+
+    >>> $$.newProp3             // read : 3
+    >>> $$.newProp2 = 4         // update
+    >>> $$.newProp3             // read : 5
+
+`)
 
 console.log(`
-    development paused at class DataModel; we actually need to go back to
-    Postman and make messaging asynchronous first.`)
+    development paused at class DataModel; we are going to finish making this
+    framework on synchronous models because despatchEvent inherently prevents us
+    from using asynchronous code in event listeners`)
 
 console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 
@@ -182,146 +207,21 @@ console.log ('// TESTS //\n// TESTS // Let\'s do some simple tests.\n// END //')
 //
 //      console.log ('TEST: After script cleanups deleted pam.__proto__.__proto__.init, pam.init now has the value of: ' + pam.init ) 
 
+//  TODO:    class ViewNode extends Actor { }
 
-
-
-/* Building a reactive store...
-
-    //  Consideration 1:
-    //  class Datum extends Actor { }
-        //
-        // This has now been implemented.
-
-    class ViewNode extends Actor { }
-
-    //  Consideration 2:
-    //  
-    //      2.1.    Learnt about Object.defineProperty just in time to include it:
-    //      https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
-    //
-    //      2.2.    Learnt about Proxy, Reflect.
-    //
-    let dataModel = {               // aka 'model' : one web component, maps to one model
-
-        metadata : {
-
-        },        
-
-        dataDefinition : {         
-
-            a : {                       // each datum's key is its unique identifier (UID)
-                type : Number,          // initialised or (undefined)
-                evaluation : () => 1,   // initialised or (undefined)
-                neverCache : true       // initialised or (undefined)
-            },
-
-            b : {                   
-                type : Date,      
-                evaluation : () => new Date,
-            },
-
-            c : {                   
-                type : Number,      
-                evaluation : () => DSLQuery(`some DSL query syntax which refers to dependency data UIDs`),
-
-                                 //  We have to write the query function.
-                                 //
-                                 //  The query should not need to check if dependencies have
-                                 //  changed. 
-                                 //
-                                 //  In order for it to avoid doing that, the
-                                 //  implemented Datum will have to store a
-                                 //  cacheValid boolean, for EACH of its
-                                 //  dependencies (for each 'provider' Datum). 
-                                 //
-                                 //  When a provider Datum's value is
-                                 //  reevaluated, and found to have changed from
-                                 //  a previous evaluation, then it should send that value to
-                                 //  all Data which depend upon it (to each
-                                 //  'dependent' Datum)
-                                 //
-                                 //  So it seems, providers and dependents need
-                                 //  to be aware of each other.
-                                 //
-                                 //  Upon receiving an update from a provider, a
-                                 //  dependent Datum may choose to reevaluate its
-                                 //  own value using the [updated provider
-                                 //  Datum's value, and uninvalidated cached data
-                                 //  from its other provider Data] (subject to some logical
-                                 //  delay to avoid oversensitivity) to recompute
-                                 //  and recache its new value.
-                                 //
-                                 //  Following a reevaluation event, a Datum should
-                                 //  dispatch rerendering events to the pertinent
-                                 //  ViewNodes, 
-                                 //
-                                 //
-                                 // 
-
-            },
-
-            d : {
-                type : Number,
-                evaluation : () => DSLQuery(`some DSL query syntax which refers to dependency data UIDs`),
-
-            },
-
-        },
-
-
-    }
-
-    //  The model compiler should read the dataModel, and write the
-    //  dataImplementation. 
-    //
-    //     After creation of each Datum in the       datastore, dependencies can
-    //     be       implemented between each Datum and       the other Datums.
-    //     If lazy evaluation       is permitted, circular dependencies
-    //     could be enabled with JavaScript       generators.  
-    //      
-    //      Dependencies should be implemented using CustomEvent and
-    //      dispatchEvent of course. What each datum does upon receiving an
-    //      event should be compiled upon model implementation. It should not be
-    //      a generic algorithm that runs every time some datum is modified. 
-    //
-    //      (jsf.js class Datum has begun to implement this ^ )
-
-
-
-
-
-    //      (jsf.js class DataModel begin to implement this : )
-
-    let dataImplementation = {      // Something like this is probably going to happen
-
-        datastore : {
-
-            a : (new Datum),        // You could Proxy a Datum for sophistication
-                                    //  but I'm not sure that's going to be
-                                    //  necessary if the code for each Datum is
-                                    //  compiled into it upon model
-                                    //  implementation. 
-
-            b : (new Datum),        
-
-            c : (new Datum),  
-
-        },
-
-/// This functionality should be moved into a cache property within each
-//  individual Datum
+//  Consideration 2:
+//  
+//      2.1.    Learnt about Object.defineProperty just in time to include it:
+//      https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
 //
-//        cache : {                   // To invalidate a datum, delete its cached
-//                                    //  key.
-//
-//            a : {
-//                value : undefined   // Initial parse of dataDefinition may
-//                                    //  initialise a cache.
-//            }
-//
-//        }
+//      2.2.    Learnt about Proxy, Reflect.
 //
 
-    }
-
-//*/
+//  The model compiler should read the dataModel, and write the
+//  dataImplementation. 
+//
+//     After creation of each Datum in the       datastore, dependencies can
+//     be       implemented between each Datum and       the other Datums.
+//     If lazy evaluation       is permitted, circular dependencies
+//     could be enabled with JavaScript       generators.  
+//      

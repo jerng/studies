@@ -24,10 +24,6 @@ console.log('jsf.js side effect')
 */
 
 
-// TODO: Implement error handling  via Promise chains
-
-// TODO: EventTarget.dispatchEvent() is supposed to run listeners synchronously. Test to see if asynchronous handoff can be achieved.
-
 /* PREP: Review overall architecture in light of this patterning concern:
 *
 *          Moreover, a constructor should only create and initialize a new
@@ -144,6 +140,8 @@ class Actor extends EventTarget {
         //  Of course, all this logic is specific to this implementation of
         //  Postman.
         //
+        //  WARNING: (dispatchEvent) invokes event handlers synchronously
+        //
         this.dispatchEvent(new CustomEvent (
 
             message[this.init.subjectKey],  
@@ -169,7 +167,7 @@ class Actor extends EventTarget {
     //
     //
     //
-    sendMessage ( recipient, subject, content, senderId ) { }
+    sendMessage ( recipient, subject, content, sender ) { }
 
 } // end class Actor
 
@@ -497,43 +495,6 @@ class Datum extends Actor {
 
         this.evaluation     =   () => undefined
 
-        this.addEventListener ( 'read', event => {
-
-            if ( ! this.cache.hit ) {
-
-                this.cache.value = `
-                    [Placeholder: value assigned to 'value' in Datum instance's
-                    'read' ev-handler, when instance.cache.hit = false]`
-                
-                //  datum.evaluation() is supposed to return the recomputed
-                //  value of (datum). But if it hits an error, what happens?
-                //  - It does not return - should this be handled by 'async'
-                //      code?   (Currently: code will just block())
-                //  - It encounters an error - should this be handled by
-                //      'try'? (Currently: code will just halt.)
-                //  TODO: (definitely before releasing v1.0)
-                //
-
-                this.cache.hit     = true
-            }
-
-            console.log(`
-                An instance of Datum '${this.identity}', is handling a 'read'
-                event, presumably triggered by a received message, sent by
-                '${event.detail.sender}'
-            `)
-
-            setTimeout( () => {
-                this.sendMessage( 
-                    event.detail.sender, 
-                    event.detail.content.responseId,
-                    this.cache.value,
-                    this.identity
-            ) }, 1000 )
-
-            //return this.cache.value
-        } )
-
     }
 
     // (new Datum).afterConstruction
@@ -570,7 +531,17 @@ class Datum extends Actor {
         }
     }
 
-
+    // (new Datum).read
+    read () {
+        if ( ! this.cache.hit ) {
+            //console.log(this.evaluation)
+            this.cache.value    = this.evaluation()
+            this.cache.hit      = true
+        }
+        //console.log(`cache value: ${this.cache.value}`)
+        //console.log(this.evaluation () )
+        return this.cache.value
+    }
 
 } // end class Datum
 
@@ -600,7 +571,28 @@ class DataModel extends Actor {
         var handler = {
 
             set : function ( targ, prop, val, rcvr ) {
+                
+                switch (prop) {
 
+                    default:
+
+                        console.log (`WARNING: no protection implemented for non-Datum props of DataModel`)
+
+                        var datum = datumRegistry.get ( prop ) || new Datum ( prop )
+
+                        var evaluationFn = ( val && {}.toString.call( val ) ===
+                        '[object Function]' )
+                            ? val
+                            : () => val
+
+                        datum.evaluation    = evaluationFn 
+                        datum.cache.hit     = false
+                        datumRegistry.forEach ( (v,k,m) => {
+                            if ( v.dependencies.includes ( prop ) ) {
+                                v.cache.hit = false
+                            } 
+                        })
+                }
             },
 
             get : function ( targ, prop, rcvr ) {
@@ -616,35 +608,26 @@ class DataModel extends Actor {
                         return targ.sendMessage
                         break 
                     
-                    default:
+                    case  'setDependencies' : // Move this to DataModel?
+                        return (_aDatum, _itsDependencies) => {
 
+    datumRegistry.get ( _aDatum ) .dependencies = _itsDependencies
+
+    _itsDependencies.forEach ( element => 
+        datumRegistry.get (element) .dependents.push (_aDatum)
+    )
+
+                        }
+                        break 
+                    
+                    default:
                         if ( ! _global.datumRegistry.has (prop) ) {
-                            throw new Error (`An instance of DataModel was called with
+                            throw new Error (`An instance of DataModel (getter) was called with
                             the property '${prop}', however no instance of Datum
                             identified as such was found in the global datumRegistry.`)
                         } 
-
-
-                        var result = new Promise ( (ff, rj) => {
-
-                            var pseudoRandom        = Math.random().toString()
-                            var responseId          = prop + 'Response' + pseudoRandom
-                            var responseListener    = event => {
-console.log( `
-    DataModel Proxy Getter: ${responseId}Listener
-    triggered by ${event.detail.sender},
-    event.detail.content: '${event.detail.content}'`
-    ) 
-                                targ.removeEventListener ( responseId, responseListener )
-                                ff ( event.detail.content )
-                            }
-                            targ.addEventListener ( responseId, responseListener )
-                            targ.sendMessage(prop, 'read', {responseId:responseId},
-                                targ.identity)  
-                        })
-
+                        var result  =   datumRegistry.get ( prop ) .read()
                         return result
-
                 }
             },
 
