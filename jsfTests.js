@@ -113,14 +113,24 @@ window.datumRegistry.forEach(
     ) 
 )
 
+
+
+
+
+
+
+
+
+
+
+
+
 console.log (`TEST: 
                 Creating a new DataModel with the 'window' object passed in a
                 the global object ( any Datums previously tested should
                 henceforth behave differently...) ...`)
 
 new DataModel ( 'store', {'global':window} )
-
-
 
 try             {   console.log (`TEST: $$.undefinedfield: ${$$.undefinedfield}`)  } 
 catch (error)   {   console.error (error); console.error (`Execution would normally
