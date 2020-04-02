@@ -45,6 +45,10 @@ let     restart = function restart () {
                         .attr("fill", d => color(d.id) )
                         .attr("r", 8)
                 )
+
+            // Fixed: "add these two lines here"  - Mihael Ankerst 
+            simulation.nodes( dataArray) 
+            simulation.restart() 
         },
         tickHandler = function () {
             gg  .attr( 'cx', d => d.x )
@@ -72,7 +76,7 @@ setTimeout ( () => {
 
 setTimeout ( () => {
     console.error ( `pushing in another value breaks FIXME`, dataArray ) 
-    //dataArray.push( { id: 'd' } )
+    dataArray.push( { id: 'd' } )
     restart()
 }, 3000 ) 
 
