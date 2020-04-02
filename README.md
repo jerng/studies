@@ -1,3 +1,7 @@
+# WARNING
+
+This project has dead-ended at [v0.0.2](#versions-current-branch)
+
 # JSF just stands for JavaScript Framework
 
 Check out this `README.md`, and the development demo at `index.html`.
