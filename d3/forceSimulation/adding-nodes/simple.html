@@ -1,18 +1,19 @@
 <!DOCTYPE html>
+<svg/>
 <h1><code>d3.js</code>, Version 5.x, Force Layout primer</h1>
 <h2>For study purposes only</h2>
 <ul>
-<li>Sought to clean up an example from :
-https://bl.ocks.org/mbostock/1095795/8f34afdd6d321b71ca6b3a5904e486f3173f1111
+<li><h6>Sought to clean up an example from :</h6>
+https://bl.ocks.org/mbostock/1095795/8f34afdd6d321b71ca6b3a5904e486f3173f1111 Original example license : https://opensource.org/licenses/GPL-3.0
     <ul>
-    <li>Subsequently assisted by Mihael Ankerst:
-    https://bl.ocks.org/EE2dev/e653b5c781b642c164bd4710031243ca</li>
+    <li><h6>Fix option 1: subsequently assisted by Mihael Ankerst:</h6>
+    https://bl.ocks.org/EE2dev/e653b5c781b642c164bd4710031243ca Assisted solution license : https://opensource.org/licenses/MIT</li>
+    <li><h6>Fix option 2: subsequently assisted by Brian Wong:</h6>
+    https://bl.ocks.org/brianwfl88/459b2ef7344e8d63239365b62aa454a9 Assisted solution license : https://opensource.org/licenses/GPL-3.0</li>
     </ul>
 </li>
-<li>Assisted solution license : https://opensource.org/licenses/MIT</li>
-<li>Original example license : https://opensource.org/licenses/GPL-3.0</li>
-<li>Cleaned up example uses d3 version 5.</li>
-<li>Original example uses d3 version 4.</li>
+<li><h6>Cleaned up example uses d3 version 5.</h6></li>
+<li><h6>Original example uses d3 version 4.</h6></li>
 </ul>
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -25,8 +26,7 @@ let p  = thing => JSON.stringify ( thing, null, 2 )
 let width   = 500,
     height  = 500,
     color   = d3.scaleOrdinal(d3.schemeCategory10),
-    svg     = d3.select ( 'body' )
-                .append ( 'svg' )
+    svg     = d3.select ( 'svg' )
                 .attr ( 'width', width )
                 .attr ( 'height', height )
                 .attr ( 'style', 'background-color:#eeeeee' )
@@ -54,9 +54,9 @@ let     restart = function restart () {
                         .attr("r", 8)
                 )
 
-            // Fixed: "add these two lines here"  - Mihael Ankerst 
+            // Fix Option 1: "add these two lines here"  - Mihael Ankerst 
             simulation.nodes ( dataArray ) 
-            simulation.restart () 
+            //simulation.restart () 
         },
         tickHandler = function () {
             gg  .attr( 'cx', d => d.x )
@@ -84,6 +84,10 @@ setTimeout ( () => {
 
 setTimeout ( () => {
     dataArray.push( { id: 'd' } )
+   
+    // Fix Option 2: an alternative to Fix Option 1
+    // simulation.nodes ( dataArray ) 
+    
     restart()
 }, 3000 ) 
 
