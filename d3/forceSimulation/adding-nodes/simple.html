@@ -23,72 +23,69 @@ https://bl.ocks.org/mbostock/1095795/8f34afdd6d321b71ca6b3a5904e486f3173f1111 Or
 
 let p  = thing => JSON.stringify ( thing, null, 2 )
 
-let width   = 500,
-    height  = 500,
-    color   = d3.scaleOrdinal(d3.schemeCategory10),
-    svg     = d3.select ( 'svg' )
-                .attr ( 'width', width )
-                .attr ( 'height', height )
-                .attr ( 'style', 'background-color:#eeeeee' )
+    let width   = 500,
+        height  = 500,
+        color   = d3.scaleOrdinal(d3.schemeCategory10),
+        svg     = d3.select ( 'body' )
+                    .append ( 'svg' )
+                    .attr ( 'width', width )
+                    .attr ( 'height', height )
+                    .attr ( 'style', 'background-color:#eeeeee' )
 
-let a = { id: 'a' },
-    b = { id: 'b' },
-    c = { id: 'c' },
-    dataArray = [ a, b, c ]
+    let a = { id: 'a' },
+        b = { id: 'b' },
+        c = { id: 'c' },
+        dataArray = [ a, b, c ]
 
-let g       = svg.append ( 'g' )
-                .attr (  'transform', 
-                        'translate( ' + width / 2 + ',' + height / 2 + ' )' ),
-    gg      = g.append ( 'g' )
-                .attr ( 'stroke', '#fff' )
-                .attr ( 'stroke-width', 1.5)
-                .selectAll () // empty selection
+    let g       = svg.append ( 'g'  )
+                    .attr (  'transform', 
+                            'translate( ' + width / 2 + ',' + height / 2 + ' )' ),
+        gg      = g.append ( 'g' )
+                    .attr ( 'stroke', '#fff' )
+                    .attr ( 'stroke-width', 1.5)
+                    .selectAll () // empty selection
 
-let     restart = function restart () {
-            gg = gg
-                .data ( dataArray, d => d.id  )
-                .join (
-                    enterer => enterer
-                        .append ( 'circle' )
-                        .attr("fill", d => color(d.id) )
-                        .attr("r", 8)
-                )
+    let     tickHandler = function () {
+        //console.log(`tick`)
+                gg  .attr( 'cx', d => d.x )
+                    .attr( 'cy', d => d.y )
+            }
 
-            // Fix Option 1: "add these two lines here"  - Mihael Ankerst 
-            simulation.nodes ( dataArray ) 
-            //simulation.restart () 
-        },
-        tickHandler = function () {
-            gg  .attr( 'cx', d => d.x )
-                .attr( 'cy', d => d.y )
-        }
+    let simulation = d3.forceSimulation (  dataArray )
+        .force ( 'charge', d3.forceManyBody ().strength ( -1000 ) )
+        .force ( 'x', d3.forceX () )
+        .force ( 'y', d3.forceY () )
+        .alphaTarget ( 1 )
+        .on ( 'tick', tickHandler )
+      
+    let updateSimulation = function ( latestData ) {
 
-let simulation = d3.forceSimulation ( dataArray )
-    .force ( 'charge', d3.forceManyBody ().strength ( -1000 ) )
-    .force ( 'x', d3.forceX () )
-    .force ( 'y', d3.forceY () )
-    .alphaTarget ( 1 )
-    .on ( 'tick', tickHandler )
+        // Ensure that SIMULATION knows (node ontology).
+        simulation.nodes ( latestData )
 
-restart()
+        // Ensure that (element ontology) has a 1-1 mapping to (node ontology)
+        gg = gg
+            .data ( latestData , d => d.id  )
+            .join (
+                enterer => enterer
+                    .append ( 'circle' )
+                    .attr("fill", d => color(d.id) )
+                    .attr("r", 8)
+            )
+    }
 
-setTimeout ( () => {
-    dataArray.pop()
-    restart()
-}, 1000 ) 
+  updateSimulation ( dataArray )
 
-setTimeout ( () => {
-    dataArray.push(c)
-    restart()
-}, 2000 ) 
+//*
+    setTimeout ( () => {
+        dataArray.pop()
+        updateSimulation ( dataArray )
+    }, 1000 ) 
 
-setTimeout ( () => {
-    dataArray.push( { id: 'd' } )
-   
-    // Fix Option 2: an alternative to Fix Option 1
-    // simulation.nodes ( dataArray ) 
-    
-    restart()
-}, 3000 ) 
+    setTimeout ( () => {
+        dataArray.push({}, {}, {})
+        updateSimulation ( dataArray )
+    }, 2000 ) 
+//*/      
 
 </script>
