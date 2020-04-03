@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<h1><code>d3.js</code>, Force Layout primer</h1>
+<h1><code>d3.js</code>, Version 5.x, Force Layout primer</h1>
 <h2>For study purposes only</h2>
 <ul>
-<li>Cleaned up an example from :
-https://bl.ocks.org/mbostock/1095795/8f34afdd6d321b71ca6b3a5904e486f3173f1111</li>
-<li>Cleaned up example uses d3 version 5.</li>
+<li>Sought to clean up an example from :
+https://bl.ocks.org/mbostock/1095795/8f34afdd6d321b71ca6b3a5904e486f3173f1111
+    <ul>
+    <li>Subsequently assisted by Mihael Ankerst:
+    https://bl.ocks.org/EE2dev/e653b5c781b642c164bd4710031243ca</li>
+    </ul>
+</li>
+<li>Assisted solution license : https://opensource.org/licenses/MIT</li>
 <li>Original example license : https://opensource.org/licenses/GPL-3.0</li>
+<li>Cleaned up example uses d3 version 5.</li>
 <li>Original example uses d3 version 4.</li>
 </ul>
 
@@ -13,6 +19,8 @@ https://bl.ocks.org/mbostock/1095795/8f34afdd6d321b71ca6b3a5904e486f3173f1111</l
 <script src="../../../third-party/live.js"></script>
 <script>
 'use strict'
+
+let p  = thing => JSON.stringify ( thing, null, 2 )
 
 let width   = 500,
     height  = 500,
@@ -47,8 +55,8 @@ let     restart = function restart () {
                 )
 
             // Fixed: "add these two lines here"  - Mihael Ankerst 
-            simulation.nodes( dataArray) 
-            simulation.restart() 
+            simulation.nodes ( dataArray ) 
+            simulation.restart () 
         },
         tickHandler = function () {
             gg  .attr( 'cx', d => d.x )
@@ -75,7 +83,6 @@ setTimeout ( () => {
 }, 2000 ) 
 
 setTimeout ( () => {
-    console.error ( `pushing in another value breaks FIXME`, dataArray ) 
     dataArray.push( { id: 'd' } )
     restart()
 }, 3000 ) 
