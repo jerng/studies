@@ -52,7 +52,7 @@ by Mike Bostock.
 -   ## Significant differences between `.select ()` and `.selectAll ()`:
 
     1.  `.select ()`'s second dimension, **ELEMENTS** *always* contains only one
-        (1) **ELEMENT* per **GROUP**.
+        (1) **ELEMENTi** per **GROUP**.
 
         1.  `d3.select ( SELECTOR_STRING )` *always* returns only one (1)
             **GROUP** and that group *always* contains only one (1) **ELEMENT**.
@@ -87,13 +87,13 @@ by Mike Bostock.
         1.  `d3.select ( SELECTOR_STRING) .selectAll (
             SELECTOR_STRING_OR_FUNCTION )`'s first dimension, **GROUPS** will contain
             many (N) **GROUP**s in a 1-to-1 correspondance with the (N) **PARENT
-            ELEMENTS**s returned by the first API call to `d3.select (
-            SELECTOR_STRING ).
+            ELEMENT**s returned by the first API call to `d3.select (
+            SELECTOR_STRING )`.
         2.  `d3.selectAll ( SELECTOR_STRING) .selectAll (
             SELECTOR_STRING_OR_FUNCTION )`'s first dimension, **GROUPS** will contain
             many (N) **GROUP**s in a 1-to-1 correspondance with the (N) **PARENT
-            ELEMENTS**s returned by the first API call to `d3.selectAll (
-            SELECTOR_STRING ).
+            ELEMENT**s returned by the first API call to `d3.selectAll (
+            SELECTOR_STRING )`.
 
         Groupings from the parent selection are **NOT preserved**.
 
@@ -118,59 +118,58 @@ by Mike Bostock.
 
     >   -   `selection.data` can accept either a constant value or a function.
     >
-    >   ...
+    >       ...
     >
     >   -   **selection.data defines data per-group** rather than per-element: data
     >       is expressed as an array of values for the group, or a function that
     >       returns such an array. Thus, **a grouped selection has correspondingly
     >       grouped data!**
 
--   ##  **PAIRING KEYS** are used to dereference **GROUP**ed data, for assignment to
-        **group**ed elements.
+    -   ###  **PAIRING KEYS** are used to dereference **GROUP**ed data, for assignment to **group**ed elements.
 
-    This is "data-joining".
+        This is "data-joining".
 
-    1.  Grouped data can be assigned to grouped elements by **__index__**, this
-        is the default. This obviously works only when the data and elements are
-        already respectively grouped in the same order.
+        1.  Grouped data can be assigned to grouped elements by **__index__**, this
+            is the default. This obviously works only when the data and elements are
+            already respectively grouped in the same order.
 
-    2.  Alternatively, a **KEY FUNCTION** can be used, which takes a **DATUM**
-        as input, and returns a **KEY**. When mapping a [group of new data], to a
-        [ [group of elements] already bound to a [group of old data] ], the **KEY
-        FUNCTION** is run on **__each and every, old and new__** datum from the
-        old and new groups, respectively.
+        2.  Alternatively, a **KEY FUNCTION** can be used, which takes a **DATUM**
+            as input, and returns a **KEY**. When mapping a [group of new data], to a
+            [ [group of elements] already bound to a [group of old data] ], the **KEY
+            FUNCTION** is run on **__each and every, old and new__** datum from the
+            old and new groups, respectively.
 
-        -   CAVEAT: when [joining many (N) groups of elements already bound to
-            old data, with many (N) groups of new data], it is the case that
-            group-pairs are processed in sequence, and [each group of elements is
-            joined with its corresponding group of new data] such that keys are
-            unique only within each [pair of [element-old-data]-[new-data]
-            groups].
+            -   CAVEAT: when [joining many (N) groups of elements already bound to
+                old data, with many (N) groups of new data], it is the case that
+                group-pairs are processed in sequence, and [each group of elements is
+                joined with its corresponding group of new data] such that keys are
+                unique only within each [pair of [element-old-data]-[new-data]
+                groups].
 
--   ## Terminology for data-join outcomes
+    -   ### Terminology for data-join outcomes
 
-    >   -   Update - There was a matching element for a given datum.
-    >       -   returned by `selection.data()`
-    >           -   sorted in the order of the **NEW** data
-    >
-    >   -   Enter - There was no matching element for a given datum.
-    >       -   returned by `selection.enter()`
-    >           -   retained in the order of the **NEW** data
-    >
-    >   -   Exit - There was no matching datum for a given element.
-    >       -   returned by `selection.exit()`
-    >           -   sorted in the order of the **OLD** data/elements
+        >   -   Update - There was a matching element for a given datum.
+        >       -   returned by `selection.data()`
+        >           -   sorted in the order of the **NEW** data
+        >
+        >   -   Enter - There was no matching element for a given datum.
+        >       -   returned by `selection.enter()`
+        >           -   retained in the order of the **NEW** data
+        >
+        >   -   Exit - There was no matching datum for a given element.
+        >       -   returned by `selection.exit()`
+        >           -   sorted in the order of the **OLD** data/elements
 
-    The so-called **ENTER SELECTION** is special,  
+        The so-called **ENTER SELECTION** is special,  
 
-    >   because it represents elements that do not yet exist
-    >
-    >   An enter selection contains placeholders rather than DOM elements; these
-    >   placeholders are simply objects with a __data__ property. The
-    >   implementation of enter.select is then specialized such that nodes are
-    >   inserted into the group’s parent, replacing the placeholder. 
-    >
-    >   This is why it is critical to call selection.selectAll prior to a data
-    >   join: it establishes the parent node for entering elements.
+        >   because it represents elements that do not yet exist
+        >
+        >   An enter selection contains placeholders rather than DOM elements; these
+        >   placeholders are simply objects with a __data__ property. The
+        >   implementation of enter.select is then specialized such that nodes are
+        >   inserted into the group’s parent, replacing the placeholder. 
+        >
+        >   This is why it is critical to call selection.selectAll prior to a data
+        >   join: it establishes the parent node for entering elements.
 
 
