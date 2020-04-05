@@ -74,6 +74,10 @@ let p  = thing => JSON.stringify ( thing, null, 2 )
                     .attr("fill", d => color(d.id) )
                     .attr("r", 8)
             )
+
+        // Resets the initial heat, and continues the simulation where it left
+        // off, if it has already stopped.
+        simulation.alpha(1).restart()
     }
 
   updateSimulation ( dataArray )
