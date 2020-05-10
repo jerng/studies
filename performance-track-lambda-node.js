@@ -5,6 +5,34 @@
 
 //  `INVOCATION` below refers to invocation of the LAMBDA FUNCTION
 
+///////////////////////////////////////////////////////////////////////////////
+
+/*  EXAMPLE OF USE: 
+ *
+   'use strict'
+    const L = require ( './libraries.js')
+    
+    
+    exports.handler = async (event, context) =>  {
+        const startCPU = L.process.cpuUsage()
+        const startValues = {
+            startTime : L.performance.now(),
+            startCPUsum : startCPU.system + startCPU.user
+        }
+        
+        L.mark ( `handler BEGAN`, startValues, true )
+            // FIRST CALL MUST SET THIRD PARAMETER TO TRUE
+            
+        const AWS = require ( 'aws-sdk' )
+        
+        L.mark ( `AWS-SDK LOADED`, startValues )
+            // SUBSEQUENT CALLS MUST SET THIRD PARAMETER TO FALSY
+
+*
+*/
+
+
+
 //
 //
 //
