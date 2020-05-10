@@ -108,7 +108,7 @@ module.exports = ( taskLabel, printColumnHeaders ) => { console.log (
     `) ms/ms(dCPU/dRUN):(`,
 
     //  ( delta of CPU time consumed / delta of runtime ); 
-    //  absolute unit of computation;
+    //  stage-to-stage CPU allocation; volatile; subject to long-term average;
     Math.round(
         dCPUsum / dTime 
         * 1000                      // microsecond to millisecond conversion;
@@ -120,7 +120,8 @@ module.exports = ( taskLabel, printColumnHeaders ) => { console.log (
 
     `) us/ms(tCPU/tRUN):(`,
 
-    //  ( total CPU time consumed / total runtime ); 
+    //  ( total CPU time consumed / total runtime );
+    //  to-stage average CPU allocation; the long-term average;
     //  AWS Lambda's fractional CPU allocation, based on max memory limit;
     //
     //  for example, a function allocated       128     ( MB of RAM ),
