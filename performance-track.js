@@ -1,141 +1,63 @@
 'use strict'
 
-// The following code is written for the `nodejs` (12.x) runtime on AWS Lambda.
-// FWIW: `nodejs.process` also has: .resourceUsage() and .httime.bigint()
+    // as an AWS Lambda, nodejs function
 
-//  Measuring wallclock run time.
-const { performance } = require('perf_hooks')
-let lastTime = performance.now()
-    // There exists a similar Web API
-let tempTime
-let dTime
+exports.handler = async (event, context) => {
 
-//  Measuring RAM usage.
-//      `node.process.memoryUsage` keys: rss, heapTotal, heapUsed, external
-//      AWS Lambda: Billed memory seems to include 35-40MB over ['rss'].
-const memoryUsageKey = 'rss'
-const padLength = 5
-let lastMem = process.memoryUsage()[memoryUsageKey]
-    // There exists a similar Web API
-let tempMem
+    //  Init
+    //      Keys: rss, heapTotal, heapUsed, external
+    //      Billed memory seems to include 35-40MB over ['rss'].
 
-//  Measuring CPU time consumed (a subset of wallclock time).
-let tempCPU = process.cpuUsage()
-    // There exists NO similar Web API
-let lastCPUsum = tempCPU.user + tempCPU.system
-let tempCPUsum
-let dCPUsum
+    const memoryUsageKey = 'rss'
+    const { performance } = require('perf_hooks')
+    const padLength = 5
 
-//  So long as Lambdas are kept warm, variables declared outside the following
-//      `module.exports` will not be reexecuted; only the body of the exported 
-//      handler will be run on each invocation of Lambda.
-module.exports = ( taskLabel, printColumnHeaders ) => { console.log ( 
-    
+    let lastMark = performance.now()
+    let tempMark
+    let lastMem = process.memoryUsage()[memoryUsageKey]
+    let tempMem
 
-    
-    
-    
-    //  dRUN : stage-to-stage difference in wallclock time in milliseconds;
-    //  tRUN : to-stage total wallclock time in milliseconds;
-    `ms(dRUN,tRUN):(`,
-    
-    // delta of runtime;
-    ( Math.round ( dTime = ( tempTime = performance.now() ) - lastTime ) 
-    ).toString().padStart ( padLength, ` ` ), 
-    `,`, 
-    
-    // total runtime;
-    ( Math.round (lastTime = tempTime)
-    ).toString().padStart ( padLength, ` ` ), 
+    const rate = taskLabel => { console.log ( 
+        `ms:(`,
+        (Math.round  ((tempMark = performance.now()) - lastMark))
+            .toString().padStart(padLength,` `), 
+        `,`, 
+        (Math.round  (lastMark = tempMark)).toString().padStart(padLength,` `), 
+        `) ~MB:(`, 
+        (Math.round  ((  
+            (tempMem = process.memoryUsage()[memoryUsageKey]) - lastMem)
+            /Math.pow(1024,2) * 100) / 100)
+            .toString().padStart(padLength,` `), 
+        `,`, 
+        (Math.round  (   
+            (lastMem = tempMem)
+            /Math.pow(1024,2) * 100) / 100)
+            .toString().padStart(padLength,` `),
+        `)`,
+        taskLabel
+    ) }
 
+    // Do stuff1
+    rate ( `report on stuff 1` )
 
+    // Do stuff2
+    rate ( `report on stuff 2` )
 
+    // Do stuff3
+    rate ( `report on stuff 3` )
 
+}
 
-    //  d : stage-to-stage difference in memory (whichever  metric you keyed);
-    //  t : to-stage total memory consumed for (whichever metric you keyed );
-    `) MB(d,t):(`, 
-    
-    // delta of RAM usage;
-    (   Math.round (                // decimal point formatting;
-    
-            ( ( tempMem = process.memoryUsage()[memoryUsageKey] ) - lastMem )
-            
-            / Math.pow( 1024, 2 )   // B to MB conversion;
-            * 100) / 100            // decimal point formatting;
-    )
-    .toString().padStart ( padLength, ` ` ), 
-    `,`, 
-    
-    // total RAM usage;
-    (   Math.round  (               // decimal point formatting;
-    
-            ( lastMem = tempMem )
-            
-            / Math.pow ( 1024, 2 )  // B to MB conversion;
-            * 100) / 100            // decimal point formatting;
-    ).toString().padStart ( padLength, ` ` ),
-    
-    
-    
-    
-    
-    //  dCPU : stage-to-stage difference in CPU time consumed;
-    //  tCPU : to-stage total CPU time consumed;
-    `) ms(dCPU,tCPU):(`,
-    
-    // delta of CPU time consumed;
-    Math.round (
-        dCPUsum =   (   (   tempCPU = process.cpuUsage(), 
-                            tempCPUsum = tempCPU.user + tempCPU.system
-                        )
-                        - lastCPUsum 
-                    )
-                    / 1000          // microsecond to millisecond conversion;
-    ).toString().padStart ( padLength, ` ` ),
-    `,`, 
-    
-    // total CPU time consumed;
-    Math.round (
-        ( lastCPUsum = tempCPUsum ) 
-        / 1000                      // microsecond to millisecond conversion;
-    ).toString().padStart( padLength, ` ` ), 
-
-
-
-
-
-    `) ms/ms(dCPU/dRUN):(`,
-
-    //  ( delta of CPU time consumed / delta of runtime ); 
-    //  stage-to-stage CPU allocation; volatile; subject to long-term average;
-    Math.round(
-        dCPUsum / dTime 
-        * 1000                      // microsecond to millisecond conversion;
-    ).toString().padStart ( padLength, ` ` ), 
-
-
-
-
-
-    `) us/ms(tCPU/tRUN):(`,
-
-    //  ( total CPU time consumed / total runtime );
-    //  to-stage average CPU allocation; the long-term average;
-    //  AWS Lambda's fractional CPU allocation, based on max memory limit;
-    //
-    //  for example, a function allocated       128     ( MB of RAM ),
-    //      is correspondingly allocated        0.125   ( vCPUs ),
-    //                                      ==  80      ( us of CPU time, per 
-    //                                                    ms of runtime );
-    Math.round(
-        lastCPUsum / lastTime 
-    ).toString().padStart ( 3, ` ` ), 
-    
-    
-    
-    
-    
-    `)`,
-    taskLabel
-) }
+/* Example Output:
+INFO	ms:(     0 , 563895 ) ~MB:(     0 ,  49.3 ) (perf_hooks) LOADED
+INFO	ms:(    10 , 563905 ) ~MB:(     0 ,  49.3 ) AWS-SDK LOADED
+INFO	ms:(     1 , 563906 ) ~MB:(     0 ,  49.3 ) OBJECTS CREATED
+INFO	ms:(   417 , 564323 ) ~MB:(  1.02 , 50.32 ) listTables COMPLETED
+INFO	ms:(    64 , 564386 ) ~MB:(     0 , 50.32 ) describeTable COMPLETED
+INFO	ms:(    80 , 564466 ) ~MB:(     0 , 50.32 ) put COMPLETED
+INFO	ms:(    59 , 564525 ) ~MB:(     0 , 50.32 ) get COMPLETED
+INFO	ms:(    50 , 564575 ) ~MB:(     0 , 50.32 ) delete COMPLETED
+INFO	ms:(    10 , 564585 ) ~MB:(     0 , 50.32 ) (fs, util) LOADED
+INFO	ms:(     0 , 564586 ) ~MB:(     0 , 50.32 ) fs PROMISIFIED
+INFO	ms:(     0 , 564586 ) ~MB:(     0 , 50.32 ) index.html READ
+*/
