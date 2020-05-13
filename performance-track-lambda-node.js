@@ -95,14 +95,14 @@ const mark = ( taskLabel, firstInHandler ) => {
             )
             console.log (
                 
-                String(`preInvoke: `    + Math.round(preInvocationTime) 
+                String(`prior: `    + Math.round(preInvocationTime) 
                                         + ` ms`)
                     .padStart ( 2 * padLength + 4, ` `) , 
 
                 String(`"${memoryUsageKey}"`)
                     .padStart ( 2 * padLength + 6, ` `) , 
                 
-                String(`preInvoke: `    + Math.round(preInvocationCPUsum/1000) 
+                String(`prior: `    + Math.round(preInvocationCPUsum/1000) 
                                         + ` ms`)
                     .padStart ( 2 * padLength + 4, ` `) , 
 
@@ -114,9 +114,9 @@ const mark = ( taskLabel, firstInHandler ) => {
             )
             
         } else {
-            throw   `perf.js; mark(_,_,firstInHandler); firstInHandler needs to 
+            throw   new Error ( `perf.js; mark(_,_,firstInHandler); firstInHandler needs to 
                     be set to true, if this is the first time you are calling 
-                    (mark); you can view an example in the comments of perf.js`
+                    (mark); you can view an example in the comments of perf.js` )
         }
     } 
 
@@ -286,10 +286,6 @@ const mark = ( taskLabel, firstInHandler ) => {
     
 }
 
-//  So long as Lambdas are kept warm, variables declared outside the following
-//      `module.exports` will not be reexecuted; only the body of the exported 
-//      handler will be run on each invocation of Lambda.
-module.exports = {
-    performance : performance,
-    mark : mark
-}
+module.exports = mark
+
+mark (`mark.js LOADED`, true)
