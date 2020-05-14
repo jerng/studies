@@ -1,5 +1,44 @@
 'use strict'
 
+module.exports = async ( LAMBDA_ARGUMENTS, MIDDLEWARE_QUEUE ) => {
+    
+    const data = { 
+        
+        LAMBDA: {
+            event:      LAMBDA_ARGUMENTS[0],
+            context:    LAMBDA_ARGUMENTS[1],
+            callback:   LAMBDA_ARGUMENTS[2] 
+        },
+        
+        RU: {
+            middlewares: MIDDLEWARE_QUEUE,  // questionable/dangerous!
+            errors:     [],
+        }
+    }
+
+    const reducer = async ( DATA, CURRENT_MIDDLEWARE ) => { 
+        
+        try { 
+            const intermediateData = await CURRENT_MIDDLEWARE ( DATA )
+            
+            /* This line does not run, if CURRENT_MIDDLEWARE throws an Error */
+            return intermediateData
+        } 
+        catch (e) 
+        {
+            console.error ( e )
+            DATA.RU.errors.push ( e )
+            // JSON.stringify( DATA, null, 4 ).replace(/\\n/g, '\n')
+        
+            return [ `CONTINUE work at ruthenium.js, line 33, implement middlewares for (500), composeResponse, logger, router?`, DATA ]
+        }
+    }
+    
+    return  MIDDLEWARE_QUEUE.reduce ( reducer , data )
+}
+const mark      = require ( 'mark' )            
+mark (`ruthenium.js LOADED`, true)
+
 /*
 
 * How this Software Framework was Named *
@@ -55,7 +94,7 @@ we are all set here.
 
 -   ALWAYS enter both arguments of Executors, and .then(), EVEN IF one argument
     will not be used. For minimal line noise, consider using `_`, `f`, `r`, 
-    `onF`, `onR`. `value => {}`, `reason => {}`. Heuristic: terseness; 
+    `onF`, `onR`, `value => {}`, `reason => {}`. Heuristic: terseness; 
     explicitly deny options.
 
 -   ALWAYS use `await`, and therefore `try { await } catch (e) { handler }`
@@ -65,21 +104,3 @@ we are all set here.
 
 
 */
-
-module.exports = async ( LAMBDA_ARGUMENTS, MIDDLEWARE_QUEUE ) => {
-    
-    const data = { LAMBDA: {
-        
-            event:      LAMBDA_ARGUMENTS[0],
-            context:    LAMBDA_ARGUMENTS[1],
-            callback:   LAMBDA_ARGUMENTS[2]     }   }
-
-    return  MIDDLEWARE_QUEUE.reduce (
-        
-                ( DATA, CURRENT_MIDDLEWARE ) => CURRENT_MIDDLEWARE ( DATA ), 
-                
-                data
-            )
-}
-const mark      = require ( 'mark' )            
-mark (`ruthenium.js LOADED`, true)
