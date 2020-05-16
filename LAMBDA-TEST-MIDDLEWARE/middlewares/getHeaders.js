@@ -1,10 +1,4 @@
-module.exports = async ( data ) => {
-
-console.log (
-    `getHeaders:`, 
-//    data
-)
-
+const getHeaders = async ( data ) => {
 
     if (data.LAMBDA.event.headers) {
         data.RU.headers = data.LAMBDA.event.headers
@@ -43,3 +37,7 @@ console.log (
 
     return data
 }
+
+module.exports = getHeaders
+const mark = require ('../modules/mark')
+mark (`getHeaders.js LOADED`)

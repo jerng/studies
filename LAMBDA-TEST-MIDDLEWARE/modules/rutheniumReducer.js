@@ -1,5 +1,4 @@
 'use strict'
-
 const rutheniumReducer = async (    DATA_IN_PROMISE, 
                                     CURRENT_MIDDLEWARE, 
                                     INDEX,
@@ -12,6 +11,8 @@ const rutheniumReducer = async (    DATA_IN_PROMISE,
             
             /* THROWN? This line does not run, if CURRENT_MIDDLEWARE erred */
 
+            mark ( CURRENT_MIDDLEWARE.name + '; middleware ex')
+
             // Validation: as middlewares may return nonsense
             if (        typeof intermediateData == 'object'
                     &&  intermediateData.LAMBDA
@@ -22,23 +23,44 @@ const rutheniumReducer = async (    DATA_IN_PROMISE,
             }
             else 
             if (        INDEX + 1 == MIDDLEWARE_QUEUE.length )
-            {
+            { 
+                
                 return  intermediateData 
                         // don't complain about the last middleware in queue;
             }
             else        // complain loudly
             {           
 ///////////////////////////////////////////////////////////////////////////////
+
+console.warn ( intermediateData )
+const thingType = typeof intermediateData
+
 throw Error (   `ruthenium.js : 
                 
     a middleware, (${ ( CURRENT_MIDDLEWARE.name
                         ?   CURRENT_MIDDLEWARE.name
                         :   'DID_YOU_NAME_YOUR_MIDDLEWARES ?').toUpperCase() }), 
     
-    ... returned an unconventional object; 
-    we expected Object.keys ( data ).includes ( 'LAMBDA' and 'RU' );
-                
+    ... returned an unconventional ( intermediateData ): (
+${ 
+    JSON.stringify ( {
+        intermediateData_TYPE:  thingType,
+        TO_STRING:              (       thingType == 'object'
+                                    &&  intermediateData.toString
+                                )   
+                                ?   intermediateData.toString()
+                                :   'toString not defined on THE_THING',
+        intermediateData:       intermediateData,
+        
+    }, null, 4 ) 
+}
+        
+    );
+    we expected Object.keys ( intermediateData ) to include 'LAMBDA' and 'RU';
     
+    Here's DATA before it was operated on by the faulty middleware:
+    
+    ${ JSON.stringify ( DATA, null, 4 ) }
 `)
 
 /*  More sensitive, related, information:
@@ -73,5 +95,5 @@ throw Error (   `ruthenium.js :
     }
 module.exports = rutheniumReducer
 
-const mark = require ( 'mark' )            
+const mark = require ( './mark.js' )            
 mark (`rutheniumReducer.js LOADED`, true)

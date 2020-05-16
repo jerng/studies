@@ -1,6 +1,6 @@
 'use strict'
 const util      = require ( 'util' )
-const reducer   = require ( 'rutheniumReducer' )
+const reducer   = require ( './rutheniumReducer.js' )
 
 const ruthenium = async ( LAMBDA_ARGUMENTS, MIDDLEWARE_QUEUE ) => {
     
@@ -23,8 +23,10 @@ const ruthenium = async ( LAMBDA_ARGUMENTS, MIDDLEWARE_QUEUE ) => {
         },
         
         RU: {
-            middlewares: MIDDLEWARE_QUEUE,  // questionable/dangerous!
-            errors:     [],
+            middlewares:    MIDDLEWARE_QUEUE.map ( m => m.name ),
+            errors:         [],
+            response:       {},
+            io:             {}
         }
     } )
 
@@ -35,7 +37,7 @@ const ruthenium = async ( LAMBDA_ARGUMENTS, MIDDLEWARE_QUEUE ) => {
 }
 module.exports = ruthenium
 
-const mark      = require ( 'mark' )            
+const mark      = require ( './mark.js' )            
 mark (`ruthenium.js LOADED`, true)
 
 /*
@@ -60,6 +62,18 @@ we are all set here.
 
 -   ALWAYS use async functions, UNLESS there is a specific advantage to force 
     synchronous responses. Heuristic: prefer decoupling.
+    
+    -   Because middleware does I/O, it needs to call `await` in order to avoid 
+        promise spaghetti, it can only call `await` if it is itself `async`.
+        Currently all middleware is queued, and reduced with an accumulating 
+        function. So, all middleware should be homogenised as `async`, to 
+        simplify the logic of the accumulating function. 
+        
+    -   However, views are nested, and with the use of accumulating functions, 
+        there evolves a need to use `await` on nearly other line. So in order
+        to ease this part of development, we can do more I/O in middleware
+        and avoid doing it in views, thereby allowing us to homogenise views
+        as synchronous (with perhaps, a few yet to be determined exceptions).
     
 -   Use generator functions ONLY when there is a specific need for such
     functionality. (Note added for completeness. Did we miss any other type of 
