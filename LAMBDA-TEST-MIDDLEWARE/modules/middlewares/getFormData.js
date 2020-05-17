@@ -2,8 +2,10 @@ const querystring   = require ( 'querystring' )
 
 const getFormData = async ( data ) => {
 
-    if (    data.LAMBDA.event.headers['content-type'] 
-                == 'application/x-www-form-urlencoded'
+    if (    data.LAMBDA.event.headers
+            &&  (   data.LAMBDA.event.headers['content-type'] 
+                    == 'application/x-www-form-urlencoded'
+                )
     )
     {
         data.RU.rawFormString =
@@ -15,14 +17,11 @@ const getFormData = async ( data ) => {
             
         data.RU.formStringParameters = 
             querystring.parse ( data.RU.rawFormString )
-        
-        return  data
     }
-
     
     return data
 }
 
 module.exports  = getFormData
-const mark      = require ( '../modules/mark' )            
+const mark      = require ( '../mark' )            
 mark ( `getFormData.js LOADED` )

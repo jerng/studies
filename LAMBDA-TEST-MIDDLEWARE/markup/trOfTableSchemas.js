@@ -1,6 +1,6 @@
-const liOfColumnButtons = require (`../markup/li-of-column-buttons.js`) 
+const liOfColumnButtons = require (`../markup/liOfColumnButtons.js`) 
 
-const trOfTableSchema =  ( currentItem ) => {
+const trOfTableSchema =  ( item ) => {
     
     let markup = `
             <tr>
@@ -35,7 +35,7 @@ const trOfTableSchema =  ( currentItem ) => {
         );
     ">
         <label for="unlock-table-rename-NAME">
-            <h1> ${ currentItem.grid } </h1>
+            <h1> ${ item.grid } </h1>
             <button title="click to rename this table" class="button-outline" onclick="return false;"> 
                 <span class="toggle-set-1">
                     <i class="material-icons">lock</i>rename</span>
@@ -80,8 +80,8 @@ const trOfTableSchema =  ( currentItem ) => {
                 <td>
                     <h2>
                     <ul class="float-left">
-                    ${  vData.columns.reduce (  ( acc, curr, ind ) => {
-                        return  acc +  liOfColumnButtons ( { column : curr } )
+                    ${  item.columns.reduce (  ( acc, column, ind ) => {
+                        return  acc +  liOfColumnButtons ( column )
                     }, '' ) }
                     </ul>
                     </h2>

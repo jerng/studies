@@ -10,5 +10,5 @@ const copyQueryStringParameters = async ( data ) => {
 }
 
 module.exports = copyQueryStringParameters
-const mark = require ('../modules/mark')
+const mark = require ('../mark')
 mark (`copyQueryStringParameters.js LOADED`)

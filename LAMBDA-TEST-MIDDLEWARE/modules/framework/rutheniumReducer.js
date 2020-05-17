@@ -95,5 +95,5 @@ ${
     }
 module.exports = rutheniumReducer
 
-const mark = require ( './mark.js' )            
+const mark = require ( '../mark.js' )            
 mark (`rutheniumReducer.js LOADED`, true)

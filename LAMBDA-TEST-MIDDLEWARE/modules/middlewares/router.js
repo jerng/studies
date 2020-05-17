@@ -5,7 +5,7 @@ const tasks = {}
 
 const taskFileNames = fs.readdirSync ('tasks')
 taskFileNames.forEach ( ( current, index, array ) => {
-    tasks[ current.slice (0, -3) ] = require ( '../tasks/' + current )
+    tasks[ current.slice (0, -3) ] = require ( '../../tasks/' + current )
 } /* , thisArg */ ) 
 
 
@@ -32,9 +32,15 @@ const router = async ( data ) => {
         
         switch ( data.RU.queryStringParameters.ruthenium )
         {
+            case ( 'file' ):
+                data.RU.taskName = 'sendBlobTask'
+                break
+            case ( 'initial' ):
+                data.RU.taskName = 'initialTask'
+                break
             case ( undefined ):
             default:
-                data.RU.taskName = 'initialTask'
+                data.RU.response.redirectRoute = 'initial'
         }
     }
     
@@ -42,19 +48,32 @@ const router = async ( data ) => {
     customDetermineTaskName 
         ? customDetermineTaskName () 
         : defaultDetermineTaskName ()
-    
+
+////////////////////////////////////////////////////////////////////////////////
+
+    // redirects: short-circuit
+    if ( data.RU.response.redirectRoute || data.RU.response.redirectURL ) {
+        return data
+    }    
+
+    // no redirects: 
     // Run the task, if its module is found.
+    //
+    //      TODO: perhaps we want another reducer here for multiple tasks?
+    //
     if ( data.RU.taskName in tasks  ) {
-        tasks [ data.RU.taskName ]( data )   
+        await tasks [ data.RU.taskName ]( data )   
     }
     else {
         throw Error ( `Could not find (${ data.RU.taskName 
                         }) in the tasks directory.` )
     }
+
+////////////////////////////////////////////////////////////////////////////////
     
     return data
 }
 
 module.exports = router
-const mark      = require ( '../modules/mark' )            
+const mark      = require ( '../mark' )            
 mark ( `router.js LOADED` )

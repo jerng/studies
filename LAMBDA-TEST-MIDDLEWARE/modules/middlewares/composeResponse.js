@@ -1,11 +1,11 @@
 'use strict'
-
+ 
 const fs = require ( 'fs' )
 const markups = {}
 
 const markupFileNames = fs.readdirSync ('markup')
 markupFileNames.forEach ( ( current, index, array ) => {
-    markups[ current.slice (0, -3) ] = require ( '../markup/' + current )
+    markups[ current.slice (0, -3) ] = require ( '../../markup/' + current )
 } /* , thisArg */ ) 
 
 const composeResponse = async ( data ) => {
@@ -15,7 +15,21 @@ const composeResponse = async ( data ) => {
         
         
         
-        if ( data.RU.response.redirectURL ) {
+        if ( data.RU.response.redirectRoute ) {
+            
+            data.RU.response.redirectURL 
+                = data.LAMBDA.event.requestContext.http.path
+                + '?ruthenium='
+                + data.RU.response.redirectRoute
+            
+            // cleanup
+            delete data.RU.response.redirectRoute
+        }
+        
+        
+        
+        
+        if ( data.RU.response.redirectURL ) { 
             
             data.RU.response.statusCode =   data.RU.response.statusCode
                                             ? data.RU.response.statusCode
@@ -69,7 +83,7 @@ const composeResponse = async ( data ) => {
                     headers: {
                         'content-type': 'text/html'
                     },
-                    body: markups [ data.RU.response.markupName ]( data )
+                    body: await markups [ data.RU.response.markupName ]( data )
                 }
             }
             else {
@@ -81,9 +95,9 @@ const composeResponse = async ( data ) => {
         else
         if ( data.RU.taskName ) {
             
-            const inferredMarkupName = data.RU.taskName + 'Markup'
+            data.RU.inferredMarkupName = data.RU.taskName + 'Markup'
             
-            if ( inferredMarkupName in markups ) {
+            if ( data.RU.inferredMarkupName in markups ) {
                 
                 // clobber (refine this as above; WIP / TODO )
                 data.RU.response = {
@@ -91,13 +105,14 @@ const composeResponse = async ( data ) => {
                     headers: {
                         'content-type': 'text/html'
                     },
-                    body: markups [ inferredMarkupName ]( data )
+                    body: await markups [ data.RU.inferredMarkupName ]( data )
                 }
             }
             else {
-                throw   Error (`Could not find (${ inferredMarkupName }) in the 
-                        markups directory. That name was guessed because (${
-                        data.RU.taskName }) was specified at (data.RU.taskName).`)
+                throw   Error (`Could not find (${ data.RU.inferredMarkupName }) 
+                        in the markups directory. That name was guessed because 
+                        (${ data.RU.taskName }) was specified at 
+                        (data.RU.taskName).`)
             }
         }
         
@@ -115,5 +130,5 @@ const composeResponse = async ( data ) => {
 }
 
 module.exports  = composeResponse
-const mark      = require ( '../modules/mark' )            
+const mark      = require ( '../mark' )            
 mark ( `composeResponse.js LOADED` )

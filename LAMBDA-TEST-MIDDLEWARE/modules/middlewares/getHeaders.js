@@ -39,5 +39,5 @@ const getHeaders = async ( data ) => {
 }
 
 module.exports = getHeaders
-const mark = require ('../modules/mark')
+const mark = require ('../mark')
 mark (`getHeaders.js LOADED`)

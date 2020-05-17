@@ -26,7 +26,8 @@ const ruthenium = async ( LAMBDA_ARGUMENTS, MIDDLEWARE_QUEUE ) => {
             middlewares:    MIDDLEWARE_QUEUE.map ( m => m.name ),
             errors:         [],
             response:       {},
-            io:             {}
+            io:             {},
+            signals:        {}
         }
     } )
 
@@ -37,7 +38,7 @@ const ruthenium = async ( LAMBDA_ARGUMENTS, MIDDLEWARE_QUEUE ) => {
 }
 module.exports = ruthenium
 
-const mark      = require ( './mark.js' )            
+const mark      = require ( '../mark.js' )            
 mark (`ruthenium.js LOADED`, true)
 
 /*

@@ -5,9 +5,9 @@
 
 const thisIsMyName = async ( data ) => {
     
-    // no need to return data
+    return data
 }
 
 module.exports = thisIsMyName
-const mark      = require ( '../modules/mark' )            
+const mark      = require ( '../mark' )            
 mark ( `thisIsMyName.js LOADED` )

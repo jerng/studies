@@ -1,6 +1,8 @@
 'use strict'
 
-const security = async ( data ) => {
+const util = require ('util')
+
+const lastGuard = async ( data ) => {
 
 
 
@@ -50,19 +52,21 @@ const security = async ( data ) => {
     }
     
     
-    
-    
+
+
     // Either a (statusCode) or a (body) or both are in data.RU.response
+    //*
         data.RU.response.body +=
         `<pre><code>${
-            JSON.stringify( data, null, 4 ).replace(/\\n/g, '\n')
+            util.inspect( data, { depth: Infinity } )
         }</code></pre>` 
+    //*/
     return data.RU.response 
     
     
     
 }
 
-module.exports = security
-const mark = require ('../modules/mark')
+module.exports = lastGuard
+const mark = require ('../mark')
 mark (`lastGuard.js`)

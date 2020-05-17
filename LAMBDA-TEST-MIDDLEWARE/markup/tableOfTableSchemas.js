@@ -1,4 +1,4 @@
-const trOfTableSchema       = require (`../markup/tr-of-table-schema.js`) 
+const trOfTableSchema       = require (`../markup/trOfTableSchemas.js`) 
 
 const tableOfTableSchemas   = ( gridSchemasScan ) => {
     
