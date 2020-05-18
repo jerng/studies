@@ -32,11 +32,14 @@ const router = async ( data ) => {
         
         switch ( data.RU.queryStringParameters.ruthenium )
         {
-            case ( 'file' ):
-                data.RU.taskName = 'sendBlobTask'
-                break
             case ( 'initial' ):
                 data.RU.taskName = 'initialTask'
+                break
+            case ( 'restful' ):                 // METHOD, &type=M, &thing=N
+                data.RU.taskName = 'restful'    
+                break
+            case ( 'file' ):
+                data.RU.taskName = 'sendBlobTask'
                 break
             case ( undefined ):
             default:

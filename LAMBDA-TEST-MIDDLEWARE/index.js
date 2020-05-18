@@ -1,5 +1,3 @@
-https://en.wikipedia.org/wiki/Skateboarding#Culture
-
 'use strict'
 
 // require() executes modules; use require.res() to resolve without execution.
@@ -40,7 +38,6 @@ console.log (
         getFormData,
         
         router,
-        //business,
         
         composeResponse,
         lastGuard

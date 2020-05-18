@@ -23,11 +23,31 @@ const ruthenium = async ( LAMBDA_ARGUMENTS, MIDDLEWARE_QUEUE ) => {
         },
         
         RU: {
+            
             middlewares:    MIDDLEWARE_QUEUE.map ( m => m.name ),
-            errors:         [],
+            
+            request:        {},
+            
+            signals:        {}, //  inter-middleware communications; 
+                                //
+                                //  for example,
+                                //  to say something about the field 
+                                //  (data.RU.response), instead of messing
+                                //  it up with (data.RU.response.mySignal),
+                                //  you may write (data.RU.signals.mySignal)
+            
+            io:             {}, //  data-sources and data-sinks may go here
+            
             response:       {},
-            io:             {},
-            signals:        {}
+            
+            errors:         []  //  stuff errors in here, then continue 
+                                //  to let the next middleware process (data),
+                                //  instead of short-circuiting the entire 
+                                //  queue when a middleware throws an error;
+                                //
+                                //  we WILL later need a mechanism which gives
+                                //  the developer an option to short-circuit,
+                                //  but this is not currently the default
         }
     } )
 
