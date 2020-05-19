@@ -30,20 +30,20 @@ const router = async ( data ) => {
     // Default here
     const defaultDetermineTaskName = () => {
         
-        switch ( data.RU.queryStringParameters.ruthenium )
+        switch ( data.RU.request.queryStringParameters.ruthenium )
         {
             case ( 'initial' ):
-                data.RU.taskName = 'initialTask'
+                data.RU.signals.taskname = 'initialTask'
                 break
             case ( 'restful' ):                 // METHOD, &type=M, &thing=N
-                data.RU.taskName = 'restful'    
+                data.RU.signals.taskname = 'restful'    
                 break
             case ( 'file' ):
-                data.RU.taskName = 'sendBlobTask'
+                data.RU.signals.taskname = 'sendBlobTask'
                 break
             case ( undefined ):
             default:
-                data.RU.response.redirectRoute = 'initial'
+                data.RU.signals.redirectRoute = 'initial'
         }
     }
     
@@ -55,7 +55,7 @@ const router = async ( data ) => {
 ////////////////////////////////////////////////////////////////////////////////
 
     // redirects: short-circuit
-    if ( data.RU.response.redirectRoute || data.RU.response.redirectURL ) {
+    if ( data.RU.signals.redirectRoute || data.RU.signals.redirectRoute ) {
         return data
     }    
 
@@ -64,11 +64,11 @@ const router = async ( data ) => {
     //
     //      TODO: perhaps we want another reducer here for multiple tasks?
     //
-    if ( data.RU.taskName in tasks  ) {
-        await tasks [ data.RU.taskName ]( data )   
+    if ( data.RU.signals.taskname in tasks  ) {
+        await tasks [ data.RU.signals.taskname ]( data )   
     }
     else {
-        throw Error ( `Could not find (${ data.RU.taskName 
+        throw Error ( `Could not find (${ data.RU.signals.taskname 
                         }) in the tasks directory.` )
     }
 

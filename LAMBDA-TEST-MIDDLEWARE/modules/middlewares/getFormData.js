@@ -8,15 +8,15 @@ const getFormData = async ( data ) => {
                 )
     )
     {
-        data.RU.rawFormString =
+        data.RU.request.rawFormString =
             data.LAMBDA.event.isBase64Encoded
             ?   Buffer
                     .from ( data.LAMBDA.event.body, 'base64' )
                     .toString ('utf8')
             :   data.LAMBDA.event.body
             
-        data.RU.formStringParameters = 
-            querystring.parse ( data.RU.rawFormString )
+        data.RU.request.formStringParameters = 
+            querystring.parse ( data.RU.request.rawFormString )
     }
     
     return data

@@ -19,7 +19,7 @@ const trOfTableSchema =  ( item ) => {
     -->        
     
     <blockquote>
-    <form method="post" action="/test-middleware?state=form">
+    <form method="post" action="/test-middleware?ruthenium=restful&type=grid&thing=shoes">
     <fieldset onclick=" 
         Array.prototype.forEach.call( 
             this.querySelectorAll('.toggle-set-1'), 

@@ -57,9 +57,13 @@ const lastGuard = async ( data ) => {
     // Either a (statusCode) or a (body) or both are in data.RU.response
     //*
 
+    console.log (``) 
+
     const response = { ... data.RU.response }
 
-    data.RU.response.body = data.RU.response.body.replace(/</g, '[')   
+    if ( typeof data.RU.response.body == 'string' ) {
+        data.RU.response.body = data.RU.response.body.replace(/</g, '[')   
+    }
     
     response.body +=
     `<pre><code>${

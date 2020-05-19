@@ -19,9 +19,9 @@ blobFileNames.forEach ( ( current, index, array ) => {
 
 const sendBlobTask = async ( data ) => {
     
-    data.RU.response.sendBlob = {
-        'body':         blobs [ data.RU.queryStringParameters.file ],
-        'content-type': blobMimeTypes [ data.RU.queryStringParameters.file ]
+    data.RU.signals.sendBlob = {
+        'body':         blobs [ data.RU.request.queryStringParameters.file ],
+        'content-type': blobMimeTypes [ data.RU.request.queryStringParameters.file ]
     } 
         
     

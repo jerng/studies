@@ -14,22 +14,14 @@ const composeResponse = async ( data ) => {
         
         
         
-        
-        if ( data.RU.response.redirectRoute ) {
+
+
+        if ( data.RU.signals.redirectRoute ) { 
             
-            data.RU.response.redirectURL 
+            data.RU.signals.redirectRoute 
                 = data.LAMBDA.event.requestContext.http.path
                 + '?ruthenium='
-                + data.RU.response.redirectRoute
-            
-            // cleanup
-            delete data.RU.response.redirectRoute
-        }
-        
-        
-        
-        
-        if ( data.RU.response.redirectURL ) { 
+                + data.RU.signals.redirectRoute
             
             data.RU.response.statusCode =   data.RU.response.statusCode
                                             ? data.RU.response.statusCode
@@ -39,13 +31,11 @@ const composeResponse = async ( data ) => {
             data.RU.response.headers    =   data.RU.response.headers
                                             ? data.RU.response.headers
                                             : {}
-            data.RU.response.headers.location =  data.RU.response.redirectURL 
+            data.RU.response.headers.location =  data.RU.signals.redirectRoute 
             
-            // cleanup            
-            delete data.RU.response.redirectURL
         }
         else
-        if ( data.RU.response.sendBlob ) {
+        if ( data.RU.signals.sendBlob ) {
             
             data.RU.response.statusCode =   data.RU.response.statusCode
                                             ? data.RU.response.statusCode
@@ -57,9 +47,9 @@ const composeResponse = async ( data ) => {
                                             : {}
 
             // if sendBlob specified a MIME type, then over/write response            
-            if ( data.RU.response.sendBlob[ 'content-type' ] ) {
+            if ( data.RU.signals.sendBlob[ 'content-type' ] ) {
                 data.RU.response.headers[ 'content-type' ]
-                = data.RU.response.sendBlob[ 'content-type' ]
+                = data.RU.signals.sendBlob[ 'content-type' ]
             } 
 
             // if response has a MIME type, sent 'nosniff' directive            
@@ -67,10 +57,8 @@ const composeResponse = async ( data ) => {
                 data.RU.response.headers[ 'x-content-type-options' ] = 'nosniff'
             }
 
-            data.RU.response.body = data.RU.response.sendBlob.body
+            data.RU.response.body = data.RU.signals.sendBlob.body
 
-            // cleanup            
-            delete data.RU.response.sendBlob
         }
         else
         if ( data.RU.response.markupName ) {
@@ -93,11 +81,11 @@ const composeResponse = async ( data ) => {
             }
         }
         else
-        if ( data.RU.taskName ) {
+        if ( data.RU.signals.taskname ) {
             
-            data.RU.inferredMarkupName = data.RU.taskName + 'Markup'
+            data.RU.signals.inferredMarkupName = data.RU.signals.taskname + 'Markup'
             
-            if ( data.RU.inferredMarkupName in markups ) {
+            if ( data.RU.signals.inferredMarkupName in markups ) {
                 
                 // clobber (refine this as above; WIP / TODO )
                 data.RU.response = {
@@ -105,14 +93,14 @@ const composeResponse = async ( data ) => {
                     headers: {
                         'content-type': 'text/html'
                     },
-                    body: await markups [ data.RU.inferredMarkupName ]( data )
+                    body: await markups [ data.RU.signals.inferredMarkupName ]( data )
                 }
             }
             else {
-                throw   Error (`Could not find (${ data.RU.inferredMarkupName }) 
+                throw   Error (`Could not find (${ data.RU.signals.inferredMarkupName }) 
                         in the markups directory. That name was guessed because 
-                        (${ data.RU.taskName }) was specified at 
-                        (data.RU.taskName).`)
+                        (${ data.RU.signals.taskname }) was specified at 
+                        (data.RU.signals.taskname).`)
             }
         }
         

@@ -16,7 +16,7 @@ mark( `index.js did other things`)
 
 // PROJECT - MIDDLEWARES, lexical order
 const composeResponse           = require (`./modules/middlewares/composeResponse.js`) 
-const copyQueryStringParameters = require (`./modules/middlewares/copyQueryStringParameters.js`) 
+const copyURLParameters         = require (`./modules/middlewares/copyURLParameters.js`) 
 const getFormData               = require (`./modules/middlewares/getFormData.js`) 
 const getHeaders                = require (`./modules/middlewares/getHeaders.js`) 
 const lastGuard                 = require (`./modules/middlewares/lastGuard.js`) 
@@ -25,16 +25,17 @@ const router                    = require (`./modules/middlewares/router.js`)
 // LAMBDA HANDLER
 exports.handler = async function () { 
 
-console.log (
-[ `CONTINUE work at ruthenium.js, line 70, implement middlewares for composeResponse, logger, router` ]
-)
+    console.log (
+    [ `THINGS TO DO : sessions, cognito, ... `]
+    )
+
     
     mark( `index.js, first mark in handler`, true )
     
     return  ruthenium   ( arguments, [  // MIDDLEWARES, execution order
                                 
         getHeaders,                 // Values with same key stored as: Array of values
-        copyQueryStringParameters,  // Values with same key stored as: CSV string
+        copyURLParameters,          // Values with same key stored as: CSV string
         getFormData,
         
         router,

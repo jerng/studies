@@ -1,7 +1,7 @@
 const getHeaders = async ( data ) => {
 
     if (data.LAMBDA.event.headers) {
-        data.RU.headers = data.LAMBDA.event.headers
+        data.RU.request.headers = data.LAMBDA.event.headers
         
         if ( data.LAMBDA.event.cookies ) {
             data.LAMBDA.event.cookies.forEach (
@@ -18,15 +18,15 @@ const getHeaders = async ( data ) => {
                         const name  = nameValue.slice ( 0 , position )
                         const value = nameValue.slice ( 1 + position )
                         
-                        if ( ! data.RU.headers.cookies ) {
-                            data.RU.headers.cookies = {}
+                        if ( ! data.RU.request.headers.cookies ) {
+                            data.RU.request.headers.cookies = {}
                         }
                         
-                        if ( ! data.RU.headers.cookies[ name ] ) {
-                            data.RU.headers.cookies[ name ] = []
+                        if ( ! data.RU.request.headers.cookies[ name ] ) {
+                            data.RU.request.headers.cookies[ name ] = []
                         }
                         
-                        data.RU.headers.cookies[ name ].push ( value )
+                        data.RU.request.headers.cookies[ name ].push ( value )
                         // Values with same key stored as: Array of values
                         
                     }
