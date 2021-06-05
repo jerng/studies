@@ -1,6 +1,7 @@
 *.aes
-*.swp
 *cabal-dev
 *dist
 *.vim
 *.swp
+*.swo
+*~

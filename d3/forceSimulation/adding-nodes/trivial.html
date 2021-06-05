@@ -1,0 +1,108 @@
+<html>
+
+<head>
+    
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://unpkg.com/jeezy@1.11.2/lib/jeezy.min.js"></script>
+</head>
+
+<body>
+    <script>
+{
+//*
+
+
+    let p = o => JSON.stringify ( o, null, 2 )
+    
+    // STAGE 0
+    let dataArray = [
+        {   colour  : 'red',
+            radius  : 5
+        },
+        {   colour  : 'green',
+            radius  : 10
+        },
+        {   colour  : 'blue',
+            radius  : 15
+        },
+     ]
+    let width = 500, height = 500
+
+    let svg = d3.select ( 'body' ).append ( 'svg' )
+        .attr ( 'width', width )
+        .attr ( 'height', height )
+        .attr ( 'style', 'background-color:#ddddff' )
+
+    let circles
+
+    //console.log ( `INITIALISATION : circles (0)`, circles )
+
+
+    // STAGE 2-2.2, some sort of data binding, should happen in here.
+
+    let LOG_NEXT = false
+
+    // STAGE 0.1
+    let simulation = d3.forceSimulation(dataArray)
+        .force('charge?', d3.forceManyBody().strength(-30))
+        .force('center?', d3.forceCenter(width / 2, height / 2))
+        .force('x?', d3.forceX( width / 2 ).strength ( 0.05 ) )
+        .force('y?', d3.forceY( width / 2 ).strength ( 0.05 ) )
+        .on('tick', function () {
+////////////////////////////////////////////////////////////////////////////////
+
+            LOG_NEXT && console.log ( p ( dataArray ) )
+
+            //console.log ( `TICKED start : circles (0)`, circles )
+
+            // STAGE 3-3.1 should happen here
+            circles = svg 
+                .selectAll('circle')
+                .data(dataArray, d => d.colour )
+                .join(
+                    entering    => {
+                        //console.log ( 'entering, before work:', entering )
+                        entering.append ( 'circle' )
+                                .attr ( 'r', d => d.radius ) 
+                                .attr ( 'fill', d => d.colour ) 
+                        //console.log ( 'entering, after work:', entering )
+                    },
+                    updating    => updating .attr( 'cx', d => d.x )
+                                            .attr( 'cy', d => d.y ) 
+                    ) 
+                
+            LOG_NEXT && ( LOG_NEXT = false, console.log ( p ( dataArray ) ) )
+
+            //console.warn ( `TICKED end : circles (>0)`, circles )
+////////////////////////////////////////////////////////////////////////////////
+        } )
+
+    setTimeout ( ()=>{
+////////////////////////////////////////////////////////////////////////////////
+
+/*
+console.log ( p ( dataArray ) )
+    dataArray.push ( {
+        color : 'white',
+        radius: 20
+    } ) 
+console.log ( p ( dataArray ) )
+LOG_NEXT = true
+//*/
+
+////////////////////////////////////////////////////////////////////////////////
+    }, 500 )
+
+
+    window.dataArray    = dataArray
+    window.simulation   = simulation
+    window.svg          = svg
+    window.circles      = circles
+//*/
+}
+    </script>    
+</body>
+
+
+</html>
+
