@@ -1,0 +1,47 @@
+<form id="TheFormID" action="/test/form" enctype="multipart/form-data">
+  <fieldset>
+    <legend>The legend tag lables the fieldset; the fieldset tag draws a box.</legend>
+
+    <label for="text1" form="TheFormID">label1</label>
+    <input  id="text1" 
+            name="data:collection.key1.key2:Text"
+            value="sometextz"
+            form="TheFormID" 
+            autofocus 
+            required 
+            placeholder="I hold place." 
+            autocomplete="on">
+
+    <label for="text2" form="TheFormID">label2</label>
+    <input  id="text2" 
+            name="data:collection.key1.key2:Int32"
+            value="999"
+            form="TheFormID" 
+            autocomplete="on">
+
+    <label for="text3" form="TheFormID">label3</label>
+    <input  id="text3" 
+            name="data:collection.key2.key2:Double"
+            value="3.142"
+            form="TheFormID" 
+            autocomplete="on">
+
+    <label for="text4" form="TheFormID">label4</label>
+    <input  id="text4" 
+            name="data:collection.key2.key1:Bool"
+            value="False"
+            form="TheFormID" 
+            autocomplete="on">
+
+    <label for="text5" form="TheFormID">label5</label>
+    <input  id="text5" 
+            name="data:collection.key2.key3:Document"
+            type="file"
+            form="TheFormID" 
+            autofocus 
+            autocomplete="on">
+
+  </fieldset>
+  <input type="submit" formmethod="post" value="Submit using POST">
+  <input type="submit" formmethod="get" value="Submit using GET">
+</form>

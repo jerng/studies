@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 *.aes
 *cabal-dev
 *dist
@@ -7,3 +6,6 @@
 *.swo
 *~
 *.beam
+*.exe
+*.o
+*.hi

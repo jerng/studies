@@ -1,0 +1,6 @@
+<div style="background-color:#fcc;border:5px #f00 solid">{{{contents of a view, which is embedded in another view;
+
+
+<hs> fromv "{{Default.Inner}}" "insideinnerkey" ::T.Text </hs>
+
+}}}</div>
