@@ -1,0 +1,18 @@
+Name:                GlutTest
+Version:             0.1
+Description:         Making a mess at home.
+License:             WTFPL
+Author:              Yang Jerng HWA
+Maintainer:          yangjerng@gmail.com
+Build-Type:          Simple
+Cabal-Version:       >=1.16.0.3
+
+Executable test 
+  Default-Language: Haskell2010
+  Main-Is:          test.hs
+  Hs-Source-Dirs:   .
+  Other-Modules:    
+  Build-Depends:    
+      base == 4.5.1.0
+    , GLUT >= 2.4.0.0
+    , random >= 1.0.0.1
