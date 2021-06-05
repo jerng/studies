@@ -1,0 +1,83 @@
+<html>
+<head>
+<script  src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>Select a circle around a point (click start, click stop)</h1>
+(proof of concept only)<br>
+<canvas id="thecanvas" width="500" height="500"
+style="border:1px solid #000000;">
+</canvas>
+<div id="info"></div>
+
+<script>
+$(document).ready( function() 
+{
+  var $info = $('#info')
+  var $canvas = $('#thecanvas')
+  var context = $canvas[0].getContext('2d')
+  var now_drawing = false
+  var circle = { "center" : { "x" : 0, "y" : 0 } }
+  var compute_distance = function (x1,y1,x2,y2) 
+    {
+      return Math.sqrt ( Math.pow(x2-x1,2) + Math.pow(y2-y1,2) )
+    }
+
+
+  context.moveTo(0,0)
+
+  $canvas
+    
+    .click(function(e)
+    {
+      if (now_drawing) 
+      {
+        now_drawing = false
+      } 
+      else 
+      {
+        var position = $(this).position()
+
+        circle.center.x = e.pageX - position.left
+        circle.center.y = e.pageY - position.top
+        now_drawing = true
+      }
+    })
+
+    .mousemove(function(e)
+    {
+      if (now_drawing)
+      {
+        var position = $(this).position()
+        var x = e.pageX - position.left
+        var y = e.pageY - position.top
+        
+        context.clearRect(0,0,500,500)
+
+        context.beginPath()
+        context.moveTo(circle.center.x,circle.center.y)
+        context.lineTo(x,y)
+        context.stroke()
+
+        context.beginPath()
+        context.arc(
+            circle.center.x
+          , circle.center.y
+          , compute_distance(
+                circle.center.x
+              , circle.center.y
+              , x
+              , y)
+          , 0
+          , Math.PI * 2)
+        context.stroke()
+
+        $info.html('mouse\'s x: ' + x + ', y: ' + y)
+      }
+    })
+
+})
+
+</script>
+</body>
+</html>
