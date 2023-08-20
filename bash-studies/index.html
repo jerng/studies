@@ -11,11 +11,15 @@ iframe {
     position:fixed;
     top:0;
     width: 25%;
-    height:125%;
+    height:124%;
     background-color:white;
-    filter:brightness(80%);
+    filter:brightness(60%);
     transform-origin:0 0;
     transform:scale(80%);
+    resize:both;
+}
+iframe:hover {
+    z-index:10;
 }
 iframe:nth-child(1){left:0%}
 iframe:nth-child(2){left:20%}
@@ -24,11 +28,11 @@ iframe:nth-child(4){left:60%}
 iframe:nth-child(5){left:80%}
 </style>
 <div>
-<iframe src="./saved-bash-reference-manual.html#Coprocesses" ></iframe>
-<iframe src="./saved-bash-reference-manual.html#Redirections" ></iframe>
-<iframe src="./saved-bash-reference-manual.html#Command-Execution-Environment" ></iframe>
-<iframe src="./saved-bash-reference-manual.html#Shell-Builtin-Commands" ></iframe>
-<iframe src="./saved-bash-reference-manual.html" ></iframe>
+<iframe src="./saved-bash-reference-manual.html#Quoting" ></iframe>
+<iframe src="./saved-bash-reference-manual.html#Pipelines" ></iframe>
+<iframe src="./saved-bash-reference-manual.html#Command-Grouping" ></iframe>
+<iframe src="./saved-bash-reference-manual.html#Shell-Functions" ></iframe>
+<iframe src="./saved-bash-reference-manual.html#Shell-Expansions" ></iframe>
 </div>
 </body>
 </html>
