@@ -1,0 +1,273 @@
+<html>
+
+  <head>
+    <style>
+
+*:not(code){
+  font-family: 
+    'sf pro text',
+  'sf ui display',
+  helvetica, 
+  arial,
+  san-serif;
+}
+
+html {
+  color: #ccc;
+  background:#555;
+  padding-right:50vw;
+}
+
+slot::before {
+  content:"slot::before ";
+  color:green;
+}
+
+slot {
+
+}
+
+slot::after {
+  content:"slot::after ";
+  color:red;
+}
+
+#sandbox {
+  background:#333;
+}
+
+#continue::before {
+  background:yellow;
+  color:red;
+  content:"CONTINUE HERE";
+  display:inline-block;
+}
+
+.slot-child,
+.shadow-host {
+  padding: 5px;
+  margin: 5px;
+  color:#333;
+}
+
+.slot-child {
+  background: lightpink;
+}
+
+.shadow-host:before {
+  content:".shadow-host::before";
+  color:green;
+}
+
+.shadow-host-child {
+  background: lightblue;
+}
+
+.shadow-host:after {
+  content:".shadow-host::after";
+  color:red;
+}
+
+
+
+    </style>
+  </head>
+
+  <body>
+
+    <script>
+
+      ready( () => {
+
+              sr = document
+                .getElementById(
+                        'shadow-host-attached-only'
+                      )
+                .attachShadow( { mode : 'open' } )
+
+              setTimeout( () => window.pause ? undefined :
+                      window.location.reload(), 1000 )
+
+            } )
+
+      function ready(fn) {
+              // from https://stackoverflow.com/a/9899701/1378390
+              // see if DOM is already available
+              if (document.readyState === "complete" || document.readyState === "interactive") {
+                      // call on next available tick
+                      setTimeout(fn, 1);
+                    } else {
+                            document.addEventListener("DOMContentLoaded", fn);
+                          }
+            }    
+
+    </script>
+
+    <div id="sandbox">
+
+      <h1>Slot Behaviour Sandbox</h1>
+
+      <h2>Without Custom Element</h2>
+      <blockquote>
+
+        <h3>Without Shadow Root</h3>
+        <blockquote>
+
+          <h4>Without Template Element</h4>
+          <blockquote>
+            In the markup, immediately after the next line break, is a slot element.
+            <br>
+            <slot>
+            <div class="slot-child">Initial child of slot element.</div>
+            </slot>
+            <br>... we observe that the slot element is rendered ... with the CSS property
+            ...  <code>display:contents;</code>
+          </blockquote>
+
+          <h4>Within Template Element</h4>
+          <blockquote>
+            In the markup, immediately after the next line break, is a template element.
+            <br>
+            <template>
+              In the markup, immediately after the next line break, is a slot element.
+              <br>
+              <slot>
+              <div class="slot-child">Initial child of slot element.</div>
+              </slot>
+            </template>
+            <br>... we observe that the template element is not rendered ... with the
+            CSS property ... <code>display:none;</code>. Compare this with the
+            previous example.
+          </blockquote>
+
+        </blockquote>
+
+        <h3>With Shadow Root</h3>
+        <blockquote>
+
+          <h4>Before Executing .attachShadow()</h4>
+          <blockquote>
+            In the markup, immediately after the next line break, is an element
+            that could be used as a shadow host, at a future time.
+            <div class="shadow-host">
+              <div class="shadow-host-child">Initial child of shadow host
+                element.</div>
+            </div>
+            ... we observe that the potential-shadow-host's child element is
+            rendered ... with its default CSS property of <code>display</code>
+          </blockquote>
+
+          <h4>After Executing .attachShadow()</h4>
+          <blockquote>
+            In the markup, immediately after the next line break, is an element
+            that with an already attached shadow host.
+            <div class="shadow-host"
+                 id="shadow-host-attached-only">
+              <div class="shadow-host-child">Initial child of shadow host
+                element.</div>
+            </div>
+            ... we observe that the shadow host's child element is no longer
+            rendered ... even though it remains in the markup, as the node
+            following the attached #shadow-root node;
+            <br>
+            <br>shadow roots can be replaced by new shadow roots, but they
+            cannot be removed without replacement; so there is no markup
+            process flow involving removal of a shadow root;
+          </blockquote>
+
+          <h4>Without Template Element</h4>
+          <blockquote>
+        <hr id="continue">
+          </blockquote>
+
+          <h4>Within Template Element</h4>
+          <blockquote>
+          </blockquote>
+
+        </blockquote>
+
+      </blockquote>
+    </div>
+
+    <hr>
+    <h1>Documentation</h1>
+    <p>DOM Standard : the Document Object Model
+    <a
+        href="https://dom.spec.whatwg.org/">specification</a></p>
+    <p>The terms <code>object</code> and <code>interface</code> are used here,
+    within the context of <i>object oriented programming</i>.</p>
+    <p>The main <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction#dom_interfaces">DOM interfaces</a> of interest here are, <i>Node, Document,
+      DocumentFragment, ShadowRoot, and Element</i>.</p>
+    <p>It is also important to understand 
+    <a
+        href="https://dom.spec.whatwg.org/#nodes">about
+        <i>nodes</i> under 4.2.
+        Node tree</a>
+    , specifically about how <code>Node</code> is a relatively general DOM interface whose objects tend to be overloaded with more specific DOM interfaces; also understand
+    <a
+        href="https://dom.spec.whatwg.org/#concept-tree-root">
+      about
+      <i>roots</i> under 1.1.
+      Trees</a>; also
+    understand
+    <a
+        href="https://dom.spec.whatwg.org/#concept-slotable">about
+        <i>slots</i>
+        and
+        <i>slottables</i>
+        under 4.2.2. Shadow tree</a>.</p>
+
+    <h2>element.attachShadow(), ShadowRoot</h2>
+    <ul>
+      <li>4. Nodes &gt; 4.2. Node tree : "Objects that implement
+        <code>DocumentFragment</code> sometimes implement
+        <code>ShadowRoot</code>."</li>
+      <li>4. Nodes &gt; 4.2. Node tree &gt; 4.8. Interface
+        <code>ShadowRoot</code> : "<b><code>ShadowRoot</code> nodes</b> are simply known as
+        <b>shadow
+          roots</b>.", and <code>ShadowRoot</code> is defined as an extension of
+        <code>DocumentFragment</code> also here, in the Web Interface Description Language</li>
+      <li>4. Nodes &gt; 4.2. Node tree &gt; 4.2.1. Document tree : "A <b>document
+          tree</b> is a node tree whose root is a <b>document</b>."</li>
+      <li>4. Nodes &gt; 4.2. Node tree &gt; 4.2.2. Shadow tree : "A <b>shadow
+          tree</b>
+        is a node tree whose root is a <b>shadow root</b>."</li>
+      <li>4.9. Interface <code>Element</code> : "Elements also have an
+        associated <b>shadow root</b> (null or a shadow root) ...  An element is
+        a <b>shadow host</b> if its shadow root is non-null." So, if
+        x.shadowRoot === y, then y.host === x</li>
+      <li>4.9. Interface <code>Element</code> &gt;
+        <code>attachShadow(init)</code> : "Let shadow be a new shadow root whose
+        <b>node document</b> is <b>element’s node document</b>, <b>host</b> is
+        <b>element</b> ..."
+      </li>
+      <p>( emphases added )</p>
+    </ul>
+
+    <h2>&lt;template&gt; & &lt;slot&gt;</h2>
+    <ul>
+      <li>4. Nodes &gt; 4.2. Node tree &gt; 4.2.2. Shadow tree &gt; 4.2.2.1.
+        Slots: "A <b>shadow tree</b> contains zero or more elements that are
+        <b>slots</b> ... A slot can only be created through HTML’s slot element."</li>
+      <li>4. Nodes &gt; 4.2. Node tree &gt; 4.2.2. Shadow tree &gt; 4.2.2.2.
+        Slottables: "<code>Element</code> and <code>Text</code> nodes are
+        slottables ... A slot can be a slottable."</li>
+      <li>4. Nodes &gt; 4.2. Node tree &gt; 4.2.2. Shadow tree &gt; 4.2.2.3.
+        Finding slots and slottables : "Let <b>shadow</b> be <b>slottable’s
+          parent’s shadow root</b> ... If shadow’s <b>slot assignment</b> is
+        '<b>manual</b>', then return the <b>slot in shadow’s descendants</b>
+        whose <b>manually assigned nodes contains slottable</b>, if any ... " (
+        what if there are more than one slot in shadow's descendents whose
+        manually assigned nodes contain slottabl, is only the first-found applicable? )
+        otherwise ( slot assignment is 'named' ), "Return the <b>first slot in tree order in shadow’s
+          descendants</b> whose <b>name is slottable’s name</b>, if any" ; <hr>
+        likewise to find <b>slottables</b> for a given <b>slot</b>, the <b>slot's
+          manually .assign()ed nodes</b>, or the <b>slot's name-asigned slots</b>,
+        must be <b>children of the slot's host</b> [[ ... the specification seems to
+        be asymmetrical, so I should read it again ]] ; slottables will be
+        flattened into slots, recursively ... [[ more detailed reading required,
+        the spec does not seem clear, though it probably is ]]</li>
+    </ul>
+    <h2>window.customElements.define()</h2>
+  </body>
+</html>
