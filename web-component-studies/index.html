@@ -18,18 +18,20 @@ html {
   padding-right:50vw;
 }
 
+code {
+  color: orchid;
+}
+
 slot::before {
-  content:"slot::before ";
+  content:"slot::before";
   color:green;
 }
-
 slot {
-
+  border:1px solid yellow;
 }
-
-slot::after {
-  content:"slot::after ";
-  color:red;
+slot::after{
+  content:"slot::after";
+  color:green;
 }
 
 #sandbox {
@@ -47,25 +49,27 @@ slot::after {
 .shadow-host {
   padding: 5px;
   margin: 5px;
-  color:#333;
 }
 
 .slot-child {
-  background: lightpink;
+  background: darkblue;
 }
 
 .shadow-host:before {
   content:".shadow-host::before";
-  color:green;
+  color:red;
 }
 
-.shadow-host-child {
-  background: lightblue;
+.shadow-host {
+  border: 1px solid red;
 }
-
 .shadow-host:after {
   content:".shadow-host::after";
   color:red;
+}
+
+.shadow-host-child {
+  background: darkblue;
 }
 
 
@@ -79,14 +83,86 @@ slot::after {
 
       ready( () => {
 
-              sr = document
-                .getElementById(
-                        'shadow-host-attached-only'
-                      )
+              step1 = () => {
+                      srfmt = document
+                        .getElementById( 'host-for-manual-test')
+                        .attachShadow( { mode : 'open', slotAssignment : 'manual' } )
+                      hfmt = srfmt.host
+                      slotfmt = document.getElementById('slot-for-manual-test')
+                      slottablefmt = document.getElementById('slottable-for-manual-test')
+                      aslottablefmt = document.getElementById('another-slottable-for-manual-test')
+                      slottablesomth =
+                        document.getElementById('slottable-sibling-of-manual-test-host')
+                      slottablegomth =
+                        document.getElementById('slottable-grandchild-of-manual-test-host')
+                      slottableimtt =
+                        document.getElementById('slottable-in-manual-test-tree')
+                      srfmt.append(`2. Upon conversion to a shadow host, the
+                              shadow host's children are no longer rendered. The
+                              shadow root has no children, and renders nothing
+                              until we append this text node to the shadow root.
+                              Then this text node is rendered.`)
+
+                      //
+                      srfnt = document
+                        .getElementById( 'host-for-named-test')
+                        .attachShadow( { mode : 'open' } )
+                      hfnt = srfnt.host
+                      slotfnt = document.getElementById('slot-for-named-test')
+                      slottablefnt = document.getElementById('slottable-for-named-test')
+                      srfnt.append(`2. Upon conversion to a shadow host, the
+                              shadow host's children are no longer rendered. The
+                              shadow root has no children, and renders nothing
+                              until we append this text node to the shadow root.
+                              Then this text node is rendered.`)
+                    }
+
+              step2 = () => { 
+                      srfmt.replaceChildren(slotfmt,slottableimtt)
+                      slotfmt.prepend(`3. Then, if we replace the text node with
+                             the prepared slot, we see the following content : `)
+                      //
+                      srfnt.replaceChildren(slotfnt)
+                      slotfnt.prepend(`3. Then, if we replace the text node with
+                             the prepared slot, we see the following content : `)
+                    }
+             
+              step3 = () => {
+                    slottablefmt.setAttribute('slot','manual-test-slot-name')
+                    slotfmt.prepend(`4. Now, if we set the slottable's slot
+     attribute value to match the slot-child of the shadow root, we see nothing
+     changed : `)
+                    //
+                    slottablefnt.setAttribute('slot','named-test-slot-name')
+                    slottablefnt.prepend(`4. Now, if we set the slottable's slot
+     attribute value to match the slot-child of the shadow root, we see the
+     following content : `)
+                    }
+
+              step4 = () => {
+                    slotfmt.assign(slottablefmt,slottablesomth,slottablegomth,aslottablefmt)
+                    slottablefmt.prepend(`5. Now, if we manually .assign() the
+     slottable to the slot, we see the following content : `)
+                    }
+              setTimeout(step1, 2000)
+              setTimeout(step2, 4000)
+              setTimeout(step3, 6000)
+              setTimeout(step4, 8000)
+
+              //
+
+              sr1212 = document
+                .getElementById( 'shadow-host-attached-without-child-template')
                 .attachShadow( { mode : 'open' } )
 
+              sr1222 = document
+                .getElementById( 'shadow-host-attached-with-child-template')
+                .attachShadow( { mode : 'open' } )
+
+              /*
               setTimeout( () => window.pause ? undefined :
-                      window.location.reload(), 1000 )
+                      window.location.reload(), 10000 )
+              //*/
 
             } )
 
@@ -107,82 +183,206 @@ slot::after {
 
       <h1>Slot Behaviour Sandbox</h1>
 
-      <h2>Without Custom Element</h2>
+      <blockquote>
+        <h3>.slotAssignment = ( manual | named ) tests</h3>
+
+        <h4> manual test : </h4>
+        <div class="shadow-host"
+             id="host-for-manual-test">
+          1. Prior to this element's conversion to a shadow host, its child
+          nodes are rendered.
+          <slot id="slot-for-manual-test" name="manual-test-slot-name">
+          <div class="slot-child">Initial child of slot element. Manual test.</div>
+          </slot>
+          <span id="slottable-for-manual-test">(
+            Slottable : for manual test )
+          </span>
+          <span id="another-slottable-for-manual-test">(
+            Another Slottable : for manual test )
+          </span>
+          <span>
+            <span id="slottable-grandchild-of-manual-test-host">(
+              Slottable : grandchild of manual test host )
+            </span>
+          </span>
+          <span id="slottable-in-manual-test-tree">(
+            Slottable : in manual test tree )
+          </span>
+        </div>
+
+        <span id="slottable-sibling-of-manual-test-host">(
+          Slottable : sibling of manual test host )
+        </span>
+
+        <h4> named test : </h4>
+        <div class="shadow-host"
+             id="host-for-named-test">
+          1. Prior to this element's conversion to a shadow host, its child
+          nodes are rendered.
+          <slot id="slot-for-named-test" name="named-test-slot-name">
+          <div class="slot-child">Initial child of slot element. Named test</div>
+          </slot>
+          <span id="slottable-for-named-test">(
+            Slottable : for named test )</span>
+        </div>
+
+      </blockquote>
+
+      <h2>1. Without Custom Element</h2>
       <blockquote>
 
-        <h3>Without Shadow Root</h3>
+        <h3>1.1. The <code>slot</code> element, <u>ancestored</u> by neither a <u>shadow host</u>, nor a <u>shadow
+            root</u></h3>
         <blockquote>
 
-          <h4>Without Template Element</h4>
+          <h4>1.1.1. The <code>slot</code> element, furthermore <u>ancestored</u> by no <code>template</code> element</h4>
           <blockquote>
-            In the markup, immediately after the next line break, is a slot element.
-            <br>
-            <slot>
-            <div class="slot-child">Initial child of slot element.</div>
-            </slot>
-            <br>... we observe that the slot element is rendered ... with the CSS property
-            ...  <code>display:contents;</code>
-          </blockquote>
-
-          <h4>Within Template Element</h4>
-          <blockquote>
-            In the markup, immediately after the next line break, is a template element.
-            <br>
-            <template>
-              In the markup, immediately after the next line break, is a slot element.
+            A <code>slot</code> element, all by its lonesome! Accompanied by a
+            <u>child</u>.
+              <br>
+              <br>In the markup, immediately after the next line break, is a
+              <code>slot</code> element.
               <br>
               <slot>
-              <div class="slot-child">Initial child of slot element.</div>
+              <div class="slot-child">Initial <u>child</u> of <code>slot</code> element.</div>
+              </slot>
+              <br>... we observe that the <code>slot</code> element ( with
+              <u>descendents</u> ) is rendered ... with the CSS property
+              ...  <code>display:contents;</code>.
+          </blockquote>
+
+          <h4>1.1.2. What happens if we <u>ancestor</u> the <code>slot</code>
+          element with a <u>non-shadow-host</u> <code>template</code>
+        element?</h4>
+          <blockquote>
+            ( A <u>non-shadow-host</u> instance of the <code>template</code> element has no
+            <code>shadowrootmode</code> attribute, and therefore no attached
+            <u>shadow root</u>. Its <code>innerHTML</code> is not rendered, but is
+            parsed instead into a <code>DocumentFragment</code> object which is
+            stored in the <code>template</code> element's <code>content</code>
+            property.)
+            <br>
+            <br>In the markup, immediately after the next line break, is a
+            <code>template</code> element.
+            <br>
+            <template>
+              In the markup, immediately after the next line break, is a
+              <code>slot</code> element.
+              <br>
+              <slot>
+              <div class="slot-child">Initial <u>child</u> of <code>slot</code> element.</div>
               </slot>
             </template>
-            <br>... we observe that the template element is not rendered ... with the
-            CSS property ... <code>display:none;</code>. Compare this with the
-            previous example.
+            <br>... we observe that the <code>template</code> element ( with
+            <u>descendents</u> ) is not rendered ... with the
+            CSS property ... <code>display:none;</code>. Compare this with
+            1.1.1. .
           </blockquote>
 
         </blockquote>
 
-        <h3>With Shadow Root</h3>
+        <h3>1.2. Ancestored by a <u>Shadow Host</u></h3>
         <blockquote>
 
-          <h4>Before Executing .attachShadow()</h4>
+          <h4>1.2.1. <code>template</code> Element as ancestor</h4>
           <blockquote>
-            In the markup, immediately after the next line break, is an element
-            that could be used as a shadow host, at a future time.
-            <div class="shadow-host">
-              <div class="shadow-host-child">Initial child of shadow host
-                element.</div>
-            </div>
-            ... we observe that the potential-shadow-host's child element is
-            rendered ... with its default CSS property of <code>display</code>
+
+            <h5>1.2.1.1. Before Executing .attachShadow()</h5>
+            <blockquote>
+              In the markup, immediately after the next line break, is an element
+              that could be used as a shadow host, at a future time.
+              <div class="shadow-host">
+                <div class="shadow-host-child">
+                  Initial child of shadow host element ( not a slot element ).
+                </div>
+                In the markup, immediately after the next line break, is a slot element.
+                <br>
+                <slot>
+                <div class="slot-child">Initial child of slot element.</div>
+                </slot>
+                <br>... we observe the same phenomena as 1.1.1.
+                <br>
+              </div>
+              ... we observe that the potential-shadow-host's child elements are
+              rendered ... with their default CSS property of
+              <code>display</code>.
+            </blockquote>
+
+            <h5>1.2.1.2. After Executing .attachShadow()</h5>
+            <blockquote>
+              In the markup, immediately after the next line break, is an element
+              with an already attached shadow host.
+              <div class="shadow-host"
+                   id="shadow-host-attached-without-child-template">
+                <div class="shadow-host-child">
+                  Initial child of shadow host element ( not a slot element ).
+                </div>
+                <slot>
+                <div class="slot-child">Initial child of slot element.</div>
+                </slot>
+              </div>
+              ... we observe that the shadow host's child elements are no longer
+              rendered ... even though they remains in the markup, as the nodes
+              following the attached #shadow-root node;
+              <br>
+              <br> ... whereas, we observe that the shadow host is rendered ...
+              with its default CSS property of <code>display</code>;
+              <br>
+              <br>... whereas, shadow roots can be replaced by new shadow roots,
+              but they cannot be removed without replacement; so there is no
+              markup process flow involving removal of a shadow root.
+            </blockquote>
+
           </blockquote>
 
-          <h4>After Executing .attachShadow()</h4>
+          <h4>1.2.2. What happens if we place it within a <code>template</code>
+            Element?</h4>
           <blockquote>
-            In the markup, immediately after the next line break, is an element
-            that with an already attached shadow host.
-            <div class="shadow-host"
-                 id="shadow-host-attached-only">
-              <div class="shadow-host-child">Initial child of shadow host
-                element.</div>
-            </div>
-            ... we observe that the shadow host's child element is no longer
-            rendered ... even though it remains in the markup, as the node
-            following the attached #shadow-root node;
-            <br>
-            <br>shadow roots can be replaced by new shadow roots, but they
-            cannot be removed without replacement; so there is no markup
-            process flow involving removal of a shadow root;
+
+            <h5>1.2.2.1. Before Executing .attachShadow()</h5>
+            <blockquote>
+              In the markup, immediately after the next line break, is an element
+              that could be used as a shadow host, at a future time.
+              <div class="shadow-host">
+                <div class="shadow-host-child">
+                  Initial child of shadow host element ( not a slot element ).
+                </div>
+                In the markup, immediately after the next line break, is a slot element.
+                <br>
+                <template>
+                  <slot>
+                  <div class="slot-child">Initial child of slot element.</div>
+                  </slot>
+                </template>
+                <br>... we observe the same phenomenon as 1.1.2.
+                <br>
+              </div>
+              ... we observe the same phenomenon as 1.2.1.1., which has been
+              composed with the phenomenon of 1.1.2. ; the two phenomena do not
+              contradict each other.
+            </blockquote>
+
+            <h5>1.2.2.2. After Executing .attachShadow()</h5>
+            <blockquote>
+              <div class="shadow-host"
+                   id="shadow-host-attached-with-child-template">
+                <div class="shadow-host-child">
+                  Initial child of shadow host element ( not a slot element ).
+                </div>
+                <template>
+                  <slot>
+                  <div class="slot-child">Initial child of slot element.</div>
+                  </slot>
+                </template>
+              </div>
+              ... we observe the same phenomenon as 1.2.2.1., which has been
+              composed with the phenomenon of 1.2.1.2. ; the two phenomena do not
+              contradict each other.
+            </blockquote>
+
           </blockquote>
 
-          <h4>Without Template Element</h4>
-          <blockquote>
-        <hr id="continue">
-          </blockquote>
-
-          <h4>Within Template Element</h4>
-          <blockquote>
-          </blockquote>
+          <hr id="continue">
 
         </blockquote>
 
@@ -253,14 +453,18 @@ slot::after {
         Slottables: "<code>Element</code> and <code>Text</code> nodes are
         slottables ... A slot can be a slottable."</li>
       <li>4. Nodes &gt; 4.2. Node tree &gt; 4.2.2. Shadow tree &gt; 4.2.2.3.
-        Finding slots and slottables : "Let <b>shadow</b> be <b>slottable’s
+        Finding slots and slottables : 
+        <hr>
+        to find <b>slots</b> for a given
+        <b>slottable</b>, "Let <b>shadow</b> be <b>slottable’s
           parent’s shadow root</b> ... If shadow’s <b>slot assignment</b> is
         '<b>manual</b>', then return the <b>slot in shadow’s descendants</b>
         whose <b>manually assigned nodes contains slottable</b>, if any ... " (
         what if there are more than one slot in shadow's descendents whose
         manually assigned nodes contain slottabl, is only the first-found applicable? )
         otherwise ( slot assignment is 'named' ), "Return the <b>first slot in tree order in shadow’s
-          descendants</b> whose <b>name is slottable’s name</b>, if any" ; <hr>
+          descendants</b> whose <b>name is slottable’s name</b>, if any" ; 
+        <hr>
         likewise to find <b>slottables</b> for a given <b>slot</b>, the <b>slot's
           manually .assign()ed nodes</b>, or the <b>slot's name-asigned slots</b>,
         must be <b>children of the slot's host</b> [[ ... the specification seems to
