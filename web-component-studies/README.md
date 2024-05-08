@@ -45,7 +45,7 @@
 - … provides encapsulation for styling, and
 - … provides encapsulation for programmatic node traversal ;
 
-#### … is functionaly extensible via optional “slot” Elements,
+#### … is functionally extensible via optional “slot” Elements,
 - … which only work as descendents of a ShadowRoot,
 	- … taking some Slottables from outside a shadow tree, and 
 	- … rendering them inside the shadow tree, thereby
@@ -107,7 +107,7 @@
 	-   Documents typically belong to a user agent, for example in most web browsers the "window" variable name refers to the user agent object, and the "window.document" property name refers to the window's document root.
 	-   WARNING : the "window.document.documentElement" property name refers to [ the document's HTML Element, which is the child of the window's document root ] - it does not refer to the document root itself.
 -   A “document tree” refers to a node tree whose root is a Document.
-	-   Nodes have a “.ownerDocument” property, which points to their one and only ancestor Document.
+	-   Nodes have an “.ownerDocument” property, which points to their one and only ancestor Document.
 	-   A Document’s .ownerDocument must be null.
 -   RENDERING : A user agent typically renders any changes to its document trees, as soon as possible.
     
@@ -131,7 +131,7 @@
 		-   if and only if, a ShadowRoot, S,
 			-   has a property, S.host,
 			-   which points to an Element, E,
-		-   then, E.shadowRoot points to S.
+		-   then, E.shadowRoot points to S. ( Caveat : unless S was created with `{ mode : "closed" }` )
 -   There are only two ways to create a ShadowRoot and shadow host pair.
 	-   Declaratively via a “template” Element’s “shadowrootmode” attribute.
 		-   This attribute is discussed further in another section of this text, [ Templates and their “.shadowrootmode” Attribute ].
