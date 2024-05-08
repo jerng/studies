@@ -470,222 +470,181 @@
             "disappears" ).
 	    
 
-## 6. "Slot" `Elements` & Slottables
+## 6. `<slot> Elements` & `Slottables`
 
--   Despite the fact that `<template>` `Elements` and `<slot>` `Elements` are frequently
-    discussed together in documentation, `<slot>` `Elements` do not behave
-    differently based on their location in relation to `<template>` Elements.
+-   Despite the fact that `<template> Elements` and `<slot> Elements` are frequently
+    discussed together in documentation, `<slot> Elements` do not behave
+    differently based on their location in relation to `<template> Elements`.
     
-
-    -   `<slot>` `Elements` descended from `<template>` `Elements` behave just like any
-        other `Elements` when descended from `<template>` Elements.
+    -   `<slot> Elements` descended from `<template> Elements` behave just like any
+        other `Elements` descended from `<template> Elements`.
 	    
-    -   `<slot>` `Elements` behave in their own unique way, regardless of whether
-        they do, or do not, have a `<template>` `Element` ancestor.
+    -   `<slot> Elements` behave in their own unique way, regardless of whether
+        they do, or do not, have a `<template> Element` ancestor.
 	    
-    -   The special behaviours of `<slot>` `Elements` and `<template>` `Elements` can
-        interpolate, without contradiction. ( This requires some checking. )
+    -   The special behaviours of `<slot> Elements` and `<template> Elements` can
+        interpolate, without contradiction. ( ==This requires some checking.== )
 	    
-
--   `<slot>` `Elements` have unique behaviours, different from most other elements.
+-   `<slot> Elements` have unique behaviours, different from most other elements.
     ( Of the six types of HTML elements, they belong to the "normal elements". )
     
+    -   They may or may not have a `name` attribute - which optionally allows
+        them to be targeted for the *assignment* of `Slottables`.    
 
-    -   They may or may not have a "name" attribute - which optionally allows
-        them to be targeted for the assignment of Slottables.
+        -   Elucidated below, in this text : `Slottables` may be *assigned* to a
+            ***default slot*** that has no `name` attribute.
+
+    -   They have an `.assign` method, which allows manual *assignment* of
+        `Slottables` to the `<slot> Element`.
 	    
-
-        -   Elucidated below, in this text : Slottables may be assigned to a
-            "default slot" that has no "name" attribute.
+        -   The `.assign` method only functions when a `<slot> Element`'s *root* is a
+            [ *shadow root* whose `.slotAssignment` property is set to `"manual"` ].
 	    
-
-    -   They have an ".assign" method, which allows manual assignment of
-        Slottables to the "slot" element.
-	    
-
-        -   The .assign method only functions when a `<slot>` `Element`'s root is a
-            [ shadow root whose .slotAssignment property is set to "manual" ].
-	    
-
-    -   They have an ".assignedNodes" method, which returns a list of assigned
-        Slottables ; Slottables have an ".assignedSlot" property, which is the
+    -   They have an `.assignedNodes` method, which returns a list of *assigned
+        `Slottables`* ; `Slottables` have an `.assignedSlot` property, which is the
         inverse pointer.
 	    
+        -   The relationship is, **one-`<slot>-Element`-to-many-`Slottables`**.
+		    
+        -   The *assignment* of `<slot> Elements` and `Slottables` to each other, is
+            different based on the following qualifications.
+		    
+        -   ==WARNING== : *Assignment* of `Slottables` to `<slot> Elements`,
 
-        -   The relationship is, one-"slot"-Element-to-many-Slottables.
-		    
-        -   The assignment of `<slot>` `Elements` and Slottables to each other, is
-            different based on the following qualifications
-		    
-        -   WARNING : Assignment of Slottables to `<slot>` Elements,
-		    
-
-            -   Does not change the initial location of Slottables in their node
-                tree.
+            -  Does not change the initial location of `Slottables` in their *node
+                tree*.
 			    
-            -   Merely renders Slottables "as if" they had been moved from their
+            -   Merely renders `Slottables` "as if" they had been moved from their
                 initial location, to new locations as children of their
-                .assignedSlot.
+                `.assignedSlot`.
 			    
             -   See : RENDERING
     
 
--   Qualified Interfaces : Slottables must have DOM interfaces that are
-    qualified for assignment to `<slot>` Elements.
+-   **Qualified Interfaces** : `Slottables` must have DOM interfaces that are
+    qualified for *assignment* to `<slot> Elements`.
     
-
-    -   `Elements` and Texts are Slottables.
+    -   `Elements` and `Texts` are `Slottables`.
 	    
-    -   DOM spec : "Note : a slot can be a slottable."
+    -   >DOM spec : "Note : a slot can be a slottable."
 	    
+-   **Qualified Root** : Broadly, a `<slot> Element`'s `.assign` method behaves
+    differently, depending on whether its *root* is, or is not, a *shadow root*.
 
--   Qualified Root : Broadly, a `<slot>` `Element`'s .assign method behaves
-    differently, depending on whether its root is, or is not, a shadow root.
+    -   If a `<slot> Element`'s *root* is not a *shadow root*, then the `<slot> Element`'s `.assign` method will never find a `Slottable` with a qualifying
+        location, so the `<slot> Element`'s `.assignedNodes` method will always
+        return an empty list.   
+
+-   **Qualified Location** : More specifically, `Slottables` must be in a qualifying
+    location, in order to be assigned to a `<slot> Element`. Only [ immediate
+    child `Slottables` ] of the [ `<slot> Element`'s [[ *root* that is a *shadow root*
+    ]]'s *shadow host* ] may qualify.  ==TO DO : write about shadow trees, whose shadow
+    hosts are in an upstream shadow tree==
     
-
-    -   If a `<slot>` `Element`'s root is not a shadow root, then the "slot"
-        `Element`'s .assign method will never find a Slottable with a qualifying
-        location, so the `<slot>` `Element`'s .assignedNodes method will always
-        return an empty list.
-    
-
--   Qualified Location : More specifically, Slottables must be in a qualifying
-    location, in order to be assigned to a `<slot>` Element. Only [ immediate
-    child Slottables ] of the [ `<slot>` `Element`'s [[ root that is a shadow root
-    ]]'s host ] may qualify. `TO DO : write about shadow trees, whose shadow
-    hosts are in an upstream shadow tree`
-    
-
-    -   Attempted assignment of Slottables in disqualified locations will be
-        ignored. Elucidatory examples of ignored Slottables :
-	    
+    -   Attempted assignment of `Slottables` in disqualified locations will be
+        ignored. Elucidatory examples of ignored `Slottables` :
 	
-        -   Slottable descendants of [ the `<slot>` `Element`'s root [[ root that is
-            a shadow root ]] ].
+        -   `Slottable` descendants of [ the `<slot> Element`'s [[ *root* that is
+            a *shadow root* ]] ].
 		    
-        -   Slottable [ siblings or grandchildren ] of [ the `<slot>` `Element`'s [[
-            root that is a shadow root ]]'s host ].
+        -   `Slottable` [ siblings or grandchildren ] of [ the `<slot> Element`'s [[ *root that is a shadow root ]]'s *shadow host* ].	    
+
+    -   If a `<slot> Element` (SLOT)'s *root* is [ a *shadow root*, with a
+        `.slotAssignment` property set to `"named"` ] (ROOT_S_N), then,
 	    
 
-    -   If a `<slot>` `Element` (SLOT)'s root is [ a shadow root, with a
-        .slotAssignment property set to "named" ] (ROOT_S_N), then,
-	    
-
-        -   ( CASE1 ) … whereas, if SLOT has a "name" attribute, then the "name"
-            attribute of the `<slot>` `Element` will be matched to the "slot"
-            attribute of one-or-more Slottables in qualified locations.
+        -   ( **CASE1** ) … whereas, if SLOT has a `name` attribute, then [ the `name`
+            attribute of SLOT ] will be matched to [ the `slot`
+            attribute of one-or-more `Slottables` in qualified locations ], and the matched `Slottables` will be *assigned* to SLOT.
 		    
-        -   ( CASE2 ) … whereas, If SLOT has no "name" attribute, then …
-		    
+        -   ( **CASE2** ) … whereas, If SLOT has no `name` attribute, then …
 	
-            -   ( CASE2A ) … whereas, if SLOT is [ the first `<slot>` `Element` (
-                without a "name" attribute ) descendent of ROOT_S_N] … then SLOT
-                is designated the "default slot", and
+            -   ( **CASE2A** ) … whereas, if SLOT is [ the first `<slot> Element` (
+                without a `name` attribute ) descendant of ROOT_S_N ] … then SLOT
+                is designated the ***default slot***, and
 			    
+                -   … all `Slottables` in qualified locations, which have no
+                    `slot` attribute, will be *assigned* to the ***default slot***.
 
-                -   … all Slottables in qualified locations, which have no
-                    "slot" attribute, will be assigned to the default slot.
-			    
+            -   ( **CASE2B** ) … whereas, if SLOT is not [ the first `<slot> Element`
+                ( without a `name` attribute ) descendant of ROOT_S_N] … then
+                SLOT will be ignored for the *assignment* of `Slottables`, and
+                SLOT's `.assignedNodes` method will always return the empty list.
 
-            -   ( CASE2B ) … whereas, if SLOT is not [ the first `<slot>` Element
-                ( without a "name" attribute ) descendent of ROOT_S_N] … then
-                SLOT will be ignored for the assignment of Slottables, and
-                SLOT's .assignedNodes method will always return the empty list.
-		    
-
-    -   If a `<slot>` `Element`'s root is [ a shadow root, with a .slotAssignment
-        property set to "manual" ], then ( CASE3 ),
+    -   If a `<slot> Element`'s *root* is [ a *shadow root`, with a `.slotAssignment`
+        property set to `"manual"` ], then ( **CASE3** ),
 	    
-
-        -   The `<slot>` `Element`'s "name" attribute will be ignored, in the
-            process of matching Slottables to this `<slot>` Element.
+        -   The `<slot> Element`'s `name` attribute will be ignored, in the
+            process of matching `Slottables` to this `<slot> Element`.
 		    
-
-            -   Likewise, any respective "slot" attributes of Slottables in
+            -   Likewise, any respective `slot` attributes of `Slottables` in
                 qualifying locations will have no effect.
 		    
-
-        -   The initial behaviour of the `<slot>` `Element`, is as if its root was
-            not a shadow root.
+        -   The initial behaviour of the `<slot> Element`, is as if its *root* was
+            not a *shadow root*.
 		    
-        -   The `<slot>` `Element`'s .assign method may be used to manually assign (
-            one or more ) qualified Slottables to the `<slot>` `Element`, in a
-            single assignment operation.
+        -   The `<slot> Element`'s `.assign` method may be used to manually *assign* (
+            one or more ) qualified `Slottables` to the `<slot> Element`, in a
+            single manual *assignment* operation.
 		    
-
-            -   A `<slot>` `Element`'s Slottable assignments can be reset to the
-                empty list, by calling an assignment with zero qualified
-                Slottables.
+            -   A `<slot> Element`'s `Slottable` *assignments* can be reset to the
+                empty list, by a manual  *assignment* operation with zero qualified
+                `Slottables`.
 	    
-
-    -   Unassignable Slottables in Qualified Locations, as implied by exclusion
-        from cases 1, 2, and 3 :
+    -   **Unassignable `Slottables`** in Qualified Locations, as implied by exclusion
+        from **CASES 1, 2, and 3** :
 	    
-	
-        -   one or more `<slot>` `Elements` share [ a root ( which is a shadow root
-            ) that has a .slotAssignment property set to "named" ], but
+        -   one or more `<slot> Elements` share [ a *root* ( which is a *shadow root*
+            ) that has a `.slotAssignment` property set to `"named"` ], but
 		    
-
-            -   ( exclusion from CASE1 ) … whereas, the Slottable in a qualified
-                location has a "slot" attribute whose value does not match any
-                `<slot>` `Element`'s "name" attribute; or
+            -   ( exclusion from **CASE1** ) … whereas, the `Slottable` in a qualified
+                location has a `slot` attribute whose value does not match any
+                `<slot> Element`'s `name` attribute; or
 			    
-            -   ( exclusion from CASE2 ) … whereas, the Slottable in a qualified
-                location has no "slot" attribute, and there is no designated
-                "default slot"; or
-		    
+            -   ( exclusion from **CASE2** ) … whereas, the `Slottable` in a qualified
+                location has no `slot` attribute, and there is no designated
+                ***default slot***; or		    
 
-        -   ( excluded from CASE3 ) the `<slot>` `Element`'s root ( which is a
-            shadow root ) has a .slotAssignment property set to "manual", but
-            the `<slot>` `Element`'s .assign method was not called on any Slottables
+        -   ( excluded from ***CASE3*** ) the `<slot>` `Element`'s *root* ( which is a
+            *shadow root* ) has a `.slotAssignment` property set to `"manual"`, but
+            the `<slot> Element`'s `.assign` method was not called on any `Slottables`
             in qualified locations.
 		    
-
--   CSS Selectors of interest :
+-   **CSS Selectors of interest** :
+        -   `::slotted` pseudo-element
     
-
-    -   CSS ::slotted pseudo-element
-    
-
--   RENDERING :
-    
+-   **RENDERING** :
 	
-    -   `<slot>` `Elements` are normally rendered with the CSS property "display :
-        contents" ( the `<slot>` `Element` is replaced by its various contents, in
-        the box-tree); this is the case, whether the `<slot>` Element's
-        .assignedNodes method returns an empty list, or some Nodes.
+    -   `<slot> Elements` are normally rendered with the CSS property `display :
+        contents` ( the `<slot> Element` is replaced by its various contents, in
+        the box-tree); this is the case, whether the `<slot> Element`'s
+        `.assignedNodes` method returns an empty list, or some `Nodes`.
 	    
-    -   If a `<slot>` `Element`'s .assignedNodes method returns the empty list, then
-        the `<slot>` `Element`'s rendered contents are its .childElements.
+    -   If a `<slot> Element`'s `.assignedNodes` method returns the empty list, then
+        the `<slot> Element`'s rendered contents are its `.childElements`.
 	    
-    -   If a `<slot>` `Element`'s .assignedNodes method returns a non-empty list of
-        `Nodes` ( its "assigned Nodes" ), then the `<slot>` `Element`'s contents are
-        the value returned by the `<slot>` `Element`'s .assignedNodes method ( and,
-        the `<slot>` `Element`'s .childElements will be ignored for rendering ).
-	    
+    -   If a `<slot> Element`'s `.assignedNodes` method returns a non-empty list of
+        `Nodes` ( its *assigned Nodes* ), then the `<slot> Element`'s contents are
+        the value returned by the `<slot> Element`'s `.assignedNodes` method ( and,
+        the `<slot> Element`'s `.childElements` will be ignored for rendering ).
 
-        -   Also see : Shadow host > RENDERING > WARNING
-    
+        -   Also see : **Shadow host > RENDERING > WARNING**
 
 ## 7. CustomElementRegistry & CustomStateSet
 
--   These DOM interfaces implement the the HTML spec's concept of "custom
-    elements".
+-   These DOM interfaces implement the the HTML spec's concept of *custom
+    `Elements`*.
     
--   CustomElementRegistry is an interface that does what it says. The user agent
+-   `CustomElementRegistry` is an interface that does what it says. The user agent
     can provide an object with this interface typically via
-    "window.customElements".
+    `window.customElements`.
     
--   Existing documentation on CustomElementRegistry & CustomStateSet appears to
+-   Existing documentation on `CustomElementRegistry` & `CustomStateSet` appears to
     be straightforward, and thus sufficient.
-    
 
-    -   Customised built-in elements : are extensions of built-in elements.
+    -   **Customised built-in `Elements`** : are extensions of built-in `Elements`.
 	    
-    -   Autonomous custom elements : are not extensions of built-in elements.
-    
+    -   **Autonomous custom `Elements`** : are not extensions of built-in `Elements`.
 
--   CSS Selectors of interest :
-    
-
-    -   CSS ::state() pseudo-class
+-   **CSS Selectors of interest** :   
+    -   `::state()` pseudo-class
