@@ -89,6 +89,7 @@ slot::after{
                         .attachShadow( { mode : 'open', slotAssignment : 'manual' } )
                       hfmt = srfmt.host
                       slotfmt = document.getElementById('slot-for-manual-test')
+                      slotfmt = document.getElementById('slot-for-manual-test')
                       slottablefmt = document.getElementById('slottable-for-manual-test')
                       aslottablefmt = document.getElementById('another-slottable-for-manual-test')
                       slottablesomth =
@@ -109,7 +110,16 @@ slot::after{
                         .attachShadow( { mode : 'open' } )
                       hfnt = srfnt.host
                       slotfnt = document.getElementById('slot-for-named-test')
+                      uslotfnt = document.getElementById('unnamed-slot-for-named-test')
                       slottablefnt = document.getElementById('slottable-for-named-test')
+                      aslottablefnt =
+                      document.getElementById('another-slottable-for-named-test')
+                      slottablesonth =
+                        document.getElementById('slottable-sibling-of-named-test-host')
+                      slottablegonth =
+                        document.getElementById('slottable-grandchild-of-named-test-host')
+                      slottableintt =
+                        document.getElementById('slottable-in-named-test-tree')
                       srfnt.append(`2. Upon conversion to a shadow host, the
                               shadow host's children are no longer rendered. The
                               shadow root has no children, and renders nothing
@@ -122,7 +132,7 @@ slot::after{
                       slotfmt.prepend(`3. Then, if we replace the text node with
                              the prepared slot, we see the following content : `)
                       //
-                      srfnt.replaceChildren(slotfnt)
+                      srfnt.replaceChildren(slotfnt,uslotfnt,slottableintt)
                       slotfnt.prepend(`3. Then, if we replace the text node with
                              the prepared slot, we see the following content : `)
                     }
@@ -134,6 +144,7 @@ slot::after{
      changed : `)
                     //
                     slottablefnt.setAttribute('slot','named-test-slot-name')
+                    aslottablefnt.setAttribute('slot','named-test-slot-name')
                     slottablefnt.prepend(`4. Now, if we set the slottable's slot
      attribute value to match the slot-child of the shadow root, we see the
      following content : `)
@@ -181,6 +192,9 @@ slot::after{
 
     <div id="sandbox">
 
+    <template shadowrootmode="x">test template with open mode </template>
+    <template shadowrootmode="open">another test template with open mode </template>
+
       <h1>Slot Behaviour Sandbox</h1>
 
       <blockquote>
@@ -222,9 +236,29 @@ slot::after{
           <slot id="slot-for-named-test" name="named-test-slot-name">
           <div class="slot-child">Initial child of slot element. Named test</div>
           </slot>
+          <slot id="unnamed-slot-for-named-test"></slot>
           <span id="slottable-for-named-test">(
-            Slottable : for named test )</span>
+            Slottable : for named test )
+          </span>
+          <span id="another-slottable-for-named-test">(
+            Another Slottable : for named test )
+          </span>
+          <span>
+            <span id="slottable-grandchild-of-named-test-host"
+            slot="named-test-slot-name">(
+              Slottable : grandchild of named test host )
+            </span>
+          </span>
+          <span id="slottable-in-named-test-tree" slot="named-test-slot-name">(
+            Slottable : in named test tree )
+          </span>
         </div>
+
+        <span id="slottable-sibling-of-named-test-host"
+        slot="named-test-slot-name">(
+          Slottable : sibling of named test host )
+        </span>
+
 
       </blockquote>
 
