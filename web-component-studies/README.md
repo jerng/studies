@@ -21,7 +21,7 @@
 #### by themselves,
 - … utilise,
 	- … CustomElementRegistry,
-	- … CustomStateSet interface, and
+	- … CustomStateSet, and
 	- … CustomEvent, to
 - … allow augmented Elements which may have customised 
 	- … behaviour, 
@@ -45,7 +45,7 @@
 - … provides encapsulation for styling, and
 - … provides encapsulation for programmatic node traversal ;
 
-#### … is functionality extensible via optional “slot” Elements,
+#### … is functionaly extensible via optional “slot” Elements,
 - … which only work as descendents of a ShadowRoot,
 	- … taking some Slottables from outside a shadow tree, and 
 	- … rendering them inside the shadow tree, thereby
@@ -56,7 +56,7 @@
 	- … by extending its (“template” Element’s) .content DocumentFragment into a ShadowRoot,
 	- … attaching that ShadowRoot to its (“template” Element’s) parent Element as its shadow root, and
 	- … then removing itself (“template” Element) from the node tree, which 
-	- … in essence, saving you a few manual steps, without doing anything unique.
+	- … in essence, saves you a few manual steps, without doing anything unique.
 
 ## 1. Nodes
 - Node is a fundamental DOM interface. 
