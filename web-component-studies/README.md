@@ -81,10 +81,10 @@
     - … then removing the `<template> Element` from the *node tree*, which 
     - … in essence, saves a few manual programming steps, without doing anything unique.
 
-## 1. Nodes
+## 1. `Nodes`
 - `Node` is a fundamental DOM interface. 
 
-### 1.1. Elements
+### 1.1. `Elements`
 - `Element` is also an important DOM interface.
 - `Nodes` may be `Elements` ( a.k.a. HTML elements, further defined under that
   specification ).
@@ -358,125 +358,115 @@
 		    
     
 
-## 4. Ordinary "Roots" & "Shadow-including Roots"
+## 4. Ordinary *Roots* vs. *Shadow-including Roots*
 
--   `Nodes` have a ".getRootNode" method.
+-   `Nodes` have a `.getRootNode` method.
     
 -   By default ( when called with no arguments ), or when called with the
-    argument { composed: false }, a Node's .getRootNode method returns the
-    "root" node of the Node's root tree.
+    argument `{ composed: false }`, a `Node`'s `.getRootNode` method returns the
+    *root* `Node` of the `Node`'s *node tree*.
     
-    -   For a node, N, N.getRootNode( { composed : false } ) results from
-        following N.parentNode, recursively,
+    -   For a node, N, `N.getRootNode( { composed : false } )` returns the result of
+        following `N.parentNode`, recursively,
 
         -   until the first instance of an ancestor node, R, is encountered,
-            where R.parentNode=null.
+            where `R.parentNode=null`.
 	    
-    -   SPECIFICATION : If an [ object's parent ] is null, the [ object's root ]
+    -   >SPECIFICATION : If an [ object's parent ] is null, the [ object's root ]
         is [ itself ]; otherwise, the [ object's root ], is the [ object's
         parent's root ].
 	    
-    -   ( The DOM spec neither recommends, nor recommends against, the use of
+    -   >( The DOM spec neither recommends, nor recommends against, the use of
         the terms "shadow-excluding roots", "uncomposed root", "simple roots",
         or "ordinary roots" to be used in opposition to the spec-recommended
-        term "shadow-including root". )
+        term *shadow-including root*. )
 	    
--   When called with the argument { composed : true }, a Node's .getRootNode
-    method returns the "shadow-including root" node of the Node's root tree
+-   When called with the argument `{ composed : true }`, a `Node`'s `.getRootNode`
+    method returns the *shadow-including root* node of the `Node`'s *node tree*.
     
-    -   For a node, N, N.getRootNode( { composed : true } ) results from
-        following N.parentNode, recursively,
+    -   For a node, N, `N.getRootNode( { composed : true } )` results from
+        following `N.parentNode`, recursively,
     
         -   whereas as each instance of an ancestor node, SR, is encountered,
-            where SR.parentNode=null and SR is a ShadowRoot, instead check
-            SR.host.parentNode,
+            where `SR.parentNode=null` and SR is a `ShadowRoot`, instead check
+            `SR.host.parentNode`,
     
         -   until the first instance of an ancestor node, R, is encountered,
-            where R.parentNode=null and R is not a ShadowRoot.
+            where `R.parentNode=null` and R is not a `ShadowRoot`.
     
-    -   SPECIFICATION : If an [ object's root ] is a shadow root, the [ object's
+    -   >SPECIFICATION : If an [ object's root ] is a shadow root, the [ object's
         "shadow-including root" ] is the [ object's root's host's
         shadow-including root ]; otherwise, the [ object's shadow-including root
         ] is the [ object's root ].
     
-    -   ( The DOM spec neither recommends, nor recommends against, the use of
+    -  > ( The DOM spec neither recommends, nor recommends against, the use of
         the term "composed root" to be used synonymously with the
-        spec-recommended term "shadow-including root". )   
+        spec-recommended term *shadow-including root*. )   
 
-## 5. "Template" `Elements` and their ".shadowrootmode" Attribute
+## 5. `<template> Elements` and their `.shadowrootmode` Attribute
 
--   `<template>` `Elements` have unique behaviours, different from most other
+-   `<template> Elements` have unique behaviours, different from most other
     elements.
     
-	
-    -   Of note, there are six kinds of HTML `Elements`, and the "template"
-        `Element` is the sole-member of its entire kind
+    -   Of note, there are six kinds of HTML `Elements`, and the `<template> Element` is the sole-member of its entire kind
 	    
     -   ( The other five kinds for your further reading are,
 	    
 
-        -   void elements ( no end tag required, such as "br" ),
+        -   void elements ( no end tag required, such as `<br>` ),
 		    
-        -   raw text elements ( "script", and "style" ),
+        -   raw text elements ( `<script>`, and `<style>` ),
 		    
-        -   escapable raw text elements ( "textarea", "title" ),
+        -   escapable raw text elements ( `<textarea>`, `<title>` ),
 		    
         -   foreign elements ( MathML, SVG namespaces ), and
 		    
         -   normal elements. )
     
 
--   HTML spec excerpts :
+-  > HTML spec excerpts    
     
-    -   "The template element is used to declare fragments of HTML that can be
+    > "The template element is used to declare fragments of HTML that can be
         cloned and inserted in the document by script."
-	    
-    -   "In a rendering, the template element represents nothing."
-	    
-    -   "The template element can have template contents, but such template
+	 
+	 > "In a rendering, the template element represents nothing."
+	
+	 > "The template element can have template contents, but such template
         contents are not children of the template element itself. Instead, they
         are stored in a `DocumentFragment` associated with a different `Document` —
         without a browsing context — so as to avoid the template contents
-        interfering with the main Document."
+        interfering with the main Document." 
+     > -   This is located at the `Element`'s ".content" property.
 	    
+-   `<template> Elements` may have a `shadowrootmode` content attribute.
 
-        -   This is located at the `Element`'s ".content" property.
-	    
-
--   `<template>` `Elements` may have a "shadowrootmode" content attribute.
-    
-
-    -   Without configuration ( by default ), `<template>` `Elements` do not have a
-        shadow root.
+    -   Without configuration ( by default ), `<template> Elements` do not have a
+        *shadow root*.
 	    
     -   If …
-	    
-
-        -   a `<template>` `Element`'s "shadowrootmode" content attribute is
-            declared in the start tag, with the value "open" or "closed", and
+	   
+        -   a `<template> Element`'s `shadowrootmode` content attribute is
+            declared in the start tag, with the value `"open"` or `"closed"`, and
 		    
-        -   the `<template>` `Element` is [ the first `<template>` `Element` child of
-            its parent, with a "shadowrootmode" content attribute with the value
-            "open" or "closed" ]
-		    
+        -   the `<template> Element` is [ the first `<template> Element` child of
+            its parent, with a `shadowrootmode` content attribute with the value
+            `"open"` or `"closed"` ]
 
     -   … then …
-	    
-	
-        -   1. the [ `<template>` `Element` ‘s parent `Element`'s .shadowRoot property
-            ] is set to a ShadowRoot, whose
+	    	
+        -   1. the [ `<template> Element` ‘s parent `Element`'s `.shadowRoot` property
+            ] is set to a `ShadowRoot`, whose
+		    
+            -   1.1. `.mode` property is set to the declared value
+			    
+            -   1.2. `.nodeList` property is set to the value of [ the `<template>
+                Element`'s `.content` property ]
+			    
+            -   1.3. `.clonable` property is set to `"true"` ( since `<template>
+                Elements` are meant to be cloned for reuse ) . And
 		    
 
-            -   1.1. .mode property is set to the declared value
-			    
-            -   1.2. .nodeList property is set to the value of [ the "template"
-                `Element`'s .content property ]
-			    
-            -   1.3. .clonable property is set to "true" ( since "template"
-                `Elements` are meant to be cloned for reuse ) . And
-		    
-
-        -   2. The `<template>` `Element` is itself removed from its node tree (
+        -   2. The `<template> Element` is itself removed from its *node tree* (
             "disappears" ).
 	    
 
