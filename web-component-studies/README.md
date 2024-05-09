@@ -156,47 +156,47 @@ rough drawing : a node tree, in a common web browser ( not all nodes are shown )
 ~~~~~~~~~~~~~~~~~~
 Object#0
 implements Document
-prop, documentElement	-> #1       	Object#1
-prop, childNodes		[ -> #1	]---+	implements Element
-prop, childElements		[ -> #1	]	+---prop, parentNode 	-> #0
-prop, parentNode null					prop, tagName 		"html"
-								+-------prop, childNodes 	[ -> #2 ]
-						   +----+		prop, ownerDocument	-> #0
-						   |			prop, childElements [ -> #2]
-						   |
-Object#2				   |
-implements Element		   |		   
-prop, parentNode	-> #1--+
-prop, tagName		"body"			   
-prop, childElements	[ -> #4 ]		   
-prop, ownerDocument	-> #0
-prop, children		[ -> #5 ]					
-prop, childNodes	[ -> #3, -> #4, -> #5 ]---------+
-								    				|
-								   +----------------+-------+
-Object#3						   |				|		|
-implements Text					   |				|		|
-prop, parentNode			-> #2--+				|		|
-prop, data					"First line of text."	|		|
-prop, nextSibling 			-> #4					|		|
-prop, nextElementSibling 	-> #5					|		|
-prop, ownerDocument			-> #0					|		|
-													|		|
-Object#4						   +----------------+		|
-implements Text					   |						|
-prop, parentNode			-> #2--+						|
-prop, data					"Second line of text."			|
-prop, nextSibling 			-> #5							|
-prop, nextElementSibling 	-> #5							|
-prop, previousSibling 		-> #3							|
-prop, ownerDocument			-> #0							|
-															|
-Object#5													|						
-implements Element											|
-prop, parentNode			-> #2---------------------------+
-prop, tagName				"div"
-prop, previousSibling 		-> #4
-prop, ownerDocument			-> #0
+prop, documentElement   -> #1           Object#1
+prop, childNodes        [ -> #1 ]---+   implements Element
+prop, childElements     [ -> #1 ]   +---prop, parentNode    -> #0
+prop, parentNode null                   prop, tagName       "html"
+                                +-------prop, childNodes    [ -> #2 ]
+                           +----+       prop, ownerDocument -> #0
+                           |            prop, childElements [ -> #2]
+                           |
+Object#2                   |
+implements Element         |           
+prop, parentNode    -> #1--+
+prop, tagName       "body"             
+prop, childElements [ -> #4 ]          
+prop, ownerDocument -> #0
+prop, children      [ -> #5 ]                   
+prop, childNodes    [ -> #3, -> #4, -> #5 ]---------+
+                                                    |
+                                   +----------------+-------+
+Object#3                           |                |       |
+implements Text                    |                |       |
+prop, parentNode            -> #2--+                |       |
+prop, data                  "First line of text."   |       |
+prop, nextSibling           -> #4                   |       |
+prop, nextElementSibling    -> #5                   |       |
+prop, ownerDocument         -> #0                   |       |
+                                                    |       |
+Object#4                           +----------------+       |
+implements Text                    |                        |
+prop, parentNode            -> #2--+                        |
+prop, data                  "Second line of text."          |
+prop, nextSibling           -> #5                           |
+prop, nextElementSibling    -> #5                           |
+prop, previousSibling       -> #3                           |
+prop, ownerDocument         -> #0                           |
+                                                            |
+Object#5                                                    |                       
+implements Element                                          |
+prop, parentNode            -> #2---------------------------+
+prop, tagName               "div"
+prop, previousSibling       -> #4
+prop, ownerDocument         -> #0
 ```    
 
 ## 3. *Root Nodes*
