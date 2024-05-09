@@ -301,7 +301,9 @@ prop, ownerDocument         -> #0
         term *light tree*. )
     -   > ( The DOM spec neither recommends, nor recommends against, the use of
         the term "shadow DOM". This term is recommended by WebComponents.Org, to
-        be used synonymously with the DOM-spec-recommended term *shadow tree*. )
+        be used synonymously with the DOM-spec-recommended term *shadow tree*. 
+        This term also occurs in draft specifications which have been
+        deprecated. )
      -   Below, an entire section of this text is devoted to **Ordinary *Roots*
          and *Shadow-including Roots***.
 -   `ShadowRoots` each have a `.slotAssignment` property, which determines how
