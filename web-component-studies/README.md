@@ -28,9 +28,14 @@
        `Something`" refers to an object which implements the `Something` interface …
        and "`Somethings`" refers to all objects which implement the `Something`
        interface.
-- "DOM" refers **explicitly** to the DOM ( the model ), and **not implicitly** to *node trees* as is commonly practiced elsewhere.
-- Effort has been made to put *terms in italics* when they are terminology that has been used in specifications - however there may been exceptions due to error.
-- Effort has been made to put `terms in monospace` when they are terminology that appears in programming code - however there may been exceptions due to error.
+- "DOM" refers **explicitly** to the DOM ( the model ), and **not implicitly**
+  to *node trees* as is commonly practiced elsewhere.
+- Effort has been made to put *terms in italics* when they are terminology that
+  has been used in specifications - however there may been exceptions due to
+  error.
+- Effort has been made to put `terms in monospace` when they are terminology
+  that appears in programming code - however there may been exceptions due to
+  error.
 
 ## 0. Executive Summary
 
@@ -75,8 +80,10 @@
 #### … optionally extends the functionality of `<template> Elements`, 
 - … whereby somewhat non-trivially, a `<template> Element` may be configured to
   replace itself with a `ShadowRoot`, in a *node tree*, 
-    - … by extending the `<template> Element`'s `.content` property's  `DocumentFragment` into a `ShadowRoot`,
-    - … attaching that `ShadowRoot` to [ the `<template> Element`'s parent `Element` ]
+    - … by extending the `<template> Element`'s `.content` property's
+      `DocumentFragment` into a `ShadowRoot`,
+    - … attaching that `ShadowRoot` to [ the `<template> Element`'s parent
+      `Element` ]
       as its *shadow host*, and
     - … then removing the `<template> Element` from the *node tree*, which 
     - … in essence, saves a few manual programming steps, without doing anything unique.
@@ -208,10 +215,14 @@
 
 -   A *shadow tree* refers to a *node tree* whose *root* is a `ShadowRoot`.
     -   ==WARNING== : 
-	    - An [ `Element`'s *shadow root* ] refers to [ the `ShadowRoot` descendant of that `Element` ], and not to [ the `Element`'s *root* which is a `ShadowRoot` ].
-		    - An [ `Element`'s *shadow tree* ] refers to [ the *node tree* of the`ShadowRoot` descendant of that `Element` ], and not to [ the `Element`'s own *node tree* even if it is also a *shadow tree* ].
-		    - [ the *node tree* of a `ShadowRoot` ] is not [ the *node tree* of
-        that `ShadowRoot`'s *shadow host* ], thus
+        - An [ `Element`'s *shadow root* ] refers to [ the `ShadowRoot`
+          descendant of that `Element` ], and not to [ the `Element`'s *root*
+          which is a `ShadowRoot` ].
+            - An [ `Element`'s *shadow tree* ] refers to [ the *node tree* of
+              the`ShadowRoot` descendant of that `Element` ], and not to [ the
+              `Element`'s own *node tree* even if it is also a *shadow tree* ].
+            - [ the *node tree* of a `ShadowRoot` ] is not [ the *node tree* of
+              that `ShadowRoot`'s *shadow host* ], thus
 		    - frustratingly,  an [ `Element`'s *root* which
         is a *shadow root* ], is not the value of [ that `Element`'s `.shadowRoot`
         property ].
@@ -272,15 +283,17 @@
 	   
 -   **RENDERING** : Unlike other *node trees* whose *roots* are `DocumentFragments`,
     *shadow trees* are **rendered as soon as possible**.
-    -   ==WARNING== : when an `Element` becomes a *shadow host*, its children are no longer rendered by user agents
-	    - it is as if the children
+    -   ==WARNING== : when an `Element` becomes a *shadow host*, its children
+        are no longer rendered by user agents
+        - it is as if the children
         have the CSS property `display : none`
         -  … however an examination of the
         child `Elements` will show that both, their initial *node tree* location (
         as descendants of the *shadow host* ), and initial value of the CSS property `display`,
         have not changed ( the latter may be `block`, `inline`, etc. ).
         -   The DOM, HTML, and CSS specifications do not contain a description
-            of this behaviour, which is implemented for all *shadow hosts*.  ( If this is specified, I have not yet found the specification. )
+            of this behaviour, which is implemented for all *shadow hosts*.  (
+            If this is specified, I have not yet found the specification. )
     -   Furthermore, a *shadow host*'s *shadow root*'s
         `.children` will be rendered in place of the *shadow host*'s children.
     -   Furthermore, there is a special behaviour for `<slot> Elements` which are
@@ -313,7 +326,9 @@
 -   **Poor analogy** : *Shadow trees* generally do not exhibit fewer phenomena or
     fewer dimensions than *light trees*.
     
-    -   In fact, *shadow trees* have almost all the appearance and behavioural properties of *light trees*, with few caveats ; a *node tree* can be both a *light tree* and a *shadow tree* at the same time.
+    -   In fact, *shadow trees* have almost all the appearance and behavioural
+        properties of *light trees*, with few caveats ; a *node tree* can be
+        both a *light tree* and a *shadow tree* at the same time.
     
 -   **Compounded poor analogy** : see note on *light tree*.
     
@@ -324,8 +339,9 @@
     into a unrendered `DocumentFragment`, and stored in the `<template> Element`'s
     `.content` property ... as if it were hidden in shadows.
     
-    -   `<template> Elements` do have a configuration which replaces them with `ShadowRoots`, but this is off by default, and anyway, most *shadow hosts* are not
-        `<template> Elements`.
+    -   `<template> Elements` do have a configuration which replaces them with
+        `ShadowRoots`, but this is off by default, and anyway, most *shadow
+        hosts* are not `<template> Elements`.
     
 -   **FUNCTIONALITY** : the main feature of *shadow trees*, is that they are SPATIALLY
     ORTHOGONAL ( as in "namespaced", "memory spaced", and "hyper- or
@@ -348,13 +364,15 @@
         -   *shadow trees* are slightly more
             protected from scripts in their *light trees*, whereas
 		    
-	        -   A *shadow host* ( in the *light tree* ) accesses their *shadow tree* via the *shadow host*'s `.shadowRoot` property, alternatively via the return value of
-            the *shadow host*'s`.attachShadow`method.
+            -   A *shadow host* ( in the *light tree* ) accesses their *shadow
+                tree* via the *shadow host*'s `.shadowRoot` property,
+                alternatively via the return value of the *shadow
+                host*'s`.attachShadow`method.
         -   *light trees* are slightly less protected from
             scripts in their *shadow trees*.
 		    
-	        -   A `ShadowRoot` ( in the *shadow tree* ) accesses their *light tree* via the
-            `ShadowRoot`'s `.host` property.
+            -   A `ShadowRoot` ( in the *shadow tree* ) accesses their *light
+                tree* via the `ShadowRoot`'s `.host` property.
 		    
     
 
@@ -408,7 +426,8 @@
 -   `<template> Elements` have unique behaviours, different from most other
     elements.
     
-    -   Of note, there are six kinds of HTML `Elements`, and the `<template> Element` is the sole-member of its entire kind
+    -   Of note, there are six kinds of HTML `Elements`, and the `<template>
+        Element` is the sole-member of its entire kind
 	    
     -   ( The other five kinds for your further reading are,
 	    
@@ -531,31 +550,34 @@
 -   **Qualified Root** : Broadly, a `<slot> Element`'s `.assign` method behaves
     differently, depending on whether its *root* is, or is not, a *shadow root*.
 
-    -   If a `<slot> Element`'s *root* is not a *shadow root*, then the `<slot> Element`'s `.assign` method will never find a `Slottable` with a qualifying
-        location, so the `<slot> Element`'s `.assignedNodes` method will always
-        return an empty list.   
+    -   If a `<slot> Element`'s *root* is not a *shadow root*, then the `<slot>
+        Element`'s `.assign` method will never find a `Slottable` with a
+        qualifying location, so the `<slot> Element`'s `.assignedNodes` method
+        will always return an empty list.   
 
--   **Qualified Location** : More specifically, `Slottables` must be in a qualifying
-    location, in order to be assigned to a `<slot> Element`. Only [ immediate
-    child `Slottables` ] of the [ `<slot> Element`'s [[ *root* that is a *shadow root*
-    ]]'s *shadow host* ] may qualify.  ==TO DO : write about shadow trees, whose shadow
-    hosts are in an upstream shadow tree==
+-   **Qualified Location** : More specifically, `Slottables` must be in a
+    qualifying location, in order to be assigned to a `<slot> Element`. Only [
+    immediate child `Slottables` ] of the [ `<slot> Element`'s [[ *root* that is
+    a *shadow root* ]]'s *shadow host* ] may qualify.  ==TO DO : write about
+    shadow trees, whose shadow hosts are in an upstream shadow tree==
     
     -   Attempted assignment of `Slottables` in disqualified locations will be
         ignored. Elucidatory examples of ignored `Slottables` :
 	
-        -   `Slottable` descendants of [ the `<slot> Element`'s [[ *root* that is
-            a *shadow root* ]] ].
+        -   `Slottable` descendants of [ the `<slot> Element`'s [[ *root* that
+            is a *shadow root* ]] ].
 		    
-        -   `Slottable` [ siblings or grandchildren ] of [ the `<slot> Element`'s [[ *root that is a shadow root ]]'s *shadow host* ].	    
+        -   `Slottable` [ siblings or grandchildren ] of [ the `<slot>
+            Element`'s [[ *root that is a shadow root ]]'s *shadow host* ].	    
 
     -   If a `<slot> Element` (SLOT)'s *root* is [ a *shadow root*, with a
         `.slotAssignment` property set to `"named"` ] (ROOT_S_N), then,
 	    
 
-        -   ( **CASE1** ) … whereas, if SLOT has a `name` attribute, then [ the `name`
-            attribute of SLOT ] will be matched to [ the `slot`
-            attribute of one-or-more `Slottables` in qualified locations ], and the matched `Slottables` will be *assigned* to SLOT.
+        -   ( **CASE1** ) … whereas, if SLOT has a `name` attribute, then [ the
+            `name` attribute of SLOT ] will be matched to [ the `slot` attribute
+            of one-or-more `Slottables` in qualified locations ], and the
+            matched `Slottables` will be *assigned* to SLOT.
 		    
         -   ( **CASE2** ) … whereas, If SLOT has no `name` attribute, then …
 	
