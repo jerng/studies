@@ -1,8 +1,3 @@
-
-
-
-
-
 # A Systematic Introduction to "Web Components"
 
 ## Preamble
@@ -374,17 +369,27 @@ prop, ownerDocument         -> #0
 ```
 rough drawing : 
 
-    the numbering of nodes here is arbitrary,
+    the numbering of *nodes* here is arbitrary,
     and does not follow any specified algorithm;
 
-    algorithms that only traverse node trees by following 
+    algorithms that only traverse *node trees* by following 
     ".childNodes" and ".parentNode" pointers will never 
-    traverse into, or out of, shadow trees ;
+    traverse into, or out of, *shadow trees* ;
 
     - NODE#0 is a *document root*
     - NODE#6, NODE#10 are *shadow roots*
     - NODE#4, NODE#8 are their *shadow hosts*
     
+    each *shadow root* is the root of a *shadow tree*, and
+    each *document root* is the root of a *document tree*;
+    the DOM spec has it that the *shadow trees* are *associated*
+    with the *document tree*, but they are not considered
+    part of the *document tree* - this phrasing is somewhat unfortunate;
+    however, given that the spec further contains a concept of 
+    *shadow-including roots*, one might venture to say that the
+    sum of the *document tree* and its *associated shadow trees*
+    may be called a *shadow-including document tree*; -_- ;
+
     - NODE#0 is { NODE#0, #1, #2, #3, #4, #5 }'s *root*, which is not a *shadow root*
     - NODE#6 is { NODE#6, #7, #8, #9 }'s *root*, which is a *shadow root*
     - NODE#10 is { NODE#10, #11 }'s *root*, which is a *shadow root*
