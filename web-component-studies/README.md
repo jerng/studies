@@ -2,6 +2,7 @@
 
 
 
+
 # A Systematic Introduction to "Web Components"
 
 ## Preamble
@@ -248,6 +249,87 @@ prop, ownerDocument         -> #0
     -   An exception to this is, when a `DocumentFragment` is a `ShadowRoot`.
 
 #### 3.2.1. `ShadowRoot` & "Shadow Host" Pairs
+```
+rough drawing : 
+    algorithms that only traverse node trees by following 
+    ".childNodes" and ".parentNode" pointers will never 
+    traverse into, or out of, shadow trees ;
+    the numbering of nodes here is arbitrary,
+    and does not follow any specified algorithm
+~~~~~~~~~~~~~~~~~~
+- NODE#0 : Interface : Document 
+  ^
+  |- pointers : .childNodes x .parentNode
+  v
+  NODE#1 : Interface : Element : <html>
+  ^
+  |- pointers : .childNodes x .parentNode
+  v
+  NODE#2 : Interface : Element : <body>
+  ^  ^
+  |  |- pointers : .childNodes x .parentNode
+  |  v
+  |  NODE#4 : Interface : Element : <div class="a-shadow-host">
+  |  ^
+  |  :\\\
+  |  : \\\- EXTRAORDINARY pointers : .shadowRoot x .host
+  |  :  \\\
+  |  :   \\\ NODE#6 : Interface : ShadowRoot
+  |  :       ^  ^
+  |  :       |  |- pointers : .childNodes x .parentNode
+  |  :       |  v
+  |  :       |  NODE#8 : Interface : Element : <div class="a-shadow-host">
+  |  :       |  ^ 
+  |  :       |  :\\\ 
+  |  :       |  : \\\- EXTRAORDINARY pointers : .shadowRoot x .host 
+  |  :       |  :  \\\ 
+  |  :       |  :   \\\ NODE#10 : Interface : ShadowRoot 
+  |  :       |  :       ^ 
+  |  :       |  :       |- pointers : .childNodes x .parentNode 
+  |  :       |  :       v
+  |  :       |  :       NODE#11 : Interface : Element :  
+  |  :       |  :           <div class="first-child-of-a-shadow-root">
+  |  :       |  :               This would be rendered, but WITHOUT the influence 
+  |  :       |  :               of styles declared upstream of NODE#10.
+  |  :       |  :           </div>
+  |  :       |  :       
+  |  :       |  :       
+  |  :       |  :- pointers : .childNodes x .parentNode
+  |  :       |  v
+  |  :       |  NODE#9 : Interface : Element : 
+  |  :       |      <div class="child-of-a-shadow-host">
+  |  :       |          This would be rendered, but WITHOUT the influence
+  |  :       |          of styles declared upstream of NODE#6,
+  |  :       |          UNTIL NODE#8 becomes a shadow host.
+  |  :       |          After that, it would not be rendered.
+  |  :       |      </div>
+  |  :       |
+  |  :       |
+  |  :       |- pointers : .childNodes x .parentNode
+  |  :       v
+  |  :       NODE#7 : Interface : Element : 
+  |  :          <div class="child-of-a-shadow-root">
+  |  :              This would be rendered, but WITHOUT the influence
+  |  :              of styles declared upstream of NODE#6.
+  |  :          </div>
+  |  :
+  |  :
+  |  :- pointers : .childNodes x .parentNode
+  |  v
+  |  NODE#5 : Interface : Element : 
+  |     <div class="child-of-a-shadow-host">
+  |         This would be rendered, UNTIL NODE#4 becomes a shadow host.
+  |         After that, it would not be rendered.
+  |     </div>
+  |
+  |
+  |- pointers : .childNodes x .parentNode
+  v
+  NODE#3 : Interface : Element : 
+      <div class="not-a-shadow-host not-child-of-a-shadow-host">
+          This would rendered normally.
+      </div>
+```
 -   `DocumentFragments` may also be `ShadowRoots` ( a.k.a. *shadow roots* a.k.a.
     *shadows* ).
 -   `ShadowRoots` each have a `.host` property, which must point to an `Element`,
