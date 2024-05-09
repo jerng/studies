@@ -6,7 +6,7 @@
 
 ## Preamble
 - ==IMPORTANT== : ( You may read  this **Preamble** and the **Executive Summary** first, but ) 
-	The later parts of this text depend on an understanding of the
+    The later parts of this text depend on an understanding of the
   earlier parts, so the parts should be read in order.
 - ==IMPORTANT== : Contrary to common citation, there is NO OFFICIAL Web Components
   standard.
@@ -18,11 +18,11 @@
           Public Working Draft ( "work in progress, editor's draft, not an
           official standard" )
 - HTML documents are interpreted within the context of the DOM.
-	- The DOM specification exists in the context of **object oriented programming**
+    - The DOM specification exists in the context of **object oriented programming**
   and uses such language.
-	- DOM *objects* ( ==henceforth, "objects"== ) have *interfaces* which define their
+    - DOM *objects* ( ==henceforth, "objects"== ) have *interfaces* which define their
   usability. 
-	- DOM objects often implement multiple interfaces at the same time. 
+    - DOM objects often implement multiple interfaces at the same time. 
 
 ### Conventions in this Text 
 - Objects are referred to by a shorthand convention below, where "a
@@ -109,18 +109,18 @@ rough drawing : some, not all, DOM interfaces
 - Interface EventTarget 
   +- extended by Interface AbortSignal
   +- extended by Interface Node 
-	     +- extended by Interface Attr
-	     +- extended by Interface CharacterData 
-	     |		+- extended by Interface Comment
-	     |  	+- extended by Interface ProcessingInstruction
-	     |  	+- extended by Interface Text
-	     |  			+- extended by Interface CDATASection
-	     +- extended by Interface Document
-	     +- extended by Interface DocumentType
-	     +- extended by Interface DocumentFragment
-	     +- extended by Interface Element
+         +- extended by Interface Attr
+         +- extended by Interface CharacterData 
+         |      +- extended by Interface Comment
+         |      +- extended by Interface ProcessingInstruction
+         |      +- extended by Interface Text
+         |              +- extended by Interface CDATASection
+         +- extended by Interface Document
+         +- extended by Interface DocumentType
+         +- extended by Interface DocumentFragment
+         +- extended by Interface Element
 ```
-	
+    
 ## 2. Parents, Collections, & Trees
 -   This section talks about the arrows / pointers / directed-edges between
     Nodes.
@@ -177,7 +177,7 @@ prop, childNodes    [ -> #3, -> #4, -> #5 ]---------+
 Object#3                           |                |       |
 implements Text                    |                |       |
 prop, parentNode            -> #2--+                |       |
-prop, data                  "First line of text."   |       |
+prop, data                  "First bit of text."    |       |
 prop, nextSibling           -> #4                   |       |
 prop, nextElementSibling    -> #5                   |       |
 prop, ownerDocument         -> #0                   |       |
@@ -185,7 +185,7 @@ prop, ownerDocument         -> #0                   |       |
 Object#4                           +----------------+       |
 implements Text                    |                        |
 prop, parentNode            -> #2--+                        |
-prop, data                  "Second line of text."          |
+prop, data                  "Second bit of text."           |
 prop, nextSibling           -> #5                           |
 prop, nextElementSibling    -> #5                           |
 prop, previousSibling       -> #3                           |
@@ -231,7 +231,7 @@ prop, ownerDocument         -> #0
     -  > ( The DOM spec neither recommends, nor recommends against, the use of
         the term "document fragment root" which would be isomorphic with the
         spec-recommended terms *document root* and *shadow root*. )
-	-   > ( The DOM spec neither recommends, nor recommends against, the use of the
+    -   > ( The DOM spec neither recommends, nor recommends against, the use of the
     term "document fragment tree" which would be isomorphic with the
     spec-recommended terms *document tree* and *shadow tree*. )
 -   A new `DocumentFragment`, DF, constructed in a browser window's realm, via
@@ -259,7 +259,7 @@ prop, ownerDocument         -> #0
             -   has a property, `S.host`,
             -   which points to an `Element`, E,
         -   then, `E.shadowRoot` points to S. 
-	        - ( Caveat : unless S was created with `{ mode : "closed" }` )
+            - ( Caveat : unless S was created with `{ mode : "closed" }` )
 -   There are only two ways to create a `ShadowRoot` and *shadow host* pair.
     -   **Declaratively** via a `<template>` `Element`'s `shadowrootmode` attribute.
         -   This attribute is discussed further in another section of this text,
@@ -268,9 +268,9 @@ prop, ownerDocument         -> #0
         -  `.attachShadow`accepts the following key parameters in an object :
             -   **Required**
                 -   `mode` : `"open"` | `"closed"`
-	                -   `"open"` exposes the `ShadowRoot` via the *shadow host*'s
+                    -   `"open"` exposes the `ShadowRoot` via the *shadow host*'s
                     `.shadowRoot` property
-	                -   `"closed"` nullifies this property ; however, the `ShadowRoot`
+                    -   `"closed"` nullifies this property ; however, the `ShadowRoot`
                     is still returned when it is constructed via the *shadow
                     host*'s`.attachShadow`method
             -   **Optional**
@@ -288,14 +288,14 @@ prop, ownerDocument         -> #0
               `Element`'s own *node tree* even if it is also a *shadow tree* ].
             - [ the *node tree* of a `ShadowRoot` ] is not [ the *node tree* of
               that `ShadowRoot`'s *shadow host* ], thus
-		    - frustratingly,  an [ `Element`'s *root* which
+            - frustratingly,  an [ `Element`'s *root* which
         is a *shadow root* ], is not the value of [ that `Element`'s `.shadowRoot`
         property ].
-	    -   From the perspective of [ the `ShadowRoot` and its *shadow tree* ], [ the
-	        *node tree* of the `ShadowRoot`'s *shadow host* ] may be referred to as a *light
-	        tree*.
-		    -   That *light tree* may itself be a *shadow tree* … if its root is another
-	        `ShadowRoot`.
+        -   From the perspective of [ the `ShadowRoot` and its *shadow tree* ], [ the
+            *node tree* of the `ShadowRoot`'s *shadow host* ] may be referred to as a *light
+            tree*.
+            -   That *light tree* may itself be a *shadow tree* … if its root is another
+            `ShadowRoot`.
     -  > ( The DOM spec neither recommends, nor recommends against, the use of
         the term "light DOM". This term apparently evolved naturally from the
         term "shadow DOM", and is informally used synonymously with the
@@ -318,7 +318,7 @@ prop, ownerDocument         -> #0
         construction.
 -   ***Node tree* traversal** : `Node` methods such as `.querySelector` do not traverse
     from an `Element`'s *node tree*, to the `Element`'s *shadow tree*.
-	- To    traverse a `shadow tree`, one has to call the respective traversal method on
+    - To    traverse a `shadow tree`, one has to call the respective traversal method on
     a `Node` ( such as the `ShadowRoot` ) in the *shadow tree*.
 -   **Styling** : Style declarations affecting a *node tree*, NT, do not select
     `Elements` in [ *shadow trees* whose *shadow hosts* are in NT ]. There
@@ -326,7 +326,7 @@ prop, ownerDocument         -> #0
     
     -   **Imperative** styling : `ShadowRoots` have an `.adoptedStyleSheets`
         property which houses an array of `CSSStyleSheets`.
-	    -   This array should be : modified "in-place", and not "replaced".
+        -   This array should be : modified "in-place", and not "replaced".
         -   `CSSStyleSheets` should be created with the
                 `document.CSSStyleSheet` method.
         -   Each `CSSStyleSheet` is treated as a style sheet that has been
@@ -338,14 +338,14 @@ prop, ownerDocument         -> #0
     
     - **Declarative** styling : `<style> Elements` can be written into a *shadow tree*,
       which will thus be scoped to affect only that *shadow tree*.
-	    
+        
         -   `<style> Elements` may be injected into a *shadow tree* via `<template> Elements`.
-	    
+        
     -   **CSS selectors of interest** :
         -   `:host` pseudo-class
         -   `:host()` pseudo-class
         -   `:host-context()` pseudo-class
-	   
+       
 -   **RENDERING** : Unlike other *node trees* whose *roots* are `DocumentFragments`,
     *shadow trees* are **rendered as soon as possible**.
     -   ==WARNING== : when an `Element` becomes a *shadow host*, its children
@@ -418,27 +418,27 @@ prop, ownerDocument         -> #0
         *light trees*, for node traversing operations such as : event
         propagation, CSS scoping, and element selection via JavaScript API.
     
-	    -   Thus *shadow roots* behave similarly to `<iframe> Elements`.
+        -   Thus *shadow roots* behave similarly to `<iframe> Elements`.
     
         -   In comparison with `<iframe> Elements`, *shadow roots* consume less
             resources, and have poorer isolation of every kind, but have tighter
             couplings with their hosts.
     
     -   The *shadow root* security model is such that,
-	    
+        
         -   *shadow trees* are slightly more
             protected from scripts in their *light trees*, whereas
-		    
+            
             -   A *shadow host* ( in the *light tree* ) accesses their *shadow
                 tree* via the *shadow host*'s `.shadowRoot` property,
                 alternatively via the return value of the *shadow
                 host*'s`.attachShadow`method.
         -   *light trees* are slightly less protected from
             scripts in their *shadow trees*.
-		    
+            
             -   A `ShadowRoot` ( in the *shadow tree* ) accesses their *light
                 tree* via the `ShadowRoot`'s `.host` property.
-		    
+            
     
 
 ## 4. Ordinary *Roots* vs. *Shadow-including Roots*
@@ -454,16 +454,16 @@ prop, ownerDocument         -> #0
 
         -   until the first instance of an ancestor node, R, is encountered,
             where `R.parentNode=null`.
-	    
+        
     -   >SPECIFICATION : If an [ object's parent ] is null, the [ object's root ]
         is [ itself ]; otherwise, the [ object's root ], is the [ object's
         parent's root ].
-	    
+        
     -   >( The DOM spec neither recommends, nor recommends against, the use of
         the terms "shadow-excluding roots", "uncomposed root", "simple roots",
         or "ordinary roots" to be used in opposition to the spec-recommended
         term *shadow-including root*. )
-	    
+        
 -   When called with the argument `{ composed : true }`, a `Node`'s `.getRootNode`
     method returns the *shadow-including root* node of the `Node`'s *node tree*.
     
@@ -493,18 +493,18 @@ prop, ownerDocument         -> #0
     
     -   Of note, there are six kinds of HTML `Elements`, and the `<template>
         Element` is the sole-member of its entire kind
-	    
+        
     -   ( The other five kinds for your further reading are,
-	    
+        
 
         -   void elements ( no end tag required, such as `<br>` ),
-		    
+            
         -   raw text elements ( `<script>`, and `<style>` ),
-		    
+            
         -   escapable raw text elements ( `<textarea>`, `<title>` ),
-		    
+            
         -   foreign elements ( MathML, SVG namespaces ), and
-		    
+            
         -   normal elements. )
     
 
@@ -512,47 +512,47 @@ prop, ownerDocument         -> #0
     
     > "The template element is used to declare fragments of HTML that can be
         cloned and inserted in the document by script."
-	 
-	 > "In a rendering, the template element represents nothing."
-	
-	 > "The template element can have template contents, but such template
+     
+     > "In a rendering, the template element represents nothing."
+    
+     > "The template element can have template contents, but such template
         contents are not children of the template element itself. Instead, they
         are stored in a `DocumentFragment` associated with a different `Document` —
         without a browsing context — so as to avoid the template contents
         interfering with the main Document." 
      > -   This is located at the `Element`'s ".content" property.
-	    
+        
 -   `<template> Elements` may have a `shadowrootmode` content attribute.
 
     -   Without configuration ( by default ), `<template> Elements` do not have a
         *shadow root*.
-	    
+        
     -   If …
-	   
+       
         -   a `<template> Element`'s `shadowrootmode` content attribute is
             declared in the start tag, with the value `"open"` or `"closed"`, and
-		    
+            
         -   the `<template> Element` is [ the first `<template> Element` child of
             its parent, with a `shadowrootmode` content attribute with the value
             `"open"` or `"closed"` ]
 
     -   … then …
-	    	
+            
         -   1. the [ `<template> Element` ‘s parent `Element`'s `.shadowRoot` property
             ] is set to a `ShadowRoot`, whose
-		    
+            
             -   1.1. `.mode` property is set to the declared value
-			    
+                
             -   1.2. `.nodeList` property is set to the value of [ the `<template>
                 Element`'s `.content` property ]
-			    
+                
             -   1.3. `.clonable` property is set to `"true"` ( since `<template>
                 Elements` are meant to be cloned for reuse ) . And
-		    
+            
 
         -   2. The `<template> Element` is itself removed from its *node tree* (
             "disappears" ).
-	    
+        
 
 ## 6. `<slot> Elements` & `Slottables`
 
@@ -562,13 +562,13 @@ prop, ownerDocument         -> #0
     
     -   `<slot> Elements` descended from `<template> Elements` behave just like any
         other `Elements` descended from `<template> Elements`.
-	    
+        
     -   `<slot> Elements` behave in their own unique way, regardless of whether
         they do, or do not, have a `<template> Element` ancestor.
-	    
+        
     -   The special behaviours of `<slot> Elements` and `<template> Elements` can
         interpolate, without contradiction. ( ==This requires some checking.== )
-	    
+        
 -   `<slot> Elements` have unique behaviours, different from most other elements.
     ( Of the six types of HTML elements, they belong to the "normal elements". )
     
@@ -580,28 +580,28 @@ prop, ownerDocument         -> #0
 
     -   They have an `.assign` method, which allows manual *assignment* of
         `Slottables` to the `<slot> Element`.
-	    
+        
         -   The `.assign` method only functions when a `<slot> Element`'s *root* is a
             [ *shadow root* whose `.slotAssignment` property is set to `"manual"` ].
-	    
+        
     -   They have an `.assignedNodes` method, which returns a list of *assigned
         `Slottables`* ; `Slottables` have an `.assignedSlot` property, which is the
         inverse pointer.
-	    
+        
         -   The relationship is, **one-`<slot>-Element`-to-many-`Slottables`**.
-		    
+            
         -   The *assignment* of `<slot> Elements` and `Slottables` to each other, is
             different based on the following qualifications.
-		    
+            
         -   ==WARNING== : *Assignment* of `Slottables` to `<slot> Elements`,
 
             -  Does not change the initial location of `Slottables` in their *node
                 tree*.
-			    
+                
             -   Merely renders `Slottables` "as if" they had been moved from their
                 initial location, to new locations as children of their
                 `.assignedSlot`.
-			    
+                
             -   See : RENDERING
     
 
@@ -609,9 +609,9 @@ prop, ownerDocument         -> #0
     qualified for *assignment* to `<slot> Elements`.
     
     -   `Elements` and `Texts` are `Slottables`.
-	    
+        
     -   >DOM spec : "Note : a slot can be a slottable."
-	    
+        
 -   **Qualified Root** : Broadly, a `<slot> Element`'s `.assign` method behaves
     differently, depending on whether its *root* is, or is not, a *shadow root*.
 
@@ -628,28 +628,28 @@ prop, ownerDocument         -> #0
     
     -   Attempted assignment of `Slottables` in disqualified locations will be
         ignored. Elucidatory examples of ignored `Slottables` :
-	
+    
         -   `Slottable` descendants of [ the `<slot> Element`'s [[ *root* that
             is a *shadow root* ]] ].
-		    
+            
         -   `Slottable` [ siblings or grandchildren ] of [ the `<slot>
-            Element`'s [[ *root that is a shadow root ]]'s *shadow host* ].	    
+            Element`'s [[ *root that is a shadow root ]]'s *shadow host* ].     
 
     -   If a `<slot> Element` (SLOT)'s *root* is [ a *shadow root*, with a
         `.slotAssignment` property set to `"named"` ] (ROOT_S_N), then,
-	    
+        
 
         -   ( **CASE1** ) … whereas, if SLOT has a `name` attribute, then [ the
             `name` attribute of SLOT ] will be matched to [ the `slot` attribute
             of one-or-more `Slottables` in qualified locations ], and the
             matched `Slottables` will be *assigned* to SLOT.
-		    
+            
         -   ( **CASE2** ) … whereas, If SLOT has no `name` attribute, then …
-	
+    
             -   ( **CASE2A** ) … whereas, if SLOT is [ the first `<slot> Element` (
                 without a `name` attribute ) descendant of ROOT_S_N ] … then SLOT
                 is designated the ***default slot***, and
-			    
+                
                 -   … all `Slottables` in qualified locations, which have no
                     `slot` attribute, will be *assigned* to the ***default slot***.
 
@@ -660,56 +660,56 @@ prop, ownerDocument         -> #0
 
     -   If a `<slot> Element`'s *root* is [ a *shadow root`, with a `.slotAssignment`
         property set to `"manual"` ], then ( **CASE3** ),
-	    
+        
         -   The `<slot> Element`'s `name` attribute will be ignored, in the
             process of matching `Slottables` to this `<slot> Element`.
-		    
+            
             -   Likewise, any respective `slot` attributes of `Slottables` in
                 qualifying locations will have no effect.
-		    
+            
         -   The initial behaviour of the `<slot> Element`, is as if its *root* was
             not a *shadow root*.
-		    
+            
         -   The `<slot> Element`'s `.assign` method may be used to manually *assign* (
             one or more ) qualified `Slottables` to the `<slot> Element`, in a
             single manual *assignment* operation.
-		    
+            
             -   A `<slot> Element`'s `Slottable` *assignments* can be reset to the
                 empty list, by a manual  *assignment* operation with zero qualified
                 `Slottables`.
-	    
+        
     -   **Unassignable `Slottables`** in Qualified Locations, as implied by exclusion
         from **CASES 1, 2, and 3** :
-	    
+        
         -   one or more `<slot> Elements` share [ a *root* ( which is a *shadow root*
             ) that has a `.slotAssignment` property set to `"named"` ], but
-		    
+            
             -   ( exclusion from **CASE1** ) … whereas, the `Slottable` in a qualified
                 location has a `slot` attribute whose value does not match any
                 `<slot> Element`'s `name` attribute; or
-			    
+                
             -   ( exclusion from **CASE2** ) … whereas, the `Slottable` in a qualified
                 location has no `slot` attribute, and there is no designated
-                ***default slot***; or		    
+                ***default slot***; or          
 
         -   ( excluded from ***CASE3*** ) the `<slot>` `Element`'s *root* ( which is a
             *shadow root* ) has a `.slotAssignment` property set to `"manual"`, but
             the `<slot> Element`'s `.assign` method was not called on any `Slottables`
             in qualified locations.
-		    
+            
 -   **CSS Selectors of interest** :
         -   `::slotted` pseudo-element
     
 -   **RENDERING** :
-	
+    
     -   `<slot> Elements` are normally rendered with the CSS property `display :
         contents` ( the `<slot> Element` is replaced by its various contents, in
         the box-tree); this is the case, whether the `<slot> Element`'s
         `.assignedNodes` method returns an empty list, or some `Nodes`.
-	    
+        
     -   If a `<slot> Element`'s `.assignedNodes` method returns the empty list, then
         the `<slot> Element`'s rendered contents are its `.childElements`.
-	    
+        
     -   If a `<slot> Element`'s `.assignedNodes` method returns a non-empty list of
         `Nodes` ( its *assigned Nodes* ), then the `<slot> Element`'s contents are
         the value returned by the `<slot> Element`'s `.assignedNodes` method ( and,
@@ -730,7 +730,7 @@ prop, ownerDocument         -> #0
     be straightforward, and thus sufficient.
 
     -   **Customised built-in `Elements`** : are extensions of built-in `Elements`.
-	    
+        
     -   **Autonomous custom `Elements`** : are not extensions of built-in `Elements`.
 
 -   **CSS Selectors of interest** :   
