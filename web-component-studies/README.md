@@ -660,7 +660,9 @@ rough drawing :
 ```
 rough drawing : 
 ~~~~~~~~~~~~~~~~~~
-1.	If, in your markup, you write :
+1.	Example, <template> without `shadowrootmode` attribute :
+
+	If, in your markup, you write :
 	
 		<div id="not-planning-to-become-a-shadow-host">
 			Hello there, I'm `Text` object A.
@@ -696,7 +698,7 @@ rough drawing :
 
 		Hello there, I'm `Text` object A.
 
-2.	If, in your markup, you write :
+2.	Example, <template> with `shadowrootmode` attribute :
 	
 		<div id="eventually-becomes-a-shadow-host">
 			Hello there, I'm `Text` object A.
@@ -723,7 +725,7 @@ rough drawing :
 		  |- pointers : .shadowRoot x .host  
 		  v
 		  NODE#3 : Interface : ShadowRoot ( is a *root* )
-		  |		( This has replaced the NODE : Interface : Element : <template>
+		  |		( This has replaced the NODE : Interface : Element : <template> )
 		  |
 		  |- pointers : .childNodes x .parentNode
 		  v
@@ -910,6 +912,106 @@ scratch tool - the graph should consist of objects and properties.
         the `<slot> Element`'s `.childElements` will be ignored for rendering ).
 
         -   Also see : **Shadow host > RENDERING > WARNING**
+
+```
+rough drawing : 
+~~~~~~~~~~~~~~~~~~
+1.	Example, <slot> and qualified locations for `Slottables` :
+
+	If, in your markup, you write :
+	
+		<div id="not-planning-to-become-a-shadow-host">
+			Hello there, I'm `Text` object A.
+			<span id="a-slottable-element">
+				Hello there, I'm `Text` object B.
+			</span>
+			<slot>
+				Hello there, I'm `Text` object C; also a `Slottable` ;
+				in fact, I'm the default content of a &lt;slot&gt;.
+			</slot>
+		</div>
+
+	... then, if you use JavaScript to examine the *node tree*, you will find that :
+```
+==WIP : CONTINUE HERE==
+```
+	... and, what will be rendered ( with fewer line breaks ) is :
+	
+		Hello there, I'm `Text` object A.
+		Hello there, I'm `Text` object B.
+		Hello there, I'm `Text` object C; also a `Slottable` ;
+		in fact, I'm the default content of a <slot>;.
+
+	... beacuse, there were no Slottables in qualified locations, so 
+		the <slot> simply rendered with its default content.
+```
+==WIP : CONTINUE HERE==
+```
+/* TEXT BELOW IS COPIED FOR EXAMPLE ONLY - REMOVE LATER */
+
+		- NODE#0 : Interface : Element : <div> 
+		  ^  ^
+		  |  |- pointers : .attributes x .ownerElement
+		  |  v
+		  |  NODE#1 : Interface : Attr : id : "not-planning-to-become-a-shadow-host"
+		  |  
+		  |  
+		  |- pointers : .childNodes x .parentNode  
+		  |  
+		  +-> NODE#2 : Interface : Text : "Hello there, I'm `Text` object A."
+		  |
+		  +-> NODE#3 : Interface : Element : <template>
+			  |
+			  |- pointers : .content
+			  v
+			  NODE#4 : Interface : DocumentFragment ( is a *root* )
+			  ^
+			  |- pointers : .childNodes x .parentNode
+			  v
+			  NODE#5 : Interface : Text : "Hello there, I'm `Text` object B."
+
+	... and, what will be rendered is :
+
+		Hello there, I'm `Text` object A.
+
+2.	Example, <template> with `shadowrootmode` attribute :
+	
+		<div id="eventually-becomes-a-shadow-host">
+			Hello there, I'm `Text` object A.
+			<template shadowrootmode="open">
+				Hello there, I'm `Text` object B.
+			</template>
+		</div>
+
+	... then, if you use JavaScript to examine the *node tree*, you will find that :
+
+		- NODE#0 : Interface : Element : <div> 
+		  ^  ^  ^
+		  |  |  |- pointers : .attributes x .ownerElement
+		  |  |  v
+		  |  |  NODE#1 : Interface : Attr : id : "eventually-becomes-a-shadow-host"
+		  |  |
+		  |  |
+		  |  |- pointers : .childNodes x .parentNode
+		  |  |
+		  |  v		  
+		  |  NODE#2 : Interface : Text : "Hello there, I'm `Text` object A."
+		  |  	( This will not be rendered. )
+		  |
+		  |- pointers : .shadowRoot x .host  
+		  v
+		  NODE#3 : Interface : ShadowRoot ( is a *root* )
+		  |		( This has replaced the NODE : Interface : Element : <template> )
+		  |
+		  |- pointers : .childNodes x .parentNode
+		  v
+		  NODE#4 : Interface : Text : "Hello there, I'm `Text` object B."
+
+	... and, what will be rendered is :
+
+		Hello there, I'm `Text` object B.
+```
+
 
 ## 7. CustomElementRegistry & CustomStateSet
 
