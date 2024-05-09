@@ -1,6 +1,7 @@
 
 
 
+
 # A Systematic Introduction to "Web Components"
 
 ## Preamble
@@ -100,8 +101,25 @@
     - `Documents`, 
     - `DocumentFragments`, 
     - `DocumentTypes`, 
-    - `ProcessingInstructions`, 
+    - `Attrs`, 
     - `Comments`, and more.
+```
+rough drawing : some, not all, DOM interfaces
+~~~~~~~~~~~~~~~~~~
+- Interface EventTarget 
+  +- extended by Interface AbortSignal
+  +- extended by Interface Node 
+	     +- extended by Interface Attr
+	     +- extended by Interface CharacterData 
+	     |		+- extended by Interface Comment
+	     |  	+- extended by Interface ProcessingInstruction
+	     |  	+- extended by Interface Text
+	     |  			+- extended by Interface CDATASection
+	     +- extended by Interface Document
+	     +- extended by Interface DocumentType
+	     +- extended by Interface DocumentFragment
+	     +- extended by Interface Element
+```
 	
 ## 2. Parents, Collections, & Trees
 -   This section talks about the arrows / pointers / directed-edges between
@@ -116,7 +134,7 @@
 -   `Node` trees may be *document trees*, *shadow trees*, or neither of the two.
 -   "Rendering" refers to a user agent's operation upon some *node trees*, which
     outputs a graphical interpretation of those *node trees*.
-    
+
 ### 2.2. Single Parentage
 -   `Nodes` have `.parentNode` and `.parentElement` properties.
     -   A `Node`'s `.parentNode` points to their sole parent in their *node tree*.
@@ -133,6 +151,53 @@
     -   `NodeList` is an interface for a collection of `Nodes`.
     -   `HTMLCollection` is an interface for a collection of `Elements`.
 -   Collections do not typically implement the `Node` interface.
+```
+rough drawing : a node tree, in a common web browser ( not all nodes are shown )
+~~~~~~~~~~~~~~~~~~
+Object#0
+implements Document
+prop, documentElement	-> #1       	Object#1
+prop, childNodes		[ -> #1	]---+	implements Element
+prop, childElements		[ -> #1	]	+---prop, parentNode 	-> #0
+prop, parentNode null					prop, tagName 		"html"
+								+-------prop, childNodes 	[ -> #2 ]
+						   +----+		prop, ownerDocument	-> #0
+						   |			prop, childElements [ -> #2]
+						   |
+Object#2				   |
+implements Element		   |		   
+prop, parentNode	-> #1--+
+prop, tagName		"body"			   
+prop, childElements	[ -> #4 ]		   
+prop, ownerDocument	-> #0
+prop, children		[ -> #5 ]					
+prop, childNodes	[ -> #3, -> #4, -> #5 ]---------+
+								    				|
+								   +----------------+-------+
+Object#3						   |				|		|
+implements Text					   |				|		|
+prop, parentNode			-> #2--+				|		|
+prop, data					"First line of text."	|		|
+prop, nextSibling 			-> #4					|		|
+prop, nextElementSibling 	-> #5					|		|
+prop, ownerDocument			-> #0					|		|
+													|		|
+Object#4						   +----------------+		|
+implements Text					   |						|
+prop, parentNode			-> #2--+						|
+prop, data					"Second line of text."			|
+prop, nextSibling 			-> #5							|
+prop, nextElementSibling 	-> #5							|
+prop, previousSibling 		-> #3							|
+prop, ownerDocument			-> #0							|
+															|
+Object#5													|						
+implements Element											|
+prop, parentNode			-> #2---------------------------+
+prop, tagName				"div"
+prop, previousSibling 		-> #4
+prop, ownerDocument			-> #0
+```    
 
 ## 3. *Root Nodes*
 -   Certain interfaces must be at the *root* of their respective *node trees*.
