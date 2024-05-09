@@ -369,6 +369,77 @@ prop, ownerDocument         -> #0
         `Elements` in a *shadow tree* ], from the [ rendered `Elements` their
         *light tree* ].  )
     
+
+#### 3.2.3. Discussion of Technology Names related to `ShadowRoot` and *Shadow Hosts*
+
+-   ==WARNING== : The morphological choice of "shadow" to refer to this technology
+    demands annotation. The DOM relationship between *light trees* and *shadow
+    trees*, is not comparable to the relationship between physical objects and
+    their physical shadows.
+    
+-   **Usable analogy** : A *shadow tree* is hosted by some other specific `Element`, and
+    thus follows along wherever that `Element` goes.
+    
+    -   Apart from this, *shadow trees* do not have much in common with ordinary
+        shadows whose name they borrow.
+    
+-   **Poor analogy** : A *shadow tree* is not necessarily isomorphic with its *light
+    tree*, and in most cases they are not isomorphic.
+    
+    -   In fact, *shadow trees* can be built pretty much independently from their
+        *light trees*, without collision.
+    
+-   **Poor analogy** : *Shadow trees* generally do not exhibit fewer phenomena or
+    fewer dimensions than *light trees*.
+    
+    -   In fact, *shadow trees* have almost all the appearance and behavioural
+        properties of *light trees*, with few caveats ; a *node tree* can be
+        both a *light tree* and a *shadow tree* at the same time.
+    
+-   **Compounded poor analogy** : see note on *light tree*.
+    
+    -   Where is t.f. light?
+    
+-   **Compounded poor analogy** : there exists an `Element`, the `<template> Element`,
+    whose `.innerHTML` markup is not rendered by the user agent, but instead parsed
+    into a unrendered `DocumentFragment`, and stored in the `<template> Element`'s
+    `.content` property ... as if it were hidden in shadows.
+    
+    -   `<template> Elements` do have a configuration which replaces them with
+        `ShadowRoots`, but this is off by default, and anyway, most *shadow
+        hosts* are not `<template> Elements`.
+    
+-   **FUNCTIONALITY** : the main feature of *shadow trees*, is that they are SPATIALLY
+    ORTHOGONAL ( as in "namespaced", "memory spaced", and "hyper- or
+    other-dimensional" ) versus their *shadow hosts*' *node trees* ( and might
+    thus be better called "guest trees" or "protected trees" ).
+    
+    -   This hyperdimensionality allows *shadow trees* to
+        optionally maintain SPATIAL segregation ( encapsulation ) from their
+        *light trees*, for node traversing operations such as : event
+        propagation, CSS scoping, and element selection via JavaScript API.
+    
+        -   Thus *shadow roots* behave similarly to `<iframe> Elements`.
+    
+        -   In comparison with `<iframe> Elements`, *shadow roots* consume less
+            resources, and have poorer isolation of every kind, but have tighter
+            couplings with their hosts.
+    
+    -   The *shadow root* security model is such that,
+        
+        -   *shadow trees* are slightly more
+            protected from scripts in their *light trees*, whereas
+            
+            -   A *shadow host* ( in the *light tree* ) accesses their *shadow
+                tree* via the *shadow host*'s `.shadowRoot` property,
+                alternatively via the return value of the *shadow
+                host*'s`.attachShadow`method.
+        -   *light trees* are slightly less protected from
+            scripts in their *shadow trees*.
+            
+            -   A `ShadowRoot` ( in the *shadow tree* ) accesses their *light
+                tree* via the `ShadowRoot`'s `.host` property.
+            
 ```
 rough drawing : 
 
@@ -473,76 +544,6 @@ rough drawing :
           This would rendered normally.
       </div>
 ```
-#### 3.2.3. Discussion of Technology Names related to `ShadowRoot` and *Shadow Hosts*
-
--   ==WARNING== : The morphological choice of "shadow" to refer to this technology
-    demands annotation. The DOM relationship between *light trees* and *shadow
-    trees*, is not comparable to the relationship between physical objects and
-    their physical shadows.
-    
--   **Usable analogy** : A *shadow tree* is hosted by some other specific `Element`, and
-    thus follows along wherever that `Element` goes.
-    
-    -   Apart from this, *shadow trees* do not have much in common with ordinary
-        shadows whose name they borrow.
-    
--   **Poor analogy** : A *shadow tree* is not necessarily isomorphic with its *light
-    tree*, and in most cases they are not isomorphic.
-    
-    -   In fact, *shadow trees* can be built pretty much independently from their
-        *light trees*, without collision.
-    
--   **Poor analogy** : *Shadow trees* generally do not exhibit fewer phenomena or
-    fewer dimensions than *light trees*.
-    
-    -   In fact, *shadow trees* have almost all the appearance and behavioural
-        properties of *light trees*, with few caveats ; a *node tree* can be
-        both a *light tree* and a *shadow tree* at the same time.
-    
--   **Compounded poor analogy** : see note on *light tree*.
-    
-    -   Where is t.f. light?
-    
--   **Compounded poor analogy** : there exists an `Element`, the `<template> Element`,
-    whose `.innerHTML` markup is not rendered by the user agent, but instead parsed
-    into a unrendered `DocumentFragment`, and stored in the `<template> Element`'s
-    `.content` property ... as if it were hidden in shadows.
-    
-    -   `<template> Elements` do have a configuration which replaces them with
-        `ShadowRoots`, but this is off by default, and anyway, most *shadow
-        hosts* are not `<template> Elements`.
-    
--   **FUNCTIONALITY** : the main feature of *shadow trees*, is that they are SPATIALLY
-    ORTHOGONAL ( as in "namespaced", "memory spaced", and "hyper- or
-    other-dimensional" ) versus their *shadow hosts*' *node trees* ( and might
-    thus be better called "guest trees" or "protected trees" ).
-    
-    -   This hyperdimensionality allows *shadow trees* to
-        optionally maintain SPATIAL segregation ( encapsulation ) from their
-        *light trees*, for node traversing operations such as : event
-        propagation, CSS scoping, and element selection via JavaScript API.
-    
-        -   Thus *shadow roots* behave similarly to `<iframe> Elements`.
-    
-        -   In comparison with `<iframe> Elements`, *shadow roots* consume less
-            resources, and have poorer isolation of every kind, but have tighter
-            couplings with their hosts.
-    
-    -   The *shadow root* security model is such that,
-        
-        -   *shadow trees* are slightly more
-            protected from scripts in their *light trees*, whereas
-            
-            -   A *shadow host* ( in the *light tree* ) accesses their *shadow
-                tree* via the *shadow host*'s `.shadowRoot` property,
-                alternatively via the return value of the *shadow
-                host*'s`.attachShadow`method.
-        -   *light trees* are slightly less protected from
-            scripts in their *shadow trees*.
-            
-            -   A `ShadowRoot` ( in the *shadow tree* ) accesses their *light
-                tree* via the `ShadowRoot`'s `.host` property.
-            
     
 
 ## 4. Ordinary *Roots* vs. *Shadow-including Roots*
@@ -591,19 +592,6 @@ rough drawing :
         spec-recommended term *shadow-including root*. )   
 
 ## 5. `<template> Elements` and their `.shadowrootmode` Attribute
-```
-rough drawing : 
-~~~~~~~~~~~~~~~~~~
-This would be simple to draw, if there was a standard notation for 
-illustrating DOM `node trees`. If you open up the browser's Developer
-Tools, you will see that the browser developers "made up" a visual
-representation of `shadow-including document trees`, which isn't in 
-any standard specification.
-
-Rather than pick any arbitrary visual representation, it is best that
-the reader graph the notes below withe a pen or pencil or other preferred
-scratch tool - the graph should consist of objects and properties.
-```
 
 -   `<template> Elements` have unique behaviours, different from most other
     elements.
@@ -637,7 +625,7 @@ scratch tool - the graph should consist of objects and properties.
         are stored in a `DocumentFragment` associated with a different `Document` —
         without a browsing context — so as to avoid the template contents
         interfering with the main Document." 
-     > -   This is located at the `Element`'s ".content" property.
+     > -   This is located at the `Element`'s `.content` property.
         
 -   `<template> Elements` may have a `shadowrootmode` content attribute.
 
@@ -669,6 +657,82 @@ scratch tool - the graph should consist of objects and properties.
 
         -   2. The `<template> Element` is itself removed from its *node tree* (
             "disappears" ).
+```
+rough drawing : 
+~~~~~~~~~~~~~~~~~~
+1.	If, in your markup, you write :
+	
+		<div id="not-planning-to-become-a-shadow-host">
+			Hello there, I'm `Text` object A.
+			<template>
+				Hello there, I'm `Text` object B.
+			</template>
+		</div>
+
+	... then, if you use JavaScript to examine the *node tree*, you will find that :
+
+		- NODE#0 : Interface : Element : <div> 
+		  ^  ^
+		  |  |- pointers : .attributes x .ownerElement
+		  |  v
+		  |  NODE#1 : Interface : Attr : id : "not-planning-to-become-a-shadow-host"
+		  |  
+		  |  
+		  |- pointers : .childNodes x .parentNode  
+		  |  
+		  +-> NODE#2 : Interface : Text : "Hello there, I'm `Text` object A."
+		  |
+		  +-> NODE#3 : Interface : Element : <template>
+			  |
+			  |- pointers : .content
+			  v
+			  NODE#4 : Interface : DocumentFragment ( is a *root* )
+			  ^
+			  |- pointers : .childNodes x .parentNode
+			  v
+			  NODE#5 : Interface : Text : "Hello there, I'm `Text` object B."
+
+	... and, what will be rendered is :
+
+		Hello there, I'm `Text` object A.
+
+2.	If, in your markup, you write :
+	
+		<div id="eventually-becomes-a-shadow-host">
+			Hello there, I'm `Text` object A.
+			<template shadowrootmode="open">
+				Hello there, I'm `Text` object B.
+			</template>
+		</div>
+
+	... then, if you use JavaScript to examine the *node tree*, you will find that :
+
+		- NODE#0 : Interface : Element : <div> 
+		  ^  ^  ^
+		  |  |  |- pointers : .attributes x .ownerElement
+		  |  |  v
+		  |  |  NODE#1 : Interface : Attr : id : "eventually-becomes-a-shadow-host"
+		  |  |
+		  |  |
+		  |  |- pointers : .childNodes x .parentNode
+		  |  |
+		  |  v		  
+		  |  NODE#2 : Interface : Text : "Hello there, I'm `Text` object A."
+		  |  	( This will not be rendered. )
+		  |
+		  |- pointers : .shadowRoot x .host  
+		  v
+		  NODE#3 : Interface : ShadowRoot ( is a *root* )
+		  |		( This has replaced the NODE : Interface : Element : <template>
+		  |
+		  |- pointers : .childNodes x .parentNode
+		  v
+		  NODE#4 : Interface : Text : "Hello there, I'm `Text` object B."
+
+	... and, what will be rendered is :
+
+		Hello there, I'm `Text` object B.
+```
         
 
 ## 6. `<slot> Elements` & `Slottables`
