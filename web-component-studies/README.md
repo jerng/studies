@@ -1,3 +1,4 @@
+
 # A Systematic Introduction to "Web Components"
 
 ## Preamble
@@ -590,6 +591,19 @@ rough drawing :
         spec-recommended term *shadow-including root*. )   
 
 ## 5. `<template> Elements` and their `.shadowrootmode` Attribute
+```
+rough drawing : 
+~~~~~~~~~~~~~~~~~~
+This would be simple to draw, if there was a standard notation for 
+illustrating DOM `node trees`. If you open up the browser's Developer
+Tools, you will see that the browser developers "made up" a visual
+representation of `shadow-including document trees`, which isn't in 
+any standard specification.
+
+Rather than pick any arbitrary visual representation, it is best that
+the reader graph the notes below withe a pen or pencil or other preferred
+scratch tool - the graph should consist of objects and properties.
+```
 
 -   `<template> Elements` have unique behaviours, different from most other
     elements.
@@ -658,6 +672,19 @@ rough drawing :
         
 
 ## 6. `<slot> Elements` & `Slottables`
+```
+rough drawing : 
+~~~~~~~~~~~~~~~~~~
+This would be simple to draw, if there was a standard notation for 
+illustrating DOM `node trees`. If you open up the browser's Developer
+Tools, you will see that the browser developers "made up" a visual
+representation of `shadow-including document trees`, which isn't in 
+any standard specification.
+
+Rather than pick any arbitrary visual representation, it is best that
+the reader graph the notes below withe a pen or pencil or other preferred
+scratch tool - the graph should consist of objects and properties.
+```
 
 -   Despite the fact that `<template> Elements` and `<slot> Elements` are frequently
     discussed together in documentation, `<slot> Elements` do not behave
