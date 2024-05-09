@@ -288,7 +288,7 @@ rough drawing :
   |  :       |  :       |- pointers : .childNodes x .parentNode 
   |  :       |  :       v
   |  :       |  :       NODE#11 : Interface : Element :  
-  |  :       |  :           <div class="first-child-of-a-shadow-root">
+  |  :       |  :           <div class="child-of-a-shadow-root">
   |  :       |  :               This would be rendered, but WITHOUT the influence 
   |  :       |  :               of styles declared upstream of NODE#10.
   |  :       |  :           </div>
