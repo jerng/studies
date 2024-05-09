@@ -374,12 +374,12 @@ prop, ownerDocument         -> #0
 ```
 rough drawing : 
 
+    the numbering of nodes here is arbitrary,
+    and does not follow any specified algorithm;
+
     algorithms that only traverse node trees by following 
     ".childNodes" and ".parentNode" pointers will never 
     traverse into, or out of, shadow trees ;
-
-    the numbering of nodes here is arbitrary,
-    and does not follow any specified algorithm;
 
     - NODE#0 is a *document root*
     - NODE#6, NODE#10 are *shadow roots*
