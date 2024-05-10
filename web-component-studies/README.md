@@ -1086,22 +1086,49 @@ Example :
 -   **CSS Selectors of interest** :   
     -   `::state()` pseudo-class
 
+
 # Recommendations for Building Web Components
+==WORK IS IN PROGRESS, THROUGHOUT THE SECTIONS BELOW==
 Since the standards and frameworks are hardly mature, is there a safe approach in the present, with a minimal surface area?
 In other words, is there a framework for this? ( There are lots of frameworks for this ... -_- )
+
 ## 1. Broad Questions
+
 ### 1.1. Building Extensible Web Pages
 - If you're building a web page, how might you markup some data such that ...
 	- (a) the web page functions fully on its own
 	- (b) someone could come along later and "throw in" a web component that merely ingests (a) and spits out a better web page?
+
+#### **DISCUSSION :**
+- If (b) is to involve ShadowRoots ( and it might not ), then a minimal convention when building (a) might involve **enforcing structures** which make it possible to 
+	- (i) create a *shadow host*,
+	- (ii) stick some `<slot> Elements` under (i)'s `ShadowRoot`
+	- (iii) have important content from (a) flow into (ii) with minimal effort
+ 
 ### 1.2. Building Usable Web Components
 - If you're building a web component, how might you structure it such that ...
 	- (a) the web component functions in a useful way, or in a nearly useful way, on its own
 	- (b) someone could "throw in" your web component into their web page, and use it effectively, with minimum effort?
+
+#### **DISCUSSION :**
+- If (b) is to involve ShadowRoots ( and it might not ), then a minimal convention when building (a) might involve **enforcing structures** which make it possible to 
+	- (i) stick some `<slot> Elements` under the `ShadowRoot`
+	- (i) only ingest data from *light trees* to *shadow trees* via `Slottables`
+
 ### 1.3. Building Web Component Frameworks
 - What are some **complexities** which might evolve from the underlying technologies?
 - Given those complexities, what is the best way to abstractly **describe classes of new problems**?
 - Given abstract problem statements, what are some solution **design patterns** which might be cogent responses?
 
+#### 1.3.1. Inter-tree Communication
+- do we use `Events` to pass messages?
+- can we stick a **document message broker** in the *shadow-including document root* a.k.a. `Node.ownerDocument` of the *node tree*?
+	- can we stick **subtree message brokers** at intermediate `ShadowRoots` which have other `ShadowRoots` associated with their descendants?
+
+
 ## A. Appendix of Web Component Frameworks
+-
+ 
+## B. Distributed Documents
+- Is it too early to imaging that various branches of a *document tree* might be implemented by different DOM user agents, and networked together? See : ** Inter-tree Communication**
 - 
