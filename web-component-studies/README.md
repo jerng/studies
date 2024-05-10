@@ -203,7 +203,7 @@ prop, ownerDocument         -> #0
 - For any for any ***node tree***, the DOM may render things differently based on differentiated rules.
 - So, for any new feature introduced to the environment, one has demonstrate { the **markup**, the ***node tree***, and the **rendering** }. Otherwise there are unapparent corner cases.
 
-Official short-hand notation for DOM *node trees* ... it doesn't exist. If you open your browser developer tools and look at the rendered *node tree* it is actually in an **unofficial, non-specified format** decided by the browser vendor.
+Short-hand notation for DOM *node trees* ... it doesn't exist. If you open your browser developer tools and look at the rendered *node tree* it is actually in an **unofficial, non-specified format** decided by the browser vendor.
 
 Which is how you get :shit: like :
 ```
@@ -1085,3 +1085,23 @@ Example :
 
 -   **CSS Selectors of interest** :   
     -   `::state()` pseudo-class
+
+# Recommendations for Building Web Components
+Since the standards and frameworks are hardly mature, is there a safe approach in the present, with a minimal surface area?
+In other words, is there a framework for this? ( There are lots of frameworks for this ... -_- )
+## 1. Broad Questions
+### 1.1. Building Extensible Web Pages
+- If you're building a web page, how might you markup some data such that ...
+	- (a) the web page functions fully on its own
+	- (b) someone could come along later and "throw in" a web component that merely ingests (a) and spits out a better web page?
+### 1.2. Building Usable Web Components
+- If you're building a web component, how might you structure it such that ...
+	- (a) the web component functions in a useful way, or in a nearly useful way, on its own
+	- (b) someone could "throw in" your web component into their web page, and use it effectively, with minimum effort?
+### 1.3. Building Web Component Frameworks
+- What are some **complexities** which might evolve from the underlying technologies?
+- Given those complexities, what is the best way to abstractly **describe classes of new problems**?
+- Given abstract problem statements, what are some solution **design patterns** which might be cogent responses?
+
+## A. Appendix of Web Component Frameworks
+- 
