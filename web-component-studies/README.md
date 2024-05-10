@@ -37,7 +37,7 @@
 
 ## 0. Executive Summary
 
-### *Custom `Elements`* : 
+### 0.1. *Custom `Elements`* : 
 
 #### by themselves,
 - … utilise,
@@ -56,20 +56,20 @@
 - …improved code reusability vis-a-vis composability, via `<slot> Elements` ( i.e.
   *custom elements* can be composed from other *custom elements* ).
 
-### The `<template> Element`, by itself :
+### 0.2. The `<template> Element`, by itself :
 - … fundamentally, addresses HTML's concern for semantic tagging of content, by
   designating a unique `Element` for the purpose of templating ;
 - … trivially, contains content meant for reuse ( you could just clone any node
   tree, or copy any markup ).
 
-### The `ShadowRoot` interface : 
+### 0.3. The `ShadowRoot` interface : 
 
 #### … by itself, 
 - … provides encapsulation for styling, and
 - … provides encapsulation for programmatic node traversal ;
 
 #### … is functionally extensible via optional `<slot> Elements`,
-- … which only work as descendents of a `ShadowRoot`,
+- … which only work as descendants of a `ShadowRoot`,
     - … taking some `Slottables` from outside a *shadow tree*, and 
     - … rendering them inside the *shadow tree*, thereby
 - …. facilitating "composition" design patterns, for markup which can then be
@@ -200,12 +200,12 @@ prop, ownerDocument         -> #0
 ```    
 #### 2.4.2. DOM *node tree* Notation : a missing specification? 
 - For any **markup**, the DOM may rearrange the *node tree* differently, including  automatic removal and insertion of `Elements`  that were not in the original markup. 
-- For any for any ***node tree***, the DOM may render things differently based on differentiated rules
+- For any for any ***node tree***, the DOM may render things differently based on differentiated rules.
 - So, for any new feature introduced to the environment, one has demonstrate { the **markup**, the ***node tree***, and the **rendering** }. Otherwise there are unapparent corner cases.
 
 Short-hand notation for DOM *node trees* ... it doesn't exist. If you open your browser developer tools and look at the rendered *node tree* it is actually in an **unofficial, non-specified format** decided by the browser vendor.
 
-Which is how you get shit  like :
+Which is how you get :shit: like :
 ```
 <div class="shadow-host">
     #shadow-root
@@ -217,7 +217,7 @@ Which is how you get shit  like :
                                  will be rendered here.
         </slot>
         <div>This will be rendered.</div>
-    THIS TEXT WILL NOT BE RENDERED.
+    THIS TEXT WILL NOT BE RENDERED. ( Sibling of *shadow root*. )
     <span slot="jack>
         This this will be rendered, but it does not render
         at the location of this location in the *node tree*;
@@ -622,10 +622,7 @@ rough drawing :
           This would rendered normally.
       </div>
 ```
-    
-
-
-
+ 
 ## 4. `<template> Elements` and their `.shadowrootmode` Attribute
 
 -   `<template> Elements` have unique behaviours, different from most other
@@ -938,10 +935,12 @@ rough drawing :
             in qualified locations.
 
 ### 5.1. Illustrations
+
+#### 5.1.1. `<slot> Element` without `ShadowRoot` Ancestor
 ```
 rough drawing : 
 ~~~~~~~~~~~~~~~~~~
-1.	Example, <slot> and no `ShadowRoot` ( expect nothing to happen ) :
+Example, ( expect nothing to happen ) :
 
 	If, in your markup, you write :
 	
@@ -993,134 +992,80 @@ rough drawing :
 	... beacuse, there were no Slottables in qualified locations, so 
 		the <slot> simply rendered with its default content.
 ```
-==WIP : CONTINUE HERE==
-```
-2.	Example, <slot> with `ShadowRoot`, but no `Slottables` in 
-	qualified locations ( expect nothing to happen ) :
+#### 5.1.2. `<slot> Element` with `ShadowRoot` Ancestor
+- `<slot> Elements`, descended from
+	- a `ShadowRoot` whose `.slotAssignment` has defaulted to `"named"` ;
+- some `Slottables` in a qualified locations ; 
+- some `Slottables` in disqualified locations.
+
+```		
+rough drawing : 
+~~~~~~~~~~~~~~~~~~
+
+Example : 
 
 	If, via any method, you create a *node tree* (informally illustrated,
 	using current browser developer tool conventions) :
 	
 		<div id="a-shadow-host">
-			#shadow-root
-				<slot>
-					Hello there, I'm `Text` object C; also a `Slottable` ;
-					in fact, I'm the default content of a &lt;slot&gt;.
+			#shadow-root ( config : `.slotAssignment`="named" )
+				<slot name="descendant-of-the-shadow-root-with-name">
+					A : This will be rendered, UNTIL it is replaced with
+						any `Slottable` in a qualified location, with an attribute
+						`slot="descendant-of-the-shadow-root-with-name"`	
 				</slot>
-			Hello there, I'm `Text` object A.
-			<span id="a-slottable-element">
-				Hello there, I'm `Text` object B.
+				<slot id="first-slot-descendant-of-the-shadow-root-with-no-name-becomes-default-slot">
+					B : This will be rendered, UNTIL it is replaced with
+						any `Slottable` in a qualified location, with no
+						`slot` attribute. == CHECK : undefined, or empty string ? ==	
+				</slot>
+			((	C : First `Slottable` child of the *shadow host*. This will be 
+					rendered after it is *slotted/assigned* to the *default slot*. 
+			))
+			<span id="second-slottable-child-of-the-shadow-host">
+				D : This will be rendered after it is *slotted/assigned* to 
+					the *default slot*. 
+					`span[id="second-slottable-child-of-the-shadow-host"]` is
+					in a qualified location.
+			</span>
+			<span id="third-slottable-child-of-the-shadow-host" 
+					slot="descendant-of-the-shadow-root-with-name">
+				E : This will be rendered after it is *slotted/assigned* to 
+					`slot[name="descendant-of-the-shadow-root-with-name"]`. 
+			</span>
+			<span id="fourth-slottable-child-of-the-shadow-host"
+					slot="unmatchable-slot-name">
+				<span id="grandchild-of-the-shadow-host" 
+						slot="descendant-of-the-shadow-root-with-name">
+					F : THIS WILL NOT BE RENDERED, because 
+						`span[slot="unmatchable-slot-name"]` is unmatched,
+						whereas `span[id="grandchild-of-the-shadow-host"]` 
+						is not in a qualified location.  
+				</span>
 			</span>
 		</div>
-
-	... then, if you use JavaScript to examine the *node tree*, you will find that :
-	
-		- NODE#0 : Interface : Element : <div> 
-		  ^  ^  ^
-		  |  |  |- pointers : .attributes x .ownerElement
-		  |  |  v
-		  |  |  NODE#1 : Interface : Attr : id : "a-shadow-host"
-		  |  |
-		  |  |
-		  |  |- pointers : .shadowRoot x .host 
-		  |  |
-		  |  v
-		  |- pointers : .childNodes x .parentNode  
-		  |  
-		  +-> NODE#2 : Interface : Text : "Hello there, I'm `Text` object A."
-		  |
-		  +-> NODE#3 : Interface : Element : <span>
-		  |	  ^
-		  |	  |- pointers : .childNodes x .parentNode
-		  |	  v
-		  |	  NODE#4 : Interface : Text : "Hello there, I'm `Text` object B."
-		  |
-		  +-> NODE#5 : Interface : Element : <slot>
-		  	  ^
-		  	  |- pointers : .childNodes x .parentNode
-		  	  v
-		  	  NODE#6 : Interface : Text : 
-			  	  "Hello there, I'm `Text` object C; also a `Slottable` ; 
-				  in fact, I'm the default content of a &lt;slot&gt;."
-				  
+		<span id="sibling-of-the-shadow-host" 
+				slot="descendant-of-the-shadow-root-with-name">
+			G : THIS WILL NOT BE RENDERED, because 
+				`span[id="sibling-of-the-shadow-host"]`	is not in a
+				qualified location.  
+		</span>
+		
 	... and, what will be rendered ( with fewer line breaks ) is :
-	
-		Hello there, I'm `Text` object A.
-		Hello there, I'm `Text` object B.
-		Hello there, I'm `Text` object C; also a `Slottable` ;
-		in fact, I'm the default content of a <slot>;.
-
-	... beacuse, there were no Slottables in qualified locations, so 
-		the <slot> simply rendered with its default content.
-
+			
+				E : This will be rendered after it is *slotted/assigned* to 
+					`slot[name="descendant-of-the-shadow-root-with-name"]`. 
+					
+				((	C : First `Slottable` child of the *shadow host*. This will be 
+					rendered after it is *slotted/assigned* to the *default slot*. 
+				))
+				
+				D : This will be rendered after it is *slotted/assigned* to 
+					the *default slot*. 
+					`span[id="second-slottable-child-of-the-shadow-host"]` is
+					in a qualified location.
+				
 ```
-==WIP : CONTINUE HERE==
-```
-/* TEXT BELOW IS COPIED FOR EXAMPLE ONLY - REMOVE LATER */
-
-		- NODE#0 : Interface : Element : <div> 
-		  ^  ^
-		  |  |- pointers : .attributes x .ownerElement
-		  |  v
-		  |  NODE#1 : Interface : Attr : id : "not-planning-to-become-a-shadow-host"
-		  |  
-		  |  
-		  |- pointers : .childNodes x .parentNode  
-		  |  
-		  +-> NODE#2 : Interface : Text : "Hello there, I'm `Text` object A."
-		  |
-		  +-> NODE#3 : Interface : Element : <template>
-			  |
-			  |- pointers : .content
-			  v
-			  NODE#4 : Interface : DocumentFragment ( is a *root* )
-			  ^
-			  |- pointers : .childNodes x .parentNode
-			  v
-			  NODE#5 : Interface : Text : "Hello there, I'm `Text` object B."
-
-	... and, what will be rendered is :
-
-		Hello there, I'm `Text` object A.
-
-2.	Example, <template> with `shadowrootmode` attribute :
-	
-		<div id="eventually-becomes-a-shadow-host">
-			Hello there, I'm `Text` object A.
-			<template shadowrootmode="open">
-				Hello there, I'm `Text` object B.
-			</template>
-		</div>
-
-	... then, if you use JavaScript to examine the *node tree*, you will find that :
-
-		- NODE#0 : Interface : Element : <div> 
-		  ^  ^  ^
-		  |  |  |- pointers : .attributes x .ownerElement
-		  |  |  v
-		  |  |  NODE#1 : Interface : Attr : id : "eventually-becomes-a-shadow-host"
-		  |  |
-		  |  |
-		  |  |- pointers : .childNodes x .parentNode
-		  |  |
-		  |  v		  
-		  |  NODE#2 : Interface : Text : "Hello there, I'm `Text` object A."
-		  |  	( This will not be rendered. )
-		  |
-		  |- pointers : .shadowRoot x .host  
-		  v
-		  NODE#3 : Interface : ShadowRoot ( is a *root* )
-		  |		( This has replaced the NODE : Interface : Element : <template> )
-		  |
-		  |- pointers : .childNodes x .parentNode
-		  v
-		  NODE#4 : Interface : Text : "Hello there, I'm `Text` object B."
-
-	... and, what will be rendered is :
-
-		Hello there, I'm `Text` object B.
-```
-
 
 ## 6. CustomElementRegistry & CustomStateSet
 
