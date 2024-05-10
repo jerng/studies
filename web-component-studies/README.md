@@ -203,7 +203,7 @@ prop, ownerDocument         -> #0
 - For any for any ***node tree***, the DOM may render things differently based on differentiated rules.
 - So, for any new feature introduced to the environment, one has demonstrate { the **markup**, the ***node tree***, and the **rendering** }. Otherwise there are unapparent corner cases.
 
-Short-hand notation for DOM *node trees* ... it doesn't exist. If you open your browser developer tools and look at the rendered *node tree* it is actually in an **unofficial, non-specified format** decided by the browser vendor.
+Official short-hand notation for DOM *node trees* ... it doesn't exist. If you open your browser developer tools and look at the rendered *node tree* it is actually in an **unofficial, non-specified format** decided by the browser vendor.
 
 Which is how you get :shit: like :
 ```
