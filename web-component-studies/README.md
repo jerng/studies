@@ -148,6 +148,9 @@ rough drawing : some, not all, DOM interfaces
     -   `NodeList` is an interface for a collection of `Nodes`.
     -   `HTMLCollection` is an interface for a collection of `Elements`.
 -   Collections do not typically implement the `Node` interface.
+
+### 2.4. Illustrations
+#### 2.4.1.
 ```
 rough drawing : a node tree, in a common web browser ( not all nodes are shown )
 ~~~~~~~~~~~~~~~~~~
@@ -195,6 +198,36 @@ prop, tagName               "div"
 prop, previousSibling       -> #4
 prop, ownerDocument         -> #0
 ```    
+#### 2.4.2. DOM *node tree* Notation : a missing specification? 
+- For any **markup**, the DOM may rearrange the *node tree* differently, including  automatic removal and insertion of `Elements`  that were not in the original markup. 
+- For any for any ***node tree***, the DOM may render things differently based on differentiated rules
+- So, for any new feature introduced to the environment, one has demonstrate { the **markup**, the ***node tree***, and the **rendering** }. Otherwise there are unapparent corner cases.
+
+Short-hand notation for DOM *node trees* ... it doesn't exist. If you open your browser developer tools and look at the rendered *node tree* it is actually in an **unofficial, non-specified format** decided by the browser vendor.
+
+Which is how you get shit  like :
+```
+<div class="shadow-host">
+    #shadow-root
+        <div>This text will be rendered.</div>
+        <slot name="jack">
+            THIS TEXT WILL NOT BE RENDERED.
+            ↳<span> 🎯🖱reveal : Text that is not here in
+                                 the *node tree*, but which 
+                                 will be rendered here.
+        </slot>
+        <div>This will be rendered.</div>
+    THIS TEXT WILL NOT BE RENDERED.
+    <span slot="jack>
+        This this will be rendered, but it does not render
+        at the location of this location in the *node tree*;
+        instead it is rendered inside the &lt;slot&gt; element.
+    </span>
+</div>
+<div class="sibling-of-shadow-host">
+   This text will be rendered.
+</div>
+```
 
 ## 3. *Root Nodes*
 -   Certain interfaces must be at the *root* of their respective *node trees*.
@@ -369,6 +402,50 @@ prop, ownerDocument         -> #0
         `Elements` in a *shadow tree* ], from the [ rendered `Elements` their
         *light tree* ].  )
     
+#### 3.2.2.  Ordinary *Roots* vs. *Shadow-including Roots*
+
+-   `Nodes` have a `.getRootNode` method.
+    
+-   By default ( when called with no arguments ), or when called with the
+    argument `{ composed: false }`, a `Node`'s `.getRootNode` method returns the
+    *root* `Node` of the `Node`'s *node tree*.
+    
+    -   For a node, N, `N.getRootNode( { composed : false } )` returns the result of
+        following `N.parentNode`, recursively,
+
+        -   until the first instance of an ancestor node, R, is encountered,
+            where `R.parentNode=null`.
+        
+    -   >SPECIFICATION : If an [ object's parent ] is null, the [ object's root ]
+        is [ itself ]; otherwise, the [ object's root ], is the [ object's
+        parent's root ].
+        
+    -   >( The DOM spec neither recommends, nor recommends against, the use of
+        the terms "shadow-excluding roots", "uncomposed root", "simple roots",
+        or "ordinary roots" to be used in opposition to the spec-recommended
+        term *shadow-including root*. )
+        
+-   When called with the argument `{ composed : true }`, a `Node`'s `.getRootNode`
+    method returns the *shadow-including root* node of the `Node`'s *node tree*.
+    
+    -   For a node, N, `N.getRootNode( { composed : true } )` results from
+        following `N.parentNode`, recursively,
+    
+        -   whereas as each instance of an ancestor node, SR, is encountered,
+            where `SR.parentNode=null` and SR is a `ShadowRoot`, instead check
+            `SR.host.parentNode`,
+    
+        -   until the first instance of an ancestor node, R, is encountered,
+            where `R.parentNode=null` and R is not a `ShadowRoot`.
+    
+    -   >SPECIFICATION : If an [ object's root ] is a shadow root, the [ object's
+        "shadow-including root" ] is the [ object's root's host's
+        shadow-including root ]; otherwise, the [ object's shadow-including root
+        ] is the [ object's root ].
+    
+    -  > ( The DOM spec neither recommends, nor recommends against, the use of
+        the term "composed root" to be used synonymously with the
+        spec-recommended term *shadow-including root*. )   
 
 #### 3.2.3. Discussion of Technology Names related to `ShadowRoot` and *Shadow Hosts*
 
@@ -440,6 +517,7 @@ prop, ownerDocument         -> #0
             -   A `ShadowRoot` ( in the *shadow tree* ) accesses their *light
                 tree* via the `ShadowRoot`'s `.host` property.
             
+### 3.3. Illustrations
 ```
 rough drawing : 
 
@@ -546,52 +624,9 @@ rough drawing :
 ```
     
 
-## 4. Ordinary *Roots* vs. *Shadow-including Roots*
 
--   `Nodes` have a `.getRootNode` method.
-    
--   By default ( when called with no arguments ), or when called with the
-    argument `{ composed: false }`, a `Node`'s `.getRootNode` method returns the
-    *root* `Node` of the `Node`'s *node tree*.
-    
-    -   For a node, N, `N.getRootNode( { composed : false } )` returns the result of
-        following `N.parentNode`, recursively,
 
-        -   until the first instance of an ancestor node, R, is encountered,
-            where `R.parentNode=null`.
-        
-    -   >SPECIFICATION : If an [ object's parent ] is null, the [ object's root ]
-        is [ itself ]; otherwise, the [ object's root ], is the [ object's
-        parent's root ].
-        
-    -   >( The DOM spec neither recommends, nor recommends against, the use of
-        the terms "shadow-excluding roots", "uncomposed root", "simple roots",
-        or "ordinary roots" to be used in opposition to the spec-recommended
-        term *shadow-including root*. )
-        
--   When called with the argument `{ composed : true }`, a `Node`'s `.getRootNode`
-    method returns the *shadow-including root* node of the `Node`'s *node tree*.
-    
-    -   For a node, N, `N.getRootNode( { composed : true } )` results from
-        following `N.parentNode`, recursively,
-    
-        -   whereas as each instance of an ancestor node, SR, is encountered,
-            where `SR.parentNode=null` and SR is a `ShadowRoot`, instead check
-            `SR.host.parentNode`,
-    
-        -   until the first instance of an ancestor node, R, is encountered,
-            where `R.parentNode=null` and R is not a `ShadowRoot`.
-    
-    -   >SPECIFICATION : If an [ object's root ] is a shadow root, the [ object's
-        "shadow-including root" ] is the [ object's root's host's
-        shadow-including root ]; otherwise, the [ object's shadow-including root
-        ] is the [ object's root ].
-    
-    -  > ( The DOM spec neither recommends, nor recommends against, the use of
-        the term "composed root" to be used synonymously with the
-        spec-recommended term *shadow-including root*. )   
-
-## 5. `<template> Elements` and their `.shadowrootmode` Attribute
+## 4. `<template> Elements` and their `.shadowrootmode` Attribute
 
 -   `<template> Elements` have unique behaviours, different from most other
     elements.
@@ -737,20 +772,7 @@ rough drawing :
 ```
         
 
-## 6. `<slot> Elements` & `Slottables`
-```
-rough drawing : 
-~~~~~~~~~~~~~~~~~~
-This would be simple to draw, if there was a standard notation for 
-illustrating DOM `node trees`. If you open up the browser's Developer
-Tools, you will see that the browser developers "made up" a visual
-representation of `shadow-including document trees`, which isn't in 
-any standard specification.
-
-Rather than pick any arbitrary visual representation, it is best that
-the reader graph the notes below withe a pen or pencil or other preferred
-scratch tool - the graph should consist of objects and properties.
-```
+## 5. `<slot> Elements` & `Slottables`
 
 -   Despite the fact that `<template> Elements` and `<slot> Elements` are frequently
     discussed together in documentation, `<slot> Elements` do not behave
@@ -764,6 +786,28 @@ scratch tool - the graph should consist of objects and properties.
         
     -   The special behaviours of `<slot> Elements` and `<template> Elements` can
         interpolate, without contradiction. ( ==This requires some checking.== )
+            
+-   **CSS Selectors of interest** :
+        -   `::slotted` pseudo-element
+    
+-   **RENDERING** :
+    
+    -   `<slot> Elements` are normally rendered with the CSS property `display :
+        contents` ( the `<slot> Element` is replaced by its various contents, in
+        the box-tree); this is the case, whether the `<slot> Element`'s
+        `.assignedNodes` method returns an empty list, or some `Nodes`.
+        
+    -   If a `<slot> Element`'s `.assignedNodes` method returns the empty list, then
+        the `<slot> Element`'s rendered contents are its `.childElements`.
+        
+    -   If a `<slot> Element`'s `.assignedNodes` method returns a non-empty list of
+        `Nodes` ( its *assigned Nodes* ), then the `<slot> Element`'s contents are
+        the value returned by the `<slot> Element`'s `.assignedNodes` method ( and,
+        the `<slot> Element`'s `.childElements` will be ignored for rendering ).
+
+        -   Also see : **Shadow host > RENDERING > WARNING**
+
+### 5.1. Qualification of `Slottables` for *Assignment* to `<slot> Elements`
         
 -   `<slot> Elements` have unique behaviours, different from most other elements.
     ( Of the six types of HTML elements, they belong to the "normal elements". )
@@ -892,31 +936,12 @@ scratch tool - the graph should consist of objects and properties.
             *shadow root* ) has a `.slotAssignment` property set to `"manual"`, but
             the `<slot> Element`'s `.assign` method was not called on any `Slottables`
             in qualified locations.
-            
--   **CSS Selectors of interest** :
-        -   `::slotted` pseudo-element
-    
--   **RENDERING** :
-    
-    -   `<slot> Elements` are normally rendered with the CSS property `display :
-        contents` ( the `<slot> Element` is replaced by its various contents, in
-        the box-tree); this is the case, whether the `<slot> Element`'s
-        `.assignedNodes` method returns an empty list, or some `Nodes`.
-        
-    -   If a `<slot> Element`'s `.assignedNodes` method returns the empty list, then
-        the `<slot> Element`'s rendered contents are its `.childElements`.
-        
-    -   If a `<slot> Element`'s `.assignedNodes` method returns a non-empty list of
-        `Nodes` ( its *assigned Nodes* ), then the `<slot> Element`'s contents are
-        the value returned by the `<slot> Element`'s `.assignedNodes` method ( and,
-        the `<slot> Element`'s `.childElements` will be ignored for rendering ).
 
-        -   Also see : **Shadow host > RENDERING > WARNING**
-
+### 5.1. Illustrations
 ```
 rough drawing : 
 ~~~~~~~~~~~~~~~~~~
-1.	Example, <slot> and qualified locations for `Slottables` :
+1.	Example, <slot> and no `ShadowRoot` ( expect nothing to happen ) :
 
 	If, in your markup, you write :
 	
@@ -932,9 +957,32 @@ rough drawing :
 		</div>
 
 	... then, if you use JavaScript to examine the *node tree*, you will find that :
-```
-==WIP : CONTINUE HERE==
-```
+	
+		- NODE#0 : Interface : Element : <div> 
+		  ^  ^
+		  |  |- pointers : .attributes x .ownerElement
+		  |  v
+		  |  NODE#1 : Interface : Attr : id : "not-planning-to-become-a-shadow-host"
+		  |  
+		  |  
+		  |- pointers : .childNodes x .parentNode  
+		  |  
+		  +-> NODE#2 : Interface : Text : "Hello there, I'm `Text` object A."
+		  |
+		  +-> NODE#3 : Interface : Element : <span>
+		  |	  ^
+		  |	  |- pointers : .childNodes x .parentNode
+		  |	  v
+		  |	  NODE#4 : Interface : Text : "Hello there, I'm `Text` object B."
+		  |
+		  +-> NODE#5 : Interface : Element : <slot>
+		  	  ^
+		  	  |- pointers : .childNodes x .parentNode
+		  	  v
+		  	  NODE#6 : Interface : Text : 
+			  	  "Hello there, I'm `Text` object C; also a `Slottable` ; 
+				  in fact, I'm the default content of a &lt;slot&gt;."
+				  
 	... and, what will be rendered ( with fewer line breaks ) is :
 	
 		Hello there, I'm `Text` object A.
@@ -944,6 +992,67 @@ rough drawing :
 
 	... beacuse, there were no Slottables in qualified locations, so 
 		the <slot> simply rendered with its default content.
+```
+==WIP : CONTINUE HERE==
+```
+2.	Example, <slot> with `ShadowRoot`, but no `Slottables` in 
+	qualified locations ( expect nothing to happen ) :
+
+	If, via any method, you create a *node tree* (informally illustrated,
+	using current browser developer tool conventions) :
+	
+		<div id="a-shadow-host">
+			#shadow-root
+				<slot>
+					Hello there, I'm `Text` object C; also a `Slottable` ;
+					in fact, I'm the default content of a &lt;slot&gt;.
+				</slot>
+			Hello there, I'm `Text` object A.
+			<span id="a-slottable-element">
+				Hello there, I'm `Text` object B.
+			</span>
+		</div>
+
+	... then, if you use JavaScript to examine the *node tree*, you will find that :
+	
+		- NODE#0 : Interface : Element : <div> 
+		  ^  ^  ^
+		  |  |  |- pointers : .attributes x .ownerElement
+		  |  |  v
+		  |  |  NODE#1 : Interface : Attr : id : "a-shadow-host"
+		  |  |
+		  |  |
+		  |  |- pointers : .shadowRoot x .host 
+		  |  |
+		  |  v
+		  |- pointers : .childNodes x .parentNode  
+		  |  
+		  +-> NODE#2 : Interface : Text : "Hello there, I'm `Text` object A."
+		  |
+		  +-> NODE#3 : Interface : Element : <span>
+		  |	  ^
+		  |	  |- pointers : .childNodes x .parentNode
+		  |	  v
+		  |	  NODE#4 : Interface : Text : "Hello there, I'm `Text` object B."
+		  |
+		  +-> NODE#5 : Interface : Element : <slot>
+		  	  ^
+		  	  |- pointers : .childNodes x .parentNode
+		  	  v
+		  	  NODE#6 : Interface : Text : 
+			  	  "Hello there, I'm `Text` object C; also a `Slottable` ; 
+				  in fact, I'm the default content of a &lt;slot&gt;."
+				  
+	... and, what will be rendered ( with fewer line breaks ) is :
+	
+		Hello there, I'm `Text` object A.
+		Hello there, I'm `Text` object B.
+		Hello there, I'm `Text` object C; also a `Slottable` ;
+		in fact, I'm the default content of a <slot>;.
+
+	... beacuse, there were no Slottables in qualified locations, so 
+		the <slot> simply rendered with its default content.
+
 ```
 ==WIP : CONTINUE HERE==
 ```
@@ -1013,7 +1122,7 @@ rough drawing :
 ```
 
 
-## 7. CustomElementRegistry & CustomStateSet
+## 6. CustomElementRegistry & CustomStateSet
 
 -   These DOM interfaces implement the the HTML spec's concept of *custom
     `Elements`*.
