@@ -1,6 +1,6 @@
 
 # A Systematic Introduction to "Web Components"
-
+*Based on : the state of tech in **2024-05***
 ## Preamble
 - ==IMPORTANT== : ( You may read  this **Preamble** and the **Executive Summary** first, but ) 
     The later parts of this text depend on an understanding of the
@@ -1088,7 +1088,7 @@ Example :
 
 
 # Recommendations for Building Web Components
-==WORK IS IN PROGRESS, THROUGHOUT THE SECTIONS BELOW==
+==INCOMPLETE WORK IS IN PROGRESS, THROUGHOUT THE SECTIONS BELOW==
 Since the standards and frameworks are hardly mature, is there a safe approach in the present, with a minimal surface area?
 In other words, is there a framework for this? ( There are lots of frameworks for this ... -_- )
 
@@ -1104,7 +1104,15 @@ In other words, is there a framework for this? ( There are lots of frameworks fo
 	- (i) create a *shadow host*,
 	- (ii) stick some `<slot> Elements` under (i)'s `ShadowRoot`
 	- (iii) have important content from (a) flow into (ii) with minimal effort
- 
+
+##### Design Pattern
+- A somewhat defensive approach, without assuming that a `shadow tree`-less `Document` will later have *shadow trees*, but being prepared for a contingency in which someone might want to convert the `documentElement` ( usually a `<html> Element` ) or some of its descendants into *shadow hosts*, might be to ...
+	- ensure that each major **layout** section of a `Document` is in an immediate child of the `documenElement`, such that someone who wanted to move any major section into a `shadow tree`, can do that simply by ...
+	- i. converting `documentElement` into a *shadow host*, which would hide all descendants
+	- ii. setting up a *default slot* in `documentElement`'s *shadow tree*, such that all the *shadow host*'s hidden descendants are rendered as `Slottables` insider the *shadow tree*
+	- iii. proceed to manipulate the `Slottables` from within the `shadow tree` via 
+		- JavaScript : `Slottable .assignedNodes` 
+		- CSS : == check and confirm "what the obvious methods are" == 
 ### 1.2. Building Usable Web Components
 - If you're building a web component, how might you structure it such that ...
 	- (a) the web component functions in a useful way, or in a nearly useful way, on its own
@@ -1114,6 +1122,11 @@ In other words, is there a framework for this? ( There are lots of frameworks fo
 - If (b) is to involve ShadowRoots ( and it might not ), then a minimal convention when building (a) might involve **enforcing structures** which make it possible to 
 	- (i) stick some `<slot> Elements` under the `ShadowRoot`
 	- (i) only ingest data from *light trees* to *shadow trees* via `Slottables`
+
+##### Design Pattern
+- When writing a web component for an unknown userbase, one should
+	- specify a *default slot*
+	- specify how `Slottables` in the component's *shadow host* should be arranged : either targeting *named slots* or the *default slot*
 
 ### 1.3. Building Web Component Frameworks
 - What are some **complexities** which might evolve from the underlying technologies?
