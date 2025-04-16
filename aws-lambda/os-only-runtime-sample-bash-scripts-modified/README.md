@@ -7,7 +7,7 @@
   - reduced verbosity of `curl`
   - changed `Content-type` to `text/plain`
   - response body is `EVENT_DATA` from Lambda
-- CloudWatch performance reported : 
+- ( Amazon Linux 2023, arm64 ) CloudWatch performance reported : 
 
 ```
 Billed Duration:    254     ms
