@@ -28,13 +28,34 @@
  * simple HTTP POST using the easy interface
  * </DESC>
  */
+
+#define _GNU_SOURCE
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <curl/curl.h>
 
 int main(void)
 {
     CURL *curl;
     CURLcode res;
+
+    /* Gets AWS Lambda ENV */
+    char* _AWS_LAMBDA_RUNTIME_API = getenv("AWS_LAMBDA_RUNTIME_API");
+    char* _INVOCATION_ID = getenv("INVOCATION_ID");
+    char* _RESPONSE = getenv("RESPONSE");
+
+    char* _POST_URI;
+
+    // discard return value ( should check for success later )
+    asprintf(   &_POST_URI, 
+                            "$AWS_LAMBDA_RUNTIME_API : %s\n"
+                            "$INVOCATION_ID : %s\n"
+                            "$RESPONSE : %s", 
+                            _AWS_LAMBDA_RUNTIME_API,
+                            _INVOCATION_ID,
+                            _RESPONSE
+                        );
 
     /* In Windows, this inits the Winsock stuff
      * */
@@ -63,7 +84,7 @@ int main(void)
          * */
         curl_easy_setopt(curl,
                 CURLOPT_POSTFIELDS,
-                "name=daniel&project=curl");
+                _POST_URI);
 
         /* Perform
          * the
@@ -91,6 +112,7 @@ int main(void)
         curl_easy_cleanup(curl);
     }
     curl_global_cleanup();
+    free(_POST_URI);
     return
         0;
 }
