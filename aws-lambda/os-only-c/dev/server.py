@@ -14,6 +14,10 @@ class S(BaseHTTPRequestHandler):
     def _set_response(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
+        
+        # Jerng : edit : mock Lambda Runtime INVOCATION_ID
+        self.send_header('Lambda-Runtime-Aws-Request-Id', 'my_invocation_id')
+
         self.end_headers()
 
     def do_GET(self):
