@@ -27,7 +27,7 @@ class S(BaseHTTPRequestHandler):
         self.wfile.write("GET request for {}".format(self.path).encode('utf-8'))
 
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
+        content_length = 0 if self.headers['Content-Length'] is None else int(self.headers['Content-Length'])
 # <---
 # Gets
 # the

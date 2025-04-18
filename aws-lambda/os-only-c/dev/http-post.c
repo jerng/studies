@@ -31,24 +31,68 @@
 
 #define _GNU_SOURCE
 
+#include <curl/curl.h>
+#include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <curl/curl.h>
+#include <string.h>
+
 
 /* inits */
 char* _REQUEST_URI;
 char* _INVOCATION_ID;
-static size_t _HEADER_CALLBACK(
-        char *buffer,
-        size_t size,
+static size_t _REQUEST_HEADER_CALLBACK(
+        char* buffer,
+        size_t size, // ? : always 1, see manual
         size_t nitems,
-        void *userdata
-        ) 
-{ 
+        void* userdata
+        )
+{
     printf("\nGET response header : %s",buffer) ;
     return nitems * size ;
 };
-void* _EVENT_DATA ;
+
+struct _REQUEST_WRITEDATA_STRUCT 
+{
+    char* _MEMORY;
+    size_t _SIZE;
+};
+
+static size_t _REQUEST_WRITEDATA_CALLBACK(
+        char* buffer,
+        size_t size, // always 1, see manual
+        size_t nmemb,
+        void* userdata
+        )
+{
+    size_t _TOTAL_INPUT_SIZE = size * nmemb;
+    struct _REQUEST_WRITEDATA_STRUCT*__EVENT_DATA_STRUCT 
+        = (struct _REQUEST_WRITEDATA_STRUCT*) userdata;
+
+    char* pointer =
+        realloc(__EVENT_DATA_STRUCT->_MEMORY,__EVENT_DATA_STRUCT->_SIZE +
+                _TOTAL_INPUT_SIZE + 1);
+    if(!pointer) {
+        /* out of memory */
+        printf("\n_REQUEST_WRITEDATA_CALLBACK/4 : "
+                "not enough memory : realloc returned NULL\n");
+        return 0;
+    }
+    __EVENT_DATA_STRUCT->_MEMORY = pointer;
+    memcpy( &( __EVENT_DATA_STRUCT->_MEMORY[
+                __EVENT_DATA_STRUCT->_SIZE
+    ]
+    ), 
+            buffer,
+            _TOTAL_INPUT_SIZE 
+          );
+    __EVENT_DATA_STRUCT->_SIZE += _TOTAL_INPUT_SIZE;
+    __EVENT_DATA_STRUCT->_MEMORY[ __EVENT_DATA_STRUCT->_SIZE ] = 0;
+
+    return _TOTAL_INPUT_SIZE;
+
+}
+
 char* _RESPONSE_URI ;
 char* _RESPONSE ;
 
@@ -82,18 +126,30 @@ int main(void)
         curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1");
         curl_easy_setopt(curl, CURLOPT_PORT, 8080L);
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-        
-        curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, _HEADER_CALLBACK);
+
+        curl_easy_setopt(   curl, 
+                CURLOPT_HEADERFUNCTION, 
+                _REQUEST_HEADER_CALLBACK
+                );
         // Alternatively use CURLOPT_HEADERDATA to write to a FILE
-        
-        printf("\nRESUME WORK HERE : https://curl.se/libcurl/c/getinmemory.html");
-        // RESUME WORK HERE : https://curl.se/libcurl/c/getinmemory.html
-        //curl_easy_setopt(curl, CURLOPT_WRITEDATA, &_EVENT_DATA);
+        curl_easy_setopt(   curl, 
+                CURLOPT_WRITEFUNCTION, 
+                _REQUEST_WRITEDATA_CALLBACK
+                );
+
+        struct _REQUEST_WRITEDATA_STRUCT _EVENT_DATA_STRUCT;
+        _EVENT_DATA_STRUCT._MEMORY = malloc(1);
+        _EVENT_DATA_STRUCT._SIZE = 0;
+        curl_easy_setopt(   curl, 
+                CURLOPT_WRITEDATA, 
+                (void *)&_EVENT_DATA_STRUCT
+                );
 
         res = curl_easy_perform(curl);
-        if(res != CURLE_OK)
+        if(res != CURLE_OK){
             fprintf(stderr, "curl_easy_perform() failed to GET request from Lambda Runtime: %s\n",
                     curl_easy_strerror(res));
+        }
 
         /* Reset options only */
         curl_easy_reset(curl);
@@ -119,7 +175,7 @@ int main(void)
          * POST
          * data
          * */
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, _EVENT_DATA);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, _EVENT_DATA_STRUCT._MEMORY);
         res = curl_easy_perform(curl);
         if(res != CURLE_OK)
             fprintf(stderr, "curl_easy_perform() failed to POST response to Lambda Runtime: %s\n",
@@ -127,6 +183,7 @@ int main(void)
 
         /* Close connections */
         curl_easy_cleanup(curl);
+        free(_EVENT_DATA_STRUCT._MEMORY);
     }   
     curl_global_cleanup();
     free(_REQUEST_URI);
