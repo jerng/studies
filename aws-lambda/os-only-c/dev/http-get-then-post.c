@@ -1,35 +1,6 @@
-/***************************************************************************
- *                                  _   _ ____  _
- *  Project                     ___| | | |  _ \| |
- *                             / __| | | | |_) | |
- *                            | (__| |_| |  _ <| |___
- *                             \___|\___/|_| \_\_____|
- *
- * Copyright (C) Daniel Stenberg, <daniel@haxx.se>, et al.
- *
- * This software is licensed as described in the file COPYING, which
- * you should have received as part of this distribution. The terms
- * are also available at https://curl.se/docs/copyright.html.
- *
- * You may opt to use, copy, modify, merge, publish, distribute
- * and/or sell
- * copies of the Software, and permit persons to whom the Software
- * is
- * furnished to do so, under the terms of the COPYING file.
- *
- * This software is distributed on an "AS IS" basis, WITHOUT
- * WARRANTY OF ANY
- * KIND, either express or implied.
- *
- * SPDX-License-Identifier: curl
- *
- ***************************************************************************/
-/* <DESC>
- * simple HTTP POST using the easy interface
- * </DESC>
- */
-
 #define _GNU_SOURCE
+
+#define MAX_GROUPS 2
 
 #include <curl/curl.h>
 #include <regex.h>
@@ -40,7 +11,10 @@
 
 /* inits */
 char* _REQUEST_URI;
-char* _INVOCATION_ID;
+regex_t regex;
+regmatch_t groups[MAX_GROUPS];
+char _INVOCATION_ID[36];
+const char *needle = " *Lambda-Runtime-Aws-Request-Id *: *([^[:space:]]*)";  
 static size_t _REQUEST_HEADER_CALLBACK(
         char* buffer,
         size_t size, // ? : always 1, see manual
@@ -49,6 +23,20 @@ static size_t _REQUEST_HEADER_CALLBACK(
         )
 {
     printf("\nGET response header : %s",buffer) ;
+    if (regexec(&regex, buffer, MAX_GROUPS, groups, 0) == 0) 
+    {
+        strncpy( _INVOCATION_ID, 
+                ( buffer + groups[1].rm_so ),
+                ( groups[1].rm_eo - groups[1].rm_so )
+               );
+        printf( "\nMatch found : start : %i, end : %i, '%s'\n", 
+                groups[1].rm_so,
+                groups[1].rm_eo,
+                _INVOCATION_ID
+              );
+    } else {
+        printf("\nNo match found\n");
+    }
     return nitems * size ;
 };
 
@@ -74,7 +62,8 @@ static size_t _REQUEST_WRITEDATA_CALLBACK(
                 _TOTAL_INPUT_SIZE + 1);
     if(!pointer) {
         /* out of memory */
-        printf("\n_REQUEST_WRITEDATA_CALLBACK/4 : "
+        fprintf(stderr,
+                "\n_REQUEST_WRITEDATA_CALLBACK/4 : "
                 "not enough memory : realloc returned NULL\n");
         return 0;
     }
@@ -100,6 +89,12 @@ int main(void)
 {
     CURL *curl ;
     CURLcode res ;
+
+    // Compile the regular expression
+    if (regcomp(&regex, needle, REG_EXTENDED)) {
+        printf("\nCould not compile regex");
+        return 1;
+    }
 
     /* Gets AWS Lambda ENV */
     //char* _HANDLER = getenv("_HANDLER") ;
@@ -149,6 +144,8 @@ int main(void)
         if(res != CURLE_OK){
             fprintf(stderr, "curl_easy_perform() failed to GET request from Lambda Runtime: %s\n",
                     curl_easy_strerror(res));
+        }else{
+            printf("Request EVENT_DATA : %s",_EVENT_DATA_STRUCT._MEMORY);
         }
 
         /* Reset options only */
@@ -165,7 +162,7 @@ int main(void)
                 _AWS_LAMBDA_RUNTIME_API,
                 _INVOCATION_ID
                 );
-        printf("\nResponse URI : %s",_RESPONSE_URI);
+        printf("\nResponse URI : %s\n",_RESPONSE_URI);
 
         curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1");
         curl_easy_setopt(curl, CURLOPT_PORT, 8080L);
@@ -186,8 +183,8 @@ int main(void)
         free(_EVENT_DATA_STRUCT._MEMORY);
     }   
     curl_global_cleanup();
+    regfree(&regex);
     free(_REQUEST_URI);
     free(_RESPONSE_URI);
-    return
-        0;
+    return 0;
 }
