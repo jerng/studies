@@ -6,23 +6,27 @@ Where the files in this folder, come from ...
   `samples-modified`
 - it does not have to be *statically* compiled
 - whereas, binaries uploaded via web console to a Lambda Layer, are executable
-  at the Lambda runtime's `/opt/` folder
+  at the Lambda runtime's `/opt/` folder; and so are binaries uploaded via web
+  console to the Lambda Code Source tab as a `.zip`
     - however, binaries uploaded via web console to the Lambda runtime's
       `/var/task/` folder do not seem to be executable, even if they are set
       with executable permissions ... this is not clearly documented, but it may
       be a security precaution
-- so far, it is not possible to make `/var/task/bootstrap` a binary executable,
-  so it remains a Bash command language script, which calls to
-  `/opt/run-dynamic`, which is a binary executable compiled from
-  `http-get-then-post.c`
-- compilation was successful on a EC2 `t4g.nano` which uses the same `graviton2`
-  CPU as Lambda's arm64 runtime ... the executable binary was then `scp`-ed out
-  before being uploaded to Lambda as a layer
-    - cross-compilation was not successful on Ubuntu 22.04, x86_64, via
-      `aarch64-linux-gnu-gcc`
--  once that is done, removing `curl` commands seemed to reduce resource
-   consumption significantly
-
+- so `/var/task/bootstrap`, a binary executable is uploaded as a `.zip` to
+  Lambda Code Source tab in the web console
+- `bootstrap`'s compilation from `http-get-then-post.c` was successful on a EC2
+  `t4g.nano` which uses the same `graviton2` CPU as Lambda's arm64 runtime ...
+  the executable binary was then `scp`-ed out before being uploaded to Lambda as
+  a layer
+    - cross-compilation was NOT successful on Ubuntu 22.04, x86_64, via
+      `aarch64-linux-gnu-gcc`, because I am not smart enough to finish this work
+-  moving from `curl` commands called in `bootstrap.sh` to `libcurl` calls from
+   `bootstrap` seemed to reduce resource consumption significantly
+   - however this is still slower than the native Rust runtime's Hello world
+     which clocks in at around 1.7ms; probably, this is because the C
+     `bootstrap` is currently REINITIALISING UPON EVERY REQUEST, instead of
+     preserving things like `libcurl` contexts and `regex` compilations for
+     reuse
 ```
 Billed Duration:     37     ms      5     ms best case without init
 Init Duration:       32.15  ms      

@@ -32,20 +32,21 @@ static size_t _REQUEST_HEADER_CALLBACK(
         void* userdata
         )
 {
-    printf("\nGET response header : %s",buffer) ;
+    //printf("\nGET response header : %s",buffer) ;
     if (regexec(&regex, buffer, MAX_GROUPS, groups, 0) == 0) 
     {
         strncpy( _INVOCATION_ID, 
                 ( buffer + groups[1].rm_so ),
                 ( groups[1].rm_eo - groups[1].rm_so )
                );
-        printf( "\nMatch found : start : %i, end : %i, '%s'\n", 
+        /*printf( "\nMatch found : start : %i, end : %i, '%s'\n", 
                 groups[1].rm_so,
                 groups[1].rm_eo,
                 _INVOCATION_ID
               );
+        */
     } else {
-        printf("\nNo match found\n");
+        //printf("\nNo match found\n");
     }
     return nitems * size ;
 };
@@ -125,7 +126,7 @@ int main(void)
                 "http://%s/2018-06-01/runtime/invocation/next",
                 _AWS_LAMBDA_RUNTIME_API
                 );
-        printf("\nRequest URI : %s",_REQUEST_URI);
+        //printf("\nRequest URI : %s",_REQUEST_URI);
 
         //curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, xxx);
         curl_easy_setopt(curl, CURLOPT_URL, _REQUEST_URI);
@@ -156,7 +157,7 @@ int main(void)
             fprintf(stderr, "curl_easy_perform() failed to GET request from Lambda Runtime: %s\n",
                     curl_easy_strerror(res));
         }else{
-            printf("Request EVENT_DATA : %s",_EVENT_DATA_STRUCT._MEMORY);
+            //printf("Request EVENT_DATA : %s",_EVENT_DATA_STRUCT._MEMORY);
         }
 
         /* Reset options only */
@@ -173,7 +174,7 @@ int main(void)
                 _AWS_LAMBDA_RUNTIME_API,
                 _INVOCATION_ID
                 );
-        printf("\nResponse URI : %s\n",_RESPONSE_URI);
+        //printf("\nResponse URI : %s\n",_RESPONSE_URI);
 
         //curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1");
         curl_easy_setopt(curl, CURLOPT_URL, _RESPONSE_URI);
