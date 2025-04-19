@@ -2,6 +2,7 @@ Where the files in this folder, come from ...
 
 ## `dev` : prototyping in the C language
 
+### `bootstrap` tears down after each request, does not reuse resources
 - `http-get-then-post.c` attempts to replicate the functionality of
   `samples-modified`
 - it does not have to be *statically* compiled
@@ -43,6 +44,18 @@ Init Duration:       29.96  ms
 Duration:             1.51  ms      1.10  ms best case without init
 Memory Size:        128     MB      
 Max Memory Used:     16     MB     17     MB best case without init 
+```
+
+### `bootstrap` tries to reuse resources, has a do-while loop
+
+- adding a `do{}while()` loop improves performance significantly
+```
+this C test : sending entire EVENT_DATA slug : 
+Billed Duration:     17     ms      1     ms best case without init
+Init Duration:       14.81  ms      
+Duration:             1.67  ms      0.78  ms best case without init
+Memory Size:        128     MB      
+Max Memory Used:     21     MB     23     MB best case without init ... stable after 2 seconds at 50 requests/s 
 ```
 
 ## `samples-modified` : still, just Bash command language, and `curl`
