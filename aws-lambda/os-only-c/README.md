@@ -26,6 +26,7 @@
    `bootstrap` seemed to reduce resource consumption significantly
 ```
 this C test : sending entire EVENT_DATA slug : 
+
 Billed Duration:     37     ms      5     ms best case without init
 Init Duration:       32.15  ms      
 Duration:             4.73  ms      4.39  ms best case without init
@@ -33,13 +34,15 @@ Memory Size:        128     MB
 Max Memory Used:     24     MB      4     MB best case without init 
 ```
  
-- however this is still slower than the native Rust runtime's Hello world which
-  clocks in at around 1.7ms; probably, this is because the C `bootstrap` is
-  currently REINITIALISING UPON EVERY REQUEST, instead of preserving things like
-  `libcurl` contexts and `regex` compilations for reuse
+- however this is still slower than the [native Rust runtime's Hello
+  world](https://github.com/awslabs/aws-lambda-rust-runtime) which clocks in at
+  around 1.7ms; probably, this is because the C `bootstrap` is currently
+  REINITIALISING UPON EVERY REQUEST, instead of preserving things like `libcurl`
+  contexts and `regex` compilations for reuse
 
 ```
 Rust using Tokio as its async runtime : sending one line hello world :
+
 Billed Duration:     32     ms      2     ms best case without init
 Init Duration:       29.96  ms      
 Duration:             1.51  ms      1.10  ms best case without init
@@ -52,12 +55,14 @@ Max Memory Used:     16     MB     17     MB best case without init
 - adding a `do{}while()` loop improves performance significantly
 ```
 this C test : sending entire EVENT_DATA slug : 
+
 Billed Duration:     17     ms      1     ms best case without init
 Init Duration:       14.81  ms      
 Duration:             1.67  ms      0.78  ms best case without init
 Memory Size:        128     MB      
 Max Memory Used:     21     MB     23     MB best case without init ... stable after 2 seconds at 50 requests/s 
 ```
+... averaging 1ms per request, that's USD 0.29 for 10 million requests ...
 
 ## `samples-modified` : still, just Bash command language, and `curl`
 
