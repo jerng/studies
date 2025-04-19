@@ -22,12 +22,8 @@ Where the files in this folder, come from ...
       `aarch64-linux-gnu-gcc`, because I am not smart enough to finish this work
 -  moving from `curl` commands called in `bootstrap.sh` to `libcurl` calls from
    `bootstrap` seemed to reduce resource consumption significantly
-   - however this is still slower than the native Rust runtime's Hello world
-     which clocks in at around 1.7ms; probably, this is because the C
-     `bootstrap` is currently REINITIALISING UPON EVERY REQUEST, instead of
-     preserving things like `libcurl` contexts and `regex` compilations for
-     reuse
 ```
+this C test : sending entire EVENT_DATA slug : 
 Billed Duration:     37     ms      5     ms best case without init
 Init Duration:       32.15  ms      
 Duration:             4.73  ms      4.39  ms best case without init
@@ -35,6 +31,19 @@ Memory Size:        128     MB
 Max Memory Used:     24     MB      4     MB best case without init 
 ```
  
+- however this is still slower than the native Rust runtime's Hello world which
+  clocks in at around 1.7ms; probably, this is because the C `bootstrap` is
+  currently REINITIALISING UPON EVERY REQUEST, instead of preserving things like
+  `libcurl` contexts and `regex` compilations for reuse
+
+```
+Rust using Tokio as its async runtime : sending one line hello world :
+Billed Duration:     32     ms      2     ms best case without init
+Init Duration:       29.96  ms      
+Duration:             1.51  ms      1.10  ms best case without init
+Memory Size:        128     MB      
+Max Memory Used:     16     MB     17     MB best case without init 
+```
 
 ## `samples-modified` : still, just Bash command language, and `curl`
 
