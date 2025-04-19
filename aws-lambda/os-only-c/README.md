@@ -1,8 +1,45 @@
-# Where the files in this folder come from
+Where the files in this folder, come from ...
 
-- From the AWS web Console, upon creating a Lambda with the "OS Only" Runtime, sample files are given by AWS
-  - Related documentation : https://docs.aws.amazon.com/lambda/latest/dg/runtimes-provided.html
-- The sample files are visible in the web console code editor, copied to the same directory, renamed appropriately, and edited
+## `dev` : prototyping in the C language
+
+- `http-get-then-post.c` attempts to replicate the functionality of
+  `samples-modified`
+- it does not have to be *statically* compiled
+- whereas, binaries uploaded via web console to a Lambda Layer, are executable
+  at the Lambda runtime's `/opt/` folder
+    - however, binaries uploaded via web console to the Lambda runtime's
+      `/var/task/` folder do not seem to be executable, even if they are set
+      with executable permissions ... this is not clearly documented, but it may
+      be a security precaution
+- so far, it is not possible to make `/var/task/bootstrap` a binary executable,
+  so it remains a Bash command language script, which calls to
+  `/opt/run-dynamic`, which is a binary executable compiled from
+  `http-get-then-post.c`
+- compilation was successful on a EC2 `t4g.nano` which uses the same `graviton2`
+  CPU as Lambda's arm64 runtime ... the executable binary was then `scp`-ed out
+  before being uploaded to Lambda as a layer
+    - cross-compilation was not successful on Ubuntu 22.04, x86_64, via
+      `aarch64-linux-gnu-gcc`
+-  once that is done, removing `curl` commands seemed to reduce resource
+   consumption significantly
+
+```
+Billed Duration:     37     ms      5     ms best case without init
+Init Duration:       32.15  ms      
+Duration:             4.73  ms      4.39  ms best case without init
+Memory Size:        128     MB      
+Max Memory Used:     24     MB      4     MB best case without init 
+```
+ 
+
+## `samples-modified` : still, just Bash command language, and `curl`
+
+- From the AWS web Console, upon creating a Lambda with the "OS Only" Runtime,
+  sample files are given by AWS
+  - Related documentation :
+    https://docs.aws.amazon.com/lambda/latest/dg/runtimes-provided.html
+- The sample files are visible in the web console code editor, copied to the
+  same directory, renamed appropriately, and edited
 - Changes to the sample code :
   - reduced verbosity of `curl`
   - changed `Content-type` to `text/plain`
@@ -10,15 +47,24 @@
 - CloudWatch performance reported : 
 
 ```
-Billed Duration:    254     ms
-    Init Duration:  27.45   ms
-    Duration:       226.50  ms
-Memory Size:        128     MB
-Max Memory Used:    26      MB
+Billed Duration:    254     ms 
+Init Duration:       27.45  ms 
+Duration:           226.50  ms 
+Memory Size:        128     MB 
+Max Memory Used:     26     MB 
 ```
 
-# Custom AWS Lambda runtime
+## `samples` : AWS Lambda OS-only Custom Runtime :
 
-A runtime is a program that runs a Lambda function's handler method when the function is invoked. The runtime can be included in your function's deployment package, or in a [layer](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html). [Learn more](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html) about custom Lambda runtimes.
+A runtime is a program that runs a Lambda function's handler method when the
+function is invoked. The runtime can be included in your function's deployment
+package, or in a
+[layer](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html).
+[Learn more](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-custom.html)
+about custom Lambda runtimes.
 
-For reference, this function includes a sample [Bash](https://www.gnu.org/software/bash/) runtime in `bootstrap.sample` and a corresponding handler file `hello.sh.sample`. As a next step, you should provide your own bootstrap by either adding a layer implementing a custom runtime or including a `bootstrap` file in this function's deployment package.
+For reference, this function includes a sample
+[Bash](https://www.gnu.org/software/bash/) runtime in `bootstrap.sample` and a
+corresponding handler file `hello.sh.sample`. As a next step, you should provide
+your own bootstrap by either adding a layer implementing a custom runtime or
+including a `bootstrap` file in this function's deployment package.

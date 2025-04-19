@@ -1,3 +1,13 @@
+/*
+
+MINIMAL AL2023 kernel - may required CLI
+https://docs.aws.amazon.com/linux/al2023/ug/ec2.html
+
+AL2023 compilation :
+    sudo dnf install gcc libcurl-devel -y
+    gcc run.c -o run-dynamic -lcurl -O3 -Os && strip run-dynamic
+*/
+
 #define _GNU_SOURCE
 
 #define MAX_GROUPS 2
@@ -83,7 +93,7 @@ static size_t _REQUEST_WRITEDATA_CALLBACK(
 }
 
 char* _RESPONSE_URI ;
-char* _RESPONSE ;
+struct curl_slist* _RESPONSE_HEADERS = NULL;
 
 int main(void)
 {
@@ -118,8 +128,9 @@ int main(void)
         printf("\nRequest URI : %s",_REQUEST_URI);
 
         //curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, xxx);
-        curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1");
-        curl_easy_setopt(curl, CURLOPT_PORT, 8080L);
+        curl_easy_setopt(curl, CURLOPT_URL, _REQUEST_URI);
+        //curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1");
+        //curl_easy_setopt(curl, CURLOPT_PORT, 8080L);
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 
         curl_easy_setopt(   curl, 
@@ -164,8 +175,14 @@ int main(void)
                 );
         printf("\nResponse URI : %s\n",_RESPONSE_URI);
 
-        curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1");
-        curl_easy_setopt(curl, CURLOPT_PORT, 8080L);
+        //curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1");
+        curl_easy_setopt(curl, CURLOPT_URL, _RESPONSE_URI);
+        //curl_easy_setopt(curl, CURLOPT_PORT, 8080L);
+
+        _RESPONSE_HEADERS = curl_slist_append(
+                _RESPONSE_HEADERS,
+                "Content-Type: text/plain");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, _RESPONSE_HEADERS);
         /* Now
          * specify
          * the
@@ -180,6 +197,7 @@ int main(void)
 
         /* Close connections */
         curl_easy_cleanup(curl);
+        curl_slist_free_all(_RESPONSE_HEADERS);
         free(_EVENT_DATA_STRUCT._MEMORY);
     }   
     curl_global_cleanup();
