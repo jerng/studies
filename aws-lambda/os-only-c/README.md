@@ -1,4 +1,5 @@
-Where the files in this folder, come from ...
+1. For final results, see *bootstrap` tries to reuse resources, has a do-while loop*
+2. Where the files in this folder, come from ...
 
 ## `dev` : prototyping in the C language
 
