@@ -1,0 +1,257 @@
+<html>
+  <head>
+  </head>
+  <body>
+
+<h1><code>d3.js</code>, Force Layout primer</h1>
+<h2>For study purposes only</h2>
+<ul>
+<li>Cleaned up an example from : https://bl.ocks.org/HarryStevens/bc938c8d45008d99faed47039fbe5d49</li>
+<li>Cleaned up example uses d3 version 5.</li>
+<li>Original example license : https://opensource.org/licenses/GPL-3.0</li>
+<li>Original example uses d3 version 4.</li>
+</ul>
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://unpkg.com/jeezy@1.11.2/lib/jeezy.min.js"></script>
+    <script src="../../../third-party/live.js"></script>
+    <script>
+
+///////////////////////////////////////////////////////////////////////////////
+//  STAGE 0:    INITIALISATION 
+//  STAGE 0.1:  FORCE SIMULATION CONFIGURED, STARTED, with INITIAL DATA 
+//
+//  STAGE 1:    SIMULATION now begins....
+//  STAGE 2:    (gg) in (restart), before (.data().join()), ._groups.length == 0
+//  STAGE 2.1:  (gg), a selection of DOM elements, is BOUND WITH DATA. 
+//  STAGE 2.2:  (gg) in (restart), after (.data().join()), ._groups.length > 0 
+//  STAGE 3:    (gg) in 'tick'-handler, ._groups.length > 0 
+//  stage 3.1:  End of 'tick'-handler, END OF PROGRAM - until STAGE 1 reiterates.
+///////////////////////////////////////////////////////////////////////////////
+    'use strict'
+///////////////////////////////////////////////////////////////////////////////
+//  STAGE 0: INITIALISATION 
+///////////////////////////////////////////////////////////////////////////////
+    
+    let DEBUG = 0 // levels : 0, 1, 2, 3
+
+    let alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
+    let randomizeData = function(){
+      let d0 = jz.arr.shuffle(alphabet),
+        d1 = [],
+        d2 = []
+      for (let i = 0; i < jz.num.randBetween(1, alphabet.length); i++){
+        d1.push(d0[i])
+      }
+      d1.forEach(function(d){
+        d2.push({name: d, size: jz.num.randBetween(0, 50)})
+      })
+      return d2
+    }
+
+    let width   = window.innerWidth
+    let height  = window.innerHeight
+
+    let svg =   d3.select("body").append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+
+    let g   =   svg.append("g")
+                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+    
+    let gg  =   g.append("g")
+                    .attr("stroke", "#fff")
+                    .attr("stroke-width", 1.5)
+                    .selectAll(".node")             // returns an empty group
+
+                // DOCS: "The elements in the returned selection are grouped by their
+                // corresponding parent node in this selection. If no element
+                // matches the specified selector for the current element, or if
+                // the selector is null, the group at the current index will be
+                // empty."
+
+    DEBUG >= 1 && console.warn ( `STAGE 0: (gg) before SIMULATION, ._groups.length == 0 :`, gg )
+
+    let ticked = function () {
+
+        ///////////////////////////////////////////////////////////////////////////////
+        //  STAGE 3: The FORCE SIMULATION (stage 0.1) calculates a 2D model of
+        //  spacetime, assigning a location to each datum which it tracks.
+        //  However, the SIMULATION is completely unaware of how its data is
+        //  rendered visually. The SIMULATION merely calls a 'tick' event, which
+        //  is handled by listeners such as (ticked).
+        //
+        //  So the code here is inherently unaware of SIMULATION. It is called
+        //  BY the SIMULATION. 
+        ///////////////////////////////////////////////////////////////////////////////
+
+        DEBUG >= 3 && console.log ( `STAGE 3: (gg) in 'tick'-handler, ._groups.length > 0 :`, gg )
+
+        gg.attr("cx", function (datum, index, group) { 
+                //console.log ( `datum :`, datum, `index :`, index, `group :`, group )
+                return datum.x 
+          })
+            // DOCS: " if the value is a function, it is evaluated for each selected
+            // element, in order, being passed the current datum (d), the current
+            // index (i), and the current group (nodes), with this as the current
+            // DOM element (nodes[i]). The function’s return value is then used to
+            // set each element’s attribute. A null value will remove the specified
+            // attribute."
+
+          .attr("cy", function(d) { return d.y })
+
+        ///////////////////////////////////////////////////////////////////////////////
+        //  stage 3.1: END OF PROGRAM - until stage 1 reiterates.
+        ///////////////////////////////////////////////////////////////////////////////
+
+        DEBUG >= 3 && console.warn ( `STAGE 3.1: end of iteration` )
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    //  STAGE 0.1: FORCE SIMULATION CONFIGURED, STARTED, with INITIAL DATA 
+    ///////////////////////////////////////////////////////////////////////////////
+
+    let simulation = d3.forceSimulation ( randomizeData ()  )
+        .force("charge?", d3.forceManyBody().strength(-150))
+        .force("forceX?", d3.forceX().strength(.1))
+        .force("forceY?", d3.forceY().strength(.1))
+        .force("center?", d3.forceCenter())
+        .alphaTarget(1)
+        .on("tick", ticked) // 'tick' is a system name
+
+        DEBUG >= 1 && console.log ( `STAGE 0.1: (gg) after SIMULATION definition, ._groups.length  :`, gg )
+
+            // DOCS: "The simulator starts automatically;
+            //
+            //  ...
+            //
+            //  When a specified event is dispatched, each listener will be
+            //  invoked with the (this) context as the simulation.
+            //
+            //  ...
+            //  
+            //  Note that tick events are not dispatched when simulation.tick is
+            //  called manually; events are only dispatched by the internal
+            //  timer and are intended for interactive rendering of the
+            //  simulation. To affect the simulation, register forces instead of
+            //  modifying nodes’ positions or velocities inside a tick event
+            //  listener.
+            //
+            //  See (dispatch.on) for details." 
+
+    let restart = function ( randomData ) {
+
+        ///////////////////////////////////////////////////////////////////////////////
+        //  STAGE 2:  
+        ///////////////////////////////////////////////////////////////////////////////
+
+        DEBUG >= 2 && console.log ( `STAGE 2: (gg) in (restart), before (.data().join()), ._groups.length == 0 :`, gg )
+
+        // transition
+        let t = d3.transition() .duration(750)
+
+        ///////////////////////////////////////////////////////////////////////////////
+        //  STAGE 2.1: (gg), a selection of DOM elements, is BOUND WITH DATA 
+        //
+        //  Since (gg)._groups.length == 0 at (stage 2), and then
+        //  (gg)._groups.length > 0 at (stage 2.2), we  we infer that the
+        //  addition of nodes occurs at (stage 2.1).
+        //
+        //  Mike's visual explaination: 
+        //      https://bost.ocks.org/mike/nest/
+        //
+        ///////////////////////////////////////////////////////////////////////////////
+
+        gg = gg
+            .data(  randomData,                     // data
+                    function(d) { return d.name}    // key function
+            )
+                // DOCS: "Binds the specified array of data with the selected
+                // elements, returning a new selection that represents the
+                // update selection: the elements successfully bound to data.
+                //
+                // Also defines the enter and exit selections on the returned
+                // selection, which can be used to add or remove elements to
+                // correspond to the new data. The specified data is an array of
+                // arbitrary values (e.g., numbers or objects), or a function
+                // that returns an array of values for each group. When data is
+                // assigned to an element, it is stored in the property
+                // __data__, thus making the data “sticky” and available on
+                // re-selection.
+                //
+                // The data is specified for each group in the selection. If the
+                // selection has multiple groups (such as d3.selectAll followed
+                // by selection.selectAll), then data should typically be
+                // specified as a function. This function will be evaluated for
+                // each group in order, being passed the group’s parent datum
+                // (d, which may be undefined), the group index (i), and the
+                // selection’s parent nodes (nodes), with this as the group’s
+                // parent element."
+
+            // Apply the (d3.v5) selection.join pattern to the nodes.
+            .join(
+
+                //  randomData elements which do not map to a DOM element.
+                //      "elements entering the DOM"
+                ggEnter => ggEnter
+                    .append("circle")
+                        .style("fill", "#45b29d")
+                        .attr("r", function(d){ return d.size }),
+
+                //  randomData elemens which DO map to a DOM element.
+                //      "elements updated in the DOM"
+                ggUpdate => ggUpdate
+                    .transition(t)
+                        .style("fill", "#3a403d")
+                        .attr("r", function(d){ return d.size }),
+                
+                //  DOM elements which do not map to any randomData element.
+                //      "elements exiting the DOM"
+                ggExit => ggExit 
+                    .style("fill", "#b26745")
+                    .transition(t)
+                    .attr("r", 1e-6)
+            )
+
+        ///////////////////////////////////////////////////////////////////////////////
+        //  stage 2.2: Update and restart the SIMULATION.
+        ///////////////////////////////////////////////////////////////////////////////
+
+        DEBUG >= 2 && console.warn ( `STAGE 2.2: (gg) in (restart), after (.data().join()), ._groups.length > 0 :`, gg )
+
+        simulation
+            .nodes ( randomData )
+                // DOCS: "sets the simulation’s nodes to the specified array of objects,
+                // initializing their positions and velocities if necessary, and then
+                // re-initializes any bound forces; returns the simulation."
+
+            .force ( "collide?", 
+                     d3 .forceCollide()
+                        .strength(1)
+                        .radius( function(d){ return d.size + 10 })
+                        .iterations(1)
+            )
+    }
+
+///////////////////////////////////////////////////////////////////////////////
+//  STAGE 1: SIMULATION BEGINS WITH THE FIRST CALL TO (restart):
+///////////////////////////////////////////////////////////////////////////////
+
+DEBUG >= 1 && console.warn ( `STAGE 1: SIMULATION now begins....`) 
+
+//*
+    d3.interval(function(){
+      restart ( randomizeData () )
+    }, 2000);
+
+//*/
+
+/*
+    restart ( randomizeData () )
+    setTimeout ( simulation.stop, 1000 ) 
+//*/
+///////////////////////////////////////////////////////////////////////////////
+
+    </script>
+  </body>
+</html>

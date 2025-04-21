@@ -1,0 +1,10 @@
+app/Server
+app/Controllers
+app/Views
+app/Models
+app/Files
+app/Hell
+app/*.hs
+app/*.exe
+app/*.config
+.cabal-sandbox

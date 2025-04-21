@@ -1,0 +1,55 @@
+<erl>
+"".
+% TODO: fix this?
+
+% Currently if you wish to comment out all Erlang script in a erl-element,
+% you must follow the convention of returning an empty term; since non-
+% printable terms will break the rendering process, leave a "" or <<>>
+% followed by a dot, marking the form's end.
+
+% IMPORTANT: Within your Erlang script, including the comments, 
+% the character sequence of the literal closing erl-tag will be parsed 
+% as the end of the erl-element in the XML. 
+% Perhaps type "</" "erl"> instead.
+
+% If you begin a View with an <erl/> element, remember not to leave
+% whitespace between the closing "</" "erl>" tag, and the subsequent 
+% content, as doing so may have unintended consequences.
+
+</erl>
+<!DOCTYPE html>
+<html>
+  <title>
+    EZ
+  </title>
+  <body>
+    <div><h1>EZ: Default Template: header</h1></div>
+    <div>
+      <pre>
+      <erl>
+        "".
+        % Controller detection tests can be called here.
+        %default:default(s,e,i).
+        %test:default(s,e,i).
+        %
+        % Model detection tests can be called here.
+        %F = fun default_model:stuff/0,
+        %F().
+        %apply(default_model,stuff,[]).
+        %'default_model':stuff().
+      </erl>
+      </pre>
+      <h2>Example: View calls child View, passing in bindings</h2>
+      <erl>
+        % Method 1: refer to Controller comments
+        'default.view':splice(ChildViewBindings).
+      </erl>
+      <h2>Example: View calls closure, which calls child View with bindings</h2>
+      <erl>
+        % Method 2: refer to Controller comments
+        erlang:apply(ChildViewAsClosure,[]).
+      </erl>
+    </div>
+    <div><h1>EZ: Default Template: footer</h1></div>
+  </body>
+<html>
