@@ -18,8 +18,17 @@ erlc mainb.erl
 #   #!/bin/bash
 #   set -euo pipefail
 #   /var/task/erlang/bin/erl -noshell -s mainb loop -s init stop
- 
 
+```
+
+```
+this Erlang test : sending entire EVENT_DATA slug :
+
+Billed Duration:    655     ms      2     ms best case without init
+Init Duration:      555.79  ms
+Duration:            98.86  ms      1.66  ms best case without init     6.68 ms AVERAGE of 24 points
+Memory Size:        128     MB
+Max Memory Used:     80     MB            stable
 ```
 
 # not working
