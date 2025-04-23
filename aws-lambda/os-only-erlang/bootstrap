@@ -1,0 +1,3 @@
+#!/bin/sh
+set -euo pipefail
+/var/task/erlang/bin/erl -noshell -s mainb loop -s init stop
