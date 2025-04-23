@@ -15,4 +15,10 @@ cd release/tests/test_server
 $ERL_TOP/bin/erl -s ts install -s ts smoke_test batch -s init stop
 make install
 # may have to ln -s /usr/local/bin/erl /usr/bin/erl
+
+cd $ERL_TOP
+vi main.erl
+
+erlc mainb.erl && erl -noshell -s mainb loop -s init stop
+# probably, put this in (/var/task/bootstrap) as a #!/bin/bash
 ```
