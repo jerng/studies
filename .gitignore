@@ -1,3 +1,4 @@
+*.dump
 *.aes
 *cabal-dev
 *dist
