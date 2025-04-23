@@ -1,3 +1,12 @@
 #!/bin/sh
 set -euo pipefail
-/var/task/erlang/bin/erl -noshell -s mainb loop -s init stop
+/var/task/erlang/bin/erl -noshell  +Meamin +swct very_lazy -s mainb loop -s init stop
+    # -noshell          :
+    # +Meamin \           # turns off many memory allocators
+    # +swct very_lazy     # reduces garbage collection frequency
+    # -s mainb loop \     # runs this script
+    # -s init stop        # ends
+
+    # -mode embedded    : requires a boot script
+    # -boot start_clean : one of the provided boot scripts
+
