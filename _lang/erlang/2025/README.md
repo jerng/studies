@@ -52,7 +52,7 @@ top-down view : from distributed system to function
 
 ### Business Logic / Software
 
-bottom-up view : from function to release
+bottom-up view : from function to target system
 
 `function` < `module` < `-behaviour(application)` < `release` < `target system`
 
