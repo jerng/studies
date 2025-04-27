@@ -9,9 +9,9 @@ production.
 
 ###### Two minimal examples, of an Erlang Application release
 
+>   - [blog post with code](https://www.n16f.net/blog/building-erlang-applications-the-hard-way/) ( 2023 )
 >   - [sample repository with
 >   instructions](https://github.com/boardwalk/erltest/tree/master) ( 2017 )
->   - [blog post with code](https://www.n16f.net/blog/building-erlang-applications-the-hard-way/) ( 2023 )
 
 ###### Alternative introductions
 
@@ -20,7 +20,9 @@ production.
 
 ## Ontology / Mereology
 
-### Infrastructure / Hardware : top-down view : from distributed system to function
+### Infrastructure / Hardware
+
+>   top-down view : from distributed system to function
 
 A `distributed Erlang system` consists of many `Erlang runtime systems` in
 communications with each other.
@@ -28,31 +30,36 @@ communications with each other.
 
 An `Erlang runtime system` a.k.a. `node` is an operating system process, which
 executes :
--   an Erlang compiler
--   an Erlang virtual machine
-    -   most commonly the BEAM VM ... the [reference
+-   an `Erlang compiler`
+-   an `Erlang virtual machine`
+    -   most commonly the `BEAM VM` ... the [reference
         implementation](https://blog.stenmans.org/theBeamBook/#_beam_it_is_virtually_unreal)
         for other Erlang VMs
--   N schedulers for `Erlang processes`
+-   N `schedulers` for `Erlang processes`
 - and other infrastructural concerns, between the operating system layer and the OTP
   protocol layer
 
 An `Erlang process` is the execution state of an `Erlang function`, on an Erlang
 virtual machine.
 
-( Here it would be appropriate to segue into the language specification. )
+> ( Here it would be appropriate to segue into the language specification. )
 
-### Business Logic / Software : bottom-up view : from function to release
+### Business Logic / Software
+
+>   bottom-up view : from function to release
 
 `Erlang functions` are grouped into, and exported by `Erlang
-    modules`. [link](https://www.erlang.org/doc/system/modules.html)
-    -   `Erlang modules` are also encapsulations of code for replacement in live
+modules`. [link](https://www.erlang.org/doc/system/modules.html)
+
+`Erlang modules` are also encapsulations of code for replacement in live
         `Erlang runtime system`s.
         [link](https://www.erlang.org/doc/system/code_loading#code-replacement)
--   `Erlang modules` may belong to `Erlang behaviours`.
+
+`Erlang modules` may belong to `Erlang behaviours`.
     [link](https://www.erlang.org/doc/system/design_principles.html#behaviours)
--   `Erlang behaviours` include the `OTP application behaviour`.
-    [link](https://www.erlang.org/doc/apps/kernel/application)
+
+`Erlang behaviours` include the `OTP application behaviour`.
+[link](https://www.erlang.org/doc/apps/kernel/application)
 -   the `OTP application behaviour` describes an `Erlang module`
     containing `Erlang functions` used to `start/` and `stop/` OTP`
     applications. [link](https://www.erlang.org/doc/system/applications.html)
@@ -61,9 +68,11 @@ virtual machine.
         ERTS without restarting the
         ERTS. [link](https://www.erlang.org/doc/system/upgrade.html) /
         [cookbook](https://www.erlang.org/doc/system/appup_cookbook.html)
--   `OTP applications` are grouped under `OTP
+
+`OTP applications` are grouped under `OTP
     releases`. [link](https://www.erlang.org/doc/system/release_structure.html)
--   `OTP releases` are supported by the `sasl` application.
+
+`OTP releases` are supported by the `sasl` application.
     [link](https://www.erlang.org/doc/system/release_handling.html)
     -   the `systools` module : supports offline building of releases
         -   the `release_handler` module : supports online unpacking and installing
@@ -80,7 +89,6 @@ virtual machine.
             [link](https://www.erlang.org/doc/system/create_target.html#creating-the-next-version)
 
 # Old notes / to be edited or deleted : 
-
 
 from [here](https://github.com/erlang/otp/blob/OTP-27.3.3/HOWTO/INSTALL.md)
 ```
