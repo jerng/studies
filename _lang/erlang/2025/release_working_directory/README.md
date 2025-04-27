@@ -40,7 +40,7 @@ Running `build-install-run.sh`,
 
 1.  This does not set up a proper `OTP application`, which would require separate
     `modules` with `-behaviour(application)`, `-behaviour(supervisor)`,
-    `-behaviour(gen_server).
+    `-behaviour(gen_server)`.
 2.  `erl` defaults to `erl -mode interactive` : you can perform the necessary
     configuration changes ( if any ) to try 
     -   `erl -mode minimal` or
