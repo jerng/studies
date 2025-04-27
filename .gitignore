@@ -1,4 +1,4 @@
-*release_working_directory*
+*deployment_working_directory*
 *release*.tar.gz
 *release*.boot
 *release*.script

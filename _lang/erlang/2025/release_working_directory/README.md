@@ -1,106 +1,47 @@
-1.  Make a directory, say `/release_working_directory`. While using the `erl` shell/REPL, you
-can also run `cd(".").` to check the current working directory.
+**Warning** : This minimal example makes the following assumptions,
 
-2.  Create the following file and directory structure :
-```
-release_working_directory
-|
-|-- my_release-r-version-1.rel
-|
-|-- ebin
-|   |-- my_app.app
-|
-|-- src
-    |-- my_app.erl
-```
-Sources :
-```
-% my_app.erl
--module(my_app).
--behaviour(application).
--export([start/2, stop/1]).
-start(_Type,_Args) -> 
-io:fwrite("hello\n"),
-{ok,self()}.
-stop(_State)->
-ok.
+>   -   some version of `Erlang/OTP` is already installed on your system
+>   -   version numbers in `my_release.rel` and `ebin/my_app.app` have been
+>       hard-coded, BUT need to match your system
+>   -   `build steps` and `install steps` output files in specific
+        places : therefore other steps move files from those places
 
-% my_release-r-version-1.rel
-{   release, 
-    {"my_release", "r-version-1"}, 
-    {erts, "15.2.6"},
-    [   
-    {kernel, "10.2.6"}, 
-        {stdlib, "6.2.2"}, 
-        {my_app, "a-version-1"}
-    ]
-}.
+... therefore if `build-install-run.sh` fails, please check the assumptions.
 
-% my_app.app
-{   application, 
-    my_app,
-    [
-        {description, "Hello world application"},
-        {vsn, "a-version-1"},
-        {modules, [my_app]},
-        {applications, [kernel, stdlib]},
-        {mod, {my_app, []}},
-        {registered, []},
-        {env, []}
-    ]
-}.
-```
+---
 
-3. Compile `.beam`, which may be found in `release_working_directory`, and move it to `ebin`.
+# Minimal Example
 
-From the `sh` shell :
-```
-erlc src/my_app.erl
-```
+Running `build-install-run.sh`,
 
-The tree should now look like this :
-```
-release_working_directory
-|
-|-- my_release-r-version-1.rel
-|
-|-- ebin
-|   |-- my_app.app
-|   |-- my_app.beam
-|
-|-- src
-    |-- my_app.erl
-```
+1.  places 
+    -   `my_release.rel`
+    -   `ebin/my_app.app`
+    -   `src/my_mod.erl`
+2.  compiles and replaces
+    -   `src/my_mod.erl` -> `ebin/my_mod.beam`
+3.  compiles 
+    -   `my_release.rel` -> `my_release.script` -> `my_release.boot`
+    -   ( various ) -> `my_release.tar.gz`
+        -   **OPTIONAL INTERVENTION** : you may edit `_build-steps-2-3.erl` to
+            uncomment out the `{erts,"dir"} term, and modify it, before executing
+            this script, if you want to include `erts` binaries in the release
+4.  extracts
+    -   `my_release.tar.gz` -> `deployment_working_directory`
+5.  runs
+    -   `erl` appropriately upon the contents of `deployment_working_directory`
+        -   the given example runs `/usr/bin/env erl`, but if you have alread
+            added `erts` binaries to your deployment, and wish to test those,
+            then you should execute the `erl` that is in your deployment instead 
 
-4. Generate `.beam`, `.script`, and release package as `tar.gz`.
+... which should print "hello", and exit.
 
-From the `erl` shell :
-```
-systools:make_script(   "my_release-r-version-1",[    {path,["./ebin"]}    ]).
-systools:make_tar(      "my_release-r-version-1",[    {path,["./ebin"]}    ]).
-```
+## SO Minimal
 
-This should put files in `/release_working_directory`, which should now look
-like this :
-```
-release_working_directory
-|
-|-- my_release-r-version-1.rel
-|-- my_release-r-version-1.script
-|-- my_release-r-version-1.boot
-|-- my_release-r-version-1.tar.gz
-|
-|-- ebin
-|   |-- my_app.app
-|   |-- my_app.beam
-|
-|-- src
-    |-- my_app.erl
-```
-
-5. Extract the release package.
-
-From the `sh` shell :
-```
-tar -xf my_release-r-version-1.tar.gz -C /deployment_working_directory
-```
+1.  This does not set up a proper `OTP application`, which would require separate
+    `modules` with `-behaviour(application)`, `-behaviour(supervisor)`,
+    `-behaviour(gen_server).
+2.  `erl` defaults to `erl -mode interactive` : you can perform the necessary
+    configuration changes ( if any ) to try 
+    -   `erl -mode minimal` or
+    -   `erl -mode embedded`

@@ -1,4 +1,4 @@
-# Tidier Index/Introduction to Erlang/OTP
+# Tidier Introduction/Index to Erlang/OTP
 
 Hopefully, this is easier to follow than existing documentation. 
 ( As of 2025-04 : I found the latter to be rather non-linear. )
