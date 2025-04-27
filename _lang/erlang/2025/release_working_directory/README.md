@@ -24,7 +24,7 @@ Running `build-install-run.sh`,
     -   `my_release.rel` -> `my_release.script` -> `my_release.boot`
     -   ( various ) -> `my_release.tar.gz`
         -   **OPTIONAL INTERVENTION** : you may edit `_build-steps-2-3.erl` to
-            uncomment out the `{erts,"dir"} term, and modify it, before executing
+            uncomment out the `{erts,"dir"}` term, and modify it, before executing
             this script, if you want to include `erts` binaries in the release
 4.  extracts
     -   `my_release.tar.gz` -> `deployment_working_directory`
