@@ -73,20 +73,20 @@ modules`. [link](https://www.erlang.org/doc/system/modules.html)
     releases`. [link](https://www.erlang.org/doc/system/release_structure.html)
 
 `OTP releases` are supported by the `sasl` application.
-    [link](https://www.erlang.org/doc/system/release_handling.html)
-    -   the `systools` module : supports offline building of releases
-        -   the `release_handler` module : supports online unpacking and installing
-            of releases
-    -   the `relup` file format : defines overall release upgrades.
-        [link](https://www.erlang.org/doc/apps/sasl/relup.html)
-        -   the `appup` file format : defines component application upgrades.
-            [link](https://www.erlang.org/doc/apps/sasl/appup.html) /
-            [cookbook](https://www.erlang.org/doc/system/appup_cookbook.html)
-    -   `OTP releases` are operations upon `OTP target systems`
-        -   creating initial `OTP target system`s :
-            [link](https://www.erlang.org/doc/system/create_target.html#creating-a-target-system)
-        -   creating subsequent `OTP target systems`s :
-            [link](https://www.erlang.org/doc/system/create_target.html#creating-the-next-version)
+[link](https://www.erlang.org/doc/system/release_handling.html)
+-   the `systools` module : supports offline building of releases
+    -   the `release_handler` module : supports online unpacking and installing
+        of releases
+-   the `relup` file format : defines overall release upgrades.
+    [link](https://www.erlang.org/doc/apps/sasl/relup.html)
+    -   the `appup` file format : defines component application upgrades.
+        [link](https://www.erlang.org/doc/apps/sasl/appup.html) /
+        [cookbook](https://www.erlang.org/doc/system/appup_cookbook.html)
+-   `OTP releases` are operations upon `OTP target systems`
+    -   creating initial `OTP target system`s :
+        [link](https://www.erlang.org/doc/system/create_target.html#creating-a-target-system)
+    -   creating subsequent `OTP target systems`s :
+        [link](https://www.erlang.org/doc/system/create_target.html#creating-the-next-version)
 
 # Old notes / to be edited or deleted : 
 
