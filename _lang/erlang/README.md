@@ -11,6 +11,8 @@
 # Installation
 
 from [here](https://github.com/erlang/otp/blob/OTP-27.3.3/HOWTO/INSTALL.md)
+
+**WARNING** : this example is still missing some packages, for example you still ned `wx` for `reltools`, which is a GUI for release management
 ```
 git clone https://github.com/erlang/otp.git --branch=OTP-27.3.3 --single-branch --depth=1
 cd otp
