@@ -29,6 +29,8 @@ top-down view : from distributed system to function
 >   A `distributed Erlang system` consists of many `Erlang runtime systems` in
 >   communications with each other.
 >   [link](https://www.erlang.org/doc/system/distributed.html)
+>   -   multiple `Erlang runtime systems` can exist on the same `host` because
+>   ...
 >   
 >   An `Erlang runtime system` a.k.a. `node` is an operating system process, which
 >   executes :
