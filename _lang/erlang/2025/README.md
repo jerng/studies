@@ -1,11 +1,10 @@
 # Tidier Introduction/Index to Erlang/OTP
 
-Hopefully, this is easier to follow than existing documentation. 
-( As of 2025-04 : I found the latter to be rather non-linear. )
-
 **WARNING** : This is not intended to be a comprehensive introduction - and you should read
 all other existing documentation thoroughly, before putting any systems into
 production.
+
+Hopefully, this is easier to follow than existing documentation, as of 2025-04. 
 
 ###### Two minimal examples, of an Erlang Application release
 
