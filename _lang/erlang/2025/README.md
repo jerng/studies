@@ -24,6 +24,8 @@ production.
 
 top-down view : from distributed system to function
 
+`distributed system` > `runtime system` > `virtual machine` > `process`
+
 >   A `distributed Erlang system` consists of many `Erlang runtime systems` in
 >   communications with each other.
 >   [link](https://www.erlang.org/doc/system/distributed.html)
@@ -49,6 +51,8 @@ top-down view : from distributed system to function
 ### Business Logic / Software
 
 bottom-up view : from function to release
+
+`function` < `module` < `-behaviour(application)` < `release` < `target system`
 
 >   `Erlang functions` are grouped into, and exported by `Erlang
 >   modules`. [link](https://www.erlang.org/doc/system/modules.html)
