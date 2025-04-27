@@ -1,0 +1,93 @@
+% Move this to the README.md : Quick Release Guide
+%
+%   Continue here : https://www.erlang.org/doc/system/create_target
+%
+%
+%
+% MAIN CONCERN : 
+%
+%   https://www.erlang.org/doc/apps/sasl/systools#make_script/2
+%
+%           ( systools:make_script( "main_release-1", [ {path,["/release/main-0.1.0/ebin"]}   ])
+%
+%               CWD        : (erl) REPL must be run in /release
+%               DEPENDENCY : /release/main_release-1.rel
+%               DEPENDENCY : /release/main-0.1.0/ebin/main.app
+%
+%           ( generates a boot script ...   /release/main_release-1.script
+%               and its binary version ...  /release/main_release-1.boot 
+%               via systools:script2boot/1  )
+%
+%   After that, also put .beam files in /release/main-0.1.0/ebin
+%
+% broader context : 
+%
+%   https://www.erlang.org/doc/system/applications.html
+%           ( Applications :
+%               Application Concept, Application Callback Module,
+%               Application Resource File,
+%               Directory Structure for a Development Environment,
+%               Directory Structure for a Released System )
+%
+%   https://www.erlang.org/doc/system/release_handling 
+%           ( RELEASE HANDLING WORKFLOW ) 
+%
+%   https://www.erlang.org/doc/system/release_structure 
+%           ( Releases :
+%               Concept, Resource File, Generating Boot Scripts, 
+%               Creating a Release Package, Directory Structure, Etc. )
+%
+% files involved : 
+%
+%   https://www.erlang.org/doc/apps/sasl/rel 
+%           ( release resource file )
+%
+%   https://www.erlang.org/doc/apps/sasl/script
+%           ( boot script )
+%
+%   https://www.erlang.org/doc/apps/kernel/app.html
+%           ( application resource file
+
+{   release, 
+
+    { 
+        "main_release",
+        % name of this release
+
+            "A"
+            % version of this release
+
+            % this filename must be UNIQUE.rel, so possibly main_release-1.rel
+    }, 
+
+    { erts, "15.2.6"}, % runtime version
+
+    [   % applications INCLUDED in the release
+
+    { 
+        kernel 
+            % included app/B
+
+            ,"10.2.6" 
+            % version 
+
+            % , Type  = permanent ( default) | transient | temporary | load | none 
+            %   or [ list of apps/C included by app/B, as atoms ]
+
+            % , only if argument 3 above is Type, 
+        %   then [ list of apps/C included by app/B, as atoms ]
+    },
+
+    { stdlib,"6.2.2" },
+    { main,"0.1.0" }
+
+    %  ,{sasl, "4.2.2"}
+    %  ,{os_mon, "2.10.1"}
+    %  ,{inets, "9.3.2"}
+    %  ,{snmp, ""}
+    %  ,{mnesia, "4.23.5"}
+    %  ,{main,"0.1.0"}
+
+    ]
+
+}.
