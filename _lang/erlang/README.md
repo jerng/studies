@@ -1,3 +1,15 @@
+###### Welcome to Erlang/OTP studies
+>    Featured in this repository ...
+>    -    `erlang/README.md` (this file) provides **installation hints** and a **hello world**
+>         example
+>    -    `erlang/2025/README.md` attempts to be a **linear guide** through the jungle of
+>         Erlang/OTP documents
+>    -    `erlang/2025/release_working_directory` is a **minimal working example** of an
+>         **application packaging and deployment**
+
+
+# Installation
+
 from [here](https://github.com/erlang/otp/blob/OTP-27.3.3/HOWTO/INSTALL.md)
 ```
 git clone https://github.com/erlang/otp.git --branch=OTP-27.3.3 --single-branch --depth=1
