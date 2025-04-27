@@ -42,3 +42,17 @@ erl -noshell -s main hello -s init stop
 # no shell, run module function, stop ERTS
 
 ```
+# Memory Golf
+from [here](https://erlangforums.com/t/docker-image-for-erlang-vm-with-minimal-memory-disk-usage/3610/2)
+getting the ERTS startup from 30+MB to 10+MB :
+```
+erl +S 1 +SDio 1 +P 1024 +Q 1024 -mode minimal
+erl +Mea min +swct very_lazy
+```
+Explaination : [link](https://www.erlang.org/doc/apps/erts/erl_cmd.html)
+- `+Mea min` something something [disable allocators](https://www.erlang.org/doc/apps/erts/erts_alloc.html)
+- `+swct very_eager|eager|medium|lazy|very_lazy` garbage collection wakeup frequency
+- `+S Schedulers:SchedulerOnline`, max 1024:1024, default 1:1
+- `+SDio DirtyIOSchedulers`, 1-1024, default 10
+- `+P MaxSimultaneouslyExistingProcesses`, 1024-134,217,727
+- `+Q MaxSimultaneouslyExistingPorts`, 1024-134,217,727
