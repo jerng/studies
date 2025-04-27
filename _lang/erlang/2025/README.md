@@ -39,10 +39,12 @@ top-down view : from distributed system to function
 >   - and other infrastructural concerns, between the operating system layer and the OTP
 >     protocol layer
 >   
->   An `Erlang process` is the execution state of an `Erlang function`, on an Erlang
->   virtual machine.
+>   An `Erlang process` is the execution state of an `Erlang function`, on an `Erlang
+>   virtual machine`.
 
-Here it would be appropriate to segue into the language specification.
+### Language Specification
+
+[link](https://www.erlang.org/doc/system/reference_manual.html)
 
 ### Business Logic / Software
 
@@ -51,12 +53,12 @@ bottom-up view : from function to release
 >   `Erlang functions` are grouped into, and exported by `Erlang
 >   modules`. [link](https://www.erlang.org/doc/system/modules.html)
 >   
->   `Erlang modules` are also encapsulations of code for replacement in live
->           `Erlang runtime system`s.
->           [link](https://www.erlang.org/doc/system/code_loading#code-replacement)
->   
 >   `Erlang modules` may belong to `Erlang behaviours`.
 >       [link](https://www.erlang.org/doc/system/design_principles.html#behaviours)
+>   
+>   -   `Erlang modules` are also encapsulations of code for replacement in live
+>           `Erlang runtime system`s.
+>           [link](https://www.erlang.org/doc/system/code_loading#code-replacement)
 >   
 >   `Erlang behaviours` include the `OTP application behaviour`.
 >   [link](https://www.erlang.org/doc/apps/kernel/application)
@@ -87,6 +89,9 @@ bottom-up view : from function to release
 >           [link](https://www.erlang.org/doc/system/create_target.html#creating-a-target-system)
 >       -   creating subsequent `OTP target systems`s :
 >           [link](https://www.erlang.org/doc/system/create_target.html#creating-the-next-version)
+
+---
+---
 
 # Old notes / to be edited or deleted : 
 
