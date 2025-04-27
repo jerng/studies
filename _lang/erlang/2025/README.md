@@ -68,7 +68,7 @@ bottom-up view : from function to target system
 >   `Erlang behaviours` include the `OTP application behaviour`.
 >   [link](https://www.erlang.org/doc/apps/kernel/application)
 >   -   the `OTP application behaviour` describes an `Erlang module`
->       containing `Erlang functions` used to `start/` and `stop/` OTP`
+>       containing `Erlang functions` used to `start/` and `stop/` OTP
 >       applications. [link](https://www.erlang.org/doc/system/applications.html)
 >       -   **core** `OTP applications` are : `erts`, `kernel`, `stdlib`, `sasl`
 >       -   most **non-core** `OTP applications` : may be hot-swapped/soft-updated in a
