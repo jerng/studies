@@ -2,6 +2,7 @@
 *release*.tar.gz
 *release*.boot
 *release*.script
+*.out
 *.dump
 *.beam
 *.aes
