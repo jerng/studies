@@ -3,7 +3,7 @@
 sudo apt install gnucobol4
 ```
 
-###### Code Sample 
+#### Code Sample 
 
 `hello.cob` :
 ```cobol 
