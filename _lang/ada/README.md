@@ -21,3 +21,8 @@ begin
 gnatmake hello.adb
 ./hello
 ```
+
+# Next : Sockets 
+
+See `GNAT.Sockets` [example for HTTP
+GET](http://gist.github.com/SevanBadal/64736b0f218af7fecd5e7b9315bde793)
