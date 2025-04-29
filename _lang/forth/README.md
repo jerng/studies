@@ -1,4 +1,5 @@
-https://www.forth.com/starting-forth/1-forth-stacks-dictionary/
+Classic textbook by Brodie :
+https://www.forth.com/starting-forth/
 
 Memory management :
 https://stackoverflow.com/a/40050230/1378390
@@ -15,11 +16,21 @@ https://ratfactor.com/forth/forth_talk_2023.html
 - full-line comments are preceded by `\`
   - inline comments are between `(` ... `)`
 - programming involves explicit control of a stack
-  - `.` means, POP the top of the stack, and print it
 - syntax for adding to the dictionary
-  -
+  - `:` means, ( enter compile mode ), the next word will be added to the
+    dictionary, and the words after that will be saved in the dictionary as the
+    meaning of the word
+    - ';' means, ( exit compile mode ), the meaning has been specified 
+  - `.` means, POP the top of the stack, and print it
+  - `if` ... `then` is implemented as ( see definition )
+  - `(` ... `)` is implemented as ( see definition )
+- the dictionary is searched as a LIFO, so words can be redefined; previous
+  references to words are not changed in meaning, only subsequent references to
+  words refer to new definitions
+  - `VARIABLE VAR` means, assign an address
 - syntax for binary operators follows Reverse Polish Notation / RPN, such that,
-        ` operand1 operand2 binaryOperator`, 
+
+  ` operand1 operand2 binaryOperator`, 
         e.g. `1 1 +` means, compute "1+1", then
         PUSH the result onto the stack 
         ( 2 and 3 are first PUSHED, then POPPED, then added ), 
