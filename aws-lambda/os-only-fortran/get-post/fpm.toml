@@ -1,0 +1,5 @@
+# fpm.toml : sample : https://github.com/interkosmos/fortran-curl/blob/master/fpm.toml
+
+[dependencies]
+fortran-curl = { git = "https://github.com/interkosmos/fortran-curl.git" }
+fortran-regex = { git = "https://github.com/perazz/fortran-regex" }
