@@ -1,16 +1,15 @@
-1. For final results, see *bootstrap` tries to reuse resources, has a do-while loop*
-2. Where the files in this folder, come from ...
+Where the files in this folder, come from ...
+- For final results, see Test 4
 
 ## `dev` : prototyping in the C language
 
-#### `bootstrap` tears down after each request, does not reuse resources
 - `http-get-then-post.c` attempts to replicate the functionality of
   `samples-modified`
 - it does not have to be *statically* compiled
 - whereas, binaries uploaded via web console to a Lambda Layer, are executable
   at the Lambda runtime's `/opt/` folder; and so are binaries uploaded via web
   console to the Lambda Code Source tab as a `.zip`
-    - however, binaries uploaded via web console to the Lambda runtime's
+    - **WARNING** : binaries uploaded via web console to the Lambda runtime's
       `/var/task/` folder do not seem to be executable, even if they are set
       with executable permissions ... this is not clearly documented, but it may
       be a security precaution
@@ -20,14 +19,15 @@
   `t4g.nano` which uses the same `graviton2` CPU as Lambda's arm64 runtime ...
   the executable binary was then `scp`-ed out before being uploaded to Lambda as
   a layer
-    - cross-compilation was NOT successful on Ubuntu 22.04, x86_64, via
+    - **FAILURE** : cross-compilation was NOT successful on Ubuntu 22.04, x86_64, via
       `aarch64-linux-gnu-gcc`, because I am not smart enough to finish this work
  
 ## Test 4
 
 >   custom C runtime, `bootstrap` tries to reuse resources, has a do-while loop
-
 - adding a `do{}while()` loop improves performance significantly
+- averaging 1ms per request, that's USD 0.29 for 10 million requests
+
 ```
 this C test : sending entire EVENT_DATA slug : 
 
@@ -36,9 +36,9 @@ Init Duration:       14.81  ms
 Duration:             1.67  ms      0.78  ms best case without init
 Memory Size:        128     MB      
 Max Memory Used:     21     MB     23     MB best case without init ... stable after 2 seconds at 50 requests/s 
--
-Memory Profile stages :
-
+```
+#### Memory Profile stages : with `sysinfo()`
+```
 One-time Initialisation :
 1.1.    When `bootstrap`'s `main` starts    :  86 MB
 1.2.    After init of `curl` `regex`        :  89 MB
@@ -52,7 +52,6 @@ First time the Lambda served :
 After 1500 requests :
 2.4.    Bottom of the server loop           : 103 MB : but billed 23 MB only : so 80 MB hidden by runtime 
 ```
-... averaging 1ms per request, that's USD 0.29 for 10 million requests ...
 
 #### Test 4 : compared with "native Rust runtime"
 
@@ -75,6 +74,7 @@ Max Memory Used:     16     MB     17     MB best case without init
 
 -  moving from `curl` commands called in `bootstrap.sh` to `libcurl` calls from
    `bootstrap` seemed to reduce resource consumption significantly
+- `bootstrap` tears down after each request, does not reuse resources
 ```
 this C test : sending entire EVENT_DATA slug : 
 
