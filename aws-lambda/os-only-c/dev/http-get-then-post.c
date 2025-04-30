@@ -6,6 +6,12 @@ https://docs.aws.amazon.com/linux/al2023/ug/ec2.html
 AL2023 compilation :
 sudo dnf install gcc libcurl-devel -y
 gcc run.c -o run-dynamic -lcurl -O3 -Os && strip run-dynamic
+
+Valgrind + Massif-visualizer :
+valgrind --tool=memcheck --leak-check=full ./run-dynamic -s
+valgrind --tool=massif --trace-children=yes --time-unit=B ./run-dynamic -s
+massif-visualizer massif.out.722053 
+
  */
 
 #define _GNU_SOURCE
