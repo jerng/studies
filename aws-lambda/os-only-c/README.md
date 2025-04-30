@@ -3,7 +3,7 @@
 
 ## `dev` : prototyping in the C language
 
-### `bootstrap` tears down after each request, does not reuse resources
+#### `bootstrap` tears down after each request, does not reuse resources
 - `http-get-then-post.c` attempts to replicate the functionality of
   `samples-modified`
 - it does not have to be *statically* compiled
@@ -22,6 +22,57 @@
   a layer
     - cross-compilation was NOT successful on Ubuntu 22.04, x86_64, via
       `aarch64-linux-gnu-gcc`, because I am not smart enough to finish this work
+ 
+## Test 4
+
+>   custom C runtime, `bootstrap` tries to reuse resources, has a do-while loop
+
+- adding a `do{}while()` loop improves performance significantly
+```
+this C test : sending entire EVENT_DATA slug : 
+
+Billed Duration:     17     ms      1     ms best case without init
+Init Duration:       14.81  ms      
+Duration:             1.67  ms      0.78  ms best case without init
+Memory Size:        128     MB      
+Max Memory Used:     21     MB     23     MB best case without init ... stable after 2 seconds at 50 requests/s 
+-
+Memory Profile stages :
+
+One-time Initialisation :
+1.1.    When `bootstrap`'s `main` starts    :  86 MB
+1.2.    After init of `curl` `regex`        :  89 MB
+
+First time the Lambda served :
+2.1.    Top of the server loop              :  89 MB
+2.2.    After GET of request from runtime   :  89 MB
+2.3.    After POST of response to runtime   :  90 MB
+2.4.    Bottom of the server loop           :  90 MB : but billed 21 MB only : so 69 MB hidden by runtime 
+
+After 1500 requests :
+2.4.    Bottom of the server loop           : 103 MB : but billed 23 MB only : so 80 MB hidden by runtime 
+```
+... averaging 1ms per request, that's USD 0.29 for 10 million requests ...
+
+#### Test 4 : compared with "native Rust runtime"
+
+>   AWS's own [native Rust runtime's Hello
+  world](https://github.com/awslabs/aws-lambda-rust-runtime) which clocks in at
+  around 1.7ms
+```
+Rust using Tokio as its async runtime : sending one line hello world :
+
+Billed Duration:     32     ms      2     ms best case without init
+Init Duration:       29.96  ms      
+Duration:             1.51  ms      1.10  ms best case without init
+Memory Size:        128     MB      
+Max Memory Used:     16     MB     17     MB best case without init 
+```
+
+## Test 3
+
+>   now in C, but without reuse of `curl` and `regex` resources
+
 -  moving from `curl` commands called in `bootstrap.sh` to `libcurl` calls from
    `bootstrap` seemed to reduce resource consumption significantly
 ```
@@ -33,38 +84,10 @@ Duration:             4.73  ms      4.39  ms best case without init
 Memory Size:        128     MB      
 Max Memory Used:     24     MB      4     MB best case without init 
 ```
- 
-- however this is still slower than the [native Rust runtime's Hello
-  world](https://github.com/awslabs/aws-lambda-rust-runtime) which clocks in at
-  around 1.7ms; probably, this is because the C `bootstrap` is currently
-  REINITIALISING UPON EVERY REQUEST, instead of preserving things like `libcurl`
-  contexts and `regex` compilations for reuse
 
-```
-Rust using Tokio as its async runtime : sending one line hello world :
+## Test 2
 
-Billed Duration:     32     ms      2     ms best case without init
-Init Duration:       29.96  ms      
-Duration:             1.51  ms      1.10  ms best case without init
-Memory Size:        128     MB      
-Max Memory Used:     16     MB     17     MB best case without init 
-```
-
-### `bootstrap` tries to reuse resources, has a do-while loop
-
-- adding a `do{}while()` loop improves performance significantly
-```
-this C test : sending entire EVENT_DATA slug : 
-
-Billed Duration:     17     ms      1     ms best case without init
-Init Duration:       14.81  ms      
-Duration:             1.67  ms      0.78  ms best case without init
-Memory Size:        128     MB      
-Max Memory Used:     21     MB     23     MB best case without init ... stable after 2 seconds at 50 requests/s 
-```
-... averaging 1ms per request, that's USD 0.29 for 10 million requests ...
-
-## `samples-modified` : still, just Bash command language, and `curl`
+>   `samples-modified` : still, just Bash command language, and `curl`
 
 - From the AWS web Console, upon creating a Lambda with the "OS Only" Runtime,
   sample files are given by AWS
@@ -86,7 +109,9 @@ Memory Size:        128     MB
 Max Memory Used:     26     MB 
 ```
 
-## `samples` : AWS Lambda OS-only Custom Runtime :
+## Test 1
+
+>   `samples` : AWS Lambda OS-only Custom Runtime :
 
 A runtime is a program that runs a Lambda function's handler method when the
 function is invoked. The runtime can be included in your function's deployment
