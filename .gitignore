@@ -1,3 +1,4 @@
+massif.out.*
 *deployment_working_directory*
 *release*.tar.gz
 *release*.boot
@@ -16,3 +17,4 @@
 *.o
 *.hi
 *.ali
+*.fasl
