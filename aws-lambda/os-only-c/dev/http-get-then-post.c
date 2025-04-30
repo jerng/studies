@@ -119,8 +119,11 @@ int main(void)
     curl = curl_easy_init() ;
 
     if(curl) {
-
-        /* Attempt infinite looping */
+        
+        // dev : loop 10 times
+        int i = 0;
+        //
+        /* prod : Attempt infinite looping */
         do {
 
             struct curl_slist* _RESPONSE_HEADERS = NULL;
@@ -139,9 +142,14 @@ int main(void)
             //printf("\nRequest URI : %s",_REQUEST_URI);
 
             //curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, xxx);
-            curl_easy_setopt(curl, CURLOPT_URL, _REQUEST_URI);
-            //curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1");
-            //curl_easy_setopt(curl, CURLOPT_PORT, 8080L);
+            
+            // prod :
+            //curl_easy_setopt(curl, CURLOPT_URL, _REQUEST_URI);
+            
+            // dev :
+            curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1");
+            curl_easy_setopt(curl, CURLOPT_PORT, 8080L);
+
             curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 
             curl_easy_setopt(   curl, 
@@ -163,6 +171,8 @@ int main(void)
                     );
 
             res = curl_easy_perform(curl);
+            free(_REQUEST_URI);
+
             if(res != CURLE_OK){
                 fprintf(stderr, "curl_easy_perform() failed to GET request from Lambda Runtime: %s\n",
                         curl_easy_strerror(res));
@@ -190,9 +200,12 @@ int main(void)
                     );
             //printf("\nResponse URI : %s\n",_RESPONSE_URI);
 
-            //curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1");
-            curl_easy_setopt(curl, CURLOPT_URL, _RESPONSE_URI);
-            //curl_easy_setopt(curl, CURLOPT_PORT, 8080L);
+            // prod : 
+            //curl_easy_setopt(curl, CURLOPT_URL, _RESPONSE_URI);
+            
+            // dev :
+            curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1");
+            curl_easy_setopt(curl, CURLOPT_PORT, 8080L);
 
             _RESPONSE_HEADERS = curl_slist_append(
                     _RESPONSE_HEADERS,
@@ -206,6 +219,8 @@ int main(void)
              * */
             curl_easy_setopt(curl, CURLOPT_POSTFIELDS, _EVENT_DATA_STRUCT._MEMORY);
             res = curl_easy_perform(curl);
+            free(_RESPONSE_URI);
+
             if(res != CURLE_OK)
                 fprintf(stderr, "curl_easy_perform() failed to POST response to Lambda Runtime: %s\n",
                         curl_easy_strerror(res));
@@ -217,14 +232,17 @@ int main(void)
             curl_slist_free_all(_RESPONSE_HEADERS);
             free(_EVENT_DATA_STRUCT._MEMORY);
 
-        } while (1);
+        // dev : loop 10 times 
+        i++;
+        } while (i<10);
+        //
+        // prod :
+        //} while (1);
 
         /* Close connections */
         curl_easy_cleanup(curl);
     }   
     curl_global_cleanup();
     regfree(&regex);
-    free(_REQUEST_URI);
-    free(_RESPONSE_URI);
     return 0;
 }
