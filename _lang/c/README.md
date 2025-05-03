@@ -20,3 +20,7 @@ https://en.wikipedia.org/wiki/The_Power_of_10:_Rules_for_Developing_Safety-Criti
 >       pointers.
 >   10. Compile with all possible warnings active; all warnings should then be
 >       addressed before release of the software.
+
+# Linux Kernel Style
+
+[https://www.kernel.org/doc/html/v4.10/process/coding-style.html](url)
