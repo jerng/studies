@@ -1,6 +1,8 @@
 haskell-studies
 ===============
 
+- [Pandoc](http://pandoc.org/) universal document format converter, written in Haskell - by John Macfarlane, Philosophy @ Berkeley pandoc.org
+
 What it says.
 
 # Quick Start
