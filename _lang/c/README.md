@@ -3,9 +3,9 @@ c-studies
 
 C family language studies
 
-# 10 Rules from JPL
-
-https://en.wikipedia.org/wiki/The_Power_of_10:_Rules_for_Developing_Safety-Critical_Code
+# 10 Rules from NASA's JPL
+National Aeronautics & Space Administration's Jet Propulsion Laboratory
+[https://en.wikipedia.org/wiki/The_Power_of_10:_Rules_for_Developing_Safety-Critical_Code](url)
 
 >   1. Avoid complex flow constructs, such as goto and recursion.
 >   2. All loops must have fixed bounds. This prevents runaway code.
@@ -20,3 +20,10 @@ https://en.wikipedia.org/wiki/The_Power_of_10:_Rules_for_Developing_Safety-Criti
 >       pointers.
 >   10. Compile with all possible warnings active; all warnings should then be
 >       addressed before release of the software.
+
+# SEI CERT C Coding Standard
+Software Engineering Institute @ Carnegie Mellon University's Computer Emergency Response Team
+[https://wiki.sei.cmu.edu/confluence/display/c](url)
+
+# Linux Kernel Style
+[https://www.kernel.org/doc/html/v4.10/process/coding-style.html](url)
