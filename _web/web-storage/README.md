@@ -4,11 +4,10 @@
 - window.indexedDB : “unlimited” : keyed JavaScript objects
 - window.navigator.storage : “unlimited” : keyed files & directories
 
+### window.caches
 ```
-
 window.caches
     // Promise ( CacheStorage object )
-
 - 
 
 CacheStorage.open   ( stringCacheName )
@@ -25,7 +24,6 @@ CacheStorage.match  ( stringCacheName )
 
 CacheStorage.delete ( stringCacheName )  
     // returns Promise ( Boolean )
-
 -
 
 Cache.add( RequestObject | urlString )
@@ -51,12 +49,12 @@ Cache.matchAll( RequestObject | urlString, optionsObject  )
 
 Cache.delete( RequestObject | urlString )
     // returns Promise ( Boolean )
+```
 
--
-
+### window.localStorage
+```
 window.localStorage
     // Storage object
-
 -
 
 Storage.length
@@ -76,12 +74,12 @@ Storage.removeItem( keyString )
 
 Storage.clear()
     // returns undefined ; removes all key-value pairs
+```
 
--
-
+### window.indexedDB
+```
 window.indexedDB
     // IDBFactory object 
-
 -
 
 IDBFactory.open( nameString, versionInteger )
@@ -100,7 +98,6 @@ IDBFactory.cmp( keyOne, keyTwo )
     // returns  -1 : keyOne <  keyTwo
     //           0 : keyOne == keyTwo
     //           1 : keyOne >  keyTwo
-
 -
 
 IDBDatabase.name
