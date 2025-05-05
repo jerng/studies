@@ -7,37 +7,6 @@
     const cacheName = "my-cache"
     const cache = await window.caches.open( cacheName )
 
-  let resolveIDBRequestResultOnSuccess=idbr=>new Promise( resolve=>idbr.onsuccess=_=>resolve(idbr.result) );
-  // add reject for a less minimal example
-
-  const db=( async _=>{
-    const request = indexedDB.open('exampleDatabase', 1);
-    request.onupgradeneeded =_=>{
-     /* db.createObjectStore() must be called in this callback */ 
-      const store = request.result.createObjectStore("users", { autoIncrement: true });
-    }
-    return await resolveIDBRequestResultOnSuccess(request) 
-  })();
-
-  (async _=> {
-    const db = await db; 
-    /* use db here */
-
-    const store = db.transaction('users', 'readwrite' ).objectStore('users');
-      for (const name of ["Rod","Jane","Freddy"])
-        store.add({ name });
-  })();
-
-  (async _=> {
-    const db = await db; 
-    /* use db here */
-
-    const store = db.transaction('users', 'readwrite' ).objectStore('users');
-    const val1 = await resolveIDBRequestResultOnSuccess( store.get(1) );
-    const val2 = await resolveIDBRequestResultOnSuccess( store.get(2) );
-    const val3 = val1.name + val2.name;
-    console.log( val1, val2, val3 );
-  })();
 
 
 
