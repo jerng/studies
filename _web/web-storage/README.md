@@ -80,17 +80,52 @@ Storage.clear()
 ```
 window.indexedDB
     // IDBFactory object ;
-    
-    //  the critical path is :
-    //      request = await window.indexedDB.open()
-    //      db = request.result
-    //      t = db.transaction()
-    //      os = t.objectStore()
-    //      os.doAllTheThings()
-    //      t.commit()
-    //      db.close()
--
+```
 
+the critical path is : ( pseudocode )
+```
+db = window.indexedDB.open()
+t = db.transaction()
+os = t.objectStore()
+os.doAllTheThings()
+t.commit()
+db.close()
+```
+```javascript
+/*  1. This requests an IndexedDB connection, allowing reuse */
+const dbRequestPromise =(_=>{
+  const request = indexedDB.open('exampleDatabase');
+  request.onupgradeneeded =_=>{
+      /* db.createObjectStore() may be used only in this callback */ 
+  }
+  return request 
+})();
+
+/*  
+ *  2. This is a utility function, 
+ *      for getting IDBResults from IDBRequests.
+ *
+ *  Add `reject` for a less minimal example.
+ *
+ *  Why call it `fmap`? See :
+ *  https://www.adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html  
+ *
+ */
+const fmapGetResult = resolveIDBRequestResultOnSuccess = 
+      idbr=>new Promise( resolve=>idbr.onsuccess=_=>resolve(idbr.result) );
+
+/* 
+ *  3. Here's how you use the DB connection.
+ *  You can have any number of such IIFEs, 
+ *      but they must be `async` because they must `await`.
+ */
+(async _=>{ 
+    const db = await fmapGetResult( dbRequestPromise ); 
+    /* use db here */ 
+})();
+
+```
+```
 IDBFactory.open( nameString, versionInteger )
     // returns Promise ( IDBOpenDBRequest object ) ; if open() is successful,
     // IDBOpenDBRequest.result == IDBDatabase object
@@ -134,8 +169,7 @@ IDBDatabase.createObjectStore( objectStoreNameString, optionsObject )
     //          It cannot include spaces.
     // returns IDBObjectStore object
 
-IDBDatabase.transaction( [ objectStoreNameStrings ] , 
-    //  "readonly" ( default ) | "readwrite", optionsObject )
+IDBDatabase.transaction( [ objectStoreNameStrings ] , "readonly" ( default ) | "readwrite", optionsObject )
     //  optionsObject.durability = 
     //      "strict" ( recommended ) | "relaxed" ( faster, less energy consumed )
     //      | "default" ( user agent decides )
