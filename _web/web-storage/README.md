@@ -97,6 +97,7 @@ const dbRequestPromise =(_=>{
   const request = indexedDB.open('exampleDatabase');
   request.onupgradeneeded =_=>{
       /* db.createObjectStore() may be used only in this callback */ 
+      /* db.deleteObjectStore() may be used only in this callback */ 
   }
   return request 
 })();

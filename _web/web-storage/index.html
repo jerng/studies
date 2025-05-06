@@ -3,11 +3,106 @@
 <body>
 <script type="text/javascript">
 
-
+/*
     const cacheName = "my-cache"
     const cache = await window.caches.open( cacheName )
+*/
+
+/*
+ // Really basic idbRequest to Promise wrapper example
+  function wrapRequest(request){
+    return new Promise(function(resolve,reject){
+      request.onsuccess = r => resolve(request.result);
+      request.onerror = reject;
+    });
+  }
+
+  // Reusable database handle
+  const dbPromise = (function(){
+    const openRequest = indexedDB.open('exampleDatabase', 1);
+    openRequest.onupgradeneeded = function(ev){
+      const db = ev.target.result;
+      const store = db.createObjectStore("users", { autoIncrement: true });
+      for (const name of ["Rod","Jane","Freddy"])
+        store.add({ name });
+      console.log('exampleDatabase : upgradeneeded : event handler existing')
+    }
+    console.log('')
+    return wrapRequest(openRequest);
+  })();
+
+  // Example of use - get two values from the db without nesting
+  async function doThing(){
+    const db = await dbPromise;
+    const store = db.transaction('users').objectStore('users');
+    const val1 = await wrapRequest( store.get(1) );
+    const val2 = await wrapRequest( store.get(2) );
+    const val3 = val1.name + val2.name;
+    console.log( val1, val2, val3 );
+  }
+
+  doThing();
+ */
+
+nukeDBs: (async _=> { 
+        let dbList = await window.indexedDB.databases() 
+        console.log('global : dbList : ', dbList)
+
+        for ( const o of dbList ) {
+        const request = Object.assign(
+                window.indexedDB.deleteDatabase(o.name), {
+onerror:_=>console.log('nukeDB : db name : ',
+                o.name, ' : error in deletion'),
+onsuccess:_=>console.log('nukeDB : db name : ',
+        o.name, ' : deletion was a vainglorious success')
+})
+        }
+        })()
 
 
+/*
+   let dbr = iDBRequest = Object.assign(
+   window.indexedDB.databases(),
+   {
+onerror:_=> {
+console.log('dbr : error : handler called, and exiting')
+}
+,
+onsuccess:_=> {
+console.log('dbr : databases : ',dbr.result )
+console.log('dbr : success : handler called, and exiting')
+}
+})
+
+console.log('global : dbr : ', dbr)
+ */
+
+/*
+   let odbr = iDBOpenDBRequest = Object.assign(
+   window.indexedDB.open('db1'), 
+//window.indexedDB.databases(), 
+{
+onerror:_=> {
+console.log('odbr : version : ',odbr.result.version)
+console.log('odbr : error : handler called, and exiting')
+}
+,
+onsuccess:_=> {
+console.log('odbr : version : ',odbr.result.version)
+console.log('odbr : success : handler called, and exiting')
+}
+,
+onupgradeneeded:_=> {
+//db = odbr.result
+//db.createObjectStore('os1')
+console.log('odbr : version : ',odbr.result.version)
+console.log('odbr : upgradeneeded : handler called, and exiting')
+}
+
+})
+
+let db // cannot get result before odbr finishes
+ */
 
 
 </script>

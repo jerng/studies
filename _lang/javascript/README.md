@@ -2,6 +2,45 @@
 
 What it says.
 
+# Promises
+JavaScript has a Promise class, representing technical debt. The general
+form of which is :
+```javascript
+let p = new Promise( (resolve, reject) => condition ? resolve('shim') : reject('shim') )
+await p
+```
+If neither the `resolve`-er nor `reject`-er are called, then execution will stall at `await p`.
+
+It turns out that calling `resolve` looks sort of like [continuation
+passing](https://en.wikipedia.org/wiki/Continuation), though I am not
+(yet) sure that they are exactly the same. The following is illustrative
+:
+```
+/* 1. We extrate the (continuation) from a Promise. */
+let continuation 
+const p = new Promise((resolve,reject)=>{
+    continuation = resolve
+
+    /* We can worry about reject() later */
+});
+
+/* 2. Far, far away in our program, we can (await) the (continuation) : */
+(async _=>{
+    end(await p) /* end() is defined at 4. below, for illustrative order */
+})();
+
+/* 3. Somewhere else, and also far away, we can call the (continuation) : */
+(_=>{
+    /* ... deep and distant code complexity ... */
+    continuation('treasure')
+})();
+
+/* 4. */
+function end(printme){
+    console.log(printme) // prints 'treasure'
+};
+
+```
 # JavaScript Execution Workflow Algorithm 
 
 *(2020-04 study; revised 2021-06-06)*
