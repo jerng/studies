@@ -3,7 +3,7 @@
 What it says.
 
 # Promises
-JavaScript has a Promise class, representing technical debt. The general
+JavaScript has a `Promise` class, representing technical debt. The general
 form of which is :
 ```javascript
 let p = new Promise( (resolve, reject) => condition ? resolve('shim') : reject('shim') )
@@ -15,7 +15,7 @@ It turns out that calling `resolve` looks sort of like [continuation
 passing](https://en.wikipedia.org/wiki/Continuation), though I am not
 (yet) sure that they are exactly the same. The following is illustrative
 :
-```
+```javascript
 /* 1. We extrate the (continuation) from a Promise. */
 let continuation 
 const p = new Promise((resolve,reject)=>{
