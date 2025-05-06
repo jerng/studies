@@ -17,7 +17,7 @@ passing](https://en.wikipedia.org/wiki/Continuation), though I am not
 (yet) sure that they are exactly the same. The following is illustrative
 :
 ```javascript
-/* 1. We extrate the (continuation) from a Promise. */
+/* 1. We extract the (continuation) from a Promise. */
 let continuation 
 const p = new Promise((resolve,reject)=>{
     continuation = resolve

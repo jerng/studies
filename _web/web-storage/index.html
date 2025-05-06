@@ -1,110 +1,235 @@
-<html>
-<head> </head>
-<body>
-<script type="text/javascript">
+<html> <head> </head> <body> <script type="text/javascript">
 
+/* const cacheName = "my-cache" const cache = await window.caches.open(
+            cacheName ) */
 /*
-    const cacheName = "my-cache"
-    const cache = await window.caches.open( cacheName )
-*/
-
-/*
- // Really basic idbRequest to Promise wrapper example
-  function wrapRequest(request){
-    return new Promise(function(resolve,reject){
-      request.onsuccess = r => resolve(request.result);
-      request.onerror = reject;
-    });
-  }
-
-  // Reusable database handle
-  const dbPromise = (function(){
-    const openRequest = indexedDB.open('exampleDatabase', 1);
-    openRequest.onupgradeneeded = function(ev){
-      const db = ev.target.result;
-      const store = db.createObjectStore("users", { autoIncrement: true });
-      for (const name of ["Rod","Jane","Freddy"])
-        store.add({ name });
-      console.log('exampleDatabase : upgradeneeded : event handler existing')
-    }
-    console.log('')
-    return wrapRequest(openRequest);
-  })();
-
-  // Example of use - get two values from the db without nesting
-  async function doThing(){
-    const db = await dbPromise;
-    const store = db.transaction('users').objectStore('users');
-    const val1 = await wrapRequest( store.get(1) );
-    const val2 = await wrapRequest( store.get(2) );
-    const val3 = val1.name + val2.name;
-    console.log( val1, val2, val3 );
-  }
-
-  doThing();
+ *  Rudimentary Example : opening this file in a browser, and examining
+ *  the console, should show no errors.
+ *
+ *  The script is sectioned into three labled async IIFEs :
+ *      - nukeDBs, makeDBAndOS, and doMoreWithOS
+ *
+ *  Each IIFE returns a Promise, which can be `await`ed in subsequent
+ *  IIFEs.
+ *
+ *  nukeDBs 
+ *      : accesses IDBFactory, lists DBs, then
+ *      : accesses IDBFactory, deletes every DB in the list to
+ *          reset the origin-IndexedDB state ; each call to
+ *          deleteDatabase() returns an IDBOpenDBRequeest,
+ *          which is populated with event handlers
+ *      : the console will show (success) when that event is heard
+ *
+ *  makeDBAndOS
+ *      : waits for nukeDBs to finish
+ *      : creates a continuation ( Project resolution function )
+ *      : accesses IDBFactory, opens the database newDBName ; returns an
+ *          IDBOpenDBRequest, and populates it with event handlers ;
+ *      : at some point IDBOpenDBRequest.readyState switches from
+ *          "pending" to "done", subsequently IDBOpenDBRequest hears
+ *          (upgradeneeded)
+ *      : IDBOpenDBRequest.onupgradeneeded is exposed to
+ *          IDBOpenDBRequest.transaction, so here the IDBTransaction can
+ *          be directly accessed ; it is possible in this callback to
+ *          obtain IDBDatabase from IDBOpenDBRequest.result, and
+ *          IDBTransaction from IDBOpenDBRequest.transaction ;
+ *      : TODO : we have not yet attached event handlers to IDBDatabase
+ *      : IDBDatabase.createObjectStore() however is used to create an
+ *          IDBObjectStore
+ *      : we have attached event handlers to IDBTransaction, but no
+ *          events are heard yet
+ *      : IDBOpenDBRequest.onupgradeneeded calls the continuation,
+ *          returning control from makeDBAndOS
+ *      : IDBOpenDBRequest.onupgradeneeded upon returning, the IDBTransaction is
+ *          NOT immediately committed
+ *
+ *  doMoreWithOS
+ *      : waits for makeDBAndOS 
+ *      : because IDBTransaction has not yet commpleted, IDBObjectStore
+ *          which is attached to it can sent orders, for example
+ *          IDBObjectStore.add() which returns another IDBRequest, to
+ *          which we attach only an onsuccess handler, (TODO: the
+ *          others)
+ *      : doMoreWitHOS exits, and then IDBObjectStore.onsuccess reports
+ *          that the .add() happened, and then IDBTransaction.oncomplete
+ *          reports that IDBTransaction has finally committed ( it seems
+ *          complicated to combine the verb "commit()" with the
+ *          adjective "complete" where they seem to refer to the same
+ *          fact ) 
+ *   end
+ *      : therafter, calling IDBDatabase.close() causes an error, it is
+ *          not clear if there is any way to close() without this error
  */
 
-nukeDBs: (async _=> { 
-        let dbList = await window.indexedDB.databases() 
-        console.log('global : dbList : ', dbList)
+const newDBName = 'db1'
+const newOSName = 'os1'
+let iDBDatabase
+let iDBObjectStore
 
-        for ( const o of dbList ) {
-        const request = Object.assign(
-                window.indexedDB.deleteDatabase(o.name), {
-onerror:_=>console.log('nukeDB : db name : ',
-                o.name, ' : error in deletion'),
-onsuccess:_=>console.log('nukeDB : db name : ',
-        o.name, ' : deletion was a vainglorious success')
-})
-        }
+let nukeDBsPromise
+let makeDBAndOSPromise 
+
+nukeDBs: 
+{ 
+    nukeDBsPromise =  (async _=>
+        { 
+            const clauses = { odbrs: [] }
+
+            const dbList = await window.indexedDB.databases() 
+            console.log('nukeDBs : dbList : ', dbList.reduce(
+                (a,o)=>(a+o.name+', '),'') )
+
+            for ( const o of dbList ) {
+                const odbr = iDBOpenDBRequest = Object.assign(
+                    await window.indexedDB.deleteDatabase(o.name), 
+                    {
+                        onerror: _=>console.log(
+                            'nukeDBs : deleteDatabase : db name : ', 
+                            o.name, ' : IDBOpenDBRequest (error)'),
+                        onsuccess: _=>console.log(
+                            'nukeDBs : deleteDatabase : db name : ', 
+                            o.name, ' : IDBOpenDBRequest (success)'),
+                        onblocked: _=>console.log(
+                            'nukeDBs : deleteDatabase : db name : ', o.name,
+                            ' : IDBOpenDBRequest (blocked)'),
+                        onupgradeneeded: _=>console.log(
+                            'nukeDBs : deleteDatabase : db name : ', o.name, 
+                            ' : IDBOpenDBRequest (upgradeneeded)')
+                    })
+               clauses.odbrs.push(odbr)
+            }
+            return clauses 
+            /* for now, clauses can be anything */
         })()
-
-
-/*
-   let dbr = iDBRequest = Object.assign(
-   window.indexedDB.databases(),
-   {
-onerror:_=> {
-console.log('dbr : error : handler called, and exiting')
 }
-,
-onsuccess:_=> {
-console.log('dbr : databases : ',dbr.result )
-console.log('dbr : success : handler called, and exiting')
+
+makeDBAndOS: 
+{ 
+    makeDBAndOSPromise = (async _=>
+        {
+            await nukeDBsPromise
+            const dbName = newDBName
+
+            let continuation 
+            const clauses = new Promise((resolve,reject)=>{
+                continuation = resolve
+
+                /* Er, we can worry about reject() later */
+            })
+
+            const odbr = iDBOpenDBRequest = Object.assign (
+                await window.indexedDB.open(dbName),
+                {
+                    onblocked: _=>console.log(
+                        'makeDBAndOS : open : db name : ', dbName, 
+                        ' : IDBOpenDBRequest (blocked)'),
+                    onupgradeneeded: _=>{
+
+                        const osName = newOSName
+                        let db, 
+                            os, 
+                            t, iDBTransaction
+
+                        /*  ONLY chance to get the IDBDatabase object,
+                         *  without re-open()-ing a connection. 
+                         */
+                        if (!iDBDatabase) {
+                            db = iDBDatabase = odbr.result
+                            console.log(
+                                'makeDBAndOS : open : db name : ',
+                                db.name, ' : IDBOpenDBRequest (upgradeneeded)')
+                        }
+
+                        /* transaction */
+                        t = iDBTransaction = Object.assign(
+                            odbr.transaction, {
+                                onabort:_=>console.log( 
+                                    'makeDBAndOS : open : db name : ', 
+                                    dbName, ' : IDBTransaction (abort)'
+                                ),
+                                oncomplete:_=>console.log( 
+                                    'makeDBAndOS : open : db name : ', 
+                                    dbName, ' : IDBTransaction (complete)'
+                                ),
+                                onerror:_=>console.log( 
+                                    'makeDBAndOS : open : db name : ', 
+                                    dbName, ' : IDBTransaction (error)'
+                                ),
+                                onsuccess:_=>console.log( 
+                                    'makeDBAndOS : open : db name : ', 
+                                    dbName, ' : IDBTransaction (success)'
+                                )
+
+                            })
+
+                        /*  ONLY chance to call createObjectStore() and
+                         *  deleteObjectStore() on the IDBDatabase
+                         *  object, without re-open()-ing a connection.
+                         */
+                        os = iDBObjectStore = db.createObjectStore(osName)
+                        console.log(
+                            'makeDBAndOS : createObjectStore : os name : ',
+                            os.name, ' : IDBOpenDBRequest (upgradeneeded)')
+
+                        console.log( 
+                            'makeDBAndOS : IDBOpenDBRequest (upgradeneeded) : exiting'
+                        )
+
+                        continuation({ odbr:odbr, db:db, os:os })
+                    },
+                    onerror: _=>console.log(
+                        'makeDBAndOS : open : db name : ', dbName, 
+                        ' : IDBOpenDBRequest (error)', odbr.error ),
+                    onsuccess: e=>{
+
+                        let db
+
+                        /*  ONLY chance to get the IDBDatabase object,
+                         *  without re-open()-ing a connection. 
+                         */
+                        if (!iDBDatabase) {
+                            db = iDBDatabase = odbr.result 
+                            console.log(
+                                'makeDBAndOS : open : db name : ',
+                                db.name, ' : IDBOpenDBRequest (success)' )
+                            continuation({ odbr:odbr, db:db, e:e })
+                        }
+                    }
+                }
+            )
+            return clauses 
+            /* for now, clauses can be anything */
+        })()
 }
-})
 
-console.log('global : dbr : ', dbr)
- */
-
-/*
-   let odbr = iDBOpenDBRequest = Object.assign(
-   window.indexedDB.open('db1'), 
-//window.indexedDB.databases(), 
+doMoreWithOS: 
 {
-onerror:_=> {
-console.log('odbr : version : ',odbr.result.version)
-console.log('odbr : error : handler called, and exiting')
+    doMoreWithOS = (async _=> 
+        {
+            await makeDBAndOSPromise
+            const db = iDBDatabase
+            const os = iDBObjectStore
+            const t = os.transaction 
+
+            const iDBRequest = os.add('value1','key1')
+            iDBRequest.onsuccess = _=>console.log(
+                'doMoreWithOS : add : os name : ', os.name, 
+                ' : IDBRequest (success)'
+            )
+            console.log(
+                'doMoreWithOS : exiting'
+            )
+
+        })()
 }
-,
-onsuccess:_=> {
-console.log('odbr : version : ',odbr.result.version)
-console.log('odbr : success : handler called, and exiting')
+
+end:
+{
+    (async _=>{
+        await doMoreWithOS
+        iDBDatabase.close()
+    })()
 }
-,
-onupgradeneeded:_=> {
-//db = odbr.result
-//db.createObjectStore('os1')
-console.log('odbr : version : ',odbr.result.version)
-console.log('odbr : upgradeneeded : handler called, and exiting')
-}
-
-})
-
-let db // cannot get result before odbr finishes
- */
-
-
-</script>
-</body>
+        </script>
+    </body>
 </html>

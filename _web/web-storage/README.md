@@ -145,8 +145,41 @@ IDBFactory.cmp( keyOne, keyTwo )
     //           1 : keyOne >  keyTwo
 -
 
+IDBOpenDBRequest 
+    // inherits from IDBRequest, EventTarget
+    // events : blocked, upgradeneeded ... 
+    //      & error, success from EventTarget
+
+IDBOpenDBRequest.transaction
+    //  during IDBFactory.open() 
+    //      : IDBOpenDBRequest.transaction is null, EXCEPT
+    //      : within the IDBOpenDBRequest.onupgradeedneeded handler's
+    //          runtime, whereby IDBOpenDBRequest.transaction exists
+-
+
+IDBRequest
+    // always happens within an IDBTransaction
+    // inherits from EventTarget
+    // events : blocked, upgradeneeded
+
+IDBRequest.error
+    // contains one of various errorTypes
+
+IDBRequest.readyState
+    // "pending" | "done"
+
+IDBRequest.result
+    // various
+
+IDBRequest.source
+    // IDBIndex | IDBObjectStore | IDBCursor | null ( during IDBFactory.open()) 
+
+IDBRequest.transaction
+-
+
 IDBDatabase
     // represents a CONNECTION to a database
+    // inherits from EventTarget
 
 IDBDatabase.name
     // nameString 
@@ -185,17 +218,31 @@ IDBDatabase.deleteObjectStore( objectStoreStringName )
     // returns undefined
 -
 
+IDBTransaction
+    //  is in state `active`
+    //      : in the event loop task, where it was created
+    //      : in each event loop task of, its IDBRequest's `success` or
+    //          `error` event handlers
+    //  is in state `inactive`
+    //      : in all other event loop tasks ( calling its methods will
+    //          fail )
+    //  documentation unclear : "if no new requests are placed when the
+    //  transaction is `active`, and there are no outstanding requests,
+    //  the transaction will automatically commit" - that is, just
+    //  before it transitions to `inactive`?
+
 IDBTransaction.db
-    // returns the IDBDatabase object
+    // the IDBDatabase object
 
 IDBTransaction.durability
-    // returns the optionsDurabilityString
+    // the optionsDurabilityString
 
 IDBTransaction.error
-    // returns a DOMException object ( failure ) or null ( success )
+    // a DOMException object ( failure ) or null ( success )
 
 IDBTransaction.mode
-    // returns the optionsModeString
+    // "readonly" | "readwrite" | 
+    // "versionchange" a.k.a (upgrade transactions)
 
 IDBTransaction.objectStoreNames
     // returns the DOMStringList
