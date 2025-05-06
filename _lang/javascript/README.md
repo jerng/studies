@@ -3,6 +3,7 @@
 What it says.
 
 # Promises
+( 2025-05-06 study )
 JavaScript has a `Promise` class, representing technical debt. The general
 form of which is :
 ```javascript
