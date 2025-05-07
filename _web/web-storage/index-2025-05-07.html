@@ -169,41 +169,6 @@
  *
  */
 
-Class MinDB {
-
-    #mode /* DEV,helpful | PROD,helpless */
-
-    #idbdatabase
-    
-    constructor(dbname)
-    {
-        /*  Return a MinDB instance, representing an IDBDatabase.
-
-            1.  try { exists ? open,explain : open,explain } 
-                catch(e) { explain }
-            
-            2.  handlers ? explain : attach, explain
-            
-            3.
-
-            */
-    }
-
-    close()
-    {
-        /*  IDBDatbase.close() */
-    }
-
-    static help()
-    {
-        /*  console.log() */
-    }
-
-}
-
-
-/***********Initial Tests Below; Current Tests Above ************/
-
 const newDBName = 'db1'
 const newOSName = 'os1'
 let iDBDatabase
@@ -322,7 +287,6 @@ makeDBAndOS:
                          *  deleteObjectStore() on the IDBDatabase
                          *  object, without re-open()-ing a connection.
                          */
-                        /*
                         os = iDBObjectStore = db.createObjectStore(osName)
                         console.log(
                             'makeDBAndOS : createObjectStore : os name : ',
@@ -331,7 +295,7 @@ makeDBAndOS:
                         console.log( 
                             'makeDBAndOS : IDBOpenDBRequest (upgradeneeded) : exiting'
                         )
-                        */
+
                         continuation({ odbr:odbr, db:db, os:os })
                     },
                     onerror: _=>console.log(
@@ -368,7 +332,6 @@ doMoreWithOS:
     doMoreWithOS = (async _=> 
         {
             await makeDBAndOSPromise
-            /*
             const db = iDBDatabase
             const os = iDBObjectStore
             const t = os.transaction 
@@ -381,7 +344,6 @@ doMoreWithOS:
             console.log(
                 'doMoreWithOS : exiting'
             )
-            */
 
         })()
 }
@@ -391,12 +353,11 @@ end:
     (async _=>{
         await doMoreWithOS
         const db = iDBDatabase
-        /*
         const dbName = newDBName 
 
         console.log('end : db name : ', db.name, ' : db version : ',
             db.version)
-        */
+
         db.close()
 
         //const t = db.(newOSName) // TODO : reattach all handlers
