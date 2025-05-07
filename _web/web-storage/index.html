@@ -169,24 +169,66 @@
  *
  */
 
-Class MinDB {
+class MinDB {
 
-    #mode /* DEV,helpful | PROD,helpless */
+    #quiet = false /* DEV,helpful | PROD,helpless */
 
+    #idbopendbrequest
     #idbdatabase
     
-    constructor(dbname)
+    constructor(_dbname,_quiet)
     {
-        /*  Return a MinDB instance, representing an IDBDatabase.
-
-            1.  try { exists ? open,explain : open,explain } 
-                catch(e) { explain }
-            
-            2.  handlers ? explain : attach, explain
-            
-            3.
-
-            */
+        this.quiet = _quiet == `shh`
+        if (!_dbname) {
+            if (!this.quiet) {
+                throw `MinDB : constructor : dbname not specified`
+            }
+            return // silent failure
+        }
+        try {
+            this.idbopendbrequest = window.indexedDB.open(_dbname)
+            if (!this.idbopendbrequest.onblocked) {
+                this.idbopendbrequest.onblocked =e=>
+                {
+                    console.log(`MinDB : ${_dbname} : IDBOpenDBRequest : heard (blocked)`)
+                } 
+                if (!this.quiet) console.log(
+`MinDB : IDBOpenDBRequest.onblocked : was falsy : reassigned by MinDB`
+                )
+            }
+            if (!this.idbopendbrequest.onerror) {
+                this.idbopendbrequest.onerror =e=>
+                {
+                    console.log(`MinDB : ${_dbname} : IDBOpenDBRequest : heard (error)`)
+                } 
+                if (!this.quiet) console.log(
+`MinDB : IDBOpenDBRequest.onerror : was falsy : reassigned by MinDB`
+                )
+            }
+            if (!this.idbopendbrequest.onsuccess) {
+                this.idbopendbrequest.onsuccess =e=> 
+                {
+                    console.log(`MinDB : ${_dbname} : IDBOpenDBRequest :
+                        heard (success) ... this means 1. the database
+                        already existed, and 2. we have not requested to
+                        open a version greater than the present version`)
+                } 
+                if (!this.quiet) console.log(
+`MinDB : IDBOpenDBRequest.onsuccess : was falsy : reassigned by MinDB`
+                )
+            }
+            if (!this.idbopendbrequest.onupgradeneeded) {
+                this.idbopendbrequest.onupgradeneeded =e=>
+                {
+                    console.log(`MinDB : ${_dbname} : IDBOpenDBRequest : heard (upgradeneeded)`)
+                } 
+                if (!this.quiet) console.log(
+`MinDB : IDBOpenDBRequest.onupgradeneeded : was falsy : reassigned by MinDB`
+                )
+            }
+        } catch (e) {
+            if (!this.quiet) throw e 
+        }
     }
 
     close()
@@ -200,7 +242,7 @@ Class MinDB {
     }
 
 }
-
+new MinDB('dbx','shh')
 
 /***********Initial Tests Below; Current Tests Above ************/
 
@@ -239,7 +281,7 @@ nukeDBs:
                             'nukeDBs : deleteDatabase : db name : ', o.name, 
                             ' : IDBOpenDBRequest (upgradeneeded)')
                     })
-               clauses.odbrs.push(odbr)
+                clauses.odbrs.push(odbr)
             }
             return clauses 
             /* for now, clauses can be anything */
@@ -331,7 +373,7 @@ makeDBAndOS:
                         console.log( 
                             'makeDBAndOS : IDBOpenDBRequest (upgradeneeded) : exiting'
                         )
-                        */
+                         */
                         continuation({ odbr:odbr, db:db, os:os })
                     },
                     onerror: _=>console.log(
@@ -381,7 +423,7 @@ doMoreWithOS:
             console.log(
                 'doMoreWithOS : exiting'
             )
-            */
+             */
 
         })()
 }
@@ -396,7 +438,7 @@ end:
 
         console.log('end : db name : ', db.name, ' : db version : ',
             db.version)
-        */
+         */
         db.close()
 
         //const t = db.(newOSName) // TODO : reattach all handlers
