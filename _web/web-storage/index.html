@@ -22,7 +22,7 @@
  *
  *  makeDBAndOS
  *      : waits for nukeDBs to finish
- *      : creates a continuation ( Project resolution function )
+ *      : creates a continuation ( Promise resolution function )
  *      : accesses IDBFactory, opens the database newDBName ; returns an
  *          IDBOpenDBRequest, and populates it with event handlers ;
  *      : at some point IDBOpenDBRequest.readyState switches from
@@ -59,6 +59,108 @@
  *   end
  *      : therafter, calling IDBDatabase.close() causes an error, it is
  *          not clear if there is any way to close() without this error
+ *
+ *  REFACTOR : what have we learnt? Memory consolidation.
+ *      
+ *      -.  Roughly the API traversal sequences are :
+ *
+ *          Window > Factory > OpenDBRequest > Database > Transaction
+ *
+ *          ... Transaction > ObjectStore 
+ *
+ *          ... ObjectStore     > Index                     (new)  
+ *                              > Request > Index           (preexisting)
+ *                                        > (key) or KeyRange
+ *                                        > (value) 
+ *                                        > (count)             LOOK at this shit :
+ *              ( via openKeyCursor )     > Cursor              "getOrangeOranges > orange oranges"
+ *              ( via openCursor )        > CursorWithValue     "getOranges       > red oranges"
+ *
+ *          ... Index           > Request > (key) or KeyRange
+ *                                        > (value)
+ *                                        > (count)
+ *               ( via openKeyCursor )    > Cursor
+ *               ( via openCursor )       > CursorWithValue
+ *
+ *          ... Cursor          > Request (object updates & deletions)
+ *                              > (key)
+ *
+ *          ... CursorWithValue > Request (object updates & deletions)
+ *                              > (key)
+ *                              > (value)
+ *
+ *
+ *
+ *      -.  The IDBRequest and IDBOpenDBRequest objects represent "async
+ *          / in-flight communications" between client and database. 
+ *
+ *      -.  Requests are  distinct from "database connections" which are
+ *          represented by IDBDatabase. Connections are more formal, and 
+ *          will hear events when the underlying DB has version changes. 
+ *
+ *      -.  Databases have versions, connections are version-sensitive.
+ *          Certain operations force a version upgrade.
+ *
+ *      1.  The IndexedDB API entrypoint is `window.indexedDB` which
+ *          represents a IDBFactory object.
+ *
+ *    2.1.  IDBFactory.open() returns a IDBOpenDBRequest.
+ *
+ *          IDBOpenDBRequest will hear `success`, `upgradeneeded`,
+ *          `blocked` or `error` eventually.
+ *
+ *          IBDOpenDBRequest will hear `upgradeneeded` if a
+ *          greater-than-present DB version is requested ... this is 
+ *          certainly the case when a DB is opened for the first time,
+ *          i.e. created. And, every (?) other concurrent
+ *          IDBOpenDBRequest on this DB, will hear `versionchange`.
+ *
+ *          IDBOpenDBRequest.source will be null.
+ *
+ *          IDBOpenDBRequest.transaction will be null, EXCEPT
+ *          during the runtime of IDBOpenDBRequest.onupgradeneeded.
+ *
+ *          IDBOpenDBRequest.result will be a IDBDatabase, but only
+ *          AFTER either one of the following (?) mutually exclusive 
+ *          events are heard : `success` or `upgradeneeded` 
+ *
+ *    2.2.  IDBFactory.deleteDatabase() returns a IDBOpenDBRequest,
+ *          and every concurrent IDBOpenDBRequest on this DB, (?)
+ *          including this one,  will hear `versionchange`
+ *
+ *          IDBOpenDBRequest will hear `success` or `error` eventually.
+ *          IDBOpenDBRequest.result will be undefined. 
+ *
+ *          IDBOpenDBRequest.source will be null.
+ *
+ *      3.  IDBDatabase will hear `versionchange` if in any tab or
+ *          window, the same DB is accessed via
+ *    3.1.  IDBFactory.deleteDatabase() or 
+ *    3.2.  [ IDBFactory.open() where IDBOpenDBRequest hears
+ *              `upgradeneeded` ]
+ *
+ *      4.  IDBTransaction is
+ *
+ *      5.  IDBObjectStore is analogous to a single table in the DB.
+ *
+ *    5.1.  IDBDatabase.createObjectStore() returns an IDBObjectStore.
+ *          This method can only be run in an
+ *
+ *
+ *
+ *
+ *    5.2.  IDBTransaction.objectStore() returns an IDBObjectStore.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 const newDBName = 'db1'
@@ -135,8 +237,18 @@ makeDBAndOS:
                          */
                         if (!iDBDatabase) {
                             db = iDBDatabase = odbr.result
+
+                            db.onclose =_=> console.log(
+                                'makeDBAndOS : IDBDatabase : (close)'
+                            )
+                            db.onversionchange =_=>
+                                console.log(
+                                    'makeDBAndOS : IDBDatabase : (versionchange)'
+                                )
+
+
                             console.log(
-                                'makeDBAndOS : open : db name : ',
+                                'makeDBAndOS : open : db name : ', odbr,
                                 db.name, ' : IDBOpenDBRequest (upgradeneeded)')
                         }
 
@@ -147,10 +259,13 @@ makeDBAndOS:
                                     'makeDBAndOS : open : db name : ', 
                                     dbName, ' : IDBTransaction (abort)'
                                 ),
-                                oncomplete:_=>console.log( 
-                                    'makeDBAndOS : open : db name : ', 
-                                    dbName, ' : IDBTransaction (complete)'
-                                ),
+                                oncomplete:_=>{
+                                    console.log( 
+                                        'makeDBAndOS : open : db name : ', 
+                                        dbName, ' : db version ',
+                                        db.version,' : IDBTransaction (complete)'
+                                    )
+                                },
                                 onerror:_=>console.log( 
                                     'makeDBAndOS : open : db name : ', 
                                     dbName, ' : IDBTransaction (error)'
@@ -186,6 +301,10 @@ makeDBAndOS:
 
                         /*  ONLY chance to get the IDBDatabase object,
                          *  without re-open()-ing a connection. 
+                         *
+                         *  TODO :  check redundancy with
+                         *          onupgradeneeded() and move to DRY
+                         *          function
                          */
                         if (!iDBDatabase) {
                             db = iDBDatabase = odbr.result 
@@ -227,7 +346,17 @@ end:
 {
     (async _=>{
         await doMoreWithOS
-        iDBDatabase.close()
+        const db = iDBDatabase
+        const dbName = newDBName 
+
+        console.log('end : db name : ', db.name, ' : db version : ',
+            db.version)
+
+        db.close()
+
+        //const t = db.(newOSName) // TODO : reattach all handlers
+        //odbr.onsuccess =_=> console.log('end : reopened db : (success)')
+
     })()
 }
         </script>

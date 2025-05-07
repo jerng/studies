@@ -147,8 +147,13 @@ IDBFactory.cmp( keyOne, keyTwo )
 
 IDBOpenDBRequest 
     // inherits from IDBRequest, EventTarget
-    // events : blocked, upgradeneeded ... 
-    //      & error, success from EventTarget
+    //  events : 
+    //      blocked, 
+    //          : heard when IDBTransaction.mode="versionchange"
+    //      upgradeneeded
+    //          : heard when IDBFactory.open requests a higher-than-current version
+    //      error from IDBRequest
+    //      success from IDBRequest 
 
 IDBOpenDBRequest.transaction
     //  during IDBFactory.open() 
@@ -180,6 +185,10 @@ IDBRequest.transaction
 IDBDatabase
     // represents a CONNECTION to a database
     // inherits from EventTarget
+    //  events : 
+    //      close, 
+    //      versionchange via IDBOpenDBRequest (triggers if IDBFactory.open
+    //          or IDBFactory.deleteDatabase was heard in any tab )
 
 IDBDatabase.name
     // nameString 
@@ -242,7 +251,8 @@ IDBTransaction.error
 
 IDBTransaction.mode
     // "readonly" | "readwrite" | 
-    // "versionchange" a.k.a (upgrade transactions)
+    // "versionchange" a.k.a (upgrade transactions) triggered by
+    //  IDBFactory.open()
 
 IDBTransaction.objectStoreNames
     // returns the DOMStringList
