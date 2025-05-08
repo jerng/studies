@@ -10,13 +10,12 @@ is native.
 ```javascript
     
     // like so
-    { promise, resolveContinuation, rejectContinuation } = new
-    Promise.withResolvers()
+    { promise, resolveContinuation, rejectContinuation } = Promise.withResolvers()
 
     // like so
     continuations = {
-        concern1: new Promise.withResolvers(),
-        concern2: new Promise.withResolvers()
+        concern1: Promise.withResolvers(),
+        concern2: Promise.withResolvers()
     }
 
     // code will jump to here 
