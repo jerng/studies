@@ -2,6 +2,29 @@
 
 What it says.
 
+# Helpers : a transparent syntax convention
+( 2025-05-08 )
+
+Ah, IndexedDB, spaghetti API. Drafted one framework. Parked it. Found a
+nicer idiom. Web is complicated so we should not make it more
+complicated. More transparency, and pipey, and generally Unixy is a good
+thing.
+
+So for any standard web `object.method`, we can call a helper
+function, like this : 
+
+```javascript
+a( object.method )
+// this should do analysis, print an opinion, maybe save internal data
+// to a, but neither modify nor run object.method
+
+a( object.method )( arg1, arg2 )
+// this can then behave like object.method(arg1, arg2), with sauce
+
+a( object.method, options )( arg1, arg2 )
+// this enables customised sauce, without messing up object.method's
+// argument layout in the visible code
+```
 # Promises
 ( 2025-05-08 study )
 
