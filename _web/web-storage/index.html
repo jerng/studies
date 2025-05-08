@@ -181,7 +181,6 @@ class DBC {
 
     #idbopendbrequest
     #idbdatabase
-    #idbdatabase_version
 
     #continuations = {
         construction: Promise.withResolvers()
@@ -205,9 +204,9 @@ class DBC {
 
                     this.#log(2, `DBC : ${iDBTarget.constructor.name}
                         heard (${eventName})`)
-                    this.#log(1, event.target?.error)
+                    if (event.target?.error) this.#log(1, event.target.error)
 
-                    if ( arrowAfter ) arrowAfter(iDBTarget)
+                    if (arrowAfter) arrowAfter(iDBTarget)
                 }
 
                 this.#log(3, `DBC :
@@ -218,7 +217,7 @@ class DBC {
     }
 
     #init = {
-        db : db =>
+        db : (db,version) =>
         {
             this.#util.ensureHandling(db, {eventName:'close'})
             this.#util.ensureHandling(db, {eventName:'versionchange'})
@@ -236,7 +235,6 @@ class DBC {
         }, _options)
         
         this.#verbosity = options.verbosity
-        this.#idbdatabase_version = options.version
 
         if (!_dbname) 
             this.#continuations.construction.reject(
@@ -252,12 +250,8 @@ class DBC {
             this.#util.ensureHandling(this.#idbopendbrequest, {
                 eventName:'success',
                 arrowAfter:_=>{
-                    this.#log(2,`DBC : IDBOpenDBRequest :
-                        heard (success) ... this means 1. the database
-                        is NOT new, AND 2. we have not requested to
-                        open a version greater than the present version`)
-
-                    this.#init.db(this.#idbopendbrequest.result)
+                    this.#init.db(this.#idbopendbrequest.result,
+                        options?.version)
 
                     this.#continuations.construction.resolve(`DBC :
                     construction complete : via
@@ -272,7 +266,8 @@ class DBC {
                         is new, OR 2. we have not requested to
                         open a version greater than the present version`)
 
-                    this.#init.db(this.#idbopendbrequest.result)
+                    this.#init.db(this.#idbopendbrequest.result,
+                        options?.version)
 
                     this.#continuations.construction.resolve(`DBC :
                     construction complete : via
@@ -284,8 +279,22 @@ class DBC {
         return this
     } // constructor
 
+    get version(){
+        return (async _=> 
+            {
+                await this.#continuations.construction.promise
+                return this.#idbdatabase.version
+            })()
+    }
+
+    /**
+     * const dbc = new DBC('dbx');
+     * dbc.expose().then(a=>console.log(a))
+     */
+
     /**
      * Destructor : TODO : think about what needs doing
+     *  - all getters and setters return a Promise.reject() ?
      */
 
     close()
@@ -296,11 +305,6 @@ class DBC {
                 this.#idbdatabase.close()
             })()
     }
-
-    /**
-     * const dbc = new DBC('dbx');
-     * dbc.expose().then(a=>console.log(a))
-     */
 
     expose()
     {
@@ -320,58 +324,99 @@ class DBC {
         /*  this.#log */
     }
 
+    os = {
+        create: _=>{},
+        delete: _=>{},
+        names: _=>{},
+    }
+
 }
+
+/*
 const dbc = new DBC('dbx', {
     //verbosity: 3
 })
-.close()
+//*/
 
+//dbc.version.then(a=>console.log(a))
 
 //dbc.expose().then(a=>console.log(a))
 
-/***********Initial Tests Below; Current Tests Above ************/
 
-const newDBName = 'db1'
-const newOSName = 'os1'
-let iDBDatabase
-let iDBObjectStore
+/********************************** review
 
-let nukeDBsPromise
-let makeDBAndOSPromise 
+1. factory : indexedDB.open
+2. databases
+3. objectstores
 
-nukeDBs: 
-{ 
-    nukeDBsPromise =  (async _=>
-        { 
-            const clauses = { odbrs: [] }
+*/
 
-            const dbList = await window.indexedDB.databases() 
-            console.log('nukeDBs : dbList : ', dbList.reduce(
-                (a,o)=>(a+o.name+', '),'') )
+class IDBAssistant
+{
 
-            for ( const o of dbList ) {
-                const odbr = iDBOpenDBRequest = Object.assign(
-                    await window.indexedDB.deleteDatabase(o.name), 
-                    {
-                        onerror: _=>console.log(
-                            'nukeDBs : deleteDatabase : db name : ', 
-                            o.name, ' : IDBOpenDBRequest (error)'),
-                        onsuccess: _=>console.log(
-                            'nukeDBs : deleteDatabase : db name : ', 
-                            o.name, ' : IDBOpenDBRequest (success)'),
-                        onblocked: _=>console.log(
-                            'nukeDBs : deleteDatabase : db name : ', o.name,
-                            ' : IDBOpenDBRequest (blocked)'),
-                        onupgradeneeded: _=>console.log(
-                            'nukeDBs : deleteDatabase : db name : ', o.name, 
-                            ' : IDBOpenDBRequest (upgradeneeded)')
-                    })
-                clauses.odbrs.push(odbr)
-            }
-            return clauses 
-            /* for now, clauses can be anything */
-        })()
+    #assistantEntity
+    #assistantOptions
+
+    constructor(options)
+    {
+        return this.#assistant.bind(this)
+    }
+
+    #runAssisted()
+    {
+        console.log(`here we should try to run the function :
+        ${this.#assistantEntity}
+            with the arguments : `, arguments )
+    }
+
+    #identityEntity()
+    {
+        /* identify an object, its method, its native parameters, the
+        assistantOptions, and the final operation upon the method and
+        any objects it returns */
+    }
+
+    #assistant(entity, options)
+    {
+        let name
+
+        switch (typeof entity)
+        {
+            case `object`:
+                console.log(`found an object`)
+                switch (entity.constructor.name)
+                {
+                    case `IDBFactory`:
+                        console.log(`found an instance of IDBFactory`)
+                        break
+                    default:
+                        console.log(`unidentified object`)
+                }
+                break
+            case `function`:
+                console.log(`found a function`)
+                switch (entity.name)
+                {
+                    case `open`:
+                        console.log(`it is named (open)`)
+                        break
+                    default:
+                        console.log(`unidentified function`)
+                }
+                break
+            default:
+                console.log(`sorry, only IDB API objects and functions
+                    are supported`)
+        }
+        this.#assistantEntity = entity
+        return this.#runAssisted.bind(this) 
+    }
+
+
 }
+
+let a = new IDBAssistant()
+a(indexedDB.open)('arg1','arg2')
 
         </script>
     </body>
