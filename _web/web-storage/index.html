@@ -171,69 +171,149 @@
 
 class MinDB {
 
-    #quiet = false /* DEV,helpful | PROD,helpless */
+    /*
+     *  Variable Naming Conventions
+     *      : lower case, for external class names, e.g. idbfactory
+     *      : camelCase, for most other things
+     *      : snake_case, unassigned
+     */
 
+
+    #quiet = false /* false, DEV,helpful | true, PROD,helpless */
     #idbopendbrequest
     #idbdatabase
-    
+
+    #continuations = {
+        resolve : {
+            construction : null 
+        },
+        reject : {
+            construction : null 
+        }
+    }
+
+    #promises = {
+        construction : new Promise((resolve,reject) => {
+            this.#continuations.resolve.construction = resolve
+            this.#continuations.reject.construction = reject
+        }) 
+    }
+
+    #util = {
+        ensureHandling : (iDBTarget,eventName) => 
+        {
+            const handlerName = 'on'+eventName
+            if (!iDBTarget[handlerName]){
+                iDBTarget[handlerName] = event=>
+                {
+                    console.log(`MinDB :
+                        ${iDBTarget.constructor.name} heard (${eventName})`)
+                }
+                if (!this.#quiet) console.log(`MinDB :
+                        ${iDBTarget.constructor.name}.${handlerName} was
+                        falsy : reasigned in MinDB.#util.ensureHandling`)
+            }
+        }
+    }
+
+    #init = {
+        db : db =>
+        {
+            this.#util.ensureHandling(db, 'close')
+            this.#util.ensureHandling(db, 'versionchange')
+            this.#idbdatabase = db 
+        }
+    }
+
     constructor(_dbname,_quiet)
     {
-        this.quiet = _quiet == `shh`
-        if (!_dbname) {
-            if (!this.quiet) {
-                throw `MinDB : constructor : dbname not specified`
-            }
-            return // silent failure
-        }
+        this.#quiet = _quiet == `shh`
+
+        if (!_dbname) 
+            this.#continuations.reject.construction(
+                `MinDB : constructor : dbname not specified`)
+
         try {
-            this.idbopendbrequest = window.indexedDB.open(_dbname)
-            if (!this.idbopendbrequest.onblocked) {
-                this.idbopendbrequest.onblocked =e=>
+            this.#idbopendbrequest = window.indexedDB.open(_dbname)
+            if (!this.#idbopendbrequest.onblocked) {
+                this.#idbopendbrequest.onblocked =e=>
                 {
-                    console.log(`MinDB : ${_dbname} : IDBOpenDBRequest : heard (blocked)`)
+                    console.log( `MinDB : ${_dbname} : IDBOpenDBRequest
+                        : heard (blocked)`)
                 } 
-                if (!this.quiet) console.log(
-`MinDB : IDBOpenDBRequest.onblocked : was falsy : reassigned by MinDB`
-                )
+                if (!this.#quiet)
+                    console.log(`MinDB : IDBOpenDBRequest.onblocked :
+                        was falsy : reassigned in MinDB.constructor`)
             }
-            if (!this.idbopendbrequest.onerror) {
-                this.idbopendbrequest.onerror =e=>
+            if (!this.#idbopendbrequest.onerror) {
+                this.#idbopendbrequest.onerror =e=>
                 {
-                    console.log(`MinDB : ${_dbname} : IDBOpenDBRequest : heard (error)`)
+                    console.log(`MinDB : ${_dbname} : IDBOpenDBRequest :
+                        heard (error)`)
                 } 
-                if (!this.quiet) console.log(
-`MinDB : IDBOpenDBRequest.onerror : was falsy : reassigned by MinDB`
-                )
+                if (!this.#quiet) console.log( `MinDB :
+                    IDBOpenDBRequest.onerror : was falsy : reassigned in
+                    MinDB.constructor`)
             }
-            if (!this.idbopendbrequest.onsuccess) {
-                this.idbopendbrequest.onsuccess =e=> 
+            if (!this.#idbopendbrequest.onsuccess) {
+                this.#idbopendbrequest.onsuccess =e=> 
                 {
+                    this.#init.db(this.#idbopendbrequest.result)
+
                     console.log(`MinDB : ${_dbname} : IDBOpenDBRequest :
                         heard (success) ... this means 1. the database
                         already existed, and 2. we have not requested to
                         open a version greater than the present version`)
+
+                    this.#continuations.resolve.construction(`MinDB :
+                    construction complete : via
+                    IDBOpenDBRequest.onsuccess`)
                 } 
-                if (!this.quiet) console.log(
-`MinDB : IDBOpenDBRequest.onsuccess : was falsy : reassigned by MinDB`
-                )
+                if (!this.#quiet) console.log( `MinDB :
+                    IDBOpenDBRequest.onsuccess : was falsy : reassigned
+                    in MinDB.constructor`)
+
             }
-            if (!this.idbopendbrequest.onupgradeneeded) {
-                this.idbopendbrequest.onupgradeneeded =e=>
+            if (!this.#idbopendbrequest.onupgradeneeded) {
+                this.#idbopendbrequest.onupgradeneeded =e=>
                 {
-                    console.log(`MinDB : ${_dbname} : IDBOpenDBRequest : heard (upgradeneeded)`)
+                    this.#init.db(this.#idbopendbrequest.result)
+
+                    console.log(`MinDB : ${_dbname} : IDBOpenDBRequest :
+                        heard (upgradeneeded)`)
+
+                    this.#continuations.resolve.construction(`MinDB :
+                    construction complete : via
+                    IDBOpenDBRequest.onupgradeneeded`)
                 } 
-                if (!this.quiet) console.log(
-`MinDB : IDBOpenDBRequest.onupgradeneeded : was falsy : reassigned by MinDB`
-                )
+                if (!this.#quiet) console.log( `MinDB :
+                    IDBOpenDBRequest.onupgradeneeded : was falsy :
+                    reassigned in MinDB.constructor`)
             }
-        } catch (e) {
-            if (!this.quiet) throw e 
-        }
-    }
+        } catch (e) { this.#continuations.reject(e) }
+
+    } // constructor
 
     close()
     {
         /*  IDBDatbase.close() */
+    }
+
+    /*
+     *  const mindb = new MinDB('dbx');
+     *  mindb.expose().then(a=>console.log(a))
+     */
+
+    expose()
+    {
+        (async _=> {
+            await this.#promises.construction
+            return {
+                quiet : this.#quiet,
+                promises : this.#promises,
+                IDBDatabase : this.#idbdatabase
+            }
+        })()
     }
 
     static help()
@@ -242,7 +322,8 @@ class MinDB {
     }
 
 }
-new MinDB('dbx','shh')
+const mindb = new MinDB('dbx');
+//mindb.expose().then(a=>console.log(a))
 
 /***********Initial Tests Below; Current Tests Above ************/
 
