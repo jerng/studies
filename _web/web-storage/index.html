@@ -179,7 +179,8 @@ class MinDB {
      */
 
 
-    #quiet = false /* false, DEV,helpful | true, PROD,helpless */
+    #verbosity /* 0:none, 1:production, 2:development, 3:excessive */
+
     #idbopendbrequest
     #idbdatabase
 
@@ -199,17 +200,28 @@ class MinDB {
         }) 
     }
 
+    #log = a => console.log(a)
+
     #util = {
-        ensureHandling : (iDBTarget,eventName) => 
+        ensureHandling : (iDBTarget, options) => 
         {
+            const eventName = options.eventName
+            const arrowBefore = options.arrowBefore
+            const arrowAfter = options.arrowAfter
             const handlerName = 'on'+eventName
             if (!iDBTarget[handlerName]){
+
                 iDBTarget[handlerName] = event=>
                 {
+                    if ( arrowBefore ) arrowBefore(iDBTarget)
+
                     console.log(`MinDB :
                         ${iDBTarget.constructor.name} heard (${eventName})`)
+
+                    if ( arrowAfter ) arrowAfter(iDBTarget)
                 }
-                if (!this.#quiet) console.log(`MinDB :
+
+                this.#verbosity < 3 ? undefined : this.#log(`MinDB :
                         ${iDBTarget.constructor.name}.${handlerName} was
                         falsy : reasigned in MinDB.#util.ensureHandling`)
             }
@@ -219,15 +231,22 @@ class MinDB {
     #init = {
         db : db =>
         {
-            this.#util.ensureHandling(db, 'close')
-            this.#util.ensureHandling(db, 'versionchange')
+            this.#util.ensureHandling(db, {eventName:'close'})
+            this.#util.ensureHandling(db, {eventName:'versionchange'})
             this.#idbdatabase = db 
         }
     }
 
-    constructor(_dbname,_quiet)
+    constructor(_dbname, _options)
     {
-        this.#quiet = _quiet == `shh`
+        let options = Object.assign({
+
+            /* defaults */
+            verbosity: 2 
+
+        }, _options)
+        
+        this.#verbosity = options.verbosity
 
         if (!_dbname) 
             this.#continuations.reject.construction(
@@ -235,68 +254,48 @@ class MinDB {
 
         try {
             this.#idbopendbrequest = window.indexedDB.open(_dbname)
-            if (!this.#idbopendbrequest.onblocked) {
-                this.#idbopendbrequest.onblocked =e=>
-                {
-                    console.log( `MinDB : ${_dbname} : IDBOpenDBRequest
-                        : heard (blocked)`)
-                } 
-                if (!this.#quiet)
-                    console.log(`MinDB : IDBOpenDBRequest.onblocked :
-                        was falsy : reassigned in MinDB.constructor`)
-            }
-            if (!this.#idbopendbrequest.onerror) {
-                this.#idbopendbrequest.onerror =e=>
-                {
-                    console.log(`MinDB : ${_dbname} : IDBOpenDBRequest :
-                        heard (error)`)
-                } 
-                if (!this.#quiet) console.log( `MinDB :
-                    IDBOpenDBRequest.onerror : was falsy : reassigned in
-                    MinDB.constructor`)
-            }
-            if (!this.#idbopendbrequest.onsuccess) {
-                this.#idbopendbrequest.onsuccess =e=> 
-                {
-                    this.#init.db(this.#idbopendbrequest.result)
 
-                    console.log(`MinDB : ${_dbname} : IDBOpenDBRequest :
+            this.#util.ensureHandling(this.#idbopendbrequest,
+                {eventName:'blocked'})
+            this.#util.ensureHandling(this.#idbopendbrequest,
+                {eventName:'error'})
+            this.#util.ensureHandling(this.#idbopendbrequest, {
+                eventName:'success',
+                arrowAfter:_=>{
+                    console.log(`MinDB : IDBOpenDBRequest :
                         heard (success) ... this means 1. the database
-                        already existed, and 2. we have not requested to
+                        is NOT new, AND 2. we have not requested to
                         open a version greater than the present version`)
+
+                    this.#init.db(this.#idbopendbrequest.result)
 
                     this.#continuations.resolve.construction(`MinDB :
                     construction complete : via
                     IDBOpenDBRequest.onsuccess`)
-                } 
-                if (!this.#quiet) console.log( `MinDB :
-                    IDBOpenDBRequest.onsuccess : was falsy : reassigned
-                    in MinDB.constructor`)
+                }
+            })
+            this.#util.ensureHandling(this.#idbopendbrequest, {
+                eventName:'upgradeneeded',
+                arrowAfter:_=>{
+                    console.log(`MinDB : IDBOpenDBRequest :
+                        heard (upgradeneeded) ... this means 1. the database
+                        is new, OR 2. we have not requested to
+                        open a version greater than the present version`)
 
-            }
-            if (!this.#idbopendbrequest.onupgradeneeded) {
-                this.#idbopendbrequest.onupgradeneeded =e=>
-                {
                     this.#init.db(this.#idbopendbrequest.result)
-
-                    console.log(`MinDB : ${_dbname} : IDBOpenDBRequest :
-                        heard (upgradeneeded)`)
 
                     this.#continuations.resolve.construction(`MinDB :
                     construction complete : via
                     IDBOpenDBRequest.onupgradeneeded`)
-                } 
-                if (!this.#quiet) console.log( `MinDB :
-                    IDBOpenDBRequest.onupgradeneeded : was falsy :
-                    reassigned in MinDB.constructor`)
-            }
-        } catch (e) { this.#continuations.reject(e) }
+                }
+            })
+        } catch (e) { this.#continuations.reject.construction(e) }
 
     } // constructor
 
     close()
     {
-        /*  IDBDatbase.close() */
+        this.#idbdatabase.close()
     }
 
     /*
@@ -309,7 +308,7 @@ class MinDB {
         (async _=> {
             await this.#promises.construction
             return {
-                quiet : this.#quiet,
+                verbosity : this.#verbosity,
                 promises : this.#promises,
                 IDBDatabase : this.#idbdatabase
             }
@@ -322,7 +321,12 @@ class MinDB {
     }
 
 }
-const mindb = new MinDB('dbx');
+const mindb = new MinDB('dbx', {
+    //verbosity: 3
+})
+
+//console.log(mindb)
+
 //mindb.expose().then(a=>console.log(a))
 
 /***********Initial Tests Below; Current Tests Above ************/
@@ -369,164 +373,6 @@ nukeDBs:
         })()
 }
 
-makeDBAndOS: 
-{ 
-    makeDBAndOSPromise = (async _=>
-        {
-            await nukeDBsPromise
-            const dbName = newDBName
-
-            let continuation 
-            const clauses = new Promise((resolve,reject)=>{
-                continuation = resolve
-
-                /* Er, we can worry about reject() later */
-            })
-
-            const odbr = iDBOpenDBRequest = Object.assign (
-                await window.indexedDB.open(dbName),
-                {
-                    onblocked: _=>console.log(
-                        'makeDBAndOS : open : db name : ', dbName, 
-                        ' : IDBOpenDBRequest (blocked)'),
-                    onupgradeneeded: _=>{
-
-                        const osName = newOSName
-                        let db, 
-                            os, 
-                            t, iDBTransaction
-
-                        /*  ONLY chance to get the IDBDatabase object,
-                         *  without re-open()-ing a connection. 
-                         */
-                        if (!iDBDatabase) {
-                            db = iDBDatabase = odbr.result
-
-                            db.onclose =_=> console.log(
-                                'makeDBAndOS : IDBDatabase : (close)'
-                            )
-                            db.onversionchange =_=>
-                                console.log(
-                                    'makeDBAndOS : IDBDatabase : (versionchange)'
-                                )
-
-
-                            console.log(
-                                'makeDBAndOS : open : db name : ', odbr,
-                                db.name, ' : IDBOpenDBRequest (upgradeneeded)')
-                        }
-
-                        /* transaction */
-                        t = iDBTransaction = Object.assign(
-                            odbr.transaction, {
-                                onabort:_=>console.log( 
-                                    'makeDBAndOS : open : db name : ', 
-                                    dbName, ' : IDBTransaction (abort)'
-                                ),
-                                oncomplete:_=>{
-                                    console.log( 
-                                        'makeDBAndOS : open : db name : ', 
-                                        dbName, ' : db version ',
-                                        db.version,' : IDBTransaction (complete)'
-                                    )
-                                },
-                                onerror:_=>console.log( 
-                                    'makeDBAndOS : open : db name : ', 
-                                    dbName, ' : IDBTransaction (error)'
-                                ),
-                                onsuccess:_=>console.log( 
-                                    'makeDBAndOS : open : db name : ', 
-                                    dbName, ' : IDBTransaction (success)'
-                                )
-
-                            })
-
-                        /*  ONLY chance to call createObjectStore() and
-                         *  deleteObjectStore() on the IDBDatabase
-                         *  object, without re-open()-ing a connection.
-                         */
-                        /*
-                        os = iDBObjectStore = db.createObjectStore(osName)
-                        console.log(
-                            'makeDBAndOS : createObjectStore : os name : ',
-                            os.name, ' : IDBOpenDBRequest (upgradeneeded)')
-
-                        console.log( 
-                            'makeDBAndOS : IDBOpenDBRequest (upgradeneeded) : exiting'
-                        )
-                         */
-                        continuation({ odbr:odbr, db:db, os:os })
-                    },
-                    onerror: _=>console.log(
-                        'makeDBAndOS : open : db name : ', dbName, 
-                        ' : IDBOpenDBRequest (error)', odbr.error ),
-                    onsuccess: e=>{
-
-                        let db
-
-                        /*  ONLY chance to get the IDBDatabase object,
-                         *  without re-open()-ing a connection. 
-                         *
-                         *  TODO :  check redundancy with
-                         *          onupgradeneeded() and move to DRY
-                         *          function
-                         */
-                        if (!iDBDatabase) {
-                            db = iDBDatabase = odbr.result 
-                            console.log(
-                                'makeDBAndOS : open : db name : ',
-                                db.name, ' : IDBOpenDBRequest (success)' )
-                            continuation({ odbr:odbr, db:db, e:e })
-                        }
-                    }
-                }
-            )
-            return clauses 
-            /* for now, clauses can be anything */
-        })()
-}
-
-doMoreWithOS: 
-{
-    doMoreWithOS = (async _=> 
-        {
-            await makeDBAndOSPromise
-            /*
-            const db = iDBDatabase
-            const os = iDBObjectStore
-            const t = os.transaction 
-
-            const iDBRequest = os.add('value1','key1')
-            iDBRequest.onsuccess = _=>console.log(
-                'doMoreWithOS : add : os name : ', os.name, 
-                ' : IDBRequest (success)'
-            )
-            console.log(
-                'doMoreWithOS : exiting'
-            )
-             */
-
-        })()
-}
-
-end:
-{
-    (async _=>{
-        await doMoreWithOS
-        const db = iDBDatabase
-        /*
-        const dbName = newDBName 
-
-        console.log('end : db name : ', db.name, ' : db version : ',
-            db.version)
-         */
-        db.close()
-
-        //const t = db.(newOSName) // TODO : reattach all handlers
-        //odbr.onsuccess =_=> console.log('end : reopened db : (success)')
-
-    })()
-}
         </script>
     </body>
 </html>

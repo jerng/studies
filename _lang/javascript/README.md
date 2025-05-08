@@ -3,6 +3,28 @@
 What it says.
 
 # Promises
+( 2025-05-08 study )
+
+Ah, this is pretty cool ... so as of 2024 the continuation passing style
+is native.
+```javascript
+    
+    // like so
+    { promise, resolveContinuation, rejectContinuation } = new
+    Promise.withResolvers()
+
+    // like so
+    continuations = {
+        concern1: new Promise.withResolvers(),
+        concern2: new Promise.withResolvers()
+    }
+
+    // code will jump to here 
+    (async _=> await continuations.concern1.promise)()
+
+    // code will jump from here 
+    continuations.concern1.resolve() 
+```
 ( 2025-05-06 study )
 JavaScript has a `Promise` class, representing technical debt. The general
 form of which is :
