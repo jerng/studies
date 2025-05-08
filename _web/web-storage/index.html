@@ -169,39 +169,27 @@
  *
  */
 
-class MinDB {
-
-    /*
-     *  Variable Naming Conventions
-     *      : lower case, for external class names, e.g. idbfactory
-     *      : camelCase, for most other things
-     *      : snake_case, unassigned
-     */
-
+/**
+ * Variable Naming Conventions
+ *     : lower case, for external class names, e.g. idbfactory
+ *     : camelCase, for most other things
+ *     : snake_case, unassigned
+ */
+class DBC {
 
     #verbosity /* 0:none, 1:production, 2:development, 3:excessive */
 
     #idbopendbrequest
     #idbdatabase
+    #idbdatabase_version
 
     #continuations = {
-        resolve : {
-            construction : null 
-        },
-        reject : {
-            construction : null 
-        }
+        construction: Promise.withResolvers()
     }
 
-    #promises = {
-        construction : new Promise((resolve,reject) => {
-            this.#continuations.resolve.construction = resolve
-            this.#continuations.reject.construction = reject
-        }) 
+    #log(_level, _loggable){
+        _level <= this.#verbosity ? console.log(_loggable) : undefined
     }
-
-    #log = a => console.log(a)
-
     #util = {
         ensureHandling : (iDBTarget, options) => 
         {
@@ -215,15 +203,16 @@ class MinDB {
                 {
                     if ( arrowBefore ) arrowBefore(iDBTarget)
 
-                    console.log(`MinDB :
-                        ${iDBTarget.constructor.name} heard (${eventName})`)
+                    this.#log(2, `DBC : ${iDBTarget.constructor.name}
+                        heard (${eventName})`)
+                    this.#log(1, event.target?.error)
 
                     if ( arrowAfter ) arrowAfter(iDBTarget)
                 }
 
-                this.#verbosity < 3 ? undefined : this.#log(`MinDB :
-                        ${iDBTarget.constructor.name}.${handlerName} was
-                        falsy : reasigned in MinDB.#util.ensureHandling`)
+                this.#log(3, `DBC :
+                    ${iDBTarget.constructor.name}.${handlerName} was
+                    falsy : reasigned in DBC.#util.ensureHandling`)
             }
         }
     }
@@ -247,10 +236,11 @@ class MinDB {
         }, _options)
         
         this.#verbosity = options.verbosity
+        this.#idbdatabase_version = options.version
 
         if (!_dbname) 
-            this.#continuations.reject.construction(
-                `MinDB : constructor : dbname not specified`)
+            this.#continuations.construction.reject(
+                `DBC : constructor : dbname not specified`)
 
         try {
             this.#idbopendbrequest = window.indexedDB.open(_dbname)
@@ -262,14 +252,14 @@ class MinDB {
             this.#util.ensureHandling(this.#idbopendbrequest, {
                 eventName:'success',
                 arrowAfter:_=>{
-                    console.log(`MinDB : IDBOpenDBRequest :
+                    this.#log(2,`DBC : IDBOpenDBRequest :
                         heard (success) ... this means 1. the database
                         is NOT new, AND 2. we have not requested to
                         open a version greater than the present version`)
 
                     this.#init.db(this.#idbopendbrequest.result)
 
-                    this.#continuations.resolve.construction(`MinDB :
+                    this.#continuations.construction.resolve(`DBC :
                     construction complete : via
                     IDBOpenDBRequest.onsuccess`)
                 }
@@ -277,57 +267,67 @@ class MinDB {
             this.#util.ensureHandling(this.#idbopendbrequest, {
                 eventName:'upgradeneeded',
                 arrowAfter:_=>{
-                    console.log(`MinDB : IDBOpenDBRequest :
+                    this.#log(2,`DBC : IDBOpenDBRequest :
                         heard (upgradeneeded) ... this means 1. the database
                         is new, OR 2. we have not requested to
                         open a version greater than the present version`)
 
                     this.#init.db(this.#idbopendbrequest.result)
 
-                    this.#continuations.resolve.construction(`MinDB :
+                    this.#continuations.construction.resolve(`DBC :
                     construction complete : via
                     IDBOpenDBRequest.onupgradeneeded`)
                 }
             })
-        } catch (e) { this.#continuations.reject.construction(e) }
-
+        } catch (e) { this.#continuations.construction.reject(e) }
+        
+        return this
     } // constructor
+
+    /**
+     * Destructor : TODO : think about what needs doing
+     */
 
     close()
     {
-        this.#idbdatabase.close()
+        return (async _=> 
+            {
+                await this.#continuations.construction.promise
+                this.#idbdatabase.close()
+            })()
     }
 
-    /*
-     *  const mindb = new MinDB('dbx');
-     *  mindb.expose().then(a=>console.log(a))
+    /**
+     * const dbc = new DBC('dbx');
+     * dbc.expose().then(a=>console.log(a))
      */
 
     expose()
     {
-        (async _=> {
-            await this.#promises.construction
-            return {
-                verbosity : this.#verbosity,
-                promises : this.#promises,
-                IDBDatabase : this.#idbdatabase
-            }
-        })()
+        return (async _=> 
+            {
+                await this.#continuations.construction.promise
+                return {
+                    verbosity : this.#verbosity,
+                    continuations : this.#continuations,
+                    IDBDatabase : this.#idbdatabase
+                }
+            })()
     }
 
     static help()
     {
-        /*  console.log() */
+        /*  this.#log */
     }
 
 }
-const mindb = new MinDB('dbx', {
+const dbc = new DBC('dbx', {
     //verbosity: 3
 })
+.close()
 
-//console.log(mindb)
 
-//mindb.expose().then(a=>console.log(a))
+//dbc.expose().then(a=>console.log(a))
 
 /***********Initial Tests Below; Current Tests Above ************/
 
