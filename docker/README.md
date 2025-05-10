@@ -3,7 +3,7 @@
 `adocker` is a `dash`/`sh` script : other-`sh` users, beware.
 
 ### A successful example 
-```console
+```
 adocker find-dependent-images alpine
 
 adocker : [ alpine ] : searching for TAGS of this [ parent IMAGE ]
