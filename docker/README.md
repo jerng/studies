@@ -1,4 +1,4 @@
-#`adocker` is a `docker` assistant
+# `adocker` is a `docker` assistant
 
 `adocker` is a `dash`/`sh` script : other-`sh` users, beware.
 
