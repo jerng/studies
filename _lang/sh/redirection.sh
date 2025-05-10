@@ -61,7 +61,9 @@ what is pointed to by, 1, in the PER-PROCESS file descriptor table.\"\n"
 https://stackoverflow.com/questions/5129276/how-to-redirect-stdout-of-2nd-process-back-to-stdin-of-1st-process
 
 <<HERE
-The kernel manages a bunch of look-up tables/maps.
+***
+* The kernel manages a bunch of look-up tables/maps.
+***
 
 A1.
 Block storage : raw file data
@@ -78,23 +80,174 @@ Block storage : inode table
 - symbolic links uncounted : pointers from A2. to <<nominal path>> (
   soft links )
 
-B.
+B1.
 Random access memory : system-wide OPEN FILE TABLE table :
 - NAMES of all open files/d-entries, in memory
 - directory entry types include : regular files, directories, soft
   links, Unix sockets character and block devices, named pipes
 - current cursor position / file offset
 - access mode : read, write, readwrite
-- outgoing N-to-1 pointers to B to A2
-- incoming N-to-1 pointers from C to B
+- outgoing N-to-1 pointers to B1 to A2
+- incoming N-to-1 pointers from B2 to B1
 - etc.
 
-C.
-Per-process file descriptor table :
+B2.
+Random access memory : per-process file descriptor table :
 - keys  : integers : initially 0:STDIN, 1:STDOUT, 2:STDERR
-- values: outgoing pointers from C to B
+- values: outgoing pointers from B2 to B1
 
-Shell command language elements pertaining to the above :
+***
+* Shell command language elements pertaining to the above :
+***
 
+CONTEXT : when you use a CLI shell, there are at LEAST two types of
+processes going on which you need to know about : shell, and terminal.
+Terminal processes refer to the UI for all practical purposes; shell
+processes refer to environments which can attach and detach from the
+terminal process.
+
+A gross illustration ...
+-----------------------+-------------------+--------------------
+AT THE BEGINNING :     |Shell Process      |Terminal Process
+-----------------------+-------------------+--------------------
+Std Input              |File Descriptor 0  |File Descriptor 0
+                       |-> from Keyboard   |-> from Shell
+                       |                   |
+Std (Non-Error) Output |File Descriptor 1  |File Descriptor 1
+                       |-> to Terminal     |-> to Screen
+                       |                   |
+Std Error (Output)     |File Descriptor 2  |File Descriptor 2
+                       |-> to Terminal     |-> to Screen
+-----------------------+-------------------+--------------------
+
+Subsequently, COMMANDS run from the shell, runs in a new CHILD
+PROCESSES.
+    
+    SHELL/processA -> COMMAND/processB
+
+It is also common for shells to launch SUBSHELLS. E.g.,
+
+    SHELL/processA -> B ... C -> SHELL/D -> COMMAND/processE
+
+In each case ... still a gross illustration ...
+-----------------------+-------------------+--------------------
+                       |Parent Process     |Child Process
+-----------------------+-------------------+--------------------
+Std Input              |File Descriptor 0  |File Descriptor 0
+                       |-> from Grandparent|-> from Parent 
+                       |                   |
+Std (Non-Error) Output |File Descriptor 1  |File Descriptor 1
+                       |-> to Child        |-> to Parent 
+                       |                   |
+Std Error (Output)     |File Descriptor 2  |File Descriptor 2
+                       |-> to Child        |-> to Parent 
+-----------------------+-------------------+--------------------
+
+[INTEGER][OPERATOR][WORD]   is the general form of redirection
+                            expressions. [INTEGER] refers to an entity
+                            from B2, and if OMITTED from the expression,
+                            may be ASSUMED to be a conventional value.
+
+** Where [WORD] is a token, without reference to entities : 
+
+<<WORD          Make WORD the value of FD0/STDIN ( unless specified by
+here-document   INTEGER )of the SHELL's process, for the CURRENT COMMAND
+WORD            LINE.
+
+0<<WORD         (here-document) begins AFTER the NEWLINE, and ends
+here-document   BEFORE the sequence, NEWLINE-WORD.
+WORD         
+
+COMMAND1 <<WORD1; COMMAND2 <<WORD2      This example demonstrates
+here-document1                          how multiple 
+WORD1                                   (here-document) expressions
+here-document2                          can be interleaved.
+WORD2
+
+COMMAND1 0<<WORD1; COMMAND2 0<<WORD2  
+here-document1                        
+WORD1                                 
+here-document2                        
+WORD2
+
+    <<-WORD                             A variety of where leading 
+    here-document                       TAB characters are stripped 
+    WORD                                from the input lines and the
+                                        linecontaining the trailing 
+    0<<-WORD                            delimiter.
+    here-document
+    WORD         
+
+** Where [WORD] is an entity from B1 ( SYSTEM-WIDE open files ) : 
+
+<WORD           Make WORD the value of FD0/STDIN ( unless specified by
+0<WORD          INTEGER ) of the SHELL's process, for the CURRENT COMMAND
+                LINE.
+
+>WORD           Make WORD the value of FD1/STDOUT ( unless specified by 
+1>WORD          INTEGER ) of the SHELL's process, for the CURRENT COMMAND
+                LINE.
+            
+                Beware race conditions, from multiple writers.
+                This completely overwrites WORD.
+                The "noclobber" option prevents overwriting by accident.
+
+    >|WORD      MORE dangerous version of >WORD. Always overwrites 
+    1>|WORD     WORD. Ignores any "noclobber" configurations.
+
+    >>WORD      LESS dangerous version of >WORD. Appends data, 
+    1>>WORD     instead of overwriting any existing WORD.
+
+<>WORD          Make WORD open for both reading and writing on
+0<>WORD         FD0/STDIN ( unless specified by INTEGER ) of the
+                SHELL's process, for the CURRENT COMMAND LINE.
+
+                Very limited documentation on this. Apparently the
+                access mode for readwrite is set in the SYSTEM-WIDE open
+                file table, so it is not the case that two entries are
+                created in the PER-PROCESS file descriptor. Not clear.
+
+** Where [WORD] is an entity from B2 ( PER-PROCESS file descriptors ) or
+                the character '-' signifying ( reversible ) closure : 
+
+<&WORD          Make FD0/STDIN ( unless specified by INTEGER ), a copy
+0<&WORD         of WORD. Anything READ FROM RIGHT will be subsequently
+                READ FROM LEFT.
+
+    <&-         Close FD0/STDIN ( unless specified by INTEGER ).
+    0<&-
+
+>&WORD          Make FD1/STDOUT ( unless specified by INTEGER ), a copy
+1>&WORD         of WORD. Anything WRITTEN TO RIGHT will be subsequently
+                WRITTEN TO LEFT.
+
+    >&-         Close FD1/STDOUT ( unless specified by INTEGER ).
+    0>&-
 
 HERE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
