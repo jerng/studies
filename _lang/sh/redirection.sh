@@ -207,6 +207,10 @@ WORD2
                 file table, so it is not the case that two entries are
                 created in the PER-PROCESS file descriptor. Not clear.
 
+                See mode "a+", "r+", "w+" in C's fopen(). "a+ in which
+                case is "read and append", where writes always occur at
+                the end of the file.
+
 ** Where [WORD] is an entity from B2 ( PER-PROCESS file descriptors ) or
                 the character '-' signifying ( reversible ) closure : 
 
