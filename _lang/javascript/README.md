@@ -26,26 +26,41 @@ a( object.method, options )( arg1, arg2 )
 // argument layout in the visible code
 ```
 # Promises
-( 2025-05-08 study )
+( 2025-05-(08,12) study )
 
 Ah, this is pretty cool ... so as of 2024 the continuation passing style
 is native.
 ```javascript
     
     // like so
-    { promise, resolveContinuation, rejectContinuation } = Promise.withResolvers()
+    const { promise, resolveContinuation, rejectContinuation } = Promise.withResolvers()
 
     // like so
-    continuations = {
+    const continuations = {
+
+        // this is all that needs doing
         concern1: Promise.withResolvers(),
-        concern2: Promise.withResolvers()
+
+        // anchor
+        concern2: {}
     }
 
+    // hoist : this is additional boilerplate avoided by (concern1)'s syntax
+    continuations.concern2.promise = await (async _=>{ 
+        continuations.concern2.resolve = a=>a,
+        continuations.concern2.reject = a=>{throw a}
+    })();
+
     // code will jump to here 
-    (async _=> await continuations.concern1.promise)()
+    (async _=> {
+        await continuations.concern1.promise
+        await continuations.concern2.promise
+        console.log('all promises resolved')
+    })()
 
     // code will jump from here 
     continuations.concern1.resolve() 
+    continuations.concern2.resolve() 
 ```
 ( 2025-05-06 study )
 JavaScript has a `Promise` class, representing technical debt. The general
