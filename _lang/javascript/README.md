@@ -61,10 +61,10 @@ a( object.method, options )( arg1, arg2 )
 a = function * (){}
 
 
-a.prototype                             // BB : Generator < Iterator
+a.prototype                             // BB : Generator < Iterator < Function
 a.prototype.prototype                   //    : undefined
 a.prototype.constructor                 // AA : GeneratorFunction < Function 
-a.prototype.constructor.prototype       // DD : Generator < Iterator
+a.prototype.constructor.prototype       // DD : Generator < Iterator < Function
 a.prototype.constructor.constructor     // CC : GeneratorFunction < Function
 
 a.constructor                           // CC 
@@ -104,7 +104,94 @@ b.constructor                           // AA
 
 Object.getPrototypeOf(b)                // BB 
 
+Theory : 
 
+-   [ECMAScript Standard Built-inObjects](https://tc39.es/ecma262/multipage/ecmascript-standard-built-in-objects.html#sec-ecmascript-standard-built-in-objects) is a good place to start.
+
+    Built-in **Function object** : a built-in object that is **callable** as a
+    function, see
+    [10.3.](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-built-in-function-objects).
+
+        Built-in **function objects** which are not built-in
+        **constructors**, do not have **function object.[[Construct]]**
+        but will have **function object.[[Call]]**, and do not have **
+        function object.[[Prototype]]**, unless further specified.
+
+    Built-in **Constructors** : are built-in **function objects** that are used
+    with the `new` operator.
+
+    Built-in **Prototype objects** : belong to built-in
+    **constructors**; unless specified, each built-in
+    **constructor.[[Prototype]]** = `Function.prototype`; unless
+    specified, each built-in **prototype object.[[Prototype]]** =
+    `Object.prototype`
+
+-   `Object` is the `object constructor`; when called, as a
+    **constructor** it creates a new ordinary object, otherwise it
+    performs a type conversion; `object constructor.[[Prototype]]` =
+    `Function.prototype`
+
+        `Object.prototype` is an "immutable prototype exotic object",
+        such that `Object.prototype` will not change after
+        initialisation ; where "exotic objects" are defined as "not
+        ordinary objects",and "ordinary objects" are defined in detail
+        in the specification.
+
+        Initially, `Object.prototype.constructor`=`Object`
+
+-   The `Function constructor` is a built-in **function object**;
+    `Function constructor.[[Prototype]]` = `Function.prototype`
+
+    `Function.prototype` is a built-in **function object**; it does not
+    have `Function.prototype.[[Construct]]` and therefore cannot be used
+    with the `new` operator; `Function.prototype.[[Prototype]]` =
+    `Object.prototype`.
+
+-   The `Iterator constructor` is an abstract superclass; as it is
+    defined to to be abstract, `new Iterator()` cannot create objects;
+    only the subclasses of `Iterator` can.
+
+    `Iterator constructor.[[Prototype]]` = `Function.prototype`
+
+    `Iterator.prototype.[[Prototype]]` = `Object.prototype`
+
+    `Iterator.prototype.constructor` returns `Iterator`.
+
+-   The `GeneratorFunction constructor` = `GeneratorFunction` is a
+    subclass of `Function`, inheriting from the `Function constructor`;
+    creates and initialises a new `GeneratorFunction` when called as a
+    function, not as a constructor; this is QUIRKY but idiomatic; it is
+    a built-in **function object**; 
+
+    `GeneratorFunction constructor.[[Prototype]]` = `Function`
+
+    `GeneratorFunction.prototype` is NOT a **function object**;
+    `GeneratorFunction.prototype.[[Prototype]]` = `Function.prototype`
+
+    `GeneratorFunction.prototype.constructor` = `GeneratorFunction`
+
+    `GeneratorFunction.prototype.prototype`
+
+    RATHER UNCONVENTIONALLY, creating a `GeneratorFunction` instance
+    creates TWO NEW OBJECTS, NOT ONE, because the
+    `GeneratorFunction.prototype` is assigned a NEW object; FURTHERMORE,
+    UNCONVENTIONALLY the new object assigned to
+    `GeneratorFunction.prototype` is not an instance of
+    `GeneratorFunction`, but an instance of `Generator`; this instance
+    of `Generator` is then used to initialise the
+    `Generator.[[Prototype]]` which is returned when the
+    `GeneratorFunction` is called : 
+
+-   `Generator` subclasses `Iterator`; `Generator` instances are
+    constructed NOT by the `Generator` class, but by the
+    `GeneratorFunction` class; WHY this is specified, remains a mystery;
+    so, a `Generator` instance's `.prototype` is its creator
+    `GeneratorFunction`'s `.prototype`; 
+
+    CHECK TO SEE where
+    `GeneratorFunction`s inherit from an entity called
+    %GeneratorPrototype% === %Generatorfunction.prototype.prototype%,
+    which is not a `Generator` instance; 
 ```
 
 -   `async function * (){}` creates an object
