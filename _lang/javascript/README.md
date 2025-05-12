@@ -3,7 +3,8 @@
 What it says.
 
 # Helpers : a transparent syntax convention
-( 2025-05-08 )
+
+###### ( 2025-05-08 )
 
 Ah, IndexedDB, spaghetti API. Drafted one framework. Parked it. Found a
 nicer idiom. Web is complicated so we should not make it more
@@ -26,7 +27,7 @@ a( object.method, options )( arg1, arg2 )
 // argument layout in the visible code
 ```
 # Promises
-( 2025-05-(08,12) study )
+###### ( 2025-05-(08,12) )
 
 `async` just automates ( makes explit, into implicit ) 
 
@@ -86,7 +87,9 @@ continuations.concern2.promise = new Promise((resolve, reject)=>{
 continuations.concern1.resolve() 
 continuations.concern2.resolve() 
 ```
-( 2025-05-06 study )
+
+###### ( 2025-05-06 )
+
 JavaScript has a `Promise` class, representing technical debt. The general
 form of which is :
 ```javascript
