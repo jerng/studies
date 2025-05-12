@@ -99,12 +99,11 @@ OK          - whose constructor         is CC : a GeneratorFunction constructor 
 b = a()
 
 b.prototype                             // undefined
-
 b.constructor                           // AA 
-
 Object.getPrototypeOf(b)                // BB 
+```
 
-Theory : 
+### Theory : 
 
 -   [ECMAScript Standard Built-inObjects](https://tc39.es/ecma262/multipage/ecmascript-standard-built-in-objects.html#sec-ecmascript-standard-built-in-objects) is a good place to start.
 
@@ -192,7 +191,7 @@ Theory :
     `GeneratorFunction`s inherit from an entity called
     %GeneratorPrototype% === %Generatorfunction.prototype.prototype%,
     which is not a `Generator` instance; 
-```
+
 
 -   `async function * (){}` creates an object
 
