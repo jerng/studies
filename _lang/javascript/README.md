@@ -28,39 +28,63 @@ a( object.method, options )( arg1, arg2 )
 # Promises
 ( 2025-05-(08,12) study )
 
-Ah, this is pretty cool ... so as of 2024 the continuation passing style
-is native.
+`async` just automates ( makes explit, into implicit ) 
+
+1.  the wrapping of a 'normal' synchronous function in a `new Promise`
+2.  the firing of the `resolve()` or `reject()` handlers, which were
+    passed as arguments to : the anonymous function which is the first
+    argument of `new Promise`.
+
 ```javascript
-    
-    // like so
-    const { promise, resolveContinuation, rejectContinuation } = Promise.withResolvers()
+// this :
+a = ( async _=> 0 )()
 
-    // like so
-    const continuations = {
+// ... is roughly, the same as this :
+b = new Promise ( 
+        (resolve, reject) => { try { resolve(0) } catch (error) { reject(error) } } 
+        )
+```
+Because this is by definition what `await`/`async` does, there's no way
+to extract the `resolve()` or `reject()` handles from an `async`
+function.
 
-        // this is all that needs doing
-        concern1: Promise.withResolvers(),
+### Promises : continuation passing style / CPS
 
-        // anchor
-        concern2: {}
-    }
+And now, this is pretty cool ... as of 2024, the native syntax
+simplifies usage of continuation passing style.
 
-    // hoist : this is additional boilerplate avoided by (concern1)'s syntax
-    continuations.concern2.promise = await (async _=>{ 
-        continuations.concern2.resolve = a=>a,
-        continuations.concern2.reject = a=>{throw a}
-    })();
+```javascript 
+// like so
+const { promise, resolveContinuation, rejectContinuation } = Promise.withResolvers()
+```
+Reduction of boilerplate :
+```javascript
+// like so
+const continuations = {
 
-    // code will jump to here 
-    (async _=> {
-        await continuations.concern1.promise
-        await continuations.concern2.promise
-        console.log('all promises resolved')
-    })()
+    // this is all that needs doing
+    concern1: Promise.withResolvers(),
 
-    // code will jump from here 
-    continuations.concern1.resolve() 
-    continuations.concern2.resolve() 
+    // anchor
+    concern2: {}
+}
+
+// hoist : this is additional boilerplate avoided by (concern1)'s syntax
+continuations.concern2.promise = new Promise((resolve, reject)=>{
+    continuations.concern2.resolve = resolve
+    continuations.concern2.reject = reject
+    });
+
+// code will jump to here 
+(async _=> {
+    await continuations.concern1.promise
+    await continuations.concern2.promise
+    console.log('all promises resolved')
+})()
+
+// code will jump from here 
+continuations.concern1.resolve() 
+continuations.concern2.resolve() 
 ```
 ( 2025-05-06 study )
 JavaScript has a `Promise` class, representing technical debt. The general
