@@ -33,8 +33,8 @@ a( object.method, options )( arg1, arg2 )
 
 1.  the wrapping of a 'normal' synchronous function in a `new Promise`
 2.  the firing of the `resolve()` or `reject()` handlers, which were
-    passed as arguments to : the anonymous function which is the first
-    argument of `new Promise`.
+    passed as arguments to : the executor ( 2-arity anonymous function ) 
+    which is the first argument of `new Promise`.
 
 ```javascript
 // this :
