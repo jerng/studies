@@ -3,71 +3,72 @@
 # This script attempts to find local docker images dependent on imageA,
 # by checking all local image histories to see if any contain the final
 # layer of imageA.
-
+#
+# TODO : actually comprehend the Go Template syntax
+#
+# Many thanks for their advice on my improvement, to 
+# : 2025-05-14 : https://www.reddit.com/user/BetterScripts/
+#
+# Init.
+# : 2025-05
+#
 noprefix="          "
-  prefix="adocker : "
-     try="Try : 'adocker find-dependent-images [TAG or SHA]'"
+prefix="adocker : "
+try="Try : 'adocker find-dependent-images [TAG or SHA]'"
+tags=""
+indented_tags=""
+needle=""
 
-     printf "\n$prefix""written for (sh), not (bash)\n"
+printf "\n${prefix}written for (sh), not (bash)\n"
 
-if [ "$1" != "find-dependent-images" ];
+if [ "$1" != "find-dependent-images" ]
 then 
-    printf "$prefix""did not understand \$1 (this shell script's argument 1)\n\n"
+    printf "%sdid not understand \$1 (this shell script's argument 1)\n\n" "$prefix"
     printf "$try\n"
 else
 
-    if [ "a$2" = "a" ]; 
+    if [ "a" = "a$2" ] 
     then 
-        printf "%s\n" \
-            "$prefix""find-dependent-images : did not understand \$2 " \
-            "$noprefix( this shell script's argument 2 )" \
-            "" \
-            "$try" 
-        exit 
+        printf "%sfind-dependent-images : did not understand \$2\n" "$prefix"
+        printf "%s( this shell script's argument 2 )\n\n%s" "$prefix" "$try"
+        exit 1 
     fi
 
-    printf "$prefix""[ $2 ] : searching for TAGS of this [ parent IMAGE ]\n\n"
+    printf "%s[ $2 ] : searching for TAGS of this [ parent IMAGE ]\n\n" "$prefix"
 
-    if ! inspection=$(sudo docker image inspect $2 -f \
-        '{{range .RepoTags}}{{.}}{{"\n"}}{{end}}');
+    if ! tags=$(docker image inspect "$2" -f \
+        '{{range .RepoTags}}{{.}}{{"\n"}}{{end}}')
     then 
-        printf "$prefix""found none  \n\n" 
-        exit;
+        printf "%sfound none  \n\n" "$prefix"
+        exit 1
     else
-        printf "$prefix""found ...  \n\n$(echo $inspection \
-            | sed "s/^/$noprefix/g" )\n\n" 
+        indented_tags=$(printf "%s" "$tags" | sed "s/^/$noprefix/g")
+        printf "%sfound ...  \n\n%s\n\n" "$prefix" "$indented_tags"
     fi
 
-    printf "$prefix""searching for dependent IMAGES of [ parent IMAGE ]\n"
-    needle=$( sudo docker image inspect $2 -f \
-        '{{range .RootFS.Layers}}{{.}}{{"\n"}}{{end}}' \
-        | tac \
-        | grep -E -m 1 . \
+    printf "%ssearching for [ dependent IMAGES ] of [ parent IMAGE ]\n\n" "$prefix"
+    needle=$( docker image inspect "$2" -f \
+        '{{range .RootFS.Layers}}{{.}}{{"\n"}}{{end}}'\
+        | grep -v '^$' \
+        | tail -n 1 \
         | sed 's/sha256://g' \
     )
-        printf "$prefix""found ... [ parent IMAGE's ] final LAYER (sha256) ...\n\n"
-        printf "$noprefix$needle\n\n"
-        printf "$prefix""... in the history of the following IMAGES ...\n"
+    printf "%sfound ... [ parent IMAGE's ] final LAYER (sha256) ...\n\n" "$prefix"
+    printf "%s%s\n\n" "$noprefix" "$needle"
+    printf "%s... in the history of the following IMAGES ...\n\n" "$prefix"
 
-        sudo docker images -q \
-            | xargs -d "\n" sh -c '
-
-        export results=""
-        for arg
+    docker images -q | \
+        while read -r line
         do 
-            haystack=$(sudo docker image inspect $arg \
-                -f '\''{{range .RootFS.Layers}}{{.}}{{"\n"}}{{end}}'\'')
-
-            if ( echo "$haystack" | grep -q '$needle' );
-            then
-                export results=$results$(\
-                    sudo docker image inspect $arg\
-                    -f '\''{{range .RepoTags}}{{.}}{{"XDELIMITER"}}{{end}}'\'')
-            fi
-        done
-        echo $results \
-            | sed "s/XDELIMITER/\n/g" \
-            | sed "s/^/'"$noprefix"'/g" \
-            | sort \
-            | uniq '
+        if $(docker image inspect "$line" \
+            -f '{{range .RootFS.Layers}}{{.}}{{"\n"}}{{end}}' \
+            | grep -q "$needle" \
+        )
+        then
+            printf "%s\n" $(docker image inspect "$line"\
+                -f '{{range .RepoTags}}{{.}}{{"\n"}}{{end}}' )
+        fi
+        done \
+        | sort -u \
+        | sed "s/^/$noprefix/g"
 fi
