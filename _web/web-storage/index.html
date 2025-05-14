@@ -351,72 +351,57 @@ const dbc = new DBC('dbx', {
 
 */
 
+
+//let a = new IDBAssistant() 
+
+/* optionally assign to property of an
+object, such as (window) instead
+*/
+
+
 class IDBAssistant
 {
+    #verbosity=2 /* 0:none, 1:production, 2:development, 3:excessive */
 
-    #assistantEntity
-    #assistantOptions
+    #IDBFactory
 
-    constructor(options)
+    constructor(idbfactory, options)
     {
-        return this.#assistant.bind(this)
-    }
+        if ( ! ( idbfactory instanceof IDBFactory ) ) 
+            throw 'IDBAssistant : argument1 must be an instance of IDBFactory'
 
-    #runAssisted()
-    {
-        console.log(`here we should try to run the function :
-        ${this.#assistantEntity}
-            with the arguments : `, arguments )
-    }
+        this.#IDBFactory = idbfactory
 
-    #identityEntity()
-    {
-        /* identify an object, its method, its native parameters, the
-        assistantOptions, and the final operation upon the method and
-        any objects it returns */
-    }
+        /* TODO : integer & range check */
+        this.#verbosity = options?.verbosity ?? this.#verbosity
 
-    #assistant(entity, options)
-    {
-        let name
-
-        switch (typeof entity)
-        {
-            case `object`:
-                console.log(`found an object`)
-                switch (entity.constructor.name)
-                {
-                    case `IDBFactory`:
-                        console.log(`found an instance of IDBFactory`)
-                        break
-                    default:
-                        console.log(`unidentified object`)
-                }
-                break
-            case `function`:
-                console.log(`found a function`)
-                switch (entity.name)
-                {
-                    case `open`:
-                        console.log(`it is named (open)`)
-                        break
-                    default:
-                        console.log(`unidentified function`)
-                }
-                break
-            default:
-                console.log(`sorry, only IDB API objects and functions
-                    are supported`)
+        /* TODO : syntax 
+            : if(!idbfactory) assign instead of return  
+            : if(already assigned) THROW
+            */
+        /* TODO : syntax : alt 
+            : a(somefunction)(arguments)
+            : must check that somefunction === known global.fn
+        /* TODO : a : Object.defineProperty writable false */
+        return { a: {
+            cmp: function(){},
+            databases: function(){},
+            deleteDatabase: _=>function(){},
+            open: function(){
+                return indexedDB.open.apply(indexedDB,arguments)
+            }
         }
-        this.#assistantEntity = entity
-        return this.#runAssisted.bind(this) 
+        }
+
     }
 
-
+    /* TODO : destructor() */
 }
 
-let a = new IDBAssistant()
-a(indexedDB.open)('arg1','arg2')
+const idb = new IDBAssistant(window.indexedDB) 
+
+console.log( idb.a.open('db') )
+
 
         </script>
     </body>
