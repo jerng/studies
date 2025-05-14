@@ -11,6 +11,7 @@
 #
 # Init.
 # : 2025-05
+# : 2025-05-14 : updated and passed shellcheck.net
 #
 noprefix="          "
 prefix="adocker : "
@@ -19,12 +20,12 @@ tags=""
 indented_tags=""
 needle=""
 
-printf "\n${prefix}written for (sh), not (bash)\n"
+printf "\n%swritten for (sh), not (bash)\n" "$prefix"
 
 if [ "$1" != "find-dependent-images" ]
 then 
     printf "%sdid not understand \$1 (this shell script's argument 1)\n\n" "$prefix"
-    printf "$try\n"
+    printf "%s\n" "$try"
 else
 
     if [ "a" = "a$2" ] 
@@ -60,13 +61,12 @@ else
     docker images -q | \
         while read -r line
         do 
-        if $(docker image inspect "$line" \
+        if docker image inspect "$line" \
             -f '{{range .RootFS.Layers}}{{.}}{{"\n"}}{{end}}' \
-            | grep -q "$needle" \
-        )
+            | grep -q "$needle"
         then
-            printf "%s\n" $(docker image inspect "$line"\
-                -f '{{range .RepoTags}}{{.}}{{"\n"}}{{end}}' )
+            printf "%s\n" "$(docker image inspect "$line" \
+                -f '{{range .RepoTags}}{{.}}{{"\n"}}{{end}}' )"
         fi
         done \
         | sort -u \
