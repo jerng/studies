@@ -1,0 +1,251 @@
+<html> <head> </head> <body> <script type="text/javascript">
+
+/*
+ *  
+ *  
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
+const l = console.log
+
+l(`hi`)
+
+class FifoMap
+{
+
+    /* TODO : check privacy : hide more etc. */
+    #store
+    #in_count=0
+
+    constructor()
+    {
+        /* using Map although bulkier, because Array operates slower 
+         * WARNING : limit is 2^24:16.7 Mitems
+         *
+         * TODO : test just using Array
+         *
+         * TODO : test Array for small sizes, then Map for large ones,
+         * like in Erlang ( small Map vs big Map implementation )
+         */
+        this.#store = new Map()
+        
+        /* TODO : set any undesirable methods to undefined */
+        
+    }
+
+    in(arg)
+    {
+        this.#store.set(this.#in_count++ /*return before ++*/, arg) 
+
+        /* TODO : bulk op */
+    }
+
+    out()
+    {
+        const next = this.#store.entries().next()
+        let value = null
+        if (! next.done) {
+            value = [next.value[1]]
+            this.#store.delete(next.value[0])
+        }
+        
+        /* TODO : bulk op */
+
+        return value
+    }
+
+    get size()
+    {
+        return this.#store.size
+    }
+
+    get total_in_count()
+    {
+        return this.#in_count
+    }
+}
+/* disallows insertion of undefined : allows all else */
+class FifoCarefulArray
+{
+
+    #store = []
+    #in_count = 0
+    #next_out_index = 0
+
+    constructor ()
+    {
+        this.#store.unshift = undefined
+        this.#store.pop = undefined
+
+    }
+
+    in(arg)
+    {
+        if (arg !== undefined) {
+            this.#store.push(arg)
+            this.#in_count++
+        }
+    }
+
+    out()
+    {
+        const value = this.#in_count == this.#next_out_index
+            ? null 
+            : [this.#store[this.#next_out_index]]
+        delete this.#store[this.#next_out_index++] /*return before ++*/
+        return value
+    }
+
+    get size()
+    {
+        const s = this.#in_count - this.#next_out_index
+        return s
+    }
+
+    get total_in_count()
+    {
+        return this.#in_count
+    }
+
+}
+
+/* - undefined cannot be in()ed
+ * - compaction of undefined/empty values upon compact_array_longer_than
+ */
+class FifoMoreCarefulArray
+{
+
+    #store = []
+    #in_count = 0
+    #next_out_index = 0
+
+    /* 2**24, 67M : approximate limit on chrome 2025-05-16 */
+    #compact_array_longer_than = 2**25 
+        // 33M
+    #compact_array_every = 2**23 
+        // try every 8M, when array is longer than 33M
+        // TODO: consider an "exponential back-on"
+    #total_in_count = 0
+
+    constructor ()
+    {
+        this.#store.unshift = undefined
+        this.#store.pop = undefined
+
+    }
+
+    in(arg)
+    {
+        // compaction
+        
+        /* TODO: map the loop, to reduce checking on every iteration */
+
+        if( (this.#store.length >= this.#compact_array_longer_than) 
+            && (this.#store.length % this.#compact_array_every === 0) ){
+
+            l(`compact_array_longer_than triggered: #in_count:${this.#in_count} #store.length:${this.#store.length} #next_out_index:${this.#next_out_index} #total_in_count:${this.#total_in_count}`) 
+
+            /* TODO: complex logic to line up newer arrays */
+
+            this.#store = this.#store.filter(a => a != undefined)
+            this.#in_count = this.#store.length
+            this.#next_out_index = 0
+
+            l(`adjusted: #in_count:${this.#in_count} #store.length:${this.#store.length} #next_out_index:${this.#next_out_index} #total_in_count:${this.#total_in_count}`) 
+
+        }
+
+        if (arg !== undefined) {
+            this.#store.push(arg)
+            this.#in_count++
+
+            /* TODO : this can be made less redundant */
+            this.#total_in_count++
+        }
+    }
+
+    out()
+    {
+        const value = this.#in_count == this.#next_out_index 
+            ? null 
+            : [this.#store[this.#next_out_index]]
+        delete this.#store[this.#next_out_index++] /*return before ++*/
+
+        return value
+    }
+
+    get size()
+    {
+        const s = this.#in_count - this.#next_out_index
+        return s
+    }
+
+    get total_in_count()
+    {
+        return this.#total_in_count
+    }
+
+}
+
+function test(f, countx, county, value)
+{
+    l(`*
+* START test: ${f.constructor.name}: value:${value}: ${countx} times: [${county/1000000}M times: in() and out()]`)
+    let t0,t1
+    try{
+        t0 = new Date 
+
+        for (let i=0;i<countx;i++) {
+            for (let i=0;i<county;i++) {
+                f.in(value)
+            }
+            for (let i=0;i<county;i++) {
+                f.out()
+            }
+        }
+    } catch (err) {
+        l(`ERROR: `,err)
+    } finally {
+        t1 = new Date 
+        l(`* END test: size: ${f.size/1000000}M: total_in_count: ${f.total_in_count/1000000}M: time elapsed: ${t1 - t0}ms: (~count/ms):${(f.total_in_count)/(t1-t0)}`)
+    }
+
+}
+
+/* Easy
+test(new FifoMap, 1, 2**12, 'a') 
+test(new FifoMap, 1, 2**14, 'a') 
+test(new FifoMap, 1, 2**16, 'a') 
+test(new FifoCarefulArray, 1, 2**12, 'a') 
+test(new FifoCarefulArray, 1, 2**14, 'a') 
+test(new FifoCarefulArray, 1, 2**16, 'a') 
+test(new FifoMoreCarefulArray, 1, 2**12, 'a') 
+test(new FifoMoreCarefulArray, 1, 2**14, 'a') 
+test(new FifoMoreCarefulArray, 1, 2**16, 'a') 
+test(new FifoCarefulArray, 1, 2**26, 'a') // pass
+//*/
+
+/* Limit is around 67M, while trying to do 134M
+test(new FifoCarefulArray, 1, 2**27, 'a') // necessary failure
+test(new FifoCarefulArray, 2, 2**26, 'a') 
+test(new FifoMoreCarefulArray, 1, 2**27, 'a') // necessary failure
+    // necessary failure : attempting ~134M inserts, while sizelimit is around 67M
+//*/
+
+//* Garbage collection succeeds if array is kept under 67M
+test(new FifoMoreCarefulArray, 2**7, 2**20, 'arbitrarily long string')
+    // this attempts to insert 33M, 4 times, with gc every 8M above 33M
+//*/
+
+        </script>
+    </body>
+</html>
