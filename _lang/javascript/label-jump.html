@@ -1,0 +1,41 @@
+<html> <head> </head> <body> <script type="text/javascript">
+
+/*
+ **********************************************************************
+ */
+
+//  labels not allowed for declarations
+// labelA:
+
+const l = console.log
+
+//  labels allowed for statements
+labelB:
+
+l(`hi`)
+
+label0:
+{
+    l('label0')
+
+    label1: for (let i = 0; i < 5; i++) {
+        if (i === 3) {
+            break label0;
+        }
+        l(i)
+    }
+
+    label2:
+    l('label2')
+
+}
+label3:
+
+l('label3')
+
+/*
+ **********************************************************************
+ */
+        </script>
+    </body>
+</html>
