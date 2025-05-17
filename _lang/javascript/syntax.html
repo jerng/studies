@@ -14,10 +14,14 @@ l(`hi`)
 
 //*/ Haskelly :
 
-( a => b => a/2 + b )(3)(5)
+l(
+    ( a => b => a/2 + b )(3)(5)
+)
 // 6.5
 
-(a = a => ({ b: (b => (c = a + b, d => (d -b)/c))}))(2).b(3)(9)
+l(
+    ( a => ({ b: (b => (c = a + b, d => (d -b)/c))}))(2).b(3)(9)
+)
 // 1.2
 
 //*/
@@ -30,30 +34,10 @@ to drop parentheses after arrows, in order to use comma separated
 expressions returning a single term per arrow.
 
 Ergo, the golden formula :
-*/
+ */
 
 _=>(_,_)
 
-/*
- *... uh, wait a minute.
- **********************************************************************
- *
- * Can we write a Lisp?
- * 
- *    So far it seems quite feasible.
- *    JavaScript has type Array, and destructing syntax such that :
- *    [ a, ... b ] = [ 2, 3, 4 ] will work perfectly.
- *    So extending the Array class could give us some sort of ARRP, or
- *    ARRay Processsing language. :P
- */
-
-const [ a, ... b ] = [ 2, 3, 4 ]
-// a = 2, b = [ 3, 4 ]
-
-// math : square : x -> x * x 
-// lisp : ( define square ( lambda ( x ) ( * x x ) ) )
-
-[ define, square, [ lambda, x, [ `*`, x, x ] ] ]
 
         </script>
     </body>

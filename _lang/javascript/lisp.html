@@ -1,0 +1,137 @@
+<html> <head> </head> <body> <script type="text/javascript">
+
+/*
+ *
+ *
+ *
+ *
+ **********************************************************************
+ */
+
+const l = console.log
+const j = JSON.stringify
+
+l(`hi`)
+
+
+/*
+ **********************************************************************
+ *
+ * Can we write a Lisp?
+ * 
+ *    So far it seems quite feasible.
+ *    JavaScript has type Array, and destructing syntax such that :
+ *    [ a, ... b ] = [ 2, 3, 4 ] will work perfectly.
+ *    So extending the Array class could give us some sort of ARRP, or
+ *    ARRay Processsing language. :P
+ */
+
+// math : square : x -> x * x 
+// lisp : ( define square ( lambda ( x ) ( * x x ) ) )
+
+//[ define, square, [ lambda, x, [ `*`, x, x ] ] ]
+
+class Arp extends Array 
+{
+    eval(ast, repl_env)
+    {
+        if((typeof ast == 'string') && (ast[0] == ':')){
+
+            if(ast in repl_env)  return repl_env[ast] 
+
+            throw 'Symbol not found'
+        }  
+
+        if(ast instanceof Array){
+
+            if(ast.length == 0) return ast 
+
+            ast.forEach( (subast, index)=>
+                { 
+                    ast[index] = this.eval(subast, repl_env)
+                }
+            ) 
+                // eval subasts before applying fn
+            if(ast[0] instanceof Function) {
+                const [fn, ...args] = ast
+                return fn.apply(fn, args)
+            }
+
+            return ast
+        }
+
+        if((typeof ast == 'object') && (ast != null)
+            /* no need to test for Array, as it is tested above */
+        ){
+            console.log(this)
+            for (const key in ast){
+                ast[key] = this.eval(ast[key], repl_env)
+            }
+        }
+
+        return ast
+
+    }
+
+    #print(a)
+    {
+        console.log(JSON.stringify(a,null,2))
+    }
+
+    #read(a)
+    {
+        return a
+    }
+
+    rep()
+    {
+        this.#print(this.eval(this.#read(this), this.#repl_env))
+        // pause under normal conditions, but not in this hack
+    }
+
+    #repl_env = {
+        ':+' : (a, b)=>(a + b),
+        ':-' : (a, b)=>(a - b),
+        ':*' : (a, b)=>(a * b),
+        ':/' : (a, b)=>(a / b)
+    }
+
+    constructor(array)
+    {
+        super()
+        array.forEach(e=>this.push(e))
+    }
+}
+
+const a = new Arp([ 111, 222, 333, "stringy", "stringstring",])
+l(j(a))
+a.rep()
+
+const b = new Arp( [':+',[':*',3, 4], [':/',17 ,4]] )
+l(j(b))
+b.rep()
+
+const c = new Arp( 
+    [ 111, 222, {
+        aa:333,bb:[
+            96,[
+                ':+',90,7
+            ],98
+        ],cc:44,dd:{
+            za:66,zb:[
+                '5 / 8 is ...',[
+                    ':/',5,8
+                ]]}}] )
+l(j(c))
+c.rep()
+
+/*
+
+CONTINUE AT : 
+https://github.com/kanaka/mal/blob/master/process/guide.md#step-3-environments
+
+ */
+
+        </script>
+    </body>
+</html>
