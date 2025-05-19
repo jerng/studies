@@ -12,17 +12,43 @@
 # Init.
 # : 2025-05
 # : 2025-05-14 : updated and passed shellcheck.net
-#
+# : 2025-05-19 : added 'find-all' to 'find' : does not yet pass shellcheck
+
+# define
+quiet=false
 noprefix="          "
-prefix="adocker : "
-try="Try : 'adocker find-dependent-images [TAG or SHA]'"
+  prefix="adocker : "
+try="Try : 'adocker (find|find-dependent-images) [TAG or SHA]'"
+
+# init only
+command_inspect_parent_image_tags=""
 tags=""
 indented_tags=""
 needle=""
 
-printf "\n%swritten for (sh), not (bash)\n" "$prefix"
+[ "$3" = "-q" ] && quiet=true
 
-if [ "$1" != "find-dependent-images" ]
+"$quiet" || printf "\n%swritten for (sh), not (bash)\n" "$prefix"
+
+if 
+    [ "$1" = "find-all" ]  
+then
+
+    # ACT 2
+
+    printf "\n"
+
+    docker images -q | uniq | \
+        while read -r line; \
+        do
+            printf "%s [ parent IMAGE ] : has dependents :\n" "$line"
+            adocker find "$line" -q
+            printf "\n"
+        done
+
+    exit
+elif 
+    { [ "$1" != "find" ] && [ "$1" != "find-dependent-images" ]; } 
 then 
     printf "%sdid not understand \$1 (this shell script's argument 1)\n\n" "$prefix"
     printf "%s\n" "$try"
@@ -35,28 +61,42 @@ else
         exit 1 
     fi
 
-    printf "%s[ $2 ] : searching for TAGS of this [ parent IMAGE ]\n\n" "$prefix"
+    # ACT 1, SCENE 1
 
-    if ! tags=$(docker image inspect "$2" -f \
-        '{{range .RepoTags}}{{.}}{{"\n"}}{{end}}')
-    then 
-        printf "%sfound none  \n\n" "$prefix"
-        exit 1
+    command_inspect_parent_image_tags='docker image inspect '"$2"' -f '\''{{range.RepoTags}}{{.}}{{"\n"}}{{end}}'\'
+
+    if "$quiet"
+    then
+        if ! tags="$($command_inspect_parent_image_tags 2> /dev/null)"
+        then 
+            exit 1
+        fi
     else
-        indented_tags=$(printf "%s" "$tags" | sed "s/^/$noprefix/g")
-        printf "%sfound ...  \n\n%s\n\n" "$prefix" "$indented_tags"
+        printf "%s[ $2 ] : searching for TAGS of this [ parent IMAGE ]\n\n" "$prefix"
+        if ! tags="$($command_inspect_parent_image_tags)"
+        then 
+            printf "%sfound none  \n\n" "$prefix"
+            exit 1
+        else
+            indented_tags="$(printf "%s" "$tags" | sed -e "s/^/$noprefix/g" -e "s/'//g")"
+            printf "%sfound ...  \n\n%s\n" "$prefix" "$indented_tags"
+        fi
     fi
 
-    printf "%ssearching for [ dependent IMAGES ] of [ parent IMAGE ]\n\n" "$prefix"
-    needle=$( docker image inspect "$2" -f \
+    # ACT 1, SCENE 2
+
+    "$quiet" || printf "%ssearching for [ TAGS of dependent IMAGES ] of [ parent IMAGE ]\n\n" "$prefix"
+    needle="$( docker image inspect "$2" -f \
         '{{range .RootFS.Layers}}{{.}}{{"\n"}}{{end}}'\
         | grep -v '^$' \
         | tail -n 1 \
         | sed 's/sha256://g' \
-    )
-    printf "%sfound ... [ parent IMAGE's ] final LAYER (sha256) ...\n\n" "$prefix"
-    printf "%s%s\n\n" "$noprefix" "$needle"
-    printf "%s... in the history of the following IMAGES ...\n\n" "$prefix"
+    )"
+    "$quiet" || printf "%sfound ... [ parent IMAGE's ] final LAYER (sha256) ...\n\n" "$prefix"
+    "$quiet" || printf "%s%s\n\n" "$noprefix" "$needle"
+    "$quiet" || printf "%s... in the history of the following IMAGES ...\n\n" "$prefix"
+
+    # ACT 1, SCENE 3
 
     docker images -q | \
         while read -r line
@@ -70,5 +110,5 @@ else
         fi
         done \
         | sort -u \
-        | sed "s/^/$noprefix/g"
+        | { if "$quiet"; then cat ; else sed "s/^/$noprefix/g"; fi; }
 fi
