@@ -15,7 +15,7 @@
 # Init.
 # : 2025-05
 # : 2025-05-14 : updated and passed shellcheck.net
-# : 2025-05-19 : added 'find-all' to 'find' : does not yet pass shellcheck
+# : 2025-05-19 : added 'find-all' to 'find' : passed shellcheck.net
 
 # define
 quiet=false
