@@ -214,16 +214,16 @@ WORD2
 ** Where [WORD] is an entity from B2 ( PER-PROCESS file descriptors ) or
                 the character '-' signifying ( reversible ) closure : 
 
-<&WORD          Make FD0/STDIN ( unless specified by INTEGER ), a copy
-0<&WORD         of WORD. Anything READ FROM RIGHT will be subsequently
-                READ FROM LEFT.
+<&WORD          Make FD0/STDIN ( unless specified by INTEGER )'s value, a copy
+0<&WORD         of WORD's value. Anything READ FROM RIGHT will therefore
+                be READ FROM LEFT's value.
 
     <&-         Close FD0/STDIN ( unless specified by INTEGER ).
     0<&-
 
->&WORD          Make FD1/STDOUT ( unless specified by INTEGER ), a copy
-1>&WORD         of WORD. Anything WRITTEN TO RIGHT will be subsequently
-                WRITTEN TO LEFT.
+>&WORD          Make FD1/STDOUT ( unless specified by INTEGER )'s value, a copy
+1>&WORD         of WORD's value. Anything WRITTEN TO RIGHT will
+                therefore be WRITTEN TO LEFT's value.
 
     >&-         Close FD1/STDOUT ( unless specified by INTEGER ).
     0>&-

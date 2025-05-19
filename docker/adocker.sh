@@ -1,5 +1,8 @@
 #!/bin/sh
 #
+# WARNING : while target POSIX (sh), this script uses the following
+# non-POSIX keyword which is supported by (dash, ash, ksh) : "local"
+#
 # This script attempts to find local docker images dependent on imageA,
 # by checking all local image histories to see if any contain the final
 # layer of imageA.
@@ -21,7 +24,6 @@ noprefix="          "
 try="Try : 'adocker (find|find-dependent-images) [TAG or SHA]'"
 
 # init only
-command_inspect_parent_image_tags=""
 tags=""
 indented_tags=""
 needle=""
@@ -42,6 +44,9 @@ then
         while read -r line; \
         do
             printf "%s [ parent IMAGE ] : has dependents :\n" "$line"
+
+            # CALL ACT 1
+
             adocker find "$line" -q
             printf "\n"
         done
@@ -63,23 +68,35 @@ else
 
     # ACT 1, SCENE 1
 
-    command_inspect_parent_image_tags='docker image inspect '"$2"' -f '\''{{range.RepoTags}}{{.}}{{"\n"}}{{end}}'\'
+    inspect_parent_image_tags()
+    {
+        tags=$(docker image inspect "$1" \
+            -f '{{range.RepoTags}}{{.}}{{"\n"}}{{end}}')
+        return "$?"
+    }
+    inspect_parent_image_tags_quietly()
+    {
+        docker image inspect "$1" \
+            -f '{{range.RepoTags}}{{.}}{{"\n"}}{{end}}' \
+            >/dev/null 2>&1
+        return "$?"
+    }
 
     if "$quiet"
     then
-        if ! tags="$($command_inspect_parent_image_tags 2> /dev/null)"
+        if ! inspect_parent_image_tags_quietly "$2"
         then 
             exit 1
         fi
     else
         printf "%s[ $2 ] : searching for TAGS of this [ parent IMAGE ]\n\n" "$prefix"
-        if ! tags="$($command_inspect_parent_image_tags)"
+        if ! inspect_parent_image_tags "$2"
         then 
             printf "%sfound none  \n\n" "$prefix"
             exit 1
         else
             indented_tags="$(printf "%s" "$tags" | sed -e "s/^/$noprefix/g" -e "s/'//g")"
-            printf "%sfound ...  \n\n%s\n" "$prefix" "$indented_tags"
+            printf "%sfound ...  \n\n%s\n\n" "$prefix" "$indented_tags"
         fi
     fi
 
