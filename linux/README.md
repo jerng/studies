@@ -85,43 +85,43 @@ Ubuntu
     -   `*rc` standads for runcom / run commands, since Bell Labs
             System V Unix
 
-#### History of `init`
+>   ### History of `init`
 
--   1983 : Through iterations, [System V / SysV / System
-    Five](https://en.wikipedia.org/wiki/Init#SYSV) was
-    developed by AT&T.
-    [Runlevels](https://en.wikipedia.org/wiki/Runlevel) were defined
-    as 
-    -   0 : halt : everything is shut down, processes stop
-    -   1 : single-user mode : troubleshooting & recovery
-    -   2 : multi-user mode, without networking : ditto
-    -   3 : text mode (multi-user mode, with networking) : default state
-        for servers on a network
-    -   4 : unused
-    -   5 : graphical mode : default state for PCs
-    -   6 : reboot
-    >   -   Consequently, `initdefault` should not be set to 0 or 6
-    >   -   `telinit` is the command to change run levels
--   2006 to 2014 : [UpStart](https://en.wikipedia.org/wiki/Upstart_(software))
-    replaced traditional `init.d`-style scripts under `System-V`,
-    providing better management of race-conditions, via an
-    event-monitoring system, developed by Canonical.
--   2010 : [systemd](https://en.wikipedia.org/wiki/Systemd) has become a
-    dominant `init` system since 2015, and gained marketshare via
-    reliable parallelism, and centralised management of processes,
-    daemons, and services, and mount points. Developed by Red Hat.
-    -   Further reading on [ancilliary
-        components](https://en.wikipedia.org/wiki/Systemd#Ancillary_components)
-        is encouraged : `journald`, `libudev`, `localed`, `logind`,
-        `hostnamed`, `homed`, `networkd`, `resolved`,
-        `systemd-boot`, `systemd-bsod`, `systemd-nspawn`,
-        `timedated`, `timesyncd`, `tmpfiles`, `udevd`, etc.
-    -   Configuration files a.k.a. `unit files` use a declarative
-        language inspired by [.ini
-        files](https://en.wikipedia.org/wiki/INI_file) : `.service`,
-        `.socket`, `.device`, `.mount`, `.automount`, `.swap`,
-        `.target`, `.path`, `.timer`, `.snapshot`, `.slice`,
-        `.scope`, etc.
+    -   1983 : Through iterations, [System V / SysV / System
+        Five](https://en.wikipedia.org/wiki/Init#SYSV) was
+        developed by AT&T.
+        [Runlevels](https://en.wikipedia.org/wiki/Runlevel) were defined
+        as 
+        -   0 : halt : everything is shut down, processes stop
+        -   1 : single-user mode : troubleshooting & recovery
+        -   2 : multi-user mode, without networking : ditto
+        -   3 : text mode (multi-user mode, with networking) : default state
+            for servers on a network
+        -   4 : unused
+        -   5 : graphical mode : default state for PCs
+        -   6 : reboot
+        >   -   Consequently, `initdefault` should not be set to 0 or 6
+        >   -   `telinit` is the command to change run levels
+    -   2006 to 2014 : [UpStart](https://en.wikipedia.org/wiki/Upstart_(software))
+        replaced traditional `init.d`-style scripts under `System-V`,
+        providing better management of race-conditions, via an
+        event-monitoring system, developed by Canonical.
+    -   2010 : [systemd](https://en.wikipedia.org/wiki/Systemd) has become a
+        dominant `init` system since 2015, and gained marketshare via
+        reliable parallelism, and centralised management of processes,
+        daemons, and services, and mount points. Developed by Red Hat.
+        -   Further reading on [ancilliary
+            components](https://en.wikipedia.org/wiki/Systemd#Ancillary_components)
+            is encouraged : `journald`, `libudev`, `localed`, `logind`,
+            `hostnamed`, `homed`, `networkd`, `resolved`,
+            `systemd-boot`, `systemd-bsod`, `systemd-nspawn`,
+            `timedated`, `timesyncd`, `tmpfiles`, `udevd`, etc.
+        -   Configuration files a.k.a. `unit files` use a declarative
+            language inspired by [.ini
+            files](https://en.wikipedia.org/wiki/INI_file) : `.service`,
+            `.socket`, `.device`, `.mount`, `.automount`, `.swap`,
+            `.target`, `.path`, `.timer`, `.snapshot`, `.slice`,
+            `.scope`, etc.
 
 # Kernel
 
