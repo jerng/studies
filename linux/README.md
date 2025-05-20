@@ -31,7 +31,8 @@ Ubuntu
 >   - [link](https://wiki.ubuntu.com/Booting)
 >   - [link](https://medium.com/@fouadpro2002/system-v-upstart-and-systemd-689574a94e73)
 
-1.  `BIOS` / basic input output system or `UEFI` / unified extensible
+1.  ## `BIOS`
+    / basic input output system or `UEFI` / unified extensible
     firmware interface, performs a `POST` / power-on self-test to check
     hardware integrity
     >   code is obtained for the next step ( `boot loader` )
@@ -39,7 +40,7 @@ Ubuntu
         motherboard.
     -   hardware is initialised
 
-2.  `Boot loader`
+2.  ## `Boot loader`
     >   code is obtained for the next step ( `kernel` and initial ram
         disk filesystem )
     
@@ -66,7 +67,7 @@ Ubuntu
             >   2.  stage 1.5 is on the first cylinder of the disk
             >   3.  stage 2 is on the disk ( CHECK )
 
-4.  Kernel
+4.  ## Kernel
     -   a small filesystem is loaded into RAM : `initrd` / initial
         ramdisk, or `initramfs` / initial RAM filesystem
     -   initialisation script is launched in that filesystem : this is
@@ -75,7 +76,8 @@ Ubuntu
     -   the root storage partition, is found ( possibly on a different
         physical host ), and typically mounted with `mount`
 
-5.  `init` ( system tasks & essential services ) 
+5.  ## `init` 
+    ( system tasks & essential services ) 
     >   Configured at `/etc/init`
     1.  Plymouth : graphical boot animation & logger
     2.  mountall : mounts all filesystems defined on `/etc/fstab`
@@ -86,42 +88,42 @@ Ubuntu
             System V Unix
 
 >   ### History of `init`
-
-    -   1983 : Through iterations, [System V / SysV / System
-        Five](https://en.wikipedia.org/wiki/Init#SYSV) was
-        developed by AT&T.
-        [Runlevels](https://en.wikipedia.org/wiki/Runlevel) were defined
-        as 
-        -   0 : halt : everything is shut down, processes stop
-        -   1 : single-user mode : troubleshooting & recovery
-        -   2 : multi-user mode, without networking : ditto
-        -   3 : text mode (multi-user mode, with networking) : default state
-            for servers on a network
-        -   4 : unused
-        -   5 : graphical mode : default state for PCs
-        -   6 : reboot
-        >   -   Consequently, `initdefault` should not be set to 0 or 6
-        >   -   `telinit` is the command to change run levels
-    -   2006 to 2014 : [UpStart](https://en.wikipedia.org/wiki/Upstart_(software))
-        replaced traditional `init.d`-style scripts under `System-V`,
-        providing better management of race-conditions, via an
-        event-monitoring system, developed by Canonical.
-    -   2010 : [systemd](https://en.wikipedia.org/wiki/Systemd) has become a
-        dominant `init` system since 2015, and gained marketshare via
-        reliable parallelism, and centralised management of processes,
-        daemons, and services, and mount points. Developed by Red Hat.
-        -   Further reading on [ancilliary
-            components](https://en.wikipedia.org/wiki/Systemd#Ancillary_components)
-            is encouraged : `journald`, `libudev`, `localed`, `logind`,
-            `hostnamed`, `homed`, `networkd`, `resolved`,
-            `systemd-boot`, `systemd-bsod`, `systemd-nspawn`,
-            `timedated`, `timesyncd`, `tmpfiles`, `udevd`, etc.
-        -   Configuration files a.k.a. `unit files` use a declarative
-            language inspired by [.ini
-            files](https://en.wikipedia.org/wiki/INI_file) : `.service`,
-            `.socket`, `.device`, `.mount`, `.automount`, `.swap`,
-            `.target`, `.path`, `.timer`, `.snapshot`, `.slice`,
-            `.scope`, etc.
+>
+>   -   1983 : Through iterations, [System V / SysV / System
+>       Five](https://en.wikipedia.org/wiki/Init#SYSV) was
+>       developed by AT&T.
+>       [Runlevels](https://en.wikipedia.org/wiki/Runlevel) were defined
+>       as 
+>       -   0 : halt : everything is shut down, processes stop
+>       -   1 : single-user mode : troubleshooting & recovery
+>       -   2 : multi-user mode, without networking : ditto
+>       -   3 : text mode (multi-user mode, with networking) : default state
+>           for servers on a network
+>       -   4 : unused
+>       -   5 : graphical mode : default state for PCs
+>       -   6 : reboot
+>       >   -   Consequently, `initdefault` should not be set to 0 or 6
+>       >   -   `telinit` is the command to change run levels
+>   -   2006 to 2014 : [UpStart](https://en.wikipedia.org/wiki/Upstart_(software))
+>       replaced traditional `init.d`-style scripts under `System-V`,
+>       providing better management of race-conditions, via an
+>       event-monitoring system, developed by Canonical.
+>   -   2010 : [systemd](https://en.wikipedia.org/wiki/Systemd) has become a
+>       dominant `init` system since 2015, and gained marketshare via
+>       reliable parallelism, and centralised management of processes,
+>       daemons, and services, and mount points. Developed by Red Hat.
+>       -   Further reading on [ancilliary
+>           components](https://en.wikipedia.org/wiki/Systemd#Ancillary_components)
+>           is encouraged : `journald`, `libudev`, `localed`, `logind`,
+>           `hostnamed`, `homed`, `networkd`, `resolved`,
+>           `systemd-boot`, `systemd-bsod`, `systemd-nspawn`,
+>           `timedated`, `timesyncd`, `tmpfiles`, `udevd`, etc.
+>       -   Configuration files a.k.a. `unit files` use a declarative
+>           language inspired by [.ini
+>           files](https://en.wikipedia.org/wiki/INI_file) : `.service`,
+>           `.socket`, `.device`, `.mount`, `.automount`, `.swap`,
+>           `.target`, `.path`, `.timer`, `.snapshot`, `.slice`,
+>           `.scope`, etc.
 
 # Kernel
 
