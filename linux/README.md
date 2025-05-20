@@ -1,16 +1,125 @@
-# Filesystem Hierarchy
+# File Hierarchy Standard
 
-Various
+1994-2015
 
 ```c
 /       :   the 'root directory'
+| 
+|  ***************************
+|  * EPHEMERAL : NOT DURABLE *
+|  ***************************
+| 
++- dev  :   device files : '/dev/null', '/dev/disk0', '/dev/sda1', '/dev/tty' etc.                                             
+|                                                                  
++- media:   mount point for removable media, like CDs, 2004                  
+|                                                                            
++- mnt  :   mount point for temporarily filesystems                                  
+|                                                                          
++- proc :   a virtual filesystem, providing system information
+|           about proceses and kernel features :
+|           ( may be called 'procfs' in other unixes )             
 |
-+- bin  :   binaries, essential (single-user mode), bootstrapping and
-|           repair ( e.g. 'cat', 'ls', 'cp' )
++- sys  :   a virtual filesystem, providing system information 
+|           about devices, drivers, and kernel features
+|                                                                             
++- run  :   run-time variable data : logged-in users, daemons :    
+|           directory must be cleared when boot begins, unless     
+|           it is implemented as a 'tmpfs' ( 2015 )                
+| 
++- tmp  :   temporary files, often NOT preserved after reboot :     ----------+
+|           therefore LESS durable than '/var/tmp'                            |
+|                                                                             |
+|  ***********                                                                |
+|  * DURABLE *                                                                |
+|  ***********                                                                |
+|                                                                             |
++- var          :   variable data : expected to change during system          |
+|  |                 runtime, e.g. logs, spools, queues, messages, drafts     |
+|  |                                                                          |
+|  +- cache     :   application cache data : safe to destroy at any time      |
+|  |                                                                          |
+|  +- lib       :   state information : persistant data : e.g. databases      |
+|  |                                                                          |
+|  +- lock      :   locks                                                     |
+|  |                                                                          |
+|  +- log       :   logs                                                      |
+|  |                                                                          |
+|  +- mail      :   mail : messages for users      <----------------------+   |
+|  |                                                                      |   |
+|  +- opt       :   variable data from apps in '/opt'   <-----------------(---)------+
+|  |                                                                      |   |      |
+|  +- run       :   deprecated : now '/run' : symlink for compatibility   |   |      |
+|  |                                                                      |   |      |
+|  +- spool     :   tasks waiting to be processed : modernised, perhaps   |   |      |
+|  |  |             queues in general                                     |   |      |
+|  |  |                                                                   |   |      |
+|  |  +- mail   :   deprecated : now '/var/mail'    >---------------------+   |      |
+|  |                                                                          |      |
+|  +- tmp       :   temporary files, PRESERVED after reboot :       ----------+      |
+|                   therefore MORE durable than  '/tmp'                              |
+|                                                                                    |
++- root         :   home directory for the root user                                 |
+|                                                                                    |   
++- home         :   home directory for non-root users :                              |
+|                   /home/<username>                                                 |
+|                                                                                    |
+|  *************************************                                             | 
+|  * OF IMPORTANCE TO SYSTEM INTEGRITY *                                             |
+|  *************************************                                             |
+|                                                                                    |
++- boot         :   boot loading (e.g. 'kernels', initial RAM filesystem image)      |
+|                                                                                    |
++- bin          :   binaries, essential (single-user mode), bootstrapping and   >-+  |
+|                   repair ( e.g. 'cat', 'ls', 'cp' ) before `/usr` is mounted    |  |
+|                                                                                 |  |
++- sbin         :   same as 'bin' but requiring super-user privileges           >-+  |
+|                                                                                 |  |
++- lib          :   libraries for binaries in 'bin' and 'sbin'  <-----------------+  |
+|                                                                                 |  |
++- lib<qual>    :   '32-bit', '64-bit' : rare                   <-----------------+  |
+|                                                                                    |
++- etc          :   ancient history : 'et cetera'; NOW limited to static             |
+|  |                configuration files, which are NOT binaries : hence              |
+|  |                'Editable Text Configuration' / 'Extended Tool Chest'            |
+|  |                                                                                 |
+|  +- sgml      :   Configuration for software that ingests SGML, 1986               |
+|  |                ( also see, GML, 1969 )                                          |
+|  |                                                                                 |
+|  +- X11       :   Configuration for the X Window System, Version 11                |
+|  |                ( 1984 - 1987 )                                                  |
+|  |                                                                                 |
+|  +- xml       :   1996                                                             |
+|  |                                                                                 |
+|  +- opt       :   Configuration for add-ons stored in '/opt'  <-+                  |
+|                                                                 |                  |
++- opt          :   optional : software not part of the core    >-+------------------+
+|                   distribution, often organised as :                     
+|                   -   /opt/<package>                                     
+|                   -   /opt/<provider>/<package>                          
+|                                                                          
++- srv          :   servers : data, scripts, version control
+|                   repositories ( 2004 )
 |
-+- boot :   boot loading (e.g. 'kernels', 'initrd' / initial ramdisk,
-|           'initramfs' / initial RAM file systemi, more modern,
-Debian preferred )
++- usr          :   SECONDARY HIERARCHY for read-only user data :
+   |                contains MAJORITY of multi-user mode programs; 
+   |
+   +- bin       :   binaries, non-essential ( multi-user mode only )    >----+
+   |                                                                         |
+   +- sbin      :   same as '/usr/bin' but requiring super-user privileges >-+           
+   |                                                                         |
+   +- lib       :   libraries for binaries in '/usr/bin' and '/usr/sbin'  <--+
+   |                                                                         |
+   +- lib<qual> :   '32-bit', '64-bit' : rare   <----------------------------+  
+   |
+   +- src       :   source code     >-----+
+   |                                      |
+   +- include   :   header text files   <-+
+   |
+   +- share     :   architecture-independent shared data 
+   |
+   +- local     :   TERTIARY HIERARCHY for local data, specific to this
+                    host; OFFLIMITS TO VENDORS ( OS vendors, package
+                    managers )
 ```
 
 - **POSIX.1-2001** introduced [`pax` / portable exchange
