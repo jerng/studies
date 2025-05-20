@@ -1,3 +1,9 @@
+# next :
+
+- /etc/profile ?
+- ~/.profile?
+
+
 # File Hierarchy Standard
 
 1994-2015
