@@ -31,61 +31,61 @@ Ubuntu
 >   - [link](https://wiki.ubuntu.com/Booting)
 >   - [link](https://medium.com/@fouadpro2002/system-v-upstart-and-systemd-689574a94e73)
 
-1.  ## `BIOS`
-    / basic input output system or `UEFI` / unified extensible
-    firmware interface, performs a `POST` / power-on self-test to check
-    hardware integrity
-    >   code is obtained for the next step ( `boot loader` )
-    -   firmware is executed from `ROM` / read-only memory, on the
-        motherboard.
-    -   hardware is initialised
+##  1. `BIOS`
+/ basic input output system or `UEFI` / unified extensible
+firmware interface, performs a `POST` / power-on self-test to check
+hardware integrity
+>   code is obtained for the next step ( `boot loader` )
+-   firmware is executed from `ROM` / read-only memory, on the
+    motherboard.
+-   hardware is initialised
 
-2.  ## `Boot loader`
-    >   code is obtained for the next step ( `kernel` and initial ram
-        disk filesystem )
-    
-    Alternatives :
-    1.  stored on other storage, e.g. CDR, USB, etc.
-    2.  stored on a ROM, on the networking card / hardware : e.g. via
-        `PXE` / pre-execution environment
-    3.  stored on an early sector of a hard drive
-        -   [`MBR` / master boot
-            record](https://en.wikipedia.org/wiki/Master_boot_record)
-            for IBM-compatible PCs, typically on sector 0
-        -   [`GPT` / GUID Partition
-            Table](https://en.wikipedia.org/wiki/GUID_Partition_Table)
-            is a modern alternative, typically on sector 1, with a
-            protective MBR shimmed upon sector 0 E.g. `GRUB`, `LILO`,
-            `yaboot`, etc.
-        -   >   [`GRUB` / grand unified
-            >   bootloader](https://en.wikipedia.org/wiki/GNU_GRUB) is bulky
-            >   with many
-            >   features; storage is split up :
-            >   1.  stage 1 is in the `MBR`
-            >       -   location of `/boot/grub/menu.lst`
-            >       -   files for stages 1.5 and 2
-            >   2.  stage 1.5 is on the first cylinder of the disk
-            >   3.  stage 2 is on the disk ( CHECK )
+##  2. `Boot loader`
+>   code is obtained for the next step ( `kernel` and initial ram
+    disk filesystem )
 
-4.  ## Kernel
-    -   a small filesystem is loaded into RAM : `initrd` / initial
-        ramdisk, or `initramfs` / initial RAM filesystem
-    -   initialisation script is launched in that filesystem : this is
-        the core code of the operating system, enabling hardware
-        etc.
-    -   the root storage partition, is found ( possibly on a different
-        physical host ), and typically mounted with `mount`
+Alternatives :
+1.  stored on other storage, e.g. CDR, USB, etc.
+2.  stored on a ROM, on the networking card / hardware : e.g. via
+    `PXE` / pre-execution environment
+3.  stored on an early sector of a hard drive
+    -   [`MBR` / master boot
+        record](https://en.wikipedia.org/wiki/Master_boot_record)
+        for IBM-compatible PCs, typically on sector 0
+    -   [`GPT` / GUID Partition
+        Table](https://en.wikipedia.org/wiki/GUID_Partition_Table)
+        is a modern alternative, typically on sector 1, with a
+        protective MBR shimmed upon sector 0 E.g. `GRUB`, `LILO`,
+        `yaboot`, etc.
+    -   >   [`GRUB` / grand unified
+        >   bootloader](https://en.wikipedia.org/wiki/GNU_GRUB) is bulky
+        >   with many
+        >   features; storage is split up :
+        >   1.  stage 1 is in the `MBR`
+        >       -   location of `/boot/grub/menu.lst`
+        >       -   files for stages 1.5 and 2
+        >   2.  stage 1.5 is on the first cylinder of the disk
+        >   3.  stage 2 is on the disk ( CHECK )
 
-5.  ## `init` 
-    ( system tasks & essential services ) 
-    >   Configured at `/etc/init`
-    1.  Plymouth : graphical boot animation & logger
-    2.  mountall : mounts all filesystems defined on `/etc/fstab`
-    3.  network : 
-    4.  display manager : `GDM`, `KDM`, `XDM`, ...
-    -   various scripts of the form `/etc/*rc` are run
-    -   `*rc` standads for runcom / run commands, since Bell Labs
-            System V Unix
+##  3. Kernel
+-   a small filesystem is loaded into RAM : `initrd` / initial
+    ramdisk, or `initramfs` / initial RAM filesystem
+-   initialisation script is launched in that filesystem : this is
+    the core code of the operating system, enabling hardware
+    etc.
+-   the root storage partition, is found ( possibly on a different
+    physical host ), and typically mounted with `mount`
+
+## 4. `init` 
+( system tasks & essential services ) 
+>   Configured at `/etc/init`
+1.  Plymouth : graphical boot animation & logger
+2.  mountall : mounts all filesystems defined on `/etc/fstab`
+3.  network : 
+4.  display manager : `GDM`, `KDM`, `XDM`, ...
+-   various scripts of the form `/etc/*rc` are run
+-   `*rc` standads for runcom / run commands, since Bell Labs
+        System V Unix
 
 >   ### History of `init`
 >
