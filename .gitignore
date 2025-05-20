@@ -1,4 +1,6 @@
+carbon_toolchain*
 massif.out.*
+**/bin/*
 *deployment_working_directory*
 *release*.tar.gz
 *release*.boot
