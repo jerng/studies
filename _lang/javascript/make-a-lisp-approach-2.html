@@ -10,23 +10,40 @@ l(`hi`)
  **********************************************************************
  *
  *  Here is attempt 2.
+ *  
+ *  An instance of LispA, is a Lisp list, or Symbolic Expression, but
+ *  calling the class Sexp seems unnecessarily distracting.
+ *  -   it is possible to treat ordinary Arrays as Lisp lists, but the
+ *      present implementation is more parsimonious at the expense
+ *      of execution speed (a hypothesis)
  *
+ *  list.length == 0, signifies (), the empty Lisp list.
+ *
+ *  Strings beginning with ':', are Lisp symbols.
+ *  -   using JavaScript Symbols is too complicated
+ *      (another hypothesis)
+ *  -   TODO : it might be implemented that global.x is ':x' for
+ *      syntactic sugar, but this doesn't work for ':+'
  */
 
 
-let symbol_not_found = 'Symbol not found'
+let lispa_symbol_not_found = 'LispA symbol not found'
 
 class LispA extends Array
 {
+    static symbol_not_found = lispa_symbol_not_found
 
-    static #symbol_not_found = symbol_not_found
+    static is_key(candidate)
+    {
+        return ((typeof candidate == 'string') && (candidate[0] == ':'))
+    }
 
     #env_parent = null
 
     #env_self = new Proxy({},{
         set(target, property, value, receiver)
         {
-            if(this.#is_key(property)) {
+            if(LispA.is_key(property)) {
                 target[property] = value
                 return true
             }
@@ -34,6 +51,8 @@ class LispA extends Array
         },
         get(target, property, receiver)
         {
+            /* for convenience, no hiding of non-Lisp-symbols */
+
             if(property in target) return target[property]
 
             if(this.#env_parent) return this.#env_parent[property]
@@ -42,12 +61,81 @@ class LispA extends Array
         }
     })
 
-    #is_key(candidate)
+    constructor(array)
     {
-        return ((typeof candidate == 'string') && (candidate[0] == ':'))
+        super()
+
+        /* TODO : replace with Proxy */
+        array.forEach(e=>this.push(
+            ((e instanceof Array) && ! (e instanceof LispA))
+            ? new LispA(e) 
+            : e
+        ))
     }
 
+    getEnv(key) { this.#env_self[key] }
+
+    setEnv(key, val) { this.#env_self[key] = val }
+
+    /**** BEGIN DEV ZONE ***********/
+
+    #eval(lispa_val, lispa_env)
+    {
+        if(LispA.is_key(lispa_val)){
+
+            if(lispa_val in lispa_env) return lispa_env[lispa_val] 
+
+            throw [ LispA.symbol_not_found, lispa_val ]
+        }  
+
+        if((lispa_val instanceof LispA) && (lispa_val.length > 0)){ 
+
+            /* eval sub-lists */
+            lispa_val.forEach( (lispa_subval, index)=> { 
+                lispa_val[index] 
+                    = this.#eval(lispa_subval, lispa_env) 
+            } ) 
+
+            /* function application */
+            if(lispa_val[0] instanceof Function) {
+                const [fn, ...args] = lispa_val
+                return fn.apply(lispa_val, args)
+            }
+
+        }
+
+        /* not LispA, or lispa_val.length==0 */
+        return lispa_val
+
+    }
+
+    #read(a){ return a }
+
+    rep(lispa_val){ this.#print( this.#eval (
+        this.#read(this), this.#env_self ) ) }
+
+    #print(a){ 
+        console.log(JSON.stringify(a,null,2)) }
+
+    /**** END DEV ZONE ***********/
 }
+
+const a = new LispA([ 111, 222, 333, "stringy", "stringstring",])
+l(j(a))
+a.rep()
+
+const b = new LispA( [':+',[':*',3, 4], [':/',17 ,4]] )
+b.setEnv(':+', (a, b)=>(a + b))
+b.setEnv(':-', (a, b)=>(a - b))
+b.setEnv(':*', (a, b)=>(a * b))
+b.setEnv(':/', (a, b)=>(a / b))
+l(j(b))
+b.rep()
+
+
+
+
+
 
         </script>
     </body>
