@@ -1,0 +1,54 @@
+<html> <head> </head> <body> <script type="text/javascript">
+
+const l = console.log
+const j = JSON.stringify
+
+l(`hi`)
+
+
+/*
+ **********************************************************************
+ *
+ *  Here is attempt 2.
+ *
+ */
+
+
+let symbol_not_found = 'Symbol not found'
+
+class LispA extends Array
+{
+
+    static #symbol_not_found = symbol_not_found
+
+    #env_parent = null
+
+    #env_self = new Proxy({},{
+        set(target, property, value, receiver)
+        {
+            if(this.#is_key(property)) {
+                target[property] = value
+                return true
+            }
+            return false
+        },
+        get(target, property, receiver)
+        {
+            if(property in target) return target[property]
+
+            if(this.#env_parent) return this.#env_parent[property]
+
+            throw LispA.symbol_not_found
+        }
+    })
+
+    #is_key(candidate)
+    {
+        return ((typeof candidate == 'string') && (candidate[0] == ':'))
+    }
+
+}
+
+        </script>
+    </body>
+</html>

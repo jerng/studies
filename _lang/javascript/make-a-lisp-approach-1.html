@@ -1,7 +1,7 @@
 <html> <head> </head> <body> <script type="text/javascript">
 
 /*
- *
+            *
  *
  *
  *
@@ -31,45 +31,62 @@ l(`hi`)
 
 //[ define, square, [ lambda, x, [ `*`, x, x ] ] ]
 
+/*
+ * This was Attempt 1 : to follow the Make A Lisp guide.
+ *
+ * Development paused during the following step, as I wanted to refactor
+ *  the definition of (class Arp extends Array) to make it a bit more
+ *  regular. Plus, I just remembered about the Proxy class, and would
+ *  like to try implementing (class ArpEnv) in that.
+ *
+ * https://github.com/kanaka/mal/blob/master/process/guide.md#step-3-environments
+ *
+ */
+
+let symbol_not_found = 'Symbol not found'
+
 class Arp extends Array 
 {
-    eval(ast, repl_env)
+
+    static symbol_not_found = symbol_not_found
+
+    eval(ast_val, repl_env)
     {
-        if((typeof ast == 'string') && (ast[0] == ':')){
+        if((typeof ast_val == 'string') && (ast_val[0] == ':')){
 
-            if(ast in repl_env)  return repl_env[ast] 
+            if(ast_val in repl_env)  return repl_env[ast_val] 
 
-            throw 'Symbol not found'
+            throw Arp.symbol_not_found
         }  
 
-        if(ast instanceof Array){
+        if(ast_val instanceof Array){
 
-            if(ast.length == 0) return ast 
+            if(ast_val.length == 0) return ast_val 
 
-            ast.forEach( (subast, index)=>
+            ast_val.forEach( (subast_val, index)=>
                 { 
-                    ast[index] = this.eval(subast, repl_env)
+                    ast_val[index] = this.eval(subast_val, repl_env)
                 }
             ) 
-                // eval subasts before applying fn
-            if(ast[0] instanceof Function) {
-                const [fn, ...args] = ast
+            // eval subast_vals before applying fn
+            if(ast_val[0] instanceof Function) {
+                const [fn, ...args] = ast_val
                 return fn.apply(fn, args)
             }
 
-            return ast
+            return ast_val
         }
 
-        if((typeof ast == 'object') && (ast != null)
+        if((typeof ast_val == 'object') && (ast_val != null)
             /* no need to test for Array, as it is tested above */
         ){
             console.log(this)
-            for (const key in ast){
-                ast[key] = this.eval(ast[key], repl_env)
+            for (const key in ast_val){
+                ast_val[key] = this.eval(ast_val[key], repl_env)
             }
         }
 
-        return ast
+        return ast_val
 
     }
 
@@ -103,6 +120,37 @@ class Arp extends Array
     }
 }
 
+class ArpEnv extends Object
+{
+    #self_arp_env = {}
+    #outer_arp_env = undefined
+
+    constructor(outer_arp_env)
+    {
+        this.#outer_arp_env = outer_arp_env
+    }
+
+    set(key, ast_val) { 
+        if(key[0] == ':') this.self_arp_env[key] = ast_val 
+    }
+
+    get(key)
+    {
+        /* NOT CLEAR : idiomatic to THROW, WARN, or return () ? */
+
+        if(key in this.#self_arp_env) { return this.#self_arp_env[key] }
+
+        if(this.#outer_arp_env) { return this.#outer_arp_env.get(key) }
+
+        throw Arp.symbol_not_found
+    }
+
+    delete(key){ 
+        if(key[0] == ':') delete this.#self_arp_env[key] 
+    } 
+}
+
+
 const a = new Arp([ 111, 222, 333, "stringy", "stringstring",])
 l(j(a))
 a.rep()
@@ -125,12 +173,6 @@ const c = new Arp(
 l(j(c))
 c.rep()
 
-/*
-
-CONTINUE AT : 
-https://github.com/kanaka/mal/blob/master/process/guide.md#step-3-environments
-
- */
 
         </script>
     </body>
