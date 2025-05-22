@@ -174,7 +174,7 @@ class LispA extends Array
 
                 case ':def!':
                     return lispa_env[lispa_val[1]] =
-                        this.#eval(lispa_val[2],lispa_env) 
+                        this.#eval(lispa_val[2],lispa_env)
 
                 case ':do':
                     let tmp
@@ -192,6 +192,20 @@ class LispA extends Array
                         ( this.#eval(lispa_val[2], lispa_env) )
                     )
 
+                case ':fn*':
+                    {
+                        const tmp_env = Object.create(lispa_env, {})
+                        const fn = function(){
+                            l('fn* CLOSURE begin')
+                            lispa_val[1].forEach((fn_param,index)=>{
+                                tmp_env[fn_param] = arguments[index] 
+                            })
+                            l('fn* CLOSURE end')
+                            return this.#eval(lispa_val[2], tmp_env) 
+                        }
+                        return fn                    
+                    }
+
                 case ':let*':
                     /* see (defc) in the comparison list */
                     const tmp_env = Object.create(lispa_env, {})
@@ -202,10 +216,6 @@ class LispA extends Array
                         value=undefined*/
                     }
                     return this.#eval(lispa_val[2], tmp_env)
-
-                case ':nil':
-                    return ':nil'
-                    /* any chance of bad looping? */
 
                 default:
             } 
@@ -218,7 +228,9 @@ class LispA extends Array
 
             /* generally : function application */
             if(lispa_val[0] instanceof Function) {
+                l('general function application, begin:')
                 const [fn, ...args] = lispa_val
+                l(fn, args)
                 return fn.apply(lispa_val, args)
             }
         }
@@ -286,10 +298,16 @@ const f = new LispA( [
     [':if',':nil','it is true','it is false'],
     [':if',new LispA([]),'it is true','it is false'],
     [':if',null,'it is true','it is false'],
+
+    [':fn*',[':a'],':a'],
+    [ [':fn*',[':a'],':a'], 7 ],
+    [ [':fn*',[':a'],[':+',':a',1]], 10 ],
+    [ [':fn*',[':a',':b'],[':+',':a',':b']], 2,3 ],
+
 ] )
 for(const k in fns){ f.setEnv(k, fns[k]) }
-l(j(f))
 f.rep()
+l(f)
 
 
 
