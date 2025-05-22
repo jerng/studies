@@ -91,6 +91,10 @@ class LispA extends Array
             programmer check strictly */
     }
 
+    static is_falsy(candidate) {
+        return ( !candidate || LispA.is_nil(candidate) )
+    }
+
     #env = new Proxy({},{
         set(target, property, value, receiver)
         {
@@ -116,6 +120,7 @@ class LispA extends Array
 
         super()
         if(!(array instanceof Array)){ 
+            l(array)
             tcf(_=>{ throw LispA.not_an_array })
         } 
 
@@ -149,9 +154,15 @@ class LispA extends Array
         run running somewhere else */
     #eval(lispa_val, lispa_env) {
         /* any type -> any type */
-        //l('eval begin',lispa_val )
+        l('eval begin',lispa_val )
         if(LispA.is_key(lispa_val)){
             if(lispa_val in lispa_env) return lispa_env[lispa_val] 
+            
+            /* TODO : reconsider this very hacky exception; see the
+            keyword switch below; consider, avoiding initialising
+            LispA.#env with anything but an empty object, for regularity
+                */
+            if(lispa_val == ':nil') return ':nil'
 
             tcf(_=>{ throw [ LispA.symbol_not_found, lispa_val ] })
         }  
@@ -165,6 +176,22 @@ class LispA extends Array
                     return lispa_env[lispa_val[1]] =
                         this.#eval(lispa_val[2],lispa_env) 
 
+                case ':do':
+                    let tmp
+                    for(let i=1; i<lispa_val.length; i+=1){
+                        tmp = this.#eval(lispa_val[i], lispa_env)
+                    }
+                    return tmp
+
+                case ':if':
+                    /* currently very JS-oriented; may output a variety
+                        of falsy values */
+                    return ( LispA.is_falsy( this.#eval( 
+                        lispa_val[1], lispa_env ) ) ? 
+                        ( this.#eval(lispa_val[3], lispa_env) ) :
+                        ( this.#eval(lispa_val[2], lispa_env) )
+                    )
+
                 case ':let*':
                     /* see (defc) in the comparison list */
                     const tmp_env = Object.create(lispa_env, {})
@@ -175,6 +202,10 @@ class LispA extends Array
                         value=undefined*/
                     }
                     return this.#eval(lispa_val[2], tmp_env)
+
+                case ':nil':
+                    return ':nil'
+                    /* any chance of bad looping? */
 
                 default:
             } 
@@ -247,7 +278,14 @@ const f = new LispA( [
     ':a',
     [':def!', ':b', [':+', ':a', 2]],
     [':+',':a',':b'],
-    [':let*',[':c',2],':c']
+    [':let*',[':c',2],':c'],
+    [':do',[':+',':a',':b'],3,[':*',9,':b']],
+
+    [':if',true,'it is true','it is false'],
+    [':if',false,'it is true','it is false'],
+    [':if',':nil','it is true','it is false'],
+    [':if',new LispA([]),'it is true','it is false'],
+    [':if',null,'it is true','it is false'],
 ] )
 for(const k in fns){ f.setEnv(k, fns[k]) }
 l(j(f))
