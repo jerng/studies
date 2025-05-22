@@ -2,7 +2,8 @@
 
 const l = console.log
 const j = JSON.stringify
-
+const tcf = fn=>{ try{fn()}catch(e)
+    {console.error('stack trace:',e)}finally{throw 'halt'} }
 l(`hi`)
 
 
@@ -28,19 +29,18 @@ l(`hi`)
 
 
 let lispa_symbol_not_found = 'LispA symbol not found'
+let lispa_not_an_array = 'found a non-(instanceof Array)'
 
 class LispA extends Array
 {
     static symbol_not_found = lispa_symbol_not_found
+    static not_an_array = lispa_not_an_array
 
-    static is_key(candidate)
-    {
+    static is_key(candidate) {
         return ((typeof candidate == 'string') && (candidate[0] == ':'))
     }
-
-    #env_parent = null
-
-    #env_self = new Proxy({},{
+    
+    #env = new Proxy({},{
         set(target, property, value, receiver)
         {
             if(LispA.is_key(property)) {
@@ -52,126 +52,118 @@ class LispA extends Array
         get(target, property, receiver)
         {
             /* for convenience, no hiding of non-Lisp-symbols */
-
+            /* this.#env.prototype should ===
+                this.constructor.#env : see this.constructor() */
             if(property in target) return target[property]
 
-            if(this.#env_parent) return this.#env_parent[property]
-
-            throw LispA.symbol_not_found
+            tcf(_=>{ throw LispA.symbol_not_found }) 
         }
     })
 
-    constructor(array)
-    {
-        super()
+    constructor(array) {
+        /* turns any instance of Array into a new instance of LispA */
 
-        /* TODO : replace with Proxy */
-        array.forEach(e=>this.push(
-            ((e instanceof Array) && ! (e instanceof LispA))
-            ? new LispA(e) 
-            : e
-        ))
+        super()
+        if(!(array instanceof Array)){ 
+            tcf(_=>{ throw LispA.not_an_array })
+        } 
+
+        array.forEach( (e, i)=>{
+            if(array[i] instanceof Array){
+                this[i] = new LispA(e)
+                this[i].setEnvObject( Object.create(this.#env,{}) )
+                /* imprinting child.#env upon parent.#env */
+            } else {
+                this[i] = array[i]
+            }
+        })
+        return this 
     }
 
-    getEnv(key) { this.#env_self[key] }
+    getEnv(key) { this.#env[key] }
 
-    setEnv(key, val) { this.#env_self[key] = val }
+    setEnv(key, val) { this.#env[key] = val }
+
+    /* more efficient, with new_env=Object.create(prototype) */
+    setEnvObject(new_env){ this.#env = new_env }
+
+    /* less efficient */
+    setEnvPrototype(parent_env) { 
+        Object.setPrototypeOf( this.#env, parent_env )
+    }
 
     /**** BEGIN DEV ZONE ***********/
 
     #eval(lispa_val, lispa_env)
     {
+        //l('eval begin',lispa_val )
+
         if(LispA.is_key(lispa_val)){
 
             if(lispa_val in lispa_env) return lispa_env[lispa_val] 
 
-            throw [ LispA.symbol_not_found, lispa_val ]
+            tcf(_=>{ throw [ LispA.symbol_not_found, lispa_val ] })
         }  
 
         if((lispa_val instanceof LispA) && (lispa_val.length > 0)){ 
 
-            /* keywords */
-            switch(lispa_val[0]) {
-
-/*  TODO:
- *  Consider the following framework :
- ******************************************
- *  CONTEXT : 
- *  Clojure :       'let' (behaves like CL's 'let*')
- *  Common Lisp :   'let' and                'let*'
- *  Scheme :        'let',                   'let*' and 'letrec'
- ******************************************
- *  -   :defg : var in global scope
- *
- *  -   :defl : var in local scope 
- *          ( 'outside'
- *              ( 'declared_here' 'usable_here' )
- *              ( 'unusable_here' ) )
- *
- *  -   :defp : var in parent scope
- *          ( 'grandparent'
- *              ( 'parent'
- *                  ( 'declared_here' 'usable_here' )
- *                  'usable_here' )
- *              ( 'unusable_here' ) )
- *
- *  -   :defpN : var in Nth-ancestral scope?
- *
- *  -   :defc : var in child scope : CLASSIC "let"
- *          ( 'declared_here' 
- *            'unusable_here'
- *            ( 'usable_here' )
- ******************************************
- *  -   :setl : redefine existing local variable
- ******************************************
- *  -   :defc : interpolated syntax : SHORTEST
- *          [':defc', [':a',1,':b',2,':c',3],[':+',':a',':b',':c']]
- *
- *  -   :defc# : block syntax
- *          [':defc%',[':a',':b',':c'],[1,2,3],[':+',':a',':b',':c']]
- *
- *  -   :defc@ : nested syntax 
- *          [':defc@',[':a',1,[':b',2,[':c',3]]],[':+',':a',':b',':c']]
- *
- *  -   :defc% : pair syntax : LONGEST
- *          [':defc%',[[':a',1],[':b',2],[':c',3]],[':+',':a',':b',':c']]
- *
- */
-
-
-
-
-        /* let var : 
-         * 
-         *  [ ':local', ':x', 99 ]   becomes ...
-         *  lispa_env[':x'] = 99
-         */
-                case ':local':
-                    lispa_env[lispa_val[1]] = lispa_val[2] )
-                    break;
-
-        /* clojure : serial let : TODO : common lisp and others? 
-         *
-         *  [ ':let*', SERIAL_BINDINGS, EXECUTE_THIS ]
-         *
-         *      where, if SERIAL_BINDINGS is 
-         *      [   [ ':x', 1 ], 
-         *          [ ':y', [ ':+', ':x', 1 ] ], 
-         *          [ ':z', [ ':*', ':y', 2 ] ] ]
-         *
-         *      and, if EXECUTE_THIS is
-         *      [ list ':x', ':y', ':z' ]
-         *
-         */
-                case ':let*':
-                    
-                    break;
-                default:
-            } 
-
-            /* keyword :let */
-
-
+            //            /* keywords */
+            //            switch(lispa_val[0]) {
+            //
+            //                /*  TODO:
+            //                 *  Consider the following framework :
+            //                 ******************************************
+            //                 *  CONTEXT : 
+            //                 *  Clojure :       'let' (behaves like CL's 'let*')
+            //                 *  Common Lisp :   'let' and                'let*'
+            //                 *  Scheme :        'let',                   'let*' and 'letrec'
+            //                 ******************************************
+            //                 *  -   :defg : var in global scope
+            //                 *
+            //                 *  -   :defl : var in local scope 
+            //                 *          ( 'outside'
+            //                 *              ( 'declared_here' 'usable_here' )
+            //                 *              ( 'unusable_here' ) )
+            //                 *
+            //                 *  -   :defp : var in parent scope
+            //                 *          ( 'grandparent'
+            //                 *              ( 'parent'
+            //                 *                  ( 'declared_here' 'usable_here' )
+            //                 *                  'usable_here' )
+            //                 *              ( 'unusable_here' ) )
+            //                 *
+            //                 *  -   :defpN : var in Nth-ancestral scope?
+            //                 *
+            //                 *  -   :defc : var in child scope : CLASSIC "let"
+            //                 *          ( 'declared_here' 
+            //                 *            'unusable_here'
+            //                 *            ( 'usable_here' )
+            //                 ******************************************
+            //                 *  -   :setl : redefine existing local variable
+            //                 ******************************************
+            //                 *  -   :defc : interpolated syntax : SHORTEST
+            //                 *          [':defc', [':a',1,':b',2,':c',3],[':+',':a',':b',':c']]
+            //                 *
+            //                 *  -   :defc# : block syntax
+            //                 *          [':defc%',[':a',':b',':c'],[1,2,3],[':+',':a',':b',':c']]
+            //                 *
+            //                 *  -   :defc@ : nested syntax 
+            //                 *          [':defc@',[':a',1,[':b',2,[':c',3]]],[':+',':a',':b',':c']]
+            //                 *
+            //                 *  -   :defc% : pair syntax : LONGEST
+            //                 *          [':defc%',[[':a',1],[':b',2],[':c',3]],[':+',':a',':b',':c']]
+            //                 *
+            //                 */
+            //
+            //                case ':def!':
+            //                lispa_env[lispa_val[1]] = lispa_val[2] 
+            //                break;
+            //
+            //                case ':let*':
+            //
+            //                break;
+            //                default:
+            //            } 
 
             /* eval sub-lists */
             lispa_val.forEach( (lispa_subval, index)=> { 
@@ -188,15 +180,16 @@ class LispA extends Array
 
         }
 
+        //l('eval end',lispa_val )
+
         /* not LispA, or lispa_val.length==0 */
         return lispa_val
-
     }
 
     #read(a){ return a }
 
     rep(lispa_val){ this.#print( this.#eval (
-        this.#read(this), this.#env_self ) ) }
+        this.#read(this), this.#env ) ) }
 
     #print(a){ 
         console.log(JSON.stringify(a,null,2)) }
@@ -204,18 +197,40 @@ class LispA extends Array
     /**** END DEV ZONE ***********/
 }
 
-const a = new LispA([ 111, 222, 333, "stringy", "stringstring",])
+const fns = {
+':+': (a, b)=>(a + b),
+':-': (a, b)=>(a - b),
+':*': (a, b)=>(a * b),
+':/': (a, b)=>(a / b)
+}
+
+/*
+const a = new LispA( 123 )
 l(j(a))
 a.rep()
+ */
 
-const b = new LispA( [':+',[':*',3, 4], [':/',17 ,4]] )
-b.setEnv(':+', (a, b)=>(a + b))
-b.setEnv(':-', (a, b)=>(a - b))
-b.setEnv(':*', (a, b)=>(a * b))
-b.setEnv(':/', (a, b)=>(a / b))
+const b = new LispA( [] )
 l(j(b))
 b.rep()
 
+const c = new LispA([ 111, 222, 333, "stringy", "stringstring",])
+l(j(c))
+c.rep()
+
+const d = new LispA( [':*',3, 4] )
+for(const k in fns){ d.setEnv(k, fns[k]) }
+l(j(d))
+d.rep()
+
+const e = new LispA( [':+',[':*',3, 4], [':/',17 ,4]] )
+for(const k in fns){ e.setEnv(k, fns[k]) }
+l(j(e))
+e.rep()
+
+/*
+
+ */
 
 
 
