@@ -154,7 +154,7 @@ class LispA extends Array
         run running somewhere else */
     #eval(lispa_val, lispa_env) {
         /* any type -> any type */
-        l('eval begin',lispa_val )
+        //l('eval begin',lispa_val )
         if(LispA.is_key(lispa_val)){
             if(lispa_val in lispa_env) return lispa_env[lispa_val] 
             
@@ -163,6 +163,19 @@ class LispA extends Array
             LispA.#env with anything but an empty object, for regularity
                 */
             if(lispa_val == ':nil') return ':nil'
+
+            /* core libraries */
+            switch(lispa_val) {
+                case ':+': 
+                    return (a, b)=>(a + b)
+                case ':-': 
+                    return (a, b)=>(a - b)
+                case ':*': 
+                    return (a, b)=>(a * b)
+                case ':/': 
+                    return (a, b)=>(a / b)
+                default:
+            }
 
             tcf(_=>{ throw [ LispA.symbol_not_found, lispa_val ] })
         }  
@@ -196,11 +209,9 @@ class LispA extends Array
                     {
                         const tmp_env = Object.create(lispa_env, {})
                         const fn = function(){
-                            l('fn* CLOSURE begin')
                             lispa_val[1].forEach((fn_param,index)=>{
                                 tmp_env[fn_param] = arguments[index] 
                             })
-                            l('fn* CLOSURE end')
                             return this.#eval(lispa_val[2], tmp_env) 
                         }
                         return fn                    
@@ -228,9 +239,9 @@ class LispA extends Array
 
             /* generally : function application */
             if(lispa_val[0] instanceof Function) {
-                l('general function application, begin:')
+                //l('general function application, begin:')
                 const [fn, ...args] = lispa_val
-                l(fn, args)
+                //l(fn, args)
                 return fn.apply(lispa_val, args)
             }
         }
@@ -250,6 +261,7 @@ class LispA extends Array
     /**** END DEV ZONE ***********/
 }
 
+/*
 const fns = {
 ':+': (a, b)=>(a + b),
 ':-': (a, b)=>(a - b),
@@ -257,7 +269,6 @@ const fns = {
 ':/': (a, b)=>(a / b)
 }
 
-/*
 const a = new LispA( 123 )
 l(j(a))
 a.rep()
@@ -266,22 +277,23 @@ const b = new LispA( [] )
 l(j(b))
 b.rep()
 
+//*/
+
 const c = new LispA([ 111, 222, 333, "stringy", "stringstring",])
 l(j(c))
 c.rep()
 
 const d = new LispA( [':*',3, 4] )
-for(const k in fns){ d.setEnv(k, fns[k]) }
+//for(const k in fns){ d.setEnv(k, fns[k]) }
 l(j(d))
 d.rep()
 
 const e = new LispA( [':+',[':*',3, 4], [':/',17 ,4]] )
-for(const k in fns){ e.setEnv(k, fns[k]) }
+//for(const k in fns){ e.setEnv(k, fns[k]) }
 l(j(e))
 e.rep()
 
- */
-
+//*/
 
 const f = new LispA( [
     [],
@@ -305,10 +317,11 @@ const f = new LispA( [
     [ [':fn*',[':a',':b'],[':+',':a',':b']], 2,3 ],
 
 ] )
-for(const k in fns){ f.setEnv(k, fns[k]) }
-f.rep()
+//for(const k in fns){ f.setEnv(k, fns[k]) }
 l(f)
+f.rep()
 
+// */
 
 
         </script>
