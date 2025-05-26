@@ -101,6 +101,8 @@
 |  |                executes /etc/profile, ~/.bash_profile, ~/.bash_login,           |
 |  |                ~/.profile, in that order                                        |
 |  |                                                                                 |
+|  +- bash.bashrc OR bashrc : read before ~/.bashrc                                  |
+|  |                                                                                 |
 |  +- opt       :   Configuration for add-ons stored in '/opt'  <-+                  |
 |                                                                 |                  |
 +- opt          :   optional : software not part of the core    >-+------------------+
