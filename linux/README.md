@@ -66,8 +66,9 @@
 |                                                                                    |
 +- root         :   home directory for the root user                                 |
 |                                                                                    |   
-+- home         :   home directory for non-root users :                              |
-|                   /home/<username>                                                 |
++- home         :   home directory for non-root users : /home/<username>             |
+|  |                                                                                 |
+|  +- .bashrc   :   ( man bash ) : when invoked as a NON-LOGIN shell, executes this  |
 |                                                                                    |
 |  *************************************                                             | 
 |  * OF IMPORTANCE TO SYSTEM INTEGRITY *                                             |
@@ -95,6 +96,10 @@
 |  |                ( 1984 - 1987 )                                                  |
 |  |                                                                                 |
 |  +- xml       :   1996                                                             |
+|  |                                                                                 |
+|  +- profile   :   ( man bash ) : when invoked as a LOGIN shell,                    |
+|  |                executes /etc/profile, ~/.bash_profile, ~/.bash_login,           |
+|  |                ~/.profile, in that order                                        |
 |  |                                                                                 |
 |  +- opt       :   Configuration for add-ons stored in '/opt'  <-+                  |
 |                                                                 |                  |
