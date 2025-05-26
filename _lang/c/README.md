@@ -27,3 +27,13 @@ Software Engineering Institute @ Carnegie Mellon University's Computer Emergency
 
 # Linux Kernel Style
 [https://www.kernel.org/doc/html/v4.10/process/coding-style.html](url)
+
+# Memory Allocators
+
+Nice diagrams about C memory allocation :
+https://github.com/mtrebi/memory-allocators
+
+Some hipster allocators : 
+- mimalloc : https://github.com/microsoft/mimalloc : MIT license
+- jemalloc : https://github.com/jemalloc/jemalloc : weird license
+- tcmalloc : https://github.com/google/tcmalloc : Apache license
