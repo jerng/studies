@@ -30,6 +30,8 @@ Software Engineering Institute @ Carnegie Mellon University's Computer Emergency
 
 # Memory Allocators
 
+https://www.rfleury.com/p/untangling-lifetimes-the-arena-allocator
+
 Nice diagrams about C memory allocation :
 https://github.com/mtrebi/memory-allocators
 
