@@ -383,6 +383,8 @@ class IDBAssistant
             : a(somefunction)(arguments)
             : must check that somefunction === known global.fn
         /* TODO : a : Object.defineProperty writable false */
+        /* ALTERNATIVELY : return new
+            Proxy(this.#IDBFactory,{adjustments}) */
         return { a: {
             cmp: function(){},
             databases: function(){},
