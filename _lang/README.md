@@ -260,6 +260,16 @@ https://verdagon.dev/grimoire/grimoire
 https://writings.stephenwolfram.com/2020/12/combinators-and-the-story-of-computation/
 https://en.wikipedia.org/wiki/To_Mock_a_Mockingbird
 
+S-combinator in JavaScript :
+```javascript
+s = x => y => z => x(z)(y(z))   // defined
+
+s(a=>b=>a+b)(c=>c+1)(1)         // applied
+                                // result : 3
+
+s(a=>b=>a+b)(c=>c*3)(10)        // applied
+                                // result : 40
+```
 
 
 
