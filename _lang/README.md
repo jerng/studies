@@ -251,13 +251,9 @@ any."
 
 - https://five-embeddev.com/articles/2023/03/20/c-hardware-access/
 
+## Memory Management
 
-
-
-
-
-
-
+https://verdagon.dev/grimoire/grimoire
 
 
 
