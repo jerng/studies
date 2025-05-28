@@ -1,6 +1,7 @@
 # OOP
 
-https://www.artima.com/articles/modern-c-style#part3
+https://www.artima.com/articles/modern-c-style
+https://www.artima.com/articles/the-c-style-sweet-spot
 
 # Safety
 
