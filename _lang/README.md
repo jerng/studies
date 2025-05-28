@@ -251,16 +251,14 @@ any."
 
 - https://five-embeddev.com/articles/2023/03/20/c-hardware-access/
 
-## Memory Management
+#### Memory Management
 
 https://verdagon.dev/grimoire/grimoire
 
+#### Combinators
 
-
-
-
-
-
+https://writings.stephenwolfram.com/2020/12/combinators-and-the-story-of-computation/
+https://en.wikipedia.org/wiki/To_Mock_a_Mockingbird
 
 
 
