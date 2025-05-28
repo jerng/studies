@@ -208,6 +208,12 @@ INSTRUCTIONS.
 
 https://www.reddit.com/r/ProgrammingLanguages/comments/1kw1yhz/which_languages_allowrequire_explicit_management/
 
+###### Notable Response : Bla
+
+https://www.reddit.com/r/ProgrammingLanguages/comments/1kw1yhz/comment/munaly2/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+
+https://strlen.com/bla-language/
+
 ###### Notable Response : Kernel ( a Scheme )
 
 https://www.reddit.com/r/ProgrammingLanguages/comments/1kw1yhz/comment/muflh1t/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
