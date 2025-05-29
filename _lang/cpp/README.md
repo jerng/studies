@@ -20,3 +20,5 @@ https://www.reddit.com/r/cpp/comments/187yrih/compiler_options_hardening_guide_f
 https://github.com/Barro/compiler-warnings
 
 https://github.com/shuaimu/rustycpp
+
+https://youtu.be/I8UvQKvOSSw
