@@ -15,3 +15,8 @@ Herb Sutter gets a lot of downvotes on Reddit for his committee position, so I a
 >   https://lobste.rs/s/txcnjn/memory_safe_c
 >   Discussion of the Chromium team post, also here.
 
+https://www.reddit.com/r/cpp/comments/187yrih/compiler_options_hardening_guide_for_c_and_c/
+
+https://github.com/Barro/compiler-warnings
+
+https://github.com/shuaimu/rustycpp

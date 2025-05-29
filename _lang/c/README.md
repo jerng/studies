@@ -39,3 +39,16 @@ Some hipster allocators :
 - mimalloc : https://github.com/microsoft/mimalloc : MIT license
 - jemalloc : https://github.com/jemalloc/jemalloc : weird license
 - tcmalloc : https://github.com/google/tcmalloc : Apache license
+
+# SAFETY
+
+https://www.reddit.com/r/cpp/comments/ug90nz/a_ruststyle_borrow_checker_for_c_with_partial/
+This links to a series of 2011 posts by Lattner on C grey magic.
+
+## Dodging C grey 
+
+https://medium.com/@costaparas/the-gcc-warning-flags-every-c-programmer-should-know-about-8846c4a9bc94
+
+https://www.reddit.com/r/cpp/comments/187yrih/compiler_options_hardening_guide_for_c_and_c/
+
+https://github.com/Barro/compiler
