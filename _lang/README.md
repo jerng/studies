@@ -281,12 +281,44 @@ https://www.cuemath.com/numbers/math-symbols/
 AVOID OVERLOADING
 = : comparison, assignment X
 ```
-a:=b    assignment, from b to a ( ALGOL, Pascal, Python )
+a:=b    assignment, from b to a ( ALGOL, Pascal, Python, Smalltalk )
+
+a+=b
+a-=b
+a*=b
+a/=b
+a%=b    CHECK MULTIPLE MEANINGS
+a**=b
+a//=b
+a>>=b
+a<<=b
+etc.
+
 ```
 
 AVOID IMPLICIT PRECEDENCE HIERARCHY
 Evaluation sequence should follow explicit spatial rules
 
+USE WHITESPACE for IFS / INTERNAL FIELD SEPARATION
+
+USE HEREDOCS for nice matrice alignments
+```
+variablex := <<<here
+[ 0     1,000   45  ]
+[ 1     0       29  ]
+[ 1     1       6   ]
+here
+```
+Brackets & Quotes
+```
+{}  for sets
+()  for tuples
+[]  for matrices
+<>  ? spare! or wait till group theory
+``  ? text
+''  ? atoms?
+""  ? spare!
+```
 Numerals
 ```
 0xa     indicates that a is a base16 number ( C lang )
@@ -311,8 +343,8 @@ a_a     ? underscore separated numerals
 
 0ra     ? roman numerals
 
-|N0     ? set of natural numbers, beginning with 0
-|N1     ? set of natural numbers, beginning with 1
+|N~0    ? set of natural numbers, beginning with 0
+|N      ? set of natural numbers, beginning with 1
 |Z      ? set of integers ( from Zahlen )
 |Q      ? set of rational numbers ( from Quotient )
 |P      ? set of irrational numbers
@@ -326,6 +358,7 @@ a_a     ? underscore separated numerals
 |Z_p    ? integers modulo p ( advanced )
 
 |inf    ? infinity
+|oxo|
 ```
 
 
@@ -350,119 +383,18 @@ a^b(x)  functional power ( maths: varies by domain )
 
 Tuples
 ```
-(a b)   ? math
+(a, b)  ? math : finite, ordered : distinguished from sets
 v[a b]  ? vector
 
-a(x)b   "cross product", "vector product" : a vector
-a(.)b   "dot product", "scalar product" : a scalar
-```
+a<<b    append b to tuple a     ( Ruby )
+a>>b    prepend a to tuple b
 
-Functions
-```
-a:B->C  ( maths )
-\a->b   ( Haskell )
-```
+push / pop / shift / unshift?
 
-Logic
-```
-E|a     ? there exists at least one a
-E]a     ?
+ARRAYS vs TUPLES ?
 
-E|!a    ? there exists one, and only one, a
-E]!a    ?
 
-A|a     ? for all a
-
-!a      NOT gate    ( B lang, C lang; conflict with Peano )
-a\/b    OR gate     ( similar/same with Peano
-a/\b    AND gate    ( conflict with Peano )
-
-a=>b    implication ( similar to Peano )
-a->b    ?
-
-a<=>b   IF, AND, ONLY IF
-a<>b    ditto
-
-a|b     a such that b ( similar to set builder notation )
-a:b     ditto
-```
-
-Russell-Peano notation :
-```
-~a      negation of a
-a\/b    logical sum of a,b
-a.b     logical product of a,b
-a=)b    implication of b, by a
-
-Consider :
-a===b   equivalence of a,b;
-a|||b       a=)b.b=)a
-|-a     assertion of a's truth
-
-a.a=)b.=)b  inference by modus ponens
-
-a (E b  ? a is an element, in set b (einai=is, adopted by Cantor )
-a (e b  ?
-b E) a  ?
-b e) a  ?
-
-a (Z b  ? a is not an element, in set b
-a (~ b  ? 
-a (E' b ? perhaps too discreet
-a (/E b ?
-a (~E b ?
-a (~e b ?
-```
-
-Set Notation
-```
-{a, b}      a set containing elements a and b ( Cantor )
-
-{}          empty set
-(/)         ?
-
-{a|b(a)}    set-builder notation
-            set of as defined by property b ( Cantor )
-
-a'      "a prime" : the complement of set a ( Cantor )
-a^c     "a's complement" ( Cantor )
-
-a(=b    a is a subset of b; b is a superset of a
-a(set b ?
-
-a=)b    a is a superset of b; b is a subset of a
-a set)b ?
-
-a U b   ? union of a,b ( Cantor ) 
-a\set/b ?
-a\/b    ?
-
-a ^ b   ? intersection of a,b ( Cantor )
-a/\b    ?
-a/set\b ?
-
-w       "first finite ordinal"
-        order type of the natural numbers ( Cantor )
-
-A_a     ? transfinite numbers of order a 
-|A_a    ?
-A/_a    ?
-
-|a|     cardinality of a ; number of elements in a
-
-P(a)    power set of a
-
-```
-
-Arithmetic
-```
-a+b     summation / addition of a,b
-a*b     multiplication of a,b; addition of a, to a, b times
-a-b     subtraction of b, from a
-a/b     division of a by b; subtraction of b, from a, RESULT times
-
-a%b     modulo OR remainder (CHECK LANGUAGES)
-a-/b    ? ath root of b
+SEE BITWISE SHIFTS
 ```
 
 Matrices
@@ -481,8 +413,372 @@ M(n,R)      ?
 
 Mat         may be in place of M
 
+|M|         determinant of M
+
+(X,Y,Z) = (a,  b,  c  )(x,y,z)   ( Cayley ) 
+          |a', b', c' |
+          |a'',b'',c''|
+
+TODO : See BQN's matrix notation
+
+a(x)b       multiplication "matmul"
+
+a(x)b   "cross product", "vector product" : a vector
+a(.)b   "dot product", "scalar product" : a scalar
+        special case of inner product
+
+<a,b>   inner product ( LEARN THIS FIRST )
+(a,b)
+<a|b>
+(a|b)
+
+a(x)b           outer product / tensor product
+a(x)_outerb     not the dot product
+                not the kronecker product
+                not standard matmul
+
+a(x)_kromb      kronecker product
 
 ```
+
+Indexing / Keying
+```
+a[b]        bth item in a ( C-fam )
+a_b         ( maths )
+
+a[b][c]     ... depending on language, the outer-most container is
+            indexed on the far-left or far-right
+a_b,c
+
+a_i1,i2... + b_i1,i2... = c_i1,i2... 
+representing a set of many equations
+
+See C array addressing where equivalently : 
+    *(base + i)     "pointer form"
+    base[i]         "array indexing form"
+    i[base]         ditto
+
+SEE : Namespace Referencing
+SEE : Memory Pointers 
+```
+
+
+Functions
+```
+a(b)=c                  ( maths )
+a:b->c                  ( maths )
+
+\a->b                   ( Haskell )
+fun a->b                ( caml )
+a=>b                    ( JavaScript )
+(a)=>{return b}         ( JavaScript )
+function a(b){return c} ( JavaScript )
+def a(b):c;             ( Python )
+fun a(b)=c              ( ML )
+fn : a->b               ( ML )
+a := [ :b | c = b+1 ]   ( Smalltalk )
+
+```
+
+Namespaced Referencing
+```
+a->b        ( C++, PHP )
+a.b         ( C, JavaScript )
+a b         ( Smalltalk )
+a::b        ( C++, Haskell )
+```
+
+Evaluation
+```
+a.          ( Prolog, Erlang )
+a()         ( C ) 
+a value.    ( Smalltalk )
+```
+
+Subexpressions
+```
+a,b,c.      ( Prolog, Erlang )
+a,b,c;      ( C, JavaScript )
+
+```
+Control
+```
+a?b             if a then b
+
+a?b:c           if a then b else c "ternary operator" 
+a->b,c          origin : ( CPL )
+a??b!!c         ( Raku )
+if(a,b,c)       ( VB.NET )
+b if a else c   ( Python )
+
+a??b            "nullish coalescing" if a is falsy, return b ( JavaScript, C# )
+a?.b            "ignore missing" continue silently if b is falsy ( JavaScript )
+a??=b           "ensure assignment" assign b to a, if a is falsy ( JavaScript )
+
+a?:b            "elvis" : if a is truthy, return a, else b = a ? a : b
+
+a$b             "right precedence" ( Haskell ) ( HOW ? )
+```
+
+Bitshift
+```
+BYTES ARE JUST TUPLES
+
+a<<b    shift bits in a, left by b positions
+a>>b    shift bits in a, right by b positions
+
+a<@b    shift bits in a, left by b positions, rotationally / circularly
+aROTLb
+a<<<b   CHECK symmetry ( no unsigned left shift BECAUSE ... )
+
+a>@b    shift bits in a, right by b positions, rotationally / circularly
+aROTRb
+a>>>b   unsigned right shift ( Java )
+
+```
+
+Logic
+```
+E|a     ? there exists at least one a
+E]a     ?
+
+E|!a    ? there exists one, and only one, a
+E]!a    ?
+
+A|a     ? for all a
+\-/a    ?
+\/a     ?
+
+!a      NOT gate    ( B lang, C lang; conflict with Peano )
+~a                  bitwise : ( C family, JS, etc. )
+a^^-
+
+a/\b    AND gate    ( conflict with Peano )
+a&b                 bitwise : ( C family, JS, etc. )
+a&&b
+a.b
+
+a/\^^-b NAND gate
+a^^b
+a|b
+a|^b
+(a.b)^^-
+-__(a.b)
+
+a\/b    OR gate     ( similar/same with Peano
+a|b                 bitwise : ( C family, JS, etc. )
+a||b
+
+a\/^^-  NOR gate
+a__b
+(a+b)^^-
+-__(a+b)
+a|vb
+
+a(.)b   XNOR gate "equivalent"
+a-__\/b
+a\/^^-b
+
+a<=>b   IF, AND, ONLY IF
+a<>b    ditto
+|iff    
+
+a\/__-b XOR gate "nonequivalent"
+a-^^\/b
+a(+)b
+a^b
+
+a<=/=>b
+a</=>b
+a</>b
+a<-/->b
+
+a=>b    implication ( similar to Peano ) "IMPLY"
+a->b    ?
+
+a<=b    converse
+a<-b
+
+a=/>b   nonimplication "NIMPLY"
+a</=b
+
+a-/>b   converse nonimplication
+a</-b
+
+a|b     a such that b ( similar to set builder notation )
+a:b     ditto
+[]      "tombstone" : end of proof
+#       ditto
+```
+
+Russell-Peano notation :
+```
+~a      negation of a
+a\/b    logical sum of a,b
+a.b     logical product of a,b
+a=)b    implication of b, by a
+
+Consider :
+a===b   equivalence of a,b;
+a|||b       a=)b.b=)a
+|-a     "turnstyle" : assertion of a's truth
+        a,b,c|-d = a \/ b \/ c => d
+
+a.a=)b.=)b  inference by modus ponens
+
+a (E b  ? a is an element, in set b (einai=is, adopted by Cantor )
+a (e b  ?
+b E) a  ?
+b e) a  ?
+
+a <E b
+a E> b
+a <e b
+a e> b
+
+a ~<E b
+a ~E> b
+a </E b
+a E/> b
+
+a ~<e b
+a ~e> b
+a </e b
+a e/> b
+
+a (Z b  ? a is not an element, in set b
+a (~ b  ? 
+a (E' b ? perhaps too discreet
+a (/E b ?
+a (~E b ?
+a (~e b ?
+```
+
+Model Theory
+```
+a|=b        "double turnstyle" ; Model a makes true predicate b
+            a,b,c|=d = entailment without provability
+
+soundness       "system does not produce invalid conclusions"
+completeness    "system can produce all valid conclusions"
+```
+Set Notation
+```
+{a, b}      a set containing elements a and b ( Cantor )
+
+{}          empty set
+(/)         ?
+
+{a|b(a)}    set-builder notation
+            set of as defined by property b ( Cantor )
+
+a'      "a prime" : the complement of set a ( Cantor )
+a^c     "a's complement" ( Cantor )
+
+PROPER :
+
+a(=b    a is a subset of b; b is a superset of a
+a(set b ?
+a <e b
+
+a (/= b
+a ~(= b
+a (/set b
+a ~(= b
+a </e b
+a ~<e b
+
+a=)b    a is a superset of b; b is a subset of a
+a set)b ?
+a e> b
+
+IMPROPER : 
+
+a=(=b
+a=)=b
+a(=_=b
+a=)_=b
+a =<e b
+a e>= b
+a <=set b
+a >=set b
+
+a ~<=set b
+a ~>=set b
+a </=set b
+a >/=set b
+
+a U b   ? union of a,b ( Cantor ) 
+a|v|b
+a\set/b ?
+a\/b    ?
+a&b     ( Python )
+
+a|delb  "symmetric difference" of a,b
+a(+)b   "elements in a, or b, but not not in both a and b"
+a/_\b   "disjunction union" "set sum"
+
+a ^ b   ? intersection of a,b ( Cantor )
+a|^|b
+a/\b    ?
+a/set\b ?
+a|b     ( Python )
+
+w       "first finite ordinal"
+        order type of the natural numbers ( Cantor )
+
+A_a     ? transfinite numbers of order a 
+|A_a    ?
+A/_a    ?
+
+|a|     cardinality of a ; number of elements in a
+        ( STRONGLY AVOID )
+#a      ditto ( STRONGLY PREFER )   ( Lua, maths )
+
+P(a)    power set of a
+
+```
+
+Algebra
+```
+(a+b)*c precedence grouping ( HOW TO RECTIFY WITH TUPLES ? )
+a+b     summation / addition of a,b
+
+a*b     multiplication of a,b; addition of a, to a, b times
+a(x)b   ?
+a(b)    ?
+
+a-b     subtraction of b, from a
+a/b     division of a by b; subtraction of b, from a, RESULT times
+a\b     for symmetry
+
+a//b    "floor divide" : returns quotient, discards remainder
+
+a%b     modulo OR remainder (CHECK PYTHON VS C TODO )
+a%%b        CHECK
+
+
+a/%b    ?
+a\%b    ? for symmetry
+a/&b
+a\&b
+
+a-/b    ? ath root of b
+
+a^b     a to the bth power
+a**b
+
+a::b        ? proportion ( earliest )
+a:-:b:-:c   ? geometric proportion
+a|cx|b      ? linear proportionality, without detail :
+                a=kb, without defining k
+
++/-     plus or minus
+|a|     absolute value
+
+a/\b    SPECIALISED : "exterior product" "wedge sum"
+```
+
 
 Angles
 ```
@@ -530,6 +826,25 @@ adeg|bmin|csec
 <)a|deg b|min c|sec
 <)a|rad
 
+|\t   ooht   sin t ( opposite / hypotenuse )
+_\t   aoht   cos t ( adjacent / hypotenue )
+|_t   ooat   tan t ( opposite / adjacent )
+     
+\|t   hoot   csc t ( hypotenuse / opposite )
+\_t   hoat   sec t ( hypotenuse / adjacent )
+_|t   aoht   cot t ( adjacent / opposite )
+
+a|><|b  line segment from a to b
+
+a|>>|b  ray starting from a, extending through b
+a|<>|b  line, infinitely passing through a, b
+
+
+
+
+
+
+
 ```
 
 Derivatives
@@ -538,6 +853,10 @@ a'(x)   "a prime of x" : first derivative of a, with respect to x
 a''(x)  "a prime prime of x" : "second derivative of a, with respect to x
 
 a(x)=x' "x prime" : the result of a transformation
+
+\/      "nabla" : gradient in vector calculus
+\/.     divergence : vector calculus
+\/x     curl : vector calculus
 ```
 
 Factorial
@@ -552,13 +871,17 @@ Equality
 =/=     not equal
 ===     identically equal
 
+<=>     "spaceship" : returns -1,0,1 depending on lt/et/gt
+=~      regex match ( Perl )
 ```
+
+
 
 Big Greek Letters
 ```
 |int    long small s : integral symbol ( Leibniz )
 |Sig    big sigma : summation of sequence
-|Pi     big pi : multiplicative product of sequence
+|Pi     big pi : multiplicative product of sequence ( Gauss )
 |Om     big omega : various context
 |Del    big delta : change or difference
 |Phi    big phi : golden ratio, etc.
@@ -572,6 +895,56 @@ Big Greek Letters
 |Sig{top:;bottom:;left:;right:;}                   : explicit
 
 |Sig__(below)^^(above)<<left>>right      ? ( similar : LaTeX, relsize package )
+
+|Sig^^(top)>^(righttop)         ? cartesian convention : xy(do this)
+>>(right)>_(rightbottom)
+__(bottom)<_(leftbottom)
+<<(left<^(lefttop)
+
+|Sig#^(top)>^(righttop)         ? cartesian convention : xy(do this)
+>#(right)>_(rightbottom)
+#_(bottom)<_(leftbottom)
+<#(left<^(lefttop)
+```
+Letters
+```
+
+Greek :
+
+|alp
+|bet
+|gam
+|del
+|eps
+|zet
+|eta
+|the
+|iot
+|kap
+|lam
+|mu
+|nu
+|xi
+|omi
+|pi
+|rho
+|sig
+|tau
+|ups
+|phi
+|chi
+|psi
+|ome
+
+Norwegian :
+
+|ae
+|(/)
+|a^o
+
+Other influential character sets may be considered, but they appear less
+frequently in English texts even those of math and science.
+
 ```
 
 Common Entities
@@ -595,3 +968,143 @@ D   ? delete
 
 etc.
 ```
+
+Relational Model
+```
+relation        : SQL "table"
+heading         : SQL "schema" : list of attributes : (name, type "domain")
+tuples          : SQL "rows" : but must be unique per relation
+attribute       : SQL "columns"
+degree/arity    : column count
+cardinality     : row count
+relational variables / relvars : existentiation of "data in a table"
+constraints     : validation rules
+candidate key   : smallest SUBSET of attributes, guaranteed to uniquely
+                    differentiate each tuple in a relation
+superkey        : proper superset of a candidate key, whose tuples are also
+                    unique
+foreign key     : ( CHECK ) 
+projection      : the set of tuples from a relation, filtered for a
+                    subset of its attributes
+```
+
+
+List Comprehensions
+```
+a..b        expansion : integer a to b
+a:b         ( Julia )
+
+a.+b        element-wise mapping ( Julia )
+            [1,2,3] .+ [0.1,0.2,0.3] => [1.1, 2.2, 3.3]
+            [1,2,3] .+ [0.1,0.2,0.3] => [0.9, 1.8, 2.7]
+
+az/b        "reduce" "insert" ( APL ) "foldl" ( Haskell )
+            with dyadic/binary operator z
+            +/[1,2,3,4] => [10]
+            */[1,2,3,4] => [24]
+
+az/[x]b     ditto by the xth axis
+            with dyadic/binary operator z
+
+az\b        "scan" "cumulative reduction" ( APL )
+            with dyadic/binary operator z
+            +\[1,2,3,4] => [1,3,6,10]
+            *\[1,2,3,4] => [1,2,6,24]
+
+az\[x]b     ditto by the xth axis
+            with dyadic/binary operator z
+
+Distinction between SETS and CLASSES should allow GENERATORS ...
+
+a:=:b       swap values : "exchange" ( Icon )
+a~>b        morphism from a to b ( Scala ), which defines a class
+
+collection[start:stop:step] ( Python )
+                            [::-1] walks a list in reverse 
+
+see various list-wise functions : map, fold, acc etc.
+
+a/\b        sort a on b, ascending
+a\/b        sort a on b, descending
+            ... sort in place?
+            ... output sorted index only?
+```
+
+Pattern Matching
+```
+erlang, rust, haskell, ocaml, swift
+
+"where" : declarations or statements
+
+TODO : destructuring operators like ... in JS
+```
+
+OOP / Types
+```
+a<3b        a is instance of b ( see elementof in SETS )
+```
+
+Side Effects / Unboxing / variable binding
+```
+a>>b>>c         execute in sequence ( Haskell )
+do{a;b;c}       restyled as C
+
+a>>=( \b->      Form 1
+c>>=( \d->
+b+d ))
+do{ b<-a;       Form 2 : equivalent, different syntax
+    d<-c;
+    b+d;}       
+
+ISSUE : <- and -> are not symmetrical
+
+```
+Memory Pointers
+```
+Review C * and &
+
+a<-     returns address which points to a
+->a
+a<?
+?>a
+@a      ( Pascal )
+
+a@?     "at" : a in the context / space of ?
+?[a]
+
+a->     returns value at address a
+<-a
+a>?
+?<a
+a^      ( Pascal )
+
+
+?@a     "at" : ? in the context / space of a
+a[?]
+
+```
+
+Requested
+```
+replaces n%m==0 : returns true if perfectly divisible
+
+walks a list in reverse instead of python's [::-1]
+
+string-wise ( already under LIST-wise ? )
+
+currying / partial application ... to allow pipinGg to work for N-adic
+functions
+
+re-UI all of Haskell's weird rubegoldberg fns
+
+see Haskell &
+
+as : cast
+in : elementation
+is : equivalence OR subtyping
+
+```
+
+SEE J LANG
+
+
