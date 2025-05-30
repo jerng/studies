@@ -274,6 +274,324 @@ s(a=>b=>a+b)(c=>c*3)(10)        // applied
 
 https://www.reddit.com/r/ProgrammingLanguages/comments/ya87l1/what_operators_do_you_wish_programming_languages/
 
+https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols
+
+https://www.cuemath.com/numbers/math-symbols/
+
+AVOID OVERLOADING
+= : comparison, assignment X
+```
+a:=b    assignment, from b to a ( ALGOL, Pascal, Python )
+```
+
+AVOID IMPLICIT PRECEDENCE HIERARCHY
+Evaluation sequence should follow explicit spatial rules
+
+Numerals
+```
+0xa     indicates that a is a base16 number ( C lang )
+0Xa     ditto
+
+0a      indicates that a is a base8 number ( C lang )
+0oa     ditto ( Python, Rust )
+
+0ba     indicates that a is a base2 number ( C lang )
+0Ba     ditto
+
+        ... above are quite standardised across languages, but may throw
+        off new/non-programmers
+
+a|b     ? indicates b is a number in base a
+b_a     ?
+
+a,a     ? comma separated numerals 
+        ( dangerous if commas have other meaning )
+
+a_a     ? underscore separated numerals
+
+0ra     ? roman numerals
+
+|N0     ? set of natural numbers, beginning with 0
+|N1     ? set of natural numbers, beginning with 1
+|Z      ? set of integers ( from Zahlen )
+|Q      ? set of rational numbers ( from Quotient )
+|P      ? set of irrational numbers
+|R      ? set of real numbers
+|C      ? set of complex numbers
+
+|X~0    ? X excluding 0  ( consistent with Peano ~ )
+|X>0    ? X greater than 0
+|X<0    ? X less than 0
+
+|Z_p    ? integers modulo p ( advanced )
+
+|inf    ? infinity
+```
 
 
+Piping / Composition
+```
+a o b   "ring operator" ( maths, Standard Meta Language (SML)  )
+a<o>b   "the composition of a and b" : (a o b)(x) = (a(b(x))
+        maths::"composition"
 
+a|->b   maths:"reverse composition"
+        computing:"composition / piping"
+        pipe output from a, as input to b 
+a.b     ditto ( Haskell )
+a|>b    ditto ( R 4.10, Elixir )
+a%>%b   ditto ( R magrittr package )
+
+a^b(x)  functional power ( maths: varies by domain )
+        a^2(x) = ( a o a )(x)
+        a^3(x) = ( a o a o a)(x)
+        where b is negative: a^b(x) = 1/a^|b|(x)
+```
+
+Tuples
+```
+(a b)   ? math
+v[a b]  ? vector
+
+a(x)b   "cross product", "vector product" : a vector
+a(.)b   "dot product", "scalar product" : a scalar
+```
+
+Functions
+```
+a:B->C  ( maths )
+\a->b   ( Haskell )
+```
+
+Logic
+```
+E|a     ? there exists at least one a
+E]a     ?
+
+E|!a    ? there exists one, and only one, a
+E]!a    ?
+
+A|a     ? for all a
+
+!a      NOT gate    ( B lang, C lang; conflict with Peano )
+a\/b    OR gate     ( similar/same with Peano
+a/\b    AND gate    ( conflict with Peano )
+
+a=>b    implication ( similar to Peano )
+a->b    ?
+
+a<=>b   IF, AND, ONLY IF
+a<>b    ditto
+
+a|b     a such that b ( similar to set builder notation )
+a:b     ditto
+```
+
+Russell-Peano notation :
+```
+~a      negation of a
+a\/b    logical sum of a,b
+a.b     logical product of a,b
+a=)b    implication of b, by a
+
+Consider :
+a===b   equivalence of a,b;
+a|||b       a=)b.b=)a
+|-a     assertion of a's truth
+
+a.a=)b.=)b  inference by modus ponens
+
+a (E b  ? a is an element, in set b (einai=is, adopted by Cantor )
+a (e b  ?
+b E) a  ?
+b e) a  ?
+
+a (Z b  ? a is not an element, in set b
+a (~ b  ? 
+a (E' b ? perhaps too discreet
+a (/E b ?
+a (~E b ?
+a (~e b ?
+```
+
+Set Notation
+```
+{a, b}      a set containing elements a and b ( Cantor )
+
+{}          empty set
+(/)         ?
+
+{a|b(a)}    set-builder notation
+            set of as defined by property b ( Cantor )
+
+a'      "a prime" : the complement of set a ( Cantor )
+a^c     "a's complement" ( Cantor )
+
+a(=b    a is a subset of b; b is a superset of a
+a(set b ?
+
+a=)b    a is a superset of b; b is a subset of a
+a set)b ?
+
+a U b   ? union of a,b ( Cantor ) 
+a\set/b ?
+a\/b    ?
+
+a ^ b   ? intersection of a,b ( Cantor )
+a/\b    ?
+a/set\b ?
+
+w       "first finite ordinal"
+        order type of the natural numbers ( Cantor )
+
+A_a     ? transfinite numbers of order a 
+|A_a    ?
+A/_a    ?
+
+|a|     cardinality of a ; number of elements in a
+
+P(a)    power set of a
+
+```
+
+Arithmetic
+```
+a+b     summation / addition of a,b
+a*b     multiplication of a,b; addition of a, to a, b times
+a-b     subtraction of b, from a
+a/b     division of a by b; subtraction of b, from a, RESULT times
+
+a%b     modulo OR remainder (CHECK LANGUAGES)
+a-/b    ? ath root of b
+```
+
+Matrices
+```
+a x b   row x column
+        follows Cartesian convention ( horizontal, vertical )
+a__     ? a is a matrix ( from double underline )
+a||     ? a is a matrix
+
+M(m,n)      the set of all m-by-n real matrices
+
+M_(m,n):(R) ?   the set of all m-by-n matrices, over the field or ring R
+M(m,n,R)    ?
+M_(n):(R)   ?   for square matrices, remove redundant dimension
+M(n,R)      ?
+
+Mat         may be in place of M
+
+
+```
+
+Angles
+```
+L\      "right angled triangle" ?
+<)      "arc"?
+(>
+
+<)abc   angle of points a,b,c
+/_\abc  triangle which is a,b,c
+a~=b    congruence between a,b
+a~b     similiarity between a,b ( how similar? )
+a_|_b   perpendicularity of a,b
+a||b    parallelity of a,b
+
+a(o)    a arc degrees = a 360ths of a circle
+a^o     
+a|deg
+<)adeg
+
+a'      a arc minutes = a 60ths of an arc degree
+a^|
+a(|)
+a|'
+a|min
+<)a'
+
+a''     a arc seconds = a 60ths of an arc minutes
+a^||
+a(||)
+a|''
+a|sec
+<)a''
+
+a|rad
+
+a(o)b'c''
+a(o) b' c''
+a^ob'c''
+a^o b' c''
+a|degb|minc|sec
+a|deg b|min c|sec
+adeg|bmin|csec
+adeg|bmin|csec
+<)a^o b' c''
+<)a|deg b|min c|sec
+<)a|rad
+
+```
+
+Derivatives
+```
+a'(x)   "a prime of x" : first derivative of a, with respect to x
+a''(x)  "a prime prime of x" : "second derivative of a, with respect to x
+
+a(x)=x' "x prime" : the result of a transformation
+```
+
+Factorial
+```
+a!      a-factorial
+        3! = 3 x 2 x 1
+```
+
+Equality
+```
+~=      approximately equal ( how approximate? )
+=/=     not equal
+===     identically equal
+
+```
+
+Big Greek Letters
+```
+|int    long small s : integral symbol ( Leibniz )
+|Sig    big sigma : summation of sequence
+|Pi     big pi : multiplicative product of sequence
+|Om     big omega : various context
+|Del    big delta : change or difference
+|Phi    big phi : golden ratio, etc.
+
+... I think the following can be replaced with list comprehensions 
+
+|Sig__from^^to:term     ? maths
+                        e.g. |Sig__let i=1^^10:i^2+i
+
+|Sig[above;right;below;left]        CSS convention : clockwise
+|Sig{top:;bottom:;left:;right:;}                   : explicit
+
+|Sig__(below)^^(above)<<left>>right      ? ( similar : LaTeX, relsize package )
+```
+
+Common Entities
+```
+|pi     pi, Archimedes' constant
+|i      -/-1
+|e      Euler's constant; base on natural logarithm
+```
+
+Structural Query Language
+```
+S   ? select
+F   ? from
+W   ? where
+J   ? join
+IJ  ? inner join
+OJ  ? outer join
+U   ? update
+D   ? delete
+@   ? as
+
+etc.
+```
