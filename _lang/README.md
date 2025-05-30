@@ -270,7 +270,9 @@ s(a=>b=>a+b)(c=>c+1)(1)         // applied
 s(a=>b=>a+b)(c=>c*3)(10)        // applied
                                 // result : 40
 ```
+# Operator Innovation
 
+https://www.reddit.com/r/ProgrammingLanguages/comments/ya87l1/what_operators_do_you_wish_programming_languages/
 
 
 
