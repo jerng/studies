@@ -1011,6 +1011,7 @@ is : equivalence OR subtyping
 
 SEE J LANG
 - API : https://code.jsoftware.com/wiki/NuVoc
+- https://sergeyqz.github.io/jcheatsheet/
 - also APL in English :
   https://www.jsoftware.com/papers/APLDictionary.htm
 
