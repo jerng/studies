@@ -78,6 +78,8 @@ uses auto-boxing to methodise immutable primitives. |
 |`raw array` of some sort|
 |`smart array` of some sort|
 |See Erlang's built-ins for other common types|
+|There should be some sort of UI for configuring customisable memory
+layouts of customised datatypes|
 
 ### SURVEYS
 
@@ -933,7 +935,12 @@ TODO : destructuring operators like ... in JS
 unbound = source    will throw exception if unmatched ( Erlang ) 
 
 
-native BNF
+native BNF ; consider SNOBOL
+native REGEXC ; consider AWK
+
+=~      regex match ( Perl )
+!=~     negated 
+
 ```
 
 OOP / Types
