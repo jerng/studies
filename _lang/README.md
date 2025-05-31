@@ -278,6 +278,17 @@ https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols
 
 https://www.cuemath.com/numbers/math-symbols/
 
+### DRAFT
+
+|Symmetrical Operators||
+|Code | Alphabetised|
+|test |test |
+|test ||
+|test |test|
+|^ |test |
+
+### SURVEYS
+
 AVOID OVERLOADING
 = : comparison, assignment X
 ```
@@ -299,9 +310,29 @@ etc.
 AVOID IMPLICIT PRECEDENCE HIERARCHY
 Evaluation sequence should follow explicit spatial rules
 
+PROVIDE a canonical english name for each non-alphabetical lexeme; opt
+in.
+
 USE WHITESPACE for IFS / INTERNAL FIELD SEPARATION
 
 USE HEREDOCS for nice matrice alignments
+
+USE Erlang/Ada-style BASE#DIGITS.DIGITS#eEXPONENT notation up to base-36 [a-zA-Z0-0] ;
+underscore as visual separator ( Ada, 1979 )
+
+DIRECTIONAL INFIX OPERATORS should have symmetrical counterparts
+
+CONSIDER: Erlang's == /= for numbers, =:=, =/= for terms, and === for
+reified identity
+
+
+CONSIDER : syntax blocks ala markdown
+
+CONSIDER : double-quote-characters represent an escaped quote characters, in any string literal ; this requires lookahead, does it slow things down too much?
+
+CONSIDER : representation of numbers, exponential, rational, complex, machine type
+etc.
+
 ```
 variablex := <<<here
 [ 0     1,000   45  ]
@@ -1106,5 +1137,6 @@ is : equivalence OR subtyping
 ```
 
 SEE J LANG
-
+- also APL in English :
+  https://www.jsoftware.com/papers/APLDictionary.htm
 
