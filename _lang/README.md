@@ -7,12 +7,32 @@ https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols
 https://www.cuemath.com/numbers/math-symbols/
 
 ### DRAFT
+|Binary Operators|
+|-|
+|Each operator is typed, for safety. `A mechanism should be available for overloading, or reimplementing, the operator's interface.`|
 
-|Symmetrical Operators||
-|Code | Alphabetised|
-|-|-|
-|`<`,`>`|`less than`,`greater than`|
-|``,``|``,``|
+|Commutative Operators|
+|-|
+|Each `alphabetisation` may be pronounced with the prefix `the operands ...`, and the postfix `... each other`.|
+
+|Code|Alphabetised|Returning||Code|Alphabetised|Returning|
+|-|-|-|-|-|-|-|
+|`+`|`are added to`|`their sum`||``|``|
+|`*`|`are multiplied by`|`their product`||``|``|
+|`=`|`are arithmetically equal with`|`a boolean`||``|
+|``|``||``|``|
+
+
+|Non-commutative Operators, WITH and WITHOUT Convenience Twins|
+|-|
+|Each `alphabetisation` may be pronounced with the prefix `the left-hand side ...`, and the postfix `... the right-hand side`.|
+
+|Code|Alphabetised|Returning||Code|Alphabetised|Returning|
+|-|-|-|-|-|-|-|
+|`<`,`>`|`is less than`,`is greater than`|`a boolean`||`-`|`is subtracted by`|
+|`=<`,`>=`|`is less than, or equal to`,`is greater than, or equal to`|`a boolean`||``|``|
+|`/`,`\`|`is fractionally divided  by`,`fractionally divides`|`the quotient`|
+|`/%`,`%\`|`is integer-wise divided  by`,`integer-wise divides`|`the signed remainder`|
 |``,``|``,``|
 |``,``|``,``|
 |``,``|``,``|
