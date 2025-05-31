@@ -7,9 +7,14 @@ https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols
 https://www.cuemath.com/numbers/math-symbols/
 
 ### DRAFT
+|Built-ins|
+|-|
+
 |Binary Operators|
 |-|
 |Each operator is typed, for safety. `A mechanism should be available for overloading, or reimplementing, the operator's interface.`|
+|We may need to overload operators as they have `declarative` and
+`stateful` semantics which may be different. |
 
 |Commutative Operators|
 |-|
@@ -30,7 +35,7 @@ https://www.cuemath.com/numbers/math-symbols/
 |Code|Alphabetised|Returning||Code|Alphabetised|Returning|
 |-|-|-|-|-|-|-|
 |`<`,`>`|`is less than`,`is greater than`|`a boolean`||`-`|`is subtracted by`|
-|`=<`,`>=`|`is less than, or equal to`,`is greater than, or equal to`|`a boolean`||``|``|
+|`=<`,`>=`|`is less than, or equal to`,`is greater than, or equal to`|`a boolean`||`:`|`is the head of a sequence, whereas its tail is`|
 |`/`,`\`|`is fractionally divided  by`,`fractionally divides`|`the quotient`|
 |`/%`,`%\`|`is integer-wise divided  by`,`integer-wise divides`|`the signed remainder`|
 |``,``|``,``|
@@ -38,14 +43,57 @@ https://www.cuemath.com/numbers/math-symbols/
 |``,``|``,``|
 |``,``|``,``|
 
+|First-class Entities|
+|-|
+|This section needs to talk about how objects work, also. JavaScript
+uses auto-boxing to methodise immutable primitives. |
 
+|Primitives|Qualifier||
+|-|-|-|
+|`undefined`|`?`|
+|`definednull`|`?`|
+|`boolean`|`combine into 4-logic?`|
+||
+|`string`|`utf8`|
+|`atom`|`utf8`|e.g. Prolog, Erlang, Elixir, Scheme|
+||
+|`number`|Erlang or JS? floats as IEEE 754-2008 seems normal |
+|`bigint`|Erlang or JS? library? e.g 1324234n syntax|
+|`arbitrary precision`|Julia wraps GNU GMP,MPFR|
+
+|Enums|
+|-|
+|`utf8` characters (? codepoints? )|
+|`ASCII` characters (as numbers?)|
+|``|
+|``|
+|``|
+|``|
+|``|
+
+|Data Structures|
+|-|
+|`records` or `map` of some sort|
+|`linked list` of some sort|
+|`raw array` of some sort|
+|`smart array` of some sort|
+|See Erlang's built-ins for other common types|
 
 ### SURVEYS
 
+Assignment
+```
+a:=b            assignment, from b to a ( ALGOL 1958, Pascal, Python, Smalltalk )
+a=b             ( Superplan 1949, CPL->BCPL->B->C->etc.  )
+a<-b            ( APL 1962, Haskell 1996, R )
+LET a=b         ( BASIC 1964 )
+let a=b in a+1;;( Ocaml )
+let a=b         ( Haskell )
+    in c=a
+```
 AVOID OVERLOADING
 = : comparison, assignment X
 ```
-a:=b    assignment, from b to a ( ALGOL, Pascal, Python, Smalltalk )
 
 a+=b
 a-=b
@@ -78,6 +126,7 @@ DIRECTIONAL INFIX OPERATORS should have symmetrical counterparts
 CONSIDER: Erlang's == /= for numbers, =:=, =/= for terms, and === for
 reified identity
 
+CONSIDER : 'protocols/extension' vs interfaces/implementation ( SWIFT )
 
 CONSIDER : syntax blocks ala markdown
 
@@ -165,6 +214,12 @@ a^b(x)  functional power ( maths: varies by domain )
         where b is negative: a^b(x) = 1/a^|b|(x)
 ```
 
+Lists
+```
+[head|tail]     ( Erlang )
+head:tail       ( Haskell )
+```
+
 Tuples
 ```
 (a, b)  ? math : finite, ordered : distinguished from sets
@@ -245,7 +300,10 @@ See C array addressing where equivalently :
 SEE : Namespace Referencing
 SEE : Memory Pointers 
 ```
-
+Error
+```
+_|_     "bottom" throws an error ( Haskell )
+```
 
 Functions
 ```
@@ -262,6 +320,17 @@ fun a(b)=c              ( ML )
 fn : a->b               ( ML )
 a := [ :b | c = b+1 ]   ( Smalltalk )
 
+a(b1) when g1 ->c1;     ( Erlang )
+a(b2) when g2 ->c2;
+
+a b | g1 = c1           ( Haskell )
+    | g2 = c2
+
+CONSIDER :
+- ordered parameters
+- named parameters
+- default parameter arguments
+- destructuring of monoidal argument into multiple arguments
 ```
 
 Namespaced Referencing
@@ -302,6 +371,29 @@ a??=b           "ensure assignment" assign b to a, if a is falsy ( JavaScript )
 a?:b            "elvis" : if a is truthy, return a, else b = a ? a : b
 
 a$b             "right precedence" ( Haskell ) ( HOW ? )
+
+for..in..where {}       ( Swift )
+switch..case..where     ( Swift )
+etc.                    "where guards are true"
+
+( Erlang )
+<guard_sequence>    ::= <guard> ";" <guard_sequence> 
+<guard>             ::= <guard_expression> "," <guard>
+guard_sequence  : true if ANY guard is true
+guard           : true if ALL guard_expressions are true 
+
+a(b) when condition -> functionbody (Erlang )
+
+case a of       ( Erlang )
+    b1 -> c1;
+    b2 -> c2
+end.
+
+case a of       ( Haskell )
+    | b1 = c1
+    | b2 = c2
+    where   g1
+            g2
 ```
 
 Bitshift
@@ -803,6 +895,21 @@ Distinction between SETS and CLASSES should allow GENERATORS ...
 a:=:b       swap values : "exchange" ( Icon )
 a~>b        morphism from a to b ( Scala ), which defines a class
 
+[expression||qualifiers1..N]                ( Erlang )
+#{keyexpression=>valueexpression||qualifiers1..N}
+<- and <:-
+<<bitstringexpression||qualifiers1..N>>
+<= and <:=
+
+[X||X<:-SOURCELIST,X>3] where the first expression is a generator
+[{X,Y}||X<-SOURCE,Y<-SOURCE] will create a cartesian product
+[{X,Y}||X<-SOURCE && Y<-SOURCE] will zip the lists
+
+STRICT guards crash on match failure; RELAXED guards continue silently
+
+
+[expression for item in iterable if condition] ( Python )
+
 collection[start:stop:step] ( Python )
                             [::-1] walks a list in reverse 
 
@@ -821,6 +928,12 @@ erlang, rust, haskell, ocaml, swift
 "where" : declarations or statements
 
 TODO : destructuring operators like ... in JS
+
+
+unbound = source    will throw exception if unmatched ( Erlang ) 
+
+
+native BNF
 ```
 
 OOP / Types
