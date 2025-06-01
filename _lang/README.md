@@ -71,6 +71,42 @@ https://www.cuemath.com/numbers/math-symbols/
 |`#a`||cardinality of a ; number of elements in a ( Lua, maths )|`\|a\|`|
 |`P(a)`||    power set of a|
 
+|Code|Glyphs|Predefined
+|-|-|-|
+|`\|ALPHA\|`,`\|alpha\|`|Αα|
+|`\|BETA\|`,`\|beta\|`|Ββ|
+|`\|GAMMA\|`,`\|gamma\|`|Γγ|γ is Euler's constant ( Julia )|
+|`\|DELTA\|`,`\|dekta\|`|Δδ|
+|`\|EPSILON\|`,`\|epsilon\|`|Εε|
+|`\|ZETA\|`,`\|zeta\|`|Ζζ|
+|`\|ETA\|`,`\|eta\|`|Ηη|
+|`\|THETA\|`,`\|theta\|`|Θθ|
+|`\|IOTA\|`,`\|iota\|`|Ιι|
+|`\|KAPPA\|`,`\|kappa\|`|Κκ|
+|`\|LAMBDA\|`,`\|lambda\|`|Λλ|
+|`\|MU\|`,`\|mu\|`|Μμ|
+|`\|NU\|`,`\|nu\|`|Νν|
+|`\|XI\|`,`\|xi\|`|Ξξ|
+|`\|OMICRON\|`,`\|omicron\|`|Οο|
+|`\|PI\|`,`\|pi\|`|Ππ|π is Archimedes' constant ( Julia )|
+|`\|RHO\|`,`\|rho\|`|Ρρ|
+|`\|SIGMA\|`,`\|sigma\|`|Σσς|
+|`\|TAU\|`,`\|tau\|`|Ττ|
+|`\|UPSILON\|`,`\|upsilon\|`|Υυ|
+|`\|PHI\|`,`\|phi\|`|Φφ|φ is golden ratio ( Julia )|
+|`\|CHI\|`,`\|chi\|`|Χχ|
+|`\|PSI\|`,`\|psi\|`|Ψψ|
+|`\|OMEGA\|`,`\|omega\|`|Ωω|
+||
+|`\|ALEPH\|`|א| ALEPH is the base for transfinite numbers|
+|`\|e\|`|e|Euler's number, Napier's constant ( Julia )|
+|`\|G\|`|G|Catalan's constant ( Julia )|
+|`\|\|`,`\|\|`|
+|`\|\|`,`\|\|`|
+|`\|\|`,`\|\|`|
+|`\|\|`,`\|\|`|
+|`\|\|`,`\|\|`|
+
 |Binary Operators|
 |-|
 Each operator is typed, for safety. `A mechanism should be available for overloading, or reimplementing, the operator's interface.`|
