@@ -46,11 +46,42 @@ https://www.cuemath.com/numbers/math-symbols/
 ||
 ||**related :**|
 |`a(.)b`|`commutative`|`equivalent`, `if, and only if`, `material biconditional`, `bidirectional implicative`, `biimplication`, `bientailment`||`a==b`, `a<->b`, `a<=>b`, `a<>b`, `\|iff`, `(a\/^^-)^^-`|`XNOR`,`NXOR`,`XAND`|
-|`a(x)b`|`commutative`|`inequivalent`, `exclusive disjunction`, `exclusive alternation`||`a=/=b`, `a</>b`, `a</=>b`, `a</->b`, `a<=/=>b`,`a<-/->b`, `a\|/b`, `a\/__-b`|`XOR`|
+|`a(x)b`|`commutative`|`inequivalent`, `exclusive disjunction`, `exclusive alternation`||`a===b`, `a|||b`, `a=/=b`, `a</>b`, `a</=>b`, `a</->b`, `a<=/=>b`,`a<-/->b`, `a\|/b`, `a\/__-b`|`XOR`|
 |`a=/)b`|`noncommutative`|`fails to imply, logically`, `does not imply`|-|`a-/>b`, `a=/>b`, `|? `NIMPLY`|
 |`a(=b`|`noncommutative`|`is implied by`||as above||
 |`a(/=b`|`noncommutative`|`fails to be implied by, logically`, `is not implied by`||as above||
 
+|Set Notation|
+|-|
+```
+a (E b  ? a is an element, in set b (einai=is, adopted by Cantor )
+a (e b  ?
+b E) a  ?
+b e) a  ?
+
+a <E b
+a E> b
+a <e b
+a e> b
+
+a ~<E b
+a ~E> b
+a </E b
+a E/> b
+
+a ~<e b
+a ~e> b
+a </e b
+a e/> b
+
+a (Z b  ? a is not an element, in set b
+a (~ b  ? 
+a (E' b ? perhaps too discreet
+a (/E b ?
+a (~E b ?
+a (~e b ?
+
+```
 |Binary Operators|
 |-|
 Each operator is typed, for safety. `A mechanism should be available for overloading, or reimplementing, the operator's interface.`|
