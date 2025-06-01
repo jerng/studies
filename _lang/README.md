@@ -65,8 +65,6 @@ https://www.cuemath.com/numbers/math-symbols/
 a'      "a prime" : the complement of set a ( Cantor )
 a^c     "a's complement" ( Cantor )
 
-PROPER :
-
 a(=b    a is a subset of b; b is a superset of a
 a(set b ?
 a <e b
@@ -82,12 +80,10 @@ a=)b    a is a superset of b; b is a subset of a
 a set)b ?
 a e> b
 
-IMPROPER : 
-
 a=(=b
 a=)=b
-a(=_=b
-a=)_=b
+a(=_-b
+a=)_-b
 a =<e b
 a e>= b
 a <=set b
@@ -752,8 +748,8 @@ IMPROPER :
 
 a=(=b
 a=)=b
-a(=_=b
-a=)_=b
+a(=_-b
+a=)_-b
 a =<e b
 a e>= b
 a <=set b
