@@ -7,18 +7,37 @@ https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols
 https://www.cuemath.com/numbers/math-symbols/
 
 ### DRAFT
+|Operator|Trait|Pronunciation|
+|-|-|-|
+|`unary`*L.*,`monadic`*gr.*||Each `alphabetisation` may be pronounced <br>with the postfix `... the operand`|
+|`binary`*L.*,`dyadic`*gr.*|`commutative`|Each `alphabetisation` may be pronounced <br>with the prefix `the operands ...`, <br>and the postfix `... each other`.|
+||`non-commutative`|Each `alphabetisation` may be pronounced <br>with the prefix `the left-hand side ...`, <br>and the postfix `... the right-hand side`.|
+|`ternary`*L.*, `trinary`*L.*,*gr.*|
+
 |Built-ins|
 |-|
 
+|Russell-Peano notation|
+|-|
+|`predicate logic`,`0th order logic`|
+
+|Operator|Trait|Pronunciation|Discarded Alternatives|Gate|
+|-|-|-|-|-|
+|`~a`  |                |`is negated, logically`                    |`!a`,`a^^-`|`NOT`|
+|`a\/b`|`commutative`   |`are summed, logically`,`either, or both`  |           |`OR`|
+|`a.b` |`commutative`   |`are multiplied, logically`,`both`         |           |`AND`|   
+|`a=)b`|`noncommutative`|`implies, logically`                       |           |?`IMPLY`|
+
+
+
 |Binary Operators|
 |-|
-|Each operator is typed, for safety. `A mechanism should be available for overloading, or reimplementing, the operator's interface.`|
+Each operator is typed, for safety. `A mechanism should be available for overloading, or reimplementing, the operator's interface.`|
 |We may need to overload operators as they have `declarative` and
 `stateful` semantics which may be different. |
 
 |Commutative Operators|
 |-|
-|Each `alphabetisation` may be pronounced with the prefix `the operands ...`, and the postfix `... each other`.|
 
 |Code|Alphabetised|Returning||Code|Alphabetised|Returning|
 |-|-|-|-|-|-|-|
@@ -30,7 +49,6 @@ https://www.cuemath.com/numbers/math-symbols/
 
 |Non-commutative Operators, WITH and WITHOUT Convenience Twins|
 |-|
-|Each `alphabetisation` may be pronounced with the prefix `the left-hand side ...`, and the postfix `... the right-hand side`.|
 
 |Code|Alphabetised|Returning||Code|Alphabetised|Returning|
 |-|-|-|-|-|-|-|
