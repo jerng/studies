@@ -101,6 +101,8 @@ https://www.cuemath.com/numbers/math-symbols/
 |`\|ALEPH\|`|א| ALEPH is the base for transfinite numbers|
 |`\|e\|`|e|Euler's number, Napier's constant ( Julia )|
 |`\|G\|`|G|Catalan's constant ( Julia )|
+||
+|Consider : |runes, Arabic letters, other Hebrew letters, Dutch/Norwegian letters|
 |`\|\|`,`\|\|`|
 |`\|\|`,`\|\|`|
 |`\|\|`,`\|\|`|
