@@ -12,7 +12,7 @@ https://www.cuemath.com/numbers/math-symbols/
 |`unary`*L.*,`monadic`*gr.*||Each `alphabetisation` may be pronounced <br>with the postfix `... the operand`|
 |`binary`*L.*,`dyadic`*gr.*|`commutative`|Each `alphabetisation` may be pronounced <br>with the prefix `the operands ...`, <br>and the postfix `... each other`.|
 ||`non-commutative`|Each `alphabetisation` may be pronounced <br>with the prefix `the left-hand side ...`, <br>and the postfix `... the right-hand side`.|
-|`ternary`*L.*, `trinary`*L.*,*gr.*|
+|`ternary`*L.*, `trinary`*L.,gr.*|
 
 |Built-ins|
 |-|
@@ -23,7 +23,7 @@ https://www.cuemath.com/numbers/math-symbols/
 
 |Operator|Trait|Pronunciation|Discarded Alternatives|Gate|
 |-|-|-|-|-|
-|`~a`  |                |`is negated, logically`                    |`!a`,`a^^-`|`NOT`|
+|`~a`  |                |`is negated, logically`                    |`!a`*B, C*,`a^^-`|`NOT`|
 |`a\/b`|`commutative`   |`are summed, logically`,`either, or both`  |           |`OR`|
 |`a.b` |`commutative`   |`are multiplied, logically`,`both`         |           |`AND`|   
 |`a=)b`|`noncommutative`|`implies, logically`                       |           |?`IMPLY`|
