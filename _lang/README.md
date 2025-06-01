@@ -120,6 +120,62 @@ uses auto-boxing to methodise immutable primitives. |
 |There should be some sort of UI for configuring customisable memory
 layouts of customised datatypes|
 
+|Uses of the Underscore Character '_'|
+|-|
+|`variable names : ?[_a-zA-Z]*[_a-zA-Z0-9] or quoted utf8`|
+|`visual spacer in sequences of digits`|
+
+|Uses of the Exclamation Character '!'|
+|-|
+|`exception handling` : to be defined|
+
+|Generics|
+|-|
+|`compile time` vs `runtime` : as yet undefined|
+
+|Preprocessor Transformations|
+|-|
+|`allow enumerated passes`|
+
+###### Top-level Syntax
+```
+build: env:
+    from: fs.something
+    from: lib.something
+    from: src.something
+
+run: block: with env: with type: signature
+    ensure: condition
+    blocky block block code
+```
+
+###### Block Syntax 
+```
+this is a block_d0
+    this is a block_d1
+        this is a block_d2
+    this is a block_d1
+
+{   this is a block_d0
+    {   this is a block_d1 
+        { this is a block_d2 } }
+    {   this is a block_d1 }
+}
+
+{   run, env ENVIRONMENT, type SIGNATURE : this is a desugared block_d0
+    {   run, env <INHERIT>, type UNDEFINED : this is a desugared block_d1 
+        { run, env <INHERIT>, type UNDEFINED : this is a desugared block_d2 } 
+    }
+    { run, env <INHERIT>, type UNDEFINED : this is a desugared block_d1 }
+}
+
+{ purpose, context CONTEXT, caveat CAVEAT : body }
+{ purpose, arguments ARGUMENTS, guards GUARDS: body }
+{ :purpose, arguments ARGUMENTS, guards GUARDS: body }
+{| purpose, arguments ARGUMENTS, guards GUARDS | body }
+
+```
+
 ### SURVEYS
 
 Assignment
@@ -163,6 +219,8 @@ USE Erlang/Ada-style BASE#DIGITS.DIGITS#eEXPONENT notation up to base-36 [a-zA-Z
 underscore as visual separator ( Ada, 1979 )
 
 DIRECTIONAL INFIX OPERATORS should have symmetrical counterparts
+
+CONSIDE: moderately sized stdlib, absorbing commonly used patterns
 
 CONSIDER: Erlang's == /= for numbers, =:=, =/= for terms, and === for
 reified identity
@@ -348,18 +406,21 @@ _|_     "bottom" throws an error ( Haskell )
 
 Functions
 ```
-a(b)=c                  ( maths )
-a:b->c                  ( maths )
+a(b)=c                                      ( maths )
+a:b->c                                      ( maths )
 
-\a->b                   ( Haskell )
-fun a->b                ( caml )
-a=>b                    ( JavaScript )
-(a)=>{return b}         ( JavaScript )
-function a(b){return c} ( JavaScript )
-def a(b):c;             ( Python )
-fun a(b)=c              ( ML )
-fn : a->b               ( ML )
-a := [ :b | c = b+1 ]   ( Smalltalk )
+\a->b                                       ( Haskell )
+fun a->b                                    ( caml )
+a=>b                                        ( JavaScript )
+(a)=>{return b}                             ( JavaScript )
+function a(b){return c}                     ( JavaScript )
+def a(b):c;                                 ( Python )
+fun a(b)=c                                  ( ML )
+fn : a->b                                   ( ML )
+a := [ :b | c = b+1 ]                       ( Smalltalk )
+|arg1:type1, arg2:type2| -> type3 { body }  ( Rust )
+|arg1:type1, arg2:type2| body               ( Rust )
+
 
 a(b1) when g1 ->c1;     ( Erlang )
 a(b2) when g2 ->c2;
@@ -377,9 +438,11 @@ CONSIDER :
 Namespaced Referencing
 ```
 a->b        ( C++, PHP )
-a.b         ( C, JavaScript )
+a.b         ( C, JavaScript, Haskell, rust )
 a b         ( Smalltalk )
 a::b        ( C++, Haskell )
+
+SIMPLIFIED FIELD INITIALISATION SYNTAX ( Haskell, Rust, JavaScript )
 ```
 
 Evaluation
@@ -1023,6 +1086,12 @@ a^      ( Pascal )
 ?@a     "at" : ? in the context / space of a
 a[?]
 
+```
+
+Types, Kinds, Classes, hinting
+```
+a:b     variable a is of type b ( Rust )
+a::b    ( Haskell )
 ```
 
 Requested
