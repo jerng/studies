@@ -69,6 +69,10 @@
 +- home         :   home directory for non-root users : /home/<username>             |
 |  |                                                                                 |
 |  +- .bashrc   :   ( man bash ) : when invoked as a NON-LOGIN shell, executes this  |
+|  |                                                                                 |
+|  +- .local    :   TODO : !!                                                        |
+|  |                                                                                 |
+|  +- .profile  :   TODO : !!                                                        |
 |                                                                                    |
 |  *************************************                                             | 
 |  * OF IMPORTANCE TO SYSTEM INTEGRITY *                                             |
