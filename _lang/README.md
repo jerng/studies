@@ -54,6 +54,79 @@ https://www.cuemath.com/numbers/math-symbols/
 |Set Notation|
 |-|
 ```
+{a, b}      a set containing elements a and b ( Cantor )
+
+{}          empty set
+(/)         ?
+
+{a|b(a)}    set-builder notation
+            set of as defined by property b ( Cantor )
+
+a'      "a prime" : the complement of set a ( Cantor )
+a^c     "a's complement" ( Cantor )
+
+PROPER :
+
+a(=b    a is a subset of b; b is a superset of a
+a(set b ?
+a <e b
+
+a (/= b
+a ~(= b
+a (/set b
+a ~(= b
+a </e b
+a ~<e b
+
+a=)b    a is a superset of b; b is a subset of a
+a set)b ?
+a e> b
+
+IMPROPER : 
+
+a=(=b
+a=)=b
+a(=_=b
+a=)_=b
+a =<e b
+a e>= b
+a <=set b
+a >=set b
+
+a ~<=set b
+a ~>=set b
+a </=set b
+a >/=set b
+
+a U b   ? union of a,b ( Cantor ) 
+a|v|b
+a\set/b ?
+a\/b    ?
+a&b     ( Python )
+
+a|delb  "symmetric difference" of a,b
+a(+)b   "elements in a, or b, but not not in both a and b"
+a/_\b   "disjunction union" "set sum"
+
+a ^ b   ? intersection of a,b ( Cantor )
+a|^|b
+a/\b    ?
+a/set\b ?
+a|b     ( Python )
+
+w       "first finite ordinal"
+        order type of the natural numbers ( Cantor )
+
+A_a     ? transfinite numbers of order a 
+|A_a    ?
+A/_a    ?
+
+|a|     cardinality of a ; number of elements in a
+        ( STRONGLY AVOID )
+#a      ditto ( STRONGLY PREFER )   ( Lua, maths )
+
+P(a)    power set of a
+
 a (E b  ? a is an element, in set b (einai=is, adopted by Cantor )
 a (e b  ?
 b E) a  ?
@@ -635,32 +708,6 @@ a|||b       a=)b.b=)a
 
 a.a=)b.=)b  inference by modus ponens
 
-a (E b  ? a is an element, in set b (einai=is, adopted by Cantor )
-a (e b  ?
-b E) a  ?
-b e) a  ?
-
-a <E b
-a E> b
-a <e b
-a e> b
-
-a ~<E b
-a ~E> b
-a </E b
-a E/> b
-
-a ~<e b
-a ~e> b
-a </e b
-a e/> b
-
-a (Z b  ? a is not an element, in set b
-a (~ b  ? 
-a (E' b ? perhaps too discreet
-a (/E b ?
-a (~E b ?
-a (~e b ?
 ```
 
 Model Theory
@@ -746,6 +793,32 @@ A/_a    ?
 
 P(a)    power set of a
 
+a (E b  ? a is an element, in set b (einai=is, adopted by Cantor )
+a (e b  ?
+b E) a  ?
+b e) a  ?
+
+a <E b
+a E> b
+a <e b
+a e> b
+
+a ~<E b
+a ~E> b
+a </E b
+a E/> b
+
+a ~<e b
+a ~e> b
+a </e b
+a e/> b
+
+a (Z b  ? a is not an element, in set b
+a (~ b  ? 
+a (E' b ? perhaps too discreet
+a (/E b ?
+a (~E b ?
+a (~e b ?
 ```
 
 Algebra
