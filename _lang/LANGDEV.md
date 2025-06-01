@@ -132,11 +132,6 @@ Each operator is typed, for safety. `A mechanism should be available for overloa
 |``,``|``,``|
 |``,``|``,``|
 
-|First-class Entities|
-|-|
-|This section needs to talk about how objects work, also. JavaScript
-uses auto-boxing to methodise immutable primitives. |
-
 |Primitives|Qualifier||
 |-|-|-|
 |`undefined`|`?`|
@@ -150,6 +145,14 @@ uses auto-boxing to methodise immutable primitives. |
 |`bigint`|Erlang or JS? library? e.g 1324234n syntax|
 |`arbitrary precision`|Julia wraps GNU GMP,MPFR|
 
+|First-class Entities|
+|-|
+|This section needs to talk about how objects work, also. JavaScript
+uses auto-boxing to methodise immutable primitives. |
+||
+|`any primitive`|
+|`any object` : blocks, data structures, compiled regular expressions, unexecuted source or byte or machine code |
+
 |Enums|
 |-|
 |`utf8` characters (? codepoints? )|
@@ -159,6 +162,28 @@ uses auto-boxing to methodise immutable primitives. |
 |``|
 |``|
 |``|
+
+|Differentiation of Lexemes|
+|-|
+|`sigils` : may mark data types, such as primitives|
+
+|Character Sets|Domain|Details|
+|-|-|-|
+|`%.*$`|`comments`| beginning at `%` and ending at the end of the line; there are no block comments; this reduces one branch of decisions |
+|`base_10_digits` `#` `underscore_separated_digits` `.` `undescore_separated_digits` `#` `e` `exponent`|`numeric literal`|base 1 to 36|
+|`--` `type` `opening_delimiter` `utf8_string` `closing_delimiter`|`sigils`|Compile time or run time branching?|
+|`{...}` `[...]` `(...)` `<...>`  |`sigil asymmetrical delimiters`|
+|`[^-{}[]()<>]`|`sigil symmetrical delimiters`|no escapes?| 
+|`?[_a-zA-Z]*[_a-zA-Z0-9]` or `quoted utf8`|`variable names`|
+
+|Uses of the Underscore Character '_'|
+|-|
+|`variable names`|
+|`visual spacer in sequences of digits`|
+
+|Uses of the Exclamation Character '!'|
+|-|
+|`exception handling` : to be defined|
 
 |Data Structures|
 |-|
@@ -170,14 +195,6 @@ uses auto-boxing to methodise immutable primitives. |
 |There should be some sort of UI for configuring customisable memory
 layouts of customised datatypes|
 
-|Uses of the Underscore Character '_'|
-|-|
-|`variable names : ?[_a-zA-Z]*[_a-zA-Z0-9] or quoted utf8`|
-|`visual spacer in sequences of digits`|
-
-|Uses of the Exclamation Character '!'|
-|-|
-|`exception handling` : to be defined|
 
 |Generics|
 |-|
