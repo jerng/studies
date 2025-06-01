@@ -173,7 +173,7 @@ uses auto-boxing to methodise immutable primitives. |
 |`base_10_digits` `#` `underscore_separated_digits` `.` `undescore_separated_digits` `#` `e` `exponent`|`numeric literal`|base 1 to 36|
 |`--` `type` `opening_delimiter` `utf8_string` `closing_delimiter`|`sigils`|Compile time or run time branching?|
 |`{...}` `[...]` `(...)` `<...>`  |`sigil asymmetrical delimiters`|
-|`[^-{}[]()<>]`|`sigil symmetrical delimiters`|no escapes?| 
+|`[^-\s{}[]()<>]`|`sigil symmetrical delimiters`|no escapes?| 
 |`?[_a-zA-Z]*[_a-zA-Z0-9]` or `quoted utf8`|`variable names`|
 
 |Uses of the Underscore Character '_'|
