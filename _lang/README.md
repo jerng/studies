@@ -7,7 +7,7 @@ https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols
 https://www.cuemath.com/numbers/math-symbols/
 
 ### DRAFT
-|Operator|Trait|Pronunciation|
+|Operator|[Properties](https://en.wikipedia.org/wiki/Relation_(mathematics)#Properties_of_relations)|Pronunciation|
 |-|-|-|
 |`unary` *L.*,`monadic` *gr.*||Each `alphabetisation` may be pronounced <br>with the postfix `... the operand`|
 |`binary `*L.*,`dyadic` *gr.*|`commutative`|Each `alphabetisation` may be pronounced <br>with the prefix `the operands ...`, <br>and the postfix `... each other`.|
@@ -21,7 +21,7 @@ https://www.cuemath.com/numbers/math-symbols/
 |-|
 |`Principia Mathematica 1910-1913`, `propositional logic`,`0th order logic`; `predicate logic`, `1st order logic`|
 
-|Operator|Trait|Pronunciation|Meanings Elsewhere|Discarded Alternatives|Gate|
+|Operator|Arity / Property|Pronunciation|Meanings Elsewhere|Discarded Alternatives|Gate|
 |-|-|-|-|-|-|
 |`~a`  |                |`negates, logically`                   |`bitwise negation` *C, JavaScript*|`!a`*B, C*,`a^^-`, `not a`|`NOT`|
 |`a.b` |`commutative`   |`are multiplied, logically`,`both`        ||`a/\b`, `a&b`, `a&&b`, `a and b`|`AND`|   
