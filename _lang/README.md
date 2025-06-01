@@ -29,7 +29,7 @@ https://www.cuemath.com/numbers/math-symbols/
 |`a=)b`|`noncommutative`|`implies, logically`                      ||`a=>b`, `a->b`|? `IMPLY`|
 |`a:b`|`noncommutative`|`all, apply to all on`|-|`(a):(b)`|-|
 |-|-|-|-|-|-|
-|`i|a`|-|`the`|-|-|-|
+|`i\|a`|-|`the`|-|-|-|
 |`Df a`||`a definition is presented, where`|-|-|-|
 |`\|- a`||`the truth is asserted, of` *Pp, a primitive proposition / axiom*|-|-|-|
 |`A(b)` *PM 2nd edition*, `A(b,c)`|`noncommutative`|`is predicated, upon the subject`,`is a formula, containing a free variable`|-|`bA` *PM 1st edition*|-|
