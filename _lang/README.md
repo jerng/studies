@@ -21,35 +21,35 @@ https://www.cuemath.com/numbers/math-symbols/
 |-|
 |`Principia Mathematica, 1910-1913` *preceded by The Principles of Mathematics, 1903*, `propositional logic`,`0th order logic`; `predicate logic`, `1st order logic`; in the background [relational algebra](https://en.wikipedia.org/wiki/Relation_algebra) was developed from 1860 to 1905 by De Morgan, Peirce, and Schroder ... and modernised by Tarski and Givant, see `A Formalization of Set Theory Without Variables 1987` |
 
-|Operator|Arity / Property|Pronunciation|Meanings Elsewhere|Discarded Alternatives|Gate|
-|-|-|-|-|-|-|
-|`~a`  |                |`negates, logically`                   |`bitwise negation` *C, JavaScript*|`!a`*B, C*,`a^^-`, `not a`|`NOT`|
-|`a.b` |`commutative`   |`are multiplied, logically`,`both`        ||`a/\b`, `a&b`, `a&&b`, `a and b`|`AND`|   
-|`a\/b`|`commutative`   |`are summed, logically`,`either, or both` ||`a\|b`, `a\|\|b`, `a or b`|`OR`|
-|`a=)b`|`noncommutative`|`implies, logically`                      ||`a=>b`, `a->b`|? `IMPLY`|
-|`a:b`|`noncommutative`|`all, apply to all on`|-|`(a):(b)`|-|
-|-|-|-|-|-|-|
-|`i\|a`|-|`the`|-|-|-|
-|`Df a`||`a definition is presented, where`|-|-|-|
-|`\|- a`||`the truth is asserted, of` *Pp, a primitive proposition / axiom*|-|-|-|
-|`A(b)` *PM 2nd edition*, `A(b,c)`|`noncommutative`|`is predicated, upon the subject`,`is a formula, containing a free variable`|-|`bA` *PM 1st edition*|-|
-|`(E\|c)B(c)`|`ternary`|`there exists some c, where B(c) is true`|-|`[E\|c]B(c)`, `E\|c:B(c)`, `(3]c)B(c)`, `(3c)B(c)`|-|
-|`(E\|B)B(c)`|`ternary`|`there exists some B, where B(c) is true`|-|`[E\|B]B(c)`, `E\|B:B(c)`, `(3]B)B(c)`, `(3B)B(c)`|-|
-|`(A\|c)B(c)`|`ternary`|`for all c, B(c) is true`|-|`[A\|c]B(c)`, `A\|c:B(c)`, `(\-/c)B(c)`|-|
-|`(A\|B)B(c)`|`ternary`|`for all B, B(c) is true`|-|`[A\|B]B(c)`, `A\|B:B(c)`, `(\-/B)B(c)`|-|
-|`(A\|d)(B(d) =) C(d))`|-|-|-|`(B(d) =)_d C(d)`|-|
-|`a.b.c`|-|`delimit the terms, a, b, c`|-|`(a) (b) (c)`|-|
+|Operator|Arity / Property|Pronunciation|Discarded Alternatives|Gate|
+|-|-|-|-|-|
+|`~a`  |                |`negates, logically`                   |`!a`*B, C*,`a^^-`, `not a`|`NOT`|
+|`a.b` |`commutative`   |`are multiplied, logically`,`both`        |`a/\b`, `a&b`, `a&&b`, `a and b`|`AND`|   
+|`a\/b`|`commutative`   |`are summed, logically`,`either, or both` |`a\|b`, `a\|\|b`, `a or b`|`OR`|
+|`a=)b`|`noncommutative`|`implies, logically`                      |`a=>b`, `a->b`|? `IMPLY`|
+|`a:b`|`noncommutative`|`all, apply to all on`|`(a):(b)`|-|
+||
+|`i\|a`|-|`the`|-|-|
+|`Df a`||`a definition is presented, where`|-|-|
+|`\|- a`||`the truth is asserted, of` *Pp, a primitive proposition / axiom*|-|-|
+|`A(b)` *PM 2nd edition*, `A(b,c)`|`noncommutative`|`is predicated, upon the subject`,`is a formula, containing a free variable`|`bA` *PM 1st edition*|-|
+|`(E\|c)B(c)`|`ternary`|`there exists some c, where B(c) is true`|`[E\|c]B(c)`, `E\|c:B(c)`, `(3]c)B(c)`, `(3c)B(c)`|-|
+|`(E\|B)B(c)`|`ternary`|`there exists some B, where B(c) is true`|`[E\|B]B(c)`, `E\|B:B(c)`, `(3]B)B(c)`, `(3B)B(c)`|-|
+|`(A\|c)B(c)`|`ternary`|`for all c, B(c) is true`|`[A\|c]B(c)`, `A\|c:B(c)`, `(\-/c)B(c)`|-|
+|`(A\|B)B(c)`|`ternary`|`for all B, B(c) is true`|`[A\|B]B(c)`, `A\|B:B(c)`, `(\-/B)B(c)`|-|
+|`(A\|d)(B(d) =) C(d))`|-|-|`(B(d) =)_d C(d)`|-|
+|`a.b.c`|-|`delimit the terms, a, b, c`|`(a) (b) (c)`|-|
 ||
 ||**related :**|**functionally complete :**|
-|`a\|b`|`commutative`|`are mutually exclusive`,`nonconjuction`,`alternative denial`||`~(a.b)`, `a/b` *schaffer stroke*, `a\|^b`, `a^^^b`, `(a.b)^^-`, `-__(a.b)`|`NAND`|
-|`a\/^^-b` *Webb operation, Peirce arrow*|`commutative`|`are completely excluded`,`nondisjunction`,`joint denial`||`~(a\/b)`, `a___b`, `a\|vb`, `a\/^^-`, `(a+b)^^-`|`NOR`|
+|`a\|b`|`commutative`|`are mutually exclusive`,`nonconjuction`,`alternative denial`|`~(a.b)`, `a/b` *schaffer stroke*, `a\|^b`, `a^^^b`, `(a.b)^^-`, `-__(a.b)`|`NAND`|
+|`a\/^^-b` *Webb operation, Peirce arrow*|`commutative`|`are completely excluded`,`nondisjunction`,`joint denial`|`~(a\/b)`, `a___b`, `a\|vb`, `a\/^^-`, `(a+b)^^-`|`NOR`|
 ||
 ||**related :**|
-|`a(.)b`|`commutative`|`equivalent`, `if, and only if`, `material biconditional`, `bidirectional implicative`, `biimplication`, `bientailment`||`a==b`, `a<->b`, `a<=>b`, `a<>b`, `\|iff`, `(a\/^^-)^^-`|`XNOR`,`NXOR`,`XAND`|
-|`a(x)b`|`commutative`|`inequivalent`, `exclusive disjunction`, `exclusive alternation`||`a===b`, `a|||b`, `a=/=b`, `a</>b`, `a</=>b`, `a</->b`, `a<=/=>b`,`a<-/->b`, `a\|/b`, `a\/__-b`|`XOR`|
-|`a=/)b`|`noncommutative`|`fails to imply, logically`, `does not imply`|-|`a-/>b`, `a=/>b`, `|? `NIMPLY`|
-|`a(=b`|`noncommutative`|`is implied by`||as above||
-|`a(/=b`|`noncommutative`|`fails to be implied by, logically`, `is not implied by`||as above||
+|`a(.)b`|`commutative`|`equivalent`, `if, and only if`, `material biconditional`, `bidirectional implicative`, `biimplication`, `bientailment`|`a==b`, `a<->b`, `a<=>b`, `a<>b`, `\|iff`, `(a\/^^-)^^-`|`XNOR`,`NXOR`,`XAND`|
+|`a(x)b`|`commutative`|`inequivalent`, `exclusive disjunction`, `exclusive alternation`|`a===b`, `a\|\|\|b`, `a=/=b`, `a</>b`, `a</=>b`, `a</->b`, `a<=/=>b`,`a<-/->b`, `a\|/b`, `a\/__-b`|`XOR`|
+|`a=/)b`|`noncommutative`|`fails to imply, logically`, `does not imply`|`a-/>b`, `a=/>b`, `|? `NIMPLY`|
+|`a(=b`|`noncommutative`|`is implied by`|as above||
+|`a(/=b`|`noncommutative`|`fails to be implied by, logically`, `is not implied by`|as above||
 
 |Set Notation|
 |-|
