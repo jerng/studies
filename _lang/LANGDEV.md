@@ -94,7 +94,7 @@
 |`\|e\|`|e|Euler's number, Napier's constant ( Julia )|
 |`\|G\|`|G|Catalan's constant ( Julia )|
 ||
-|Consider : |runes, Arabic letters, other Hebrew letters, Dutch/Norwegian letters|
+|Consider : ||runes, Arabic letters, other Hebrew letters, Dutch/Norwegian letters, Old Italic Scripts ( various adapted from antiquity ) |
 |`\|\|`,`\|\|`|
 |`\|\|`,`\|\|`|
 |`\|\|`,`\|\|`|
