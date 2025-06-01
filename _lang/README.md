@@ -19,7 +19,7 @@ https://www.cuemath.com/numbers/math-symbols/
 
 |Russell-Peano notation|
 |-|
-|`Principia Mathematica 1910-1913`, `propositional logic`,`0th order logic`; `predicate logic`, `1st order logic`|
+|`Principia Mathematica, 1910-1913` *preceded by The Principles of Mathematics, 1903*, `propositional logic`,`0th order logic`; `predicate logic`, `1st order logic`|
 
 |Operator|Arity / Property|Pronunciation|Meanings Elsewhere|Discarded Alternatives|Gate|
 |-|-|-|-|-|-|
