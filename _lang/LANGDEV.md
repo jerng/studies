@@ -185,6 +185,19 @@ uses auto-boxing to methodise immutable primitives. |
 |-|
 |`exception handling` : to be defined|
 
+|Structured Query Language|-|
+|-|-|
+|`S`|   ? select|
+|`F` |  ? from|
+|`W` |  ? where|
+|`J`   |? join|
+|`IJ`  |? inner join|
+|`OJ` | ? outer join|
+|`U`   |? update|
+|`D`  |? delete|
+|`@`  | ? as|
+|||
+
 |Data Structures|
 |-|
 |`records` or `map` of some sort|
