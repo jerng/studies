@@ -72,8 +72,25 @@ this is a block_d0
 { purpose, arguments ARGUMENTS, guards GUARDS: body }
 { :purpose, arguments ARGUMENTS, guards GUARDS: body }
 {| purpose, arguments ARGUMENTS, guards GUARDS | body }
-
 ```
+
+### Domain Specific Lexemes
+
+###### Planetary Phrasing
+```
+```
+|Grapheme|Meaning|
+|-|-| CONTINUE HERE
+|`xya`|`x` is for horizontal indication, `y` is for vertical indication, `a` is for axis |
+|`^^a`|`a` is spatially North of centre, to the Top|
+|`>^a`|`a` is spatially NorthEast, to the TopRight|
+|`>>a`|`a` is spatially East of centre, to the |
+|`>_a`|`a` is spatially SouthEast of centre, to the |
+|`__a`|`a` is spatially South of centre, to the |
+|`<_a`|`a` is spatially SouthWest of centre, to the |
+|`<<a`|`a` is spatially West of centre, to the |
+|`<^a`|`a` is spatially NorthWest of centre, to the |
+
 
 ## Types
 
