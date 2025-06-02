@@ -1,9 +1,13 @@
 # DRAFT
 
+## Decisions
+-    source code files implicitly form block?
+
 ## Lexemes
 
 | Lexical Structures||
 |-|-|
+|`BOF` `EOF`|non-characters, merely used the notation of source code|
 |`{...}`| delimiter, *maths* : set notation |
 |`(...)`| delimiter, *maths* : tuple notation; matrices are just nested tuples |
 |`[...]`| delimiter, ? |
