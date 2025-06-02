@@ -1,4 +1,122 @@
-### DRAFT
+# DRAFT
+
+## Lexemes
+
+| Lexical Structures||
+|-|-|
+|`{...}`| delimiter, *maths* : set notation |
+|`(...)`| delimiter, *maths* : tuple notation; matrices are just nested tuples |
+|`[...]`| delimiter, ? |
+|`<...>`| delimiter ? |
+|`\`...\``| delimiter ? |
+|`'...'`| delimiter ? |
+|`"..."`| delimiter ? |
+|`sigils` : are on a separate plane, allowing reuse of nearly all delimiters |
+
+|Character Sets|Domain|Details|
+|-|-|-|
+|`%.*$`|`comments`| beginning at `%` and ending at the end of the line; there are no block comments; this reduces one branch of decisions |
+|`base_10_digits` `#` `underscore_separated_digits` `.` `undescore_separated_digits` `#` `e` `exponent`|`numeric literal`|base 1 to 36|
+|`--` `type` `opening_delimiter` `utf8_string` `closing_delimiter`|`sigils`|Compile time or run time branching?|
+|`{...}` `[...]` `(...)` `<...>`  |`sigil asymmetrical delimiters`|
+|`[^-\s{}[]()<>]`|`sigil symmetrical delimiters`|no escapes?| 
+|`?[_a-zA-Z]*[_a-zA-Z0-9]` or `quoted utf8`|`variable names`|
+
+|Uses of the Underscore Character '_'|
+|-|
+|`variable names`|
+|`visual spacer in sequences of digits`|
+
+|Uses of the Exclamation Character '!'|
+|-|
+|`exception handling` : to be defined|
+
+
+###### Top-level Syntax
+```
+build: env:
+    from: fs.something
+    from: lib.something
+    from: src.something
+
+run: block: with env: with type: signature
+    ensure: condition
+    blocky block block code
+```
+
+###### Block Syntax 
+```
+this is a block_d0
+    this is a block_d1
+        this is a block_d2
+    this is a block_d1
+
+{   this is a block_d0
+    {   this is a block_d1 
+        { this is a block_d2 } }
+    {   this is a block_d1 }
+}
+
+{   run, env ENVIRONMENT, type SIGNATURE : this is a desugared block_d0
+    {   run, env <INHERIT>, type UNDEFINED : this is a desugared block_d1 
+        { run, env <INHERIT>, type UNDEFINED : this is a desugared block_d2 } 
+    }
+    { run, env <INHERIT>, type UNDEFINED : this is a desugared block_d1 }
+}
+
+{ purpose, context CONTEXT, caveat CAVEAT : body }
+{ purpose, arguments ARGUMENTS, guards GUARDS: body }
+{ :purpose, arguments ARGUMENTS, guards GUARDS: body }
+{| purpose, arguments ARGUMENTS, guards GUARDS | body }
+
+```
+
+## Types
+
+|Primitives|Qualifier||
+|-|-|-|
+|`undefined`|`?`|
+|`definednull`|`?`|
+|`boolean`|`combine into 4-logic?`|
+||
+|`string`|`utf8`|
+|`atom`|`utf8`|e.g. Prolog, Erlang, Elixir, Scheme|
+||
+|`number`|Erlang or JS? floats as IEEE 754-2008 seems normal |
+|`bigint`|Erlang or JS? library? e.g 1324234n syntax|
+|`arbitrary precision`|Julia wraps GNU GMP,MPFR|
+
+|First-class Entities|
+|-|
+|This section needs to talk about how objects work, also. JavaScript
+uses auto-boxing to methodise immutable primitives. |
+||
+|`any primitive`|
+|`any object` : blocks, data structures, compiled regular expressions, unexecuted source or byte or machine code |
+
+
+|Data Structures|-|
+|-|-|
+|`records` or `map` of some sort|
+|`linked list` of some sort|
+|`raw array` of some sort|
+|`smart array` of some sort|
+|See Erlang's built-ins for other common types|
+|There should be some sort of UI for configuring customisable memory
+layouts of customised datatypes|
+
+
+|Generics|
+|-|
+|`compile time` vs `runtime` : as yet undefined|
+
+|Preprocessor Transformations|
+|-|
+|`allow enumerated passes`|
+
+
+## Operations
+
 |Operator|[Properties](https://en.wikipedia.org/wiki/Relation_(mathematics)#Properties_of_relations)|Pronunciation|
 |-|-|-|
 |`unary` *L.*,`monadic` *gr.*||Each `alphabetisation` may be pronounced <br>with the postfix `... the operand`|
@@ -118,41 +236,6 @@ Each operator is typed, for safety. `A mechanism should be available for overloa
 |``|``||``|``|
 
 
-|Non-commutative Operators, WITH and WITHOUT Convenience Twins|
-|-|
-
-|Code|Alphabetised|Returning||Code|Alphabetised|Returning|
-|-|-|-|-|-|-|-|
-|`<`,`>`|`is less than`,`is greater than`|`a boolean`||`-`|`is subtracted by`|
-|`=<`,`>=`|`is less than, or equal to`,`is greater than, or equal to`|`a boolean`||`:`|`is the head of a sequence, whereas its tail is`|
-|`/`,`\`|`is fractionally divided  by`,`fractionally divides`|`the quotient`|
-|`/%`,`%\`|`is integer-wise divided  by`,`integer-wise divides`|`the signed remainder`|
-|``,``|``,``|
-|``,``|``,``|
-|``,``|``,``|
-|``,``|``,``|
-
-|Primitives|Qualifier||
-|-|-|-|
-|`undefined`|`?`|
-|`definednull`|`?`|
-|`boolean`|`combine into 4-logic?`|
-||
-|`string`|`utf8`|
-|`atom`|`utf8`|e.g. Prolog, Erlang, Elixir, Scheme|
-||
-|`number`|Erlang or JS? floats as IEEE 754-2008 seems normal |
-|`bigint`|Erlang or JS? library? e.g 1324234n syntax|
-|`arbitrary precision`|Julia wraps GNU GMP,MPFR|
-
-|First-class Entities|
-|-|
-|This section needs to talk about how objects work, also. JavaScript
-uses auto-boxing to methodise immutable primitives. |
-||
-|`any primitive`|
-|`any object` : blocks, data structures, compiled regular expressions, unexecuted source or byte or machine code |
-
 |Enums|
 |-|
 |`utf8` characters (? codepoints? )|
@@ -163,27 +246,6 @@ uses auto-boxing to methodise immutable primitives. |
 |``|
 |``|
 
-|Differentiation of Lexemes|
-|-|
-|`sigils` : may mark data types, such as primitives|
-
-|Character Sets|Domain|Details|
-|-|-|-|
-|`%.*$`|`comments`| beginning at `%` and ending at the end of the line; there are no block comments; this reduces one branch of decisions |
-|`base_10_digits` `#` `underscore_separated_digits` `.` `undescore_separated_digits` `#` `e` `exponent`|`numeric literal`|base 1 to 36|
-|`--` `type` `opening_delimiter` `utf8_string` `closing_delimiter`|`sigils`|Compile time or run time branching?|
-|`{...}` `[...]` `(...)` `<...>`  |`sigil asymmetrical delimiters`|
-|`[^-\s{}[]()<>]`|`sigil symmetrical delimiters`|no escapes?| 
-|`?[_a-zA-Z]*[_a-zA-Z0-9]` or `quoted utf8`|`variable names`|
-
-|Uses of the Underscore Character '_'|
-|-|
-|`variable names`|
-|`visual spacer in sequences of digits`|
-
-|Uses of the Exclamation Character '!'|
-|-|
-|`exception handling` : to be defined|
 
 |Structured Query Language|-|
 |-|-|
@@ -197,61 +259,3 @@ uses auto-boxing to methodise immutable primitives. |
 |`D`  |? delete|
 |`@`  | ? as|
 |||
-
-|Data Structures|
-|-|
-|`records` or `map` of some sort|
-|`linked list` of some sort|
-|`raw array` of some sort|
-|`smart array` of some sort|
-|See Erlang's built-ins for other common types|
-|There should be some sort of UI for configuring customisable memory
-layouts of customised datatypes|
-
-
-|Generics|
-|-|
-|`compile time` vs `runtime` : as yet undefined|
-
-|Preprocessor Transformations|
-|-|
-|`allow enumerated passes`|
-
-###### Top-level Syntax
-```
-build: env:
-    from: fs.something
-    from: lib.something
-    from: src.something
-
-run: block: with env: with type: signature
-    ensure: condition
-    blocky block block code
-```
-
-###### Block Syntax 
-```
-this is a block_d0
-    this is a block_d1
-        this is a block_d2
-    this is a block_d1
-
-{   this is a block_d0
-    {   this is a block_d1 
-        { this is a block_d2 } }
-    {   this is a block_d1 }
-}
-
-{   run, env ENVIRONMENT, type SIGNATURE : this is a desugared block_d0
-    {   run, env <INHERIT>, type UNDEFINED : this is a desugared block_d1 
-        { run, env <INHERIT>, type UNDEFINED : this is a desugared block_d2 } 
-    }
-    { run, env <INHERIT>, type UNDEFINED : this is a desugared block_d1 }
-}
-
-{ purpose, context CONTEXT, caveat CAVEAT : body }
-{ purpose, arguments ARGUMENTS, guards GUARDS: body }
-{ :purpose, arguments ARGUMENTS, guards GUARDS: body }
-{| purpose, arguments ARGUMENTS, guards GUARDS | body }
-
-```
