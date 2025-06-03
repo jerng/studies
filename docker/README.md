@@ -1,28 +1,15 @@
-# `adocker` is a `docker` assistant
+###### Larger Docker Images of Interest
 
-`adocker` is a `dash`/`sh` script : other-`sh` users, beware.
-
-### A successful example 
+2025-06-04 :
 ```
-adocker find-dependent-images alpine
-
-adocker : [ alpine ] : searching for TAGS of this [ parent IMAGE ]
-
-adocker : found ...  
-
-          alpine2:latest
-          alpine:latest
-          
-adocker : searching for dependent IMAGES of [ parent IMAGE ]
-adocker : found ... [ parent IMAGE's ] final LAYER (sha256) ...
-
-          08000c18d16dadf9553d747a58cf44023423a9ab010aab96cf263d2216b8b350
-
-adocker : ... in the history of the following IMAGES ...
-          
-          alpine2:latest
-          alpine/curl:latest
-          alpine/git:latest
-          alpine:latest
-
+ocaml/opam                           latest    1.38GB
+wasmedge/wasmedge                    latest    1.54GB
+danger89/cmake                       latest    2.91GB
+sagemath/sagemath                    latest    3.14GB
+rivetgg/rivet                        latest    3.34GB
+gitlab/gitlab-ce                     latest    3.7GB
+haskell                              latest    4.35GB
+intel/intel-optimized-xla            latest    4.74GB
+owlbarn/owl                          alpine    4.95GB
+quay.io/jupyter/all-spark-notebook   latest    5.41GB
 ```
