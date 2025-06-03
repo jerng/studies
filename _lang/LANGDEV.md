@@ -79,6 +79,8 @@ this is a block_d0
 ###### List Phrasing
 >    Can all iteration be unified with list comprehension?
 
+|`1`|`1`|`M`|M|M|`1`|`1`|
+|-|-|-|-|-|-|-|
 |`[`|`input`|`fanout`|`map`|`fanin`|`output`|`]`|
 |-|-|-|-|-|-|-|
 |-|`0-to-N`|`N-to-P`|`P-to-P`|`P-to-Q`|`Q-to-0`|-|
