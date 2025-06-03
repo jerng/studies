@@ -8,8 +8,8 @@
 | Lexical Structures||
 |-|-|
 |`BOF` `EOF`|non-characters, merely used the notation of source code|
-|`{...}`| delimiter, *maths* : set notation |
-|`(...)`| delimiter, *maths* : tuple notation; matrices are just nested tuples |
+|`{...}`| delimiter, *maths* : set notation; unordered, unique |
+|`(...)`| delimiter, *maths* : tuple notation; matrices are just nested tuples; ordered, redundant; probably the best place to start modelling data structures, i.e other data types : byte = `(8* bit)`etc. |
 |`[...]`| delimiter, ? |
 |`<...>`| delimiter ? |
 |`\`...\``| delimiter ? |
