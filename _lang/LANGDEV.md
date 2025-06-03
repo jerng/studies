@@ -30,7 +30,7 @@ Being very literal :
 |-|-|
 |`BOF` `EOF`|non-characters, merely used the notation of source code|
 |`{...}`| delimiter, *maths* : set notation; unordered, unique |
-|`(...)`| delimiter, *maths* : tuple notation; matrices are just nested tuples; ordered, redundant; probably the best place to start modelling data structures, i.e other data types : byte = `(8* bit)`etc. |
+|`(...)`| delimiter, *maths* : tuple notation; matrices are just nested tuples; ordered, redundant; probably the best place to start modelling data structures, i.e other data types : byte = `(8* bit)`etc.<br>Besides that, it is common for programming languages to use parentheses as `lexical delimiters` to group expressions at compile time. |
 |`[...]`| delimiter, ? |
 |`<...>`| delimiter ? |
 |`\`...\``| delimiter ? |
