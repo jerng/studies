@@ -37,6 +37,8 @@ Being very literal :
             -   singly-linked (awkward queues)
             -   doubly-linked (agile queues)
         -   CONTINUE HERE : WRITE COMPLETE EXAMPLES
+            - 1 dimensional
+            - >1 dimensional      
 
 |Code|Glyphs|Predefined
 |-|-|-|
