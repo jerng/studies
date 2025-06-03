@@ -78,6 +78,14 @@ this is a block_d0
 
 ###### List Phrasing
 >    Can all iteration be unified with list comprehension?
+
+|`[`|`input`|`fanout`|`map`|`fanin`|`output`|`]`|
+|-|-|-|-|-|-|-|
+|-|`0-to-N`|`N-to-M`|`M-to-M`|`M-to-P`|`P-to-0`|-|
+|-|`pipe from source`|`unfold`|-|`fold`|`pipe to sink`|-|
+|-|`generator expression`|`increase`|-|`reduce`|`consumer expression`|-|
+|-|-|`infer`|-|`filter`|-|-|
+
 visual mocks :
 ```
 %% [ fanout/ generate | fanin/ reduce/ fold | map ] 
@@ -87,23 +95,6 @@ visual mocks :
 %% [ fanout | map | fanin ] 
 [0..5|i^i+1|+]
 [0..5|i^i+1|SUM]
-
-%{    more generally,
-
-increase  : reduce     : most general terminology;
-                         connotates starting from 0 or more values, ending in 1 value (FP)
-generate  : consume    : ditto
-fanout    : fanin      : ditto; but, connotates starting from 1 or more values, ending in 1 value
-unfold    : fold       : ditto
-infer     : filter     : ditto, but, reifying an abstract rule
-
-... but ...
-map       : map
-
-}%
-
-filter fold
-
 ```
 ###### Axial Phrasing
 visual mocks :
@@ -119,6 +110,11 @@ visual mocks :
 |SIGMA|__'i=0'^^'i=5'>>'i^i+i'
 |SIGMA|__(i,=,0)^^(i,=,5)>>((i,^,i),+,i)
 |SIGMA|__(i,'=',0)^^(i,=,5)>>(('i',^,'i'),+,'i')
+
+%% Markdown :
+|TopLeft|Top|TopRight|
+|Left|Axis|Right|
+|BottomLeft|Bottom|BottomRight|
 
 ```
 |Grapheme|Meaning|
