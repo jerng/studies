@@ -88,11 +88,11 @@ this is a block_d0
 
 visual mocks :
 ```
-%% [ fanout/ generate | fanin/ reduce/ fold | map ] 
+%% [ generate | fold | map ] 
 [0..5|+|i^i+1]
 [0..5|SUM|i^i+1]
 
-%% [ fanout | map | fanin ] 
+%% [ generate | map | fold ] 
 [0..5|i^i+1|+]
 [0..5|i^i+1|SUM]
 ```
