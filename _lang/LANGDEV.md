@@ -77,20 +77,32 @@ this is a block_d0
 ### Domain Specific Lexemes
 
 ###### Planetary Phrasing
+visual mocks :
 ```
+%% [ generator | reducer | mapping ] or [ generator | mapping | reducer ] 
+[0..5|+|i^i+1] or [0..5|i^i+1|+]
+[0..5|SUM|i^i+1] or [0..5|i^i+1|SUM]
+
+%% Maths :
+|SIGMA|__0^^5>>i^i+i
+|SIGMA|__'0'^^'5'>>'i^i+i'
+|SIGMA|__(i,0)^^(i,5)>>'i^i+i'
+|SIGMA|__'i=0'^^'i=5'>>'i^i+i'
+|SIGMA|__(i,=,0)^^(i,=,5)>>((i,^,i),+,i)
+|SIGMA|__(i,'=',0)^^(i,=,5)>>(('i',^,'i'),+,'i')
+
 ```
 |Grapheme|Meaning|
 |-|-| 
-|`xya`|`x` is for horizontal indication, `y` is for vertical indication, `a` is for axis |
-|`^^a`|`a` is spatially North of centre, to the Top|
-|`>^a`|`a` is spatially NorthEast, to the TopRight|
-|`>>a`|`a` is spatially East of centre, to the Right |
-|`>_a`|`a` is spatially SouthEast of centre, to the BottomRight
-|`__a`|`a` is spatially South of centre, to the Bottom|
-|`<_a`|`a` is spatially SouthWest of centre, to the BottomLeft|
-|`<<a`|`a` is spatially West of centre, to the Left |
-|`<^a`|`a` is spatially NorthWest of centre, to the TopLeft |
-
+|`axyc`|`a` is for axis, `x` is for horizontal indication, `y` is for vertical indication, `c` is for content |
+|`a^^c`|`c` is spatially North of `a`, to the Top of `a`|
+|`a>^c`|`c` is spatially NorthEast, to the TopRight of `a`|
+|`a>>c`|`c` is spatially East of centre, to the Right of `a` |
+|`a>_c`|`c` is spatially SouthEast of centre, to the BottomRight of `a`|
+|`a__c`|`c` is spatially South of centre, to the Bottom of `a`|
+|`a<_c`|`c` is spatially SouthWest of centre, to the BottomLeft of `a`|
+|`a<<c`|`c` is spatially West of centre, to the Left of `a` |
+|`a<^c`|`c` is spatially NorthWest of centre, to the TopLeft of `a` |
 
 ## Types
 
