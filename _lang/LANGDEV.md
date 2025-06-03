@@ -36,6 +36,9 @@ Being very literal :
 |`\`...\``| delimiter ? |
 |`'...'`| delimiter ? |
 |`"..."`| delimiter ? |
+||
+|`DD...DD`, `DDD...DDD`| prior rows show delimiters as `D...D` but it maybe further desirable to use increase the variety of delimiter tokens simply by repeating the basic delimiters; it is possible of course to define any string of characters as a delimiter, but that might become overwhelmingly cumbersome later, unless the delimiters are very clear, for example `|BEGIN|` `|END|`, such tokens as defaults should be chosen judiciously if at all |
+||
 |`sigils` : are on a separate plane, allowing reuse of nearly all delimiters |
 
 |Character Sets|Domain|Details|
