@@ -23,7 +23,21 @@ Being very literal :
     -    `BigInt` is not standardised in implementation across languages; perhaps we should just consider JavaScript's implementation, since we are in this playground
 -   Human Readable Characters
     -   `utf8` is the common format, which is also aligned with `ASCII` at 8-bits
--   
+    -   `bitstrings` is thoroughly implemented in Erlang, and provides ONE good example, however the alternatives need to be thought out a bit more, since these are so rare
+        -  erlang goes with `data:size/typeSpecifierList`
+-   consider
+    -   the following types ( * consumes more space, if stored in the type, besides/instead of in the compiler )
+        -   blocks, untyped (compiler knows the start address, and length* )
+        -   blocks, typed (compiler knows the start address, type size* , and type count* )
+        -   tuples (ordered, redundant)
+            -   non-adjustable : total size is pre-allocated ( compiler knows the start address, start address* and lengths* of subsequent elements )
+            -   adjustable : block of pointers ( compiler knows the start address, and length*, and optional pointer* to the next block of pointers )
+        -   sets (unordered, unique) : hash table ( detail? )
+        -   linked lists (ordered, redundant)
+            -   singly-linked (awkward queues)
+            -   doubly-linked (agile queues)
+        -   CONTINUE HERE : WRITE COMPLETE EXAMPLES
+
 |Code|Glyphs|Predefined
 |-|-|-|
 |`\|ALPHA\|`,`\|alpha\|`|Αα|
