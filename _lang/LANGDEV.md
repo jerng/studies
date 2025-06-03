@@ -76,12 +76,31 @@ this is a block_d0
 
 ### Domain Specific Lexemes
 
-###### Planetary Phrasing
+###### List Phrasing
+>    Can all iteration be unified with list comprehension?
 visual mocks :
 ```
-%% [ generator | reducer | mapping ] or [ generator | mapping | reducer ] 
-[0..5|+|i^i+1] or [0..5|i^i+1|+]
-[0..5|SUM|i^i+1] or [0..5|i^i+1|SUM]
+%% [ fanout|generate | fanin|reduce|fold | map ] 
+[0..5|+|i^i+1]
+[0..5|SUM|i^i+1]
+
+%% [ fanout | map | fanin ] 
+[0..5|i^i+1|+]
+[0..5|i^i+1|SUM]
+
+%{    more generally,
+        [ fanout | map | fanin ] 
+}%
+
+filter fold
+
+```
+###### Axial Phrasing
+visual mocks :
+```
+%% for comparison with list phrasing
+[0..5|+|i^i+1]
+[0..5|SUM|i^i+1]
 
 %% Maths :
 |SIGMA|__0^^5>>i^i+i
@@ -104,6 +123,7 @@ visual mocks :
 |`a<<c`|`c` is spatially West of centre, to the Left of `a` |
 |`a<^c`|`c` is spatially NorthWest of centre, to the TopLeft of `a` |
 
+
 ## Types
 
 |Primitives|Qualifier||
@@ -118,6 +138,8 @@ visual mocks :
 |`number`|Erlang or JS? floats as IEEE 754-2008 seems normal |
 |`bigint`|Erlang or JS? library? e.g 1324234n syntax|
 |`arbitrary precision`|Julia wraps GNU GMP,MPFR|
+||
+|`function` |hopefully just one type of function|
 
 |First-class Entities|
 |-|
@@ -126,7 +148,12 @@ uses auto-boxing to methodise immutable primitives. |
 ||
 |`any primitive`|
 |`any object` : blocks, data structures, compiled regular expressions, unexecuted source or byte or machine code |
+|`tail calls`|
+|`continuations`|
+|`environments`|
+|``|
 
+### Boxes / Containers 
 
 |Data Structures|-|
 |-|-|
