@@ -38,7 +38,9 @@ Being very literal :
             -   doubly-linked (agile queues)
         -   CONTINUE HERE : WRITE COMPLETE EXAMPLES
             - 1 dimensional
-            - >1 dimensional      
+            - \>1 dimensional
+            - internally complete
+            - dependent on compiler ( saves runtime space, but reduces runtime flexibility )      
 
 |Code|Glyphs|Predefined
 |-|-|-|
