@@ -24,6 +24,44 @@ Being very literal :
 -   Human Readable Characters
     -   `utf8` is the common format, which is also aligned with `ASCII` at 8-bits
 -   
+|Code|Glyphs|Predefined
+|-|-|-|
+|`\|ALPHA\|`,`\|alpha\|`|Αα|
+|`\|BETA\|`,`\|beta\|`|Ββ|
+|`\|GAMMA\|`,`\|gamma\|`|Γγ|γ is Euler's constant ( Julia )|
+|`\|DELTA\|`,`\|dekta\|`|Δδ|
+|`\|EPSILON\|`,`\|epsilon\|`|Εε|
+|`\|ZETA\|`,`\|zeta\|`|Ζζ|
+|`\|ETA\|`,`\|eta\|`|Ηη|
+|`\|THETA\|`,`\|theta\|`|Θθ|
+|`\|IOTA\|`,`\|iota\|`|Ιι|
+|`\|KAPPA\|`,`\|kappa\|`|Κκ|
+|`\|LAMBDA\|`,`\|lambda\|`|Λλ|
+|`\|MU\|`,`\|mu\|`|Μμ|
+|`\|NU\|`,`\|nu\|`|Νν|
+|`\|XI\|`,`\|xi\|`|Ξξ|
+|`\|OMICRON\|`,`\|omicron\|`|Οο|
+|`\|PI\|`,`\|pi\|`|Ππ|π is Archimedes' constant ( Julia )|
+|`\|RHO\|`,`\|rho\|`|Ρρ|
+|`\|SIGMA\|`,`\|sigma\|`|Σσς|
+|`\|TAU\|`,`\|tau\|`|Ττ|
+|`\|UPSILON\|`,`\|upsilon\|`|Υυ|
+|`\|PHI\|`,`\|phi\|`|Φφ|φ is golden ratio ( Julia )|
+|`\|CHI\|`,`\|chi\|`|Χχ|
+|`\|PSI\|`,`\|psi\|`|Ψψ|
+|`\|OMEGA\|`,`\|omega\|`|Ωω|
+||
+|`\|ALEPH\|`|א| ALEPH is the base for transfinite numbers|
+|`\|e\|`|e|Euler's number, Napier's constant ( Julia )|
+|`\|G\|`|G|Catalan's constant ( Julia )|
+||
+|Consider : ||runes, Arabic letters, other Hebrew letters, Old Italic Scripts ( various adapted from antiquity , International Phonetic Alphabet |
+|`\|\|`,`\|\|`|Ææ|"air" in Englishy : from Dannish / Norwegian alphabet |
+|`\|\|`,`\|\|`|Øø|"oohr" in Englishy : Dannish / Norwegian alphabet|
+|`\|\|`,`\|\|`|
+|`\|\|`,`\|\|`|
+|`\|\|`,`\|\|`|
+
 
 
 | Lexical Structures||
@@ -165,8 +203,23 @@ visual mocks :
 |`a<<c`|`c` is spatially West of centre, to the Left of `a` |
 |`a<^c`|`c` is spatially NorthWest of centre, to the TopLeft of `a` |
 
+### blocks / subroutines / functions / procedures / methods
+
+applicative style :
+```
+e = c(b(a))(d)
+```
+
+tacit style :
+```
+d b c 
+```
 
 ## Types
+
+|Hinting,Declaration|
+|-|-|
+|`THING/type`, `THING::type`, `THING:type`, `THING<type>`, `type THING` | Erlang, Haskell & Rust, Python & TypeScript, C++, C, respectively |
 
 |Primitives|Qualifier||
 |-|-|-|
@@ -282,44 +335,6 @@ layouts of customised datatypes|
 |`\|ALEPH\|_a`|| א :aleph-a : transfinite numbers of order a|`A_a`, `A/_a`, `N_a`|
 |`#a`||cardinality of a ; number of elements in a ( Lua, maths )|`\|a\|`|
 |`P(a)`||    power set of a|
-
-|Code|Glyphs|Predefined
-|-|-|-|
-|`\|ALPHA\|`,`\|alpha\|`|Αα|
-|`\|BETA\|`,`\|beta\|`|Ββ|
-|`\|GAMMA\|`,`\|gamma\|`|Γγ|γ is Euler's constant ( Julia )|
-|`\|DELTA\|`,`\|dekta\|`|Δδ|
-|`\|EPSILON\|`,`\|epsilon\|`|Εε|
-|`\|ZETA\|`,`\|zeta\|`|Ζζ|
-|`\|ETA\|`,`\|eta\|`|Ηη|
-|`\|THETA\|`,`\|theta\|`|Θθ|
-|`\|IOTA\|`,`\|iota\|`|Ιι|
-|`\|KAPPA\|`,`\|kappa\|`|Κκ|
-|`\|LAMBDA\|`,`\|lambda\|`|Λλ|
-|`\|MU\|`,`\|mu\|`|Μμ|
-|`\|NU\|`,`\|nu\|`|Νν|
-|`\|XI\|`,`\|xi\|`|Ξξ|
-|`\|OMICRON\|`,`\|omicron\|`|Οο|
-|`\|PI\|`,`\|pi\|`|Ππ|π is Archimedes' constant ( Julia )|
-|`\|RHO\|`,`\|rho\|`|Ρρ|
-|`\|SIGMA\|`,`\|sigma\|`|Σσς|
-|`\|TAU\|`,`\|tau\|`|Ττ|
-|`\|UPSILON\|`,`\|upsilon\|`|Υυ|
-|`\|PHI\|`,`\|phi\|`|Φφ|φ is golden ratio ( Julia )|
-|`\|CHI\|`,`\|chi\|`|Χχ|
-|`\|PSI\|`,`\|psi\|`|Ψψ|
-|`\|OMEGA\|`,`\|omega\|`|Ωω|
-||
-|`\|ALEPH\|`|א| ALEPH is the base for transfinite numbers|
-|`\|e\|`|e|Euler's number, Napier's constant ( Julia )|
-|`\|G\|`|G|Catalan's constant ( Julia )|
-||
-|Consider : ||runes, Arabic letters, other Hebrew letters, Old Italic Scripts ( various adapted from antiquity , International Phonetic Alphabet |
-|`\|\|`,`\|\|`|Ææ|"air" in Englishy : from Dannish / Norwegian alphabet |
-|`\|\|`,`\|\|`|Øø|"oohr" in Englishy : Dannish / Norwegian alphabet|
-|`\|\|`,`\|\|`|
-|`\|\|`,`\|\|`|
-|`\|\|`,`\|\|`|
 
 |Binary Operators|
 |-|
