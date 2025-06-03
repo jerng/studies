@@ -80,16 +80,16 @@ this is a block_d0
 ```
 ```
 |Grapheme|Meaning|
-|-|-| CONTINUE HERE
+|-|-| 
 |`xya`|`x` is for horizontal indication, `y` is for vertical indication, `a` is for axis |
 |`^^a`|`a` is spatially North of centre, to the Top|
 |`>^a`|`a` is spatially NorthEast, to the TopRight|
-|`>>a`|`a` is spatially East of centre, to the |
-|`>_a`|`a` is spatially SouthEast of centre, to the |
-|`__a`|`a` is spatially South of centre, to the |
-|`<_a`|`a` is spatially SouthWest of centre, to the |
-|`<<a`|`a` is spatially West of centre, to the |
-|`<^a`|`a` is spatially NorthWest of centre, to the |
+|`>>a`|`a` is spatially East of centre, to the Right |
+|`>_a`|`a` is spatially SouthEast of centre, to the BottomRight
+|`__a`|`a` is spatially South of centre, to the Bottom|
+|`<_a`|`a` is spatially SouthWest of centre, to the BottomLeft|
+|`<<a`|`a` is spatially West of centre, to the Left |
+|`<^a`|`a` is spatially NorthWest of centre, to the TopLeft |
 
 
 ## Types
