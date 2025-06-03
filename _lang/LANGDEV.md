@@ -80,7 +80,7 @@ this is a block_d0
 >    Can all iteration be unified with list comprehension?
 visual mocks :
 ```
-%% [ fanout|generate | fanin|reduce|fold | map ] 
+%% [ fanout/ generate | fanin/ reduce/ fold | map ] 
 [0..5|+|i^i+1]
 [0..5|SUM|i^i+1]
 
@@ -89,7 +89,17 @@ visual mocks :
 [0..5|i^i+1|SUM]
 
 %{    more generally,
-        [ fanout | map | fanin ] 
+
+increase  : reduce     : most general terminology;
+                         connotates starting from 0 or more values, ending in 1 value (FP)
+generate  : consume    : ditto
+fanout    : fanin      : ditto; but, connotates starting from 1 or more values, ending in 1 value
+unfold    : fold       : ditto
+infer     : filter     : ditto, but, reifying an abstract rule
+
+... but ...
+map       : map
+
 }%
 
 filter fold
