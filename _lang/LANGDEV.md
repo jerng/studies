@@ -112,6 +112,11 @@ visual mocks :
 |SIGMA|__(i,'=',0)^^(i,=,5)>>(('i',^,'i'),+,'i')
 
 %% Markdown :
+||5
+||SIGMA|i^i+1
+||0
+
+%% Markdown Pattern :
 |TopLeft|Top|TopRight|
 |Left|Axis|Right|
 |BottomLeft|Bottom|BottomRight|
