@@ -81,7 +81,7 @@ this is a block_d0
 
 |`[`|`input`|`fanout`|`map`|`fanin`|`output`|`]`|
 |-|-|-|-|-|-|-|
-|-|`0-to-N`|`N-to-M`|`M-to-M`|`M-to-P`|`P-to-0`|-|
+|-|`0-to-N`|`N-to-P`|`P-to-P`|`P-to-Q`|`Q-to-0`|-|
 |-|`pipe from source`|`unfold`|-|`fold`|`pipe to sink`|-|
 |-|`generator expression`|`increase`|-|`reduce`|`consumer expression`|-|
 |-|-|`infer`|-|`filter`|-|-|
