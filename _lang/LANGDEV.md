@@ -5,6 +5,27 @@
 
 ## Lexemes
 
+Being very literal : 
+-   any new modern programming language, should provide implementations of many, if not all low-level [data structures](https://en.wikipedia.org/wiki/List_of_data_structures) which fit within its guarantees ( not too dangerous, not
+    too slow, etc. )
+    -    doing so transparently may allow the user to assemble compound data structures, from the rudimentary built-in ones
+-   Here are some `linear` data structures
+    -   at the bottom, `tuples of bits` can represent `registers` and `words`; tuples of `words` can represent `cache lines`, `chunks` etc.
+        -   matrices are also representable as `tuples`
+            -   (A) where `tuple` values are of equal size, a `rectangular array` is a fitting C implementation
+            -   (B) otherwise, `arrays of pointers` will have to do?
+    -   the `linked list` data structure ( IPL, 1956 ) has remained influential after its preponderance in LISP, 1958 ( `cons`, `car`, `cdr` ); this is not done in the v8 javascript engine; but it is natively done in Erlang, Haskell, Lisp, and OCaml, for example
+        -   In Lisp, the canonical definitions hew towards the following being equivalent : `F`, `()`, `NIL`, representing boolean falseness and the empty list ... it is probably a bad idea to persist this pattern in a new language which isn't trying to be a traditional Lisp
+-   Here are some popular 'non linear' data structuers
+    -   `heap` i.e. `priority queue` implemented as a **balanced** binary search tree 
+-   Numbers
+    -    `Floats` are implemented using the `IEEE 754 double precision` standard, in various common languages including C, Julia, Go, OCaml, Java, and JavaScript : but not Erlang, or Haskell : it is probably best to go with `IEEE 754`
+    -    `BigInt` is not standardised in implementation across languages; perhaps we should just consider JavaScript's implementation, since we are in this playground
+-   Human Readable Characters
+    -   `utf8` is the common format, which is also aligned with `ASCII` at 8-bits
+-   
+
+
 | Lexical Structures||
 |-|-|
 |`BOF` `EOF`|non-characters, merely used the notation of source code|
