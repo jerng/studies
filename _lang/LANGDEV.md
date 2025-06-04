@@ -51,10 +51,17 @@ Being very literal :
             - internally complete
             - dependent on compiler ( saves runtime space, but reduces runtime flexibility )
 -   `JavaScript` particularly V8 : since we are using this as a simple runtime prior to any compilation
-    -   `boolean` : `8 bytes`
-    -   `number` : `8 bytes`     
-    -   `utf8char` : `2 bytes`
-    -   `Objects` including `Array`, `Map`, etc. : `32 to ~130 bytes`
+    -   normal types :
+        -   `boolean` : `8 bytes`
+        -   `number` : `8 bytes`     
+        -   `utf8char` : `2 bytes`
+        -   `Objects` including `Array`, `Map`, etc. : `32 to ~130 bytes`
+        -   JS also has `TypedArray` which we can use for contiguous storage, in the future
+    -   LDD should have two dataflows :
+        1.  implement TPL in `JavaScript`
+        2.  implement TPL in `C++`, perhaps with liberal use of `std::vector`, `std::set`, `std::unordered_set`, `std::unique_ptr` etc.
+        3.  ... beyond C++, one should probably look at Assembler already rather than bothering with C?   
+      
 ### Glyphs
 
 |Code|Glyphs|Predefined
