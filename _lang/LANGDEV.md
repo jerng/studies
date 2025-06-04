@@ -121,7 +121,7 @@ Being very literal :
 |`exception handling` : to be defined|
 
 
-###### Top-level Syntax
+#### Top-level Syntax
 ```
 build: env:
     from: fs.something
@@ -133,7 +133,7 @@ run: block: with env: with type: signature
     blocky block block code
 ```
 
-###### Block Syntax 
+#### Block Syntax 
 ```
 this is a block_d0
     this is a block_d1
@@ -158,6 +158,20 @@ this is a block_d0
 { :purpose, arguments ARGUMENTS, guards GUARDS: body }
 {| purpose, arguments ARGUMENTS, guards GUARDS | body }
 ```
+
+###### blocks / subroutines / functions / procedures / methods
+
+applicative style :
+```
+e = c(b(a))(d)
+```
+
+tacit style :
+```
+d b c 
+```
+
+
 
 ### Domain Specific Lexemes
 
@@ -220,18 +234,6 @@ visual mocks :
 |`a<_c`|`c` is spatially SouthWest of centre, to the BottomLeft of `a`|
 |`a<<c`|`c` is spatially West of centre, to the Left of `a` |
 |`a<^c`|`c` is spatially NorthWest of centre, to the TopLeft of `a` |
-
-### blocks / subroutines / functions / procedures / methods
-
-applicative style :
-```
-e = c(b(a))(d)
-```
-
-tacit style :
-```
-d b c 
-```
 
 ## Types
 
