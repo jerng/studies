@@ -17,7 +17,15 @@ Being very literal :
     -   the `linked list` data structure ( IPL, 1956 ) has remained influential after its preponderance in LISP, 1958 ( `cons`, `car`, `cdr` ); this is not done in the v8 javascript engine; but it is natively done in Erlang, Haskell, Lisp, and OCaml, for example
         -   In Lisp, the canonical definitions hew towards the following being equivalent : `F`, `()`, `NIL`, representing boolean falseness and the empty list ... it is probably a bad idea to persist this pattern in a new language which isn't trying to be a traditional Lisp
 -   Here are some popular 'non linear' data structuers
-    -   `heap` i.e. `priority queue` implemented as a **balanced** binary search tree 
+    -   `heap` i.e. `priority queue` implemented as a **balanced** binary search tree
+-   `Boxes / containers` : these get complicated VERY fast
+    -   on 64-bit systems commonly, words are `8 bytes` and cache lines are `64 bytes`
+    -   a small system doesn't need 8 bytes for addressing
+    -   8 bytes pointing at 1 byte is a significant ratio!
+        -   For consideration : Erlang's [datatypes in memory](https://www.erlang.org/doc/system/memory.html), [illustrations](https://arunramgt.medium.com/elixir-internal-data-representation-7ad49389e9ea) : show how a word can hold both data and metadata
+    -   languages such as Rust store structs ( and tuples ) as contiguous blocks of memory, with their elements in descending order of size
+    -   arrays are rectangular, not jagged, in many cases : C, Go, Rust, etc.
+    -   `the lazy answer for writing good-enough higher-level code` : an automatically resizing array in CPP is the `std::vector` ... allocation is typically doubled at a new location, the old data is copied to the new location, bound variables are repointed to the new location, and the old location is deallocated
 -   Numbers
     -    `Floats` are implemented using the `IEEE 754 double precision` standard, in various common languages including C, Julia, Go, OCaml, Java, and JavaScript : but not Erlang, or Haskell : it is probably best to go with `IEEE 754`
     -    `BigInt` is not standardised in implementation across languages; perhaps we should just consider JavaScript's implementation, since we are in this playground
