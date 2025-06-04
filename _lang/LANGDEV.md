@@ -30,6 +30,14 @@
         -   guaranteed?
     -   pointers ? how ?
     -   garbage collection? how?
+
+## Latest
+
+-    `4-logic` : `true`, `false`, `null`, `undefined`
+-    `=` equality, `assignee <- assigner` assignment, `_` discarded, `|real|` modulus,
+-    `types` / `classes / categories` : ?
+-    `ZFC-sets` : `{}`, `{{}}`, `{0}`, `{ x | x <e N and x modulo 2 = 0 }`, assume affinity with `cpp std::unordered_set`
+-    `singly or doubly linked lists` : `head:body:tail` cons, 
   
 ## Lexemes
 
