@@ -3,17 +3,24 @@
 ###### Datatype Design considerations
 
 `64-bit system` :
-|Max Data Stored  |NStart @control    |NEnd @control|NEnd @dataN|NLength @control|NLength @data|NPointsToP|Total @control|Total@data |
-|-|-|-|-|-|-|-|-|-|
-|`2^8 bytes`      |`x<8 bytes` (weird)|             |           |`1 byte` (min)  |             |No        |`x<8 bytes`   ||
-|`2^8 bytes`      |`8 bytes` (norm)   |             |           |`1 byte` (min)  |             |No        |`9 bytes`     ||
-|`2^64-y bytes`   |`8 bytes`          |`8 bytes`    |           |                |             |No        |`16 bytes`    ||
+|Max Data Stored `B`|NStart @control `B`|NEnd `B` @control|NEnd `B` @dataN|NLength `B` @control|NLength `B` @data |N PointsTo P|TotalOH `B` @control|TotalOH `B` @data|Note|
+|-|-|-|-|-|-|-|-|-|-|
+|`2^8`              |`x<8` (weird)|                       |               |`1` (min)           |                  |No          |`(x<8)+1`           |             |
+|`2^8`              |`x<8` (weird)|                       |               |                    |`1` (min)         |No          |`x<8`               |`1`          |
+|`2^8`              |`8` (norm)   |                       |               |`1 byte` (min)      |                  |No          |`8+1`               |             | small VLA|
+|`2^8`              |`8` (norm)   |                       |               |                    |`1` (min)         |No          |`8`                 |`1`          | small VLA|
+|-|skip weird cases|-|-|-|-|-|-|-|-|
+|`(2^64)-y`         |`8`          |`8`                    |               |                    |                  |No          |`16`                |             | big VLA |
+|`(2^64)-y`         |`8`          |                       |`8`            |                    |                  |No          |`8`                 |`8`          | big VLA |
 
+`64-bit system`, expanding just on the VLA examples :
+|Max Data Stored `B`|NStart @control `B`|NEnd `B` @control|NEnd `B` @dataN|NLength `B` @control|NLength `B` @data |N PointsTo P|PEnd `B` @control|PEnd `B` @dataN|PLength `B` @control|PLength `B` @data |TotalOH `B` @control|TotalOH `B` @data|Note|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|`2^8`              |`8` (norm)   |                       |               |`1 byte` (min)      |                  |Yes         |                 |               |                    |                  |                    |                 
+|`2^8`              |`8` (norm)   |                       |               |                    |`1` (min)         |Yes         |                 |               |                    |                  |                    |                 
+|`(2^64)-y`         |`8`          |`8`                    |               |                    |                  |Yes         |                 |               |                    |                  |                    |                 
+|`(2^64)-y`         |`8`          |                       |`8`            |                    |                  |Yes         |                 |               |                    |                  |                    |                 
 
-
-|`N bytes`|`8 bytes` (precise)      |`8 bytes`?|`N bytes`|No|-|Compiler must ephemerally remember ADDRESS and N|
-|`N bytes`|`(8+8) bytes` (start+end)|-|`N bytes`|No|-|Compiler must ephemerally remember ADDRESS only|
-|`N bytes`|`(8+8) bytes` (start+end)|``|`N bytes`|Yes|``|Compiler must ephemerally remember ADDRESS only|
 
 
 
