@@ -63,7 +63,12 @@
      -    `fun2(fun1(a))` bound execution, function style, applicative style, excel style        
           -   when `containers with methods` are returned, lends itself to the chained dereferencing style `fun1(a).fun2(b).fun3(c)` 
           -   when `functions` are returned, lends itself to the sequential binding style `fun1(a)(b)(c)` TODO: make sure this is semantically identical with `fun1(a, b, c)`
-     -    `a  fun1 fun2` bound execution, tacit style, pointfree style, composed style, pipe style        
+     -    `a  fun1 fun2` bound execution, tacit style, pointfree style, composed style, pipe style
+     -
+     -    `a |-> b` math, `a.b` Haskell, `a|>b` R, Elixir, `a %>% b` R, `a (o) b` math
+     -
+     -    `_->()` JavaScript, `|a:t1, b:t2| -> t3 {}` `|a| b` Rust?, `a:b->c` maths,`\a->b` Haskell, `fn a,b -> c`, `fn name a,b -> c`, `fn name a,b -> {}`, `fn name a<T:x>, b<T:y> | <T:a>, <T:b> -> `
+     -    GUARD? See Erlang, Haskell
 -    
 -    `types` / `classes / categories` : <T:more_syntax_to_be_defined>
 -    
