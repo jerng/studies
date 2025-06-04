@@ -5,23 +5,21 @@
 `64-bit system` :
 |Max Data Stored `B`|NStart @control `B`|NEnd `B` @control|NEnd `B` @dataN|NLength `B` @control|NLength `B` @data |N PointsTo P|TotalOH `B` @control|TotalOH `B` @data|Note|
 |-|-|-|-|-|-|-|-|-|-|
-|`2^8`              |`x<8` (weird)|                       |               |`1` (min)           |                  |No          |`(x<8)+1`           |             |
-|`2^8`              |`x<8` (weird)|                       |               |                    |`1` (min)         |No          |`x<8`               |`1`          |
-|`2^8`              |`8` (norm)   |                       |               |`1 byte` (min)      |                  |No          |`8+1`               |             | small VLA|
-|`2^8`              |`8` (norm)   |                       |               |                    |`1` (min)         |No          |`8`                 |`1`          | small VLA|
+|`2^8`              |`x<8` (weird)|                       |               |`1` (min)           |                  |No          |`(x<8)+1` (min)     |             |
+|`2^8`              |`x<8` (weird)|                       |               |                    |`1` (min)         |No          |`x<8`     (min)     |`1` (min)    |
+|`2^8`              |`8` (norm)   |                       |               |`1` (min)           |                  |No          |`8+1`     (min)     |             | small VLA|
+|`2^8`              |`8` (norm)   |                       |               |                    |`1` (min)         |No          |`8`                 |`1` (min)    | small VLA|
 |-|skip weird cases|-|-|-|-|-|-|-|-|
-|`(2^64)-y`         |`8`          |`8`                    |               |                    |                  |No          |`16`                |             | big VLA |
-|`(2^64)-y`         |`8`          |                       |`8`            |                    |                  |No          |`8`                 |`8`          | big VLA |
+|`(2^64)-y`         |`8`          |`8` (min)              |               |                    |                  |No          |`16`      (min)     |             | big VLA |
+|`(2^64)-y`         |`8`          |                       |`8` (min)      |                    |                  |No          |`8`                 |`8` (min)    | big VLA |
 
 `64-bit system`, expanding just on the VLA examples :
 |Max Data Stored `B`|NStart @control `B`|NEnd `B` @control|NEnd `B` @dataN|NLength `B` @control|NLength `B` @data |N PointsTo P|PEnd `B` @control|PEnd `B` @dataN|PLength `B` @control|PLength `B` @data |TotalOH `B` @control|TotalOH `B` @data|Note|
 |-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-|`2^8`              |`8` (norm)   |                       |               |`1 byte` (min)      |                  |Yes         |                 |               |                    |                  |                    |                 
-|`2^8`              |`8` (norm)   |                       |               |                    |`1` (min)         |Yes         |                 |               |                    |                  |                    |                 
-|`(2^64)-y`         |`8`          |`8`                    |               |                    |                  |Yes         |                 |               |                    |                  |                    |                 
-|`(2^64)-y`         |`8`          |                       |`8`            |                    |                  |Yes         |                 |               |                    |                  |                    |                 
-
-
+|`2^(8+8)`          |`8` (norm)   |                       |               |`1` (min)           |                  |Yes         |                 |               |`1` (min)           |                  |`8+(1*1)` (min)     |                 |
+|`2^(8+8)`          |`8` (norm)   |                       |               |                    |`1` (min)         |Yes         |                 |               |                    |`1` (min)         |`8`                 |`1*1` (min)      |       
+|`(2^64)-y`         |`8`          |`8` (min)              |               |                    |                  |Yes         |`8` (min)        |               |                    |                  |`8+8(1*1)`(min)     |                 |
+|`(2^64)-y`         |`8`          |                       |`8` (min)      |                    |                  |Yes         |                 |`8` (min)      |                    |                  |`8`                 |`8(1*1)` (min)  |                
 
 
 -   underlying hardware architecture
