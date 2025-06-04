@@ -46,7 +46,7 @@
 -    `=` equality NOT assignment
 -    `assignee <- assigner` assignment
 -
--    `number` : `base_10_digits` `#` `underscore_separated_digits` `.` `undescore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada
+-    `number` : `base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada
 -    `|number|` modulus
 -
 -    `ordinary variables` : `_a-zA-Z` first character, `_a-zA-Z0-9` middle characters, `a-zA-Z0-9` last character
