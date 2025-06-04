@@ -2,6 +2,9 @@
 
 ###### Datatype Design considerations
 
+>    This is ... not as insightful as I'd hoped it'd be. There are very many permutations of how to create an array. The array's metadata can be stored in the array's own address space (data plane) or in the address space occupied by working memory of the compiled instructions (control plane). 
+I am not even sure that I captured what I wanted! But it was a good exercise. Somewhat stressy tho 
+
 `64-bit system` :
 |Max Data Stored `B`|NStart @control `B`|NEnd `B` @control|NEnd `B` @dataN|NLength `B` @control|NLength `B` @data |N PointsTo P|TotalOH `B` @control|TotalOH `B` @data|Note|
 |-|-|-|-|-|-|-|-|-|-|
