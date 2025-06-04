@@ -23,6 +23,7 @@ Being very literal :
     -   a small system doesn't need 8 bytes for addressing
     -   8 bytes pointing at 1 byte is a significant ratio!
         -   For consideration : Erlang's [datatypes in memory](https://www.erlang.org/doc/system/memory.html), [illustrations](https://arunramgt.medium.com/elixir-internal-data-representation-7ad49389e9ea) : show how a word can hold both data and metadata ( "tagging" )
+            -   Example : `tuple base word` -> contiguous: [ `tuple header word` -> `one word per element` ] + `any element data that does fit into a single word`    
     -   languages such as Rust store structs ( and tuples ) as contiguous blocks of memory, with their elements in descending order of size
     -   arrays are rectangular, not jagged, in many cases : C, Go, Rust, etc.
     -   `the lazy answer for writing good-enough higher-level code` : an automatically resizing array in CPP is the `std::vector` ... allocation is typically doubled at a new location, the old data is copied to the new location, bound variables are repointed to the new location, and the old location is deallocated
