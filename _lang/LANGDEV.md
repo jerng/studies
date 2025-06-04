@@ -87,7 +87,7 @@ Being very literal :
         -   JS also has `TypedArray` which we can use for contiguous storage, in the future
     -   LDD should have two dataflows :
         1.  implement TPL in `JavaScript`
-        2.  implement TPL in `C++`, perhaps with liberal use of `std::variant`, `std::vector`, `std::set`, `std::unordered_set`, `std::unique_ptr` etc.
+        2.  implement TPL in `C++`, perhaps with liberal use of `std::variant`, `std::vector`, `std:unordered_map`, `std::map`, `std::list`, `std::forward_list`, `std::set`, `std::unordered_set`, `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr` etc.
         3.  ... beyond C++, one should probably look at Assembler already rather than bothering with C?   
       
 ### Glyphs
