@@ -49,8 +49,12 @@ Being very literal :
             - 1 dimensional
             - \>1 dimensional
             - internally complete
-            - dependent on compiler ( saves runtime space, but reduces runtime flexibility )      
-
+            - dependent on compiler ( saves runtime space, but reduces runtime flexibility )
+-   `JavaScript` particularly V8 : since we are using this as a simple runtime prior to any compilation
+    -   `boolean` : `8 bytes`
+    -   `number` : `8 bytes`     
+    -   `utf8char` : `2 bytes`
+    -   `Objects` including `Array`, `Map`, etc. : `32 to ~130 bytes`
 ### Glyphs
 
 |Code|Glyphs|Predefined
