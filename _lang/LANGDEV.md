@@ -25,19 +25,6 @@
 -   underlying hardware architecture
     -    `pointers on 64-bit systems are 64-bits long, and respectively for 32-bit systems` : a moderate, and practical, assumption; the evolution of growth in system-word-sizes has been mainly motivated by how much memory can be addressed with a single word. On 64-bit systems one can compile with 32-bit pointers, limiting a process' RAM and increasing the number of pointers you can stuff into cache, but that is an optimisation, not the baseline.
     -    `cache lines on 64-bit systems are 64-bits wide` : another moderate, and practical, assumption
--   limits and patterns
-    -   in this section, the `length of data` refers to `the presence or absence of self-contained information about the lenght of a datum, stored within the datum itself`
-    -   `fixed length datum` : as the size of data is not stored in the datum, the compiler or interpreter is responsible for knowing it
-        -   `0 indirection`
-            -   `an 8-byte pointer, for a 1-byte datum` is the minimum addressable quantum
-                -   ... without dropping into bit-wise addresses ( which would need more address space, or a reinterpretation of the 64-bit address space to be 32-bits for the byte address, and 8-bits for the bit address in the byte )
-            -   `an 8-byte pointer, for a N-byte datum` is a larger addressable quantum
-        -   `1 indirection`
-            -   `an 8-byte pointer, for a N-byte datum, containing N [N/8 8-byte pointers], each for a 1-byte datum, storing a total of N-bytes`
-            -   `an 8-byte pointer, for a N-byte datum, containing N [N/8 8-byte pointers], each for a M-byte datum, storing a total of (N*M)-bytes`
-    -    `variable lenght datum`
-        -   `an 8-byte pointer, for a N-byte datum` is a larger addressable quantum
-            -   ... but then we need at least one more byte to store the `length` of the data, unless again we try to reduce the address space to use less than `8 bytes`
 
 ## Decisions
 -    source code files implicitly form block?
