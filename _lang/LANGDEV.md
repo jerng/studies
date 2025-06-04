@@ -59,7 +59,11 @@
 -    `4-logic` : `true`, `false`, `null`, `undefined`
 -    `<` sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|`
 -    
--    `name()` application        
+-    CONSIDER : make `fun2(fun1(a,b))` equivalent with `fun2 <( fun1 <(a,b)` `fun2 <( fun1 <( a, b`and `(a,b)> fun1 )> fun2` `a, b )> fun1 )> fun2` ` b a )> fun1 )> fun2`  
+     -    `fun2(fun1(a))` bound execution, function style, applicative style, excel style        
+          -   when `containers with methods` are returned, lends itself to the chained dereferencing style `fun1(a).fun2(b).fun3(c)` 
+          -   when `functions` are returned, lends itself to the sequential binding style `fun1(a)(b)(c)` TODO: make sure this is semantically identical with `fun1(a, b, c)`
+     -    `a  fun1 fun2` bound execution, tacit style, pointfree style, composed style, pipe style        
 -    
 -    `types` / `classes / categories` : <T:more_syntax_to_be_defined>
 -    
