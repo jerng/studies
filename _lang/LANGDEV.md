@@ -5,6 +5,13 @@
 >    2025-06-04 : This is ... not as insightful as I'd hoped it'd be. There are very many permutations of how to create an array. The array's metadata can be stored in the array's own address space (data plane) or in the address space occupied by working memory of the compiled instructions (control plane). 
 I am not even sure that I captured what I wanted! But it was a good exercise. Somewhat stressy tho 
 
+- `start` : address where the array starts
+- `end` : address where the array ends; alternatively, `length` : length of the array in some unit ( bytes, or multiples of bytes )
+- `control` : metadata is stored in runtime's working memory (? stackframe) not the memory the runtime is allocating to
+- `data` : metadata is stored in the memory the runtime is allocating to
+- `N points to P` : 1-dimensional or >1-dimensional depth
+- `Total OH` : total overhead metadata stored in either `control` plane or `data` plane
+
 `64-bit system` :
 |Max Data Stored `B`|NStart @control `B`|NEnd `B` @control|NEnd `B` @dataN|NLength `B` @control|NLength `B` @data |N PointsTo P|TotalOH `B` @control|TotalOH `B` @data|Note|
 |-|-|-|-|-|-|-|-|-|-|
