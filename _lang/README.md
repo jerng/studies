@@ -9,6 +9,16 @@ https://www.cuemath.com/numbers/math-symbols/
 
 ### SURVEYS
 
+#### Intentional and Unintentionally Missing Data
+-   A possible four valued logic : based on the JavaScript model
+    -   `true`
+    -   `false`
+    -   `null` : for intentional abstinence
+        - `Nothing` features here in Haskell
+        - `nil` features here in Go, Lisp,
+    -   `undefined` : for any greater uncertainty of intention
+        - `undef` features in Perl
+        - the `undefined` atom is sometimes used in Erlang
 
 #### Assignment
 ```
@@ -239,6 +249,7 @@ SEE : Memory Pointers
 #### Error
 ```
 _|_     "bottom" throws an error ( Haskell )
+Maybe   type is used to wrap question marks
 ```
 
 #### Functions
