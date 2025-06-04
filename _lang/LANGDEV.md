@@ -37,9 +37,15 @@
 -    `=` equality, `assignee <- assigner` assignment, `_` discarded, `|real|` modulus,
 -    `axial phrasing` : `|SIGMA|__0^^5>>i^i+i`
 -    `types` / `classes / categories` : ?
+-    
 -    `ZFC-sets` : `{}`, `{{}}`, `{0}`, `{0,3,null,(),['a','bb',3,undefined]}`, `{ x | x <e N and x modulo 2 = 0 }`, assume affinity with `cpp std::unordered_set`, `a <= b`, `a =/> b`, `a =e> b`, `a </e= b`, `a =_> b`, `a </_= b`
--    `singly or doubly linked lists` : `[]` nilist, `[head:body:tail]` cons, `[ not_the_empty_list:[] ]` implicit nilist at CDR position of a singly linked list, `[ []:not_the_empty_list:[] ]` implicit nilist at HEAD and TAIL position of final element WARNING:NOT_SURE_IF_GOOD_MODEL, `[ x | { x | x <e N AND x modulo 2 = 0 } | pipeable | pipeable | terminal_pipeable ]` WARNING:NOT_SURE_IF_GOOD_MODEL, `[0,3,null,(),['a','bb',3,undefined]]`
--    `tuples` contiguous in memory : `()`, `(0,3,null,(),['a','bb',3,undefined])`, `<(124,4,55)>` bitstrings copied from Erlang, or Rust, or Go?
+-    `singly or doubly linked lists` : `[]` nilist, `[head:body:tail]` cons, `[ not_the_empty_list:[] ]` implicit nilist at CDR position of a singly linked list, `[< []:not_the_empty_list:[] >]` implicit nilist at HEAD and TAIL position of final element WARNING:NOT_SURE_IF_GOOD_MODEL, `[ x | { x | x <e N AND x modulo 2 = 0 } | pipeable | pipeable | terminal_pipeable ]` WARNING:NOT_SURE_IF_GOOD_MODEL, `[0,3,null,(),['a','bb',3,undefined]]`
+-    `tuples` contiguous in memory : `()`, `(0,3,null,(),['a','bb',3,undefined])`, `<(124,4,55)>` bitstrings copied from Erlang, or Rust, or Go?, `cpp struct`?
+-
+-    `!` sigil prefix
+-    `cpp std::unordered_map` : _{ a:1, b:2, _{ something:'else'}_, f:44, h:88 }_`
+-    `cpp std:vector` : `_['asd', 'aad', 125]_`, `varname_[i]_[j]` WARNING:NOT_SURE_IF_GOOD_MODEL
+-    
 -    `order-0 logic`, `propositional logic` : `a AND NOT b`, `OR NAND NOR XOR XAND IMPLY NIMPLY IFF`, CHECK, CONSIDER:SYNONYM_SYMBOLS?
 -    `order-1 logic`, `predicate logic` : `<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`,
 -    `order-N logic`, `higher order logic` : `<E>x<A>y:F(x) NAND B(y) AND <A>z:NOT Q(z) AND Y(x)` WARNING:NOT_SURE_IF_GOOD_MODEL
