@@ -42,6 +42,8 @@ Being very literal :
             - internally complete
             - dependent on compiler ( saves runtime space, but reduces runtime flexibility )      
 
+### Glyphs
+
 |Code|Glyphs|Predefined
 |-|-|-|
 |`\|ALPHA\|`,`\|alpha\|`|Αα|
@@ -80,7 +82,7 @@ Being very literal :
 |`\|\|`,`\|\|`|
 |`\|\|`,`\|\|`|
 
-
+### Lexical Structures
 
 | Lexical Structures||
 |-|-|
@@ -100,6 +102,7 @@ Being very literal :
 |`head:tail`, `head::tail`, `head|tail`| these are example of `cons` operators in Haskell, OCaml, and Erlang, respectively ; it seems feasible to apply this syntax to a `stack` linear data structure, also|
 |`head:body:tail`, `head::body::tail`, `head|body|tail`| fancifully, head-tail syntax seems extensible to head-body-tail, for `doubly-linked-lists` and `unprioritised queues`|
 
+### Character Sets
 
 |Character Sets|Domain|Details|
 |-|-|-|
@@ -110,11 +113,15 @@ Being very literal :
 |`[^-\s{}[]()<>]`|`sigil symmetrical delimiters`|no escapes?| 
 |`?[_a-zA-Z]*[_a-zA-Z0-9]` or `quoted utf8`|`variable names`|
 
+###### Underscore
+
 |Uses of the Underscore Character '_'|
 |-|
 |`variable names`|
 |`unused variable` compiler hint|
 |`visual spacer in sequences of digits`|
+
+###### Exclamation Mark
 
 |Uses of the Exclamation Character '!'|
 |-|
