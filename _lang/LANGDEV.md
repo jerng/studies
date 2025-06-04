@@ -42,6 +42,13 @@ Being very literal :
             - internally complete
             - dependent on compiler ( saves runtime space, but reduces runtime flexibility )      
 
+###### Datatype Design considerations
+
+-    underlying hardware architecture
+    -    `pointers on 64bit systems are 64bits long, and respectively for 32bit systems` : a moderate, and practical, assumption; the evolution of growth in system-word-sizes has been mainly motivated by how much memory can be addressed with a single word. On 64bit systems one can compile with 32bit pointers, limiting a process' RAM and increasing the number of pointers you can stuff into cache, but that is an optimisation, not the baseline.
+    -    `cache lines on 64bit systems are 64bits wide` : another moderate, and practical, assumption
+-    `an 8-byte pointer, for a 1-byte datum` is the minimum addressable quantum, without dropping into bit-wise addresses ( which would need more address space, or a reinterpretation of the 64bit address space to be 32bits for the byte address, and 8bits for the bit address in the byte )
+
 |Code|Glyphs|Predefined
 |-|-|-|
 |`\|ALPHA\|`,`\|alpha\|`|Αα|
