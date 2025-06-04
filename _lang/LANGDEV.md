@@ -121,7 +121,7 @@ Being very literal :
 |`exception handling` : to be defined|
 
 
-#### Top-level Syntax
+### Top-level Syntax
 ```
 build: env:
     from: fs.something
@@ -133,7 +133,7 @@ run: block: with env: with type: signature
     blocky block block code
 ```
 
-#### Block Syntax 
+### Block Syntax 
 ```
 this is a block_d0
     this is a block_d1
