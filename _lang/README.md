@@ -9,17 +9,20 @@ https://www.cuemath.com/numbers/math-symbols/
 
 ### SURVEYS
 
-Assignment
+
+#### Assignment
 ```
 a:=b            assignment, from b to a ( ALGOL 1958, Pascal, Python, Smalltalk )
 a=b             ( Superplan 1949, CPL->BCPL->B->C->etc.  )
 a<-b            ( APL 1962, Haskell 1996, R )
+b=>a            ( Plankalkul 1946 )
 LET a=b         ( BASIC 1964 )
 let a=b in a+1;;( Ocaml )
 let a=b         ( Haskell )
     in c=a
 ```
-AVOID OVERLOADING
+
+#### AVOID OVERLOADING
 = : comparison, assignment X
 ```
 
@@ -72,7 +75,8 @@ variablex := <<<here
 [ 1     1       6   ]
 here
 ```
-Brackets & Quotes
+
+#### Brackets & Quotes
 ```
 {}  for sets
 ()  for tuples
@@ -82,7 +86,8 @@ Brackets & Quotes
 ''  ? atoms?
 ""  ? spare!
 ```
-Numerals
+
+#### Numerals
 ```
 0xa     indicates that a is a base16 number ( C lang )
 0Xa     ditto
@@ -125,7 +130,7 @@ a_a     ? underscore separated numerals
 ```
 
 
-Piping / Composition
+#### Piping / Composition
 ```
 a o b   "ring operator" ( maths, Standard Meta Language (SML)  )
 a<o>b   "the composition of a and b" : (a o b)(x) = (a(b(x))
@@ -144,13 +149,13 @@ a^b(x)  functional power ( maths: varies by domain )
         where b is negative: a^b(x) = 1/a^|b|(x)
 ```
 
-Lists
+#### Lists
 ```
 [head|tail]     ( Erlang )
 head:tail       ( Haskell )
 ```
 
-Tuples
+#### Tuples
 ```
 (a, b)  ? math : finite, ordered : distinguished from sets
 v[a b]  ? vector
@@ -166,7 +171,7 @@ ARRAYS vs TUPLES ?
 SEE BITWISE SHIFTS
 ```
 
-Matrices
+#### Matrices
 ```
 a x b   row x column
         follows Cartesian convention ( horizontal, vertical )
@@ -210,7 +215,7 @@ a(x)_kromb      kronecker product
 
 ```
 
-Indexing / Keying
+#### Indexing / Keying
 ```
 a[b]        bth item in a ( C-fam )
 a_b         ( maths )
@@ -230,12 +235,13 @@ See C array addressing where equivalently :
 SEE : Namespace Referencing
 SEE : Memory Pointers 
 ```
-Error
+
+#### Error
 ```
 _|_     "bottom" throws an error ( Haskell )
 ```
 
-Functions
+#### Functions
 ```
 a(b)=c                                      ( maths )
 a:b->c                                      ( maths )
@@ -251,7 +257,8 @@ fn : a->b                                   ( ML )
 a := [ :b | c = b+1 ]                       ( Smalltalk )
 |arg1:type1, arg2:type2| -> type3 { body }  ( Rust )
 |arg1:type1, arg2:type2| body               ( Rust )
-
+func a[complicated]
+    (b type1, c type2) type3 { body }     ( Go )
 
 a(b1) when g1 ->c1;     ( Erlang )
 a(b2) when g2 ->c2;
@@ -266,7 +273,7 @@ CONSIDER :
 - destructuring of monoidal argument into multiple arguments
 ```
 
-Namespaced Referencing
+#### Namespaced Referencing
 ```
 a->b        ( C++, PHP )
 a.b         ( C, JavaScript, Haskell, rust )
@@ -276,20 +283,21 @@ a::b        ( C++, Haskell )
 SIMPLIFIED FIELD INITIALISATION SYNTAX ( Haskell, Rust, JavaScript )
 ```
 
-Evaluation
+#### Evaluation
 ```
 a.          ( Prolog, Erlang )
 a()         ( C ) 
 a value.    ( Smalltalk )
 ```
 
-Subexpressions
+#### Subexpressions
 ```
 a,b,c.      ( Prolog, Erlang )
 a,b,c;      ( C, JavaScript )
 
 ```
-Control
+
+#### Control
 ```
 a?b             if a then b
 
@@ -331,7 +339,7 @@ case a of       ( Haskell )
             g2
 ```
 
-Bitshift
+#### Bitshift
 ```
 BYTES ARE JUST TUPLES
 
@@ -348,7 +356,7 @@ a>>>b   unsigned right shift ( Java )
 
 ```
 
-Logic
+#### Logic
 ```
 E|a     ? there exists at least one a
 E]a     ?
@@ -437,7 +445,7 @@ a.a=)b.=)b  inference by modus ponens
 
 ```
 
-Model Theory
+#### Model Theory
 ```
 a|=b        "double turnstyle" ; Model a makes true predicate b
             a,b,c|=d = entailment without provability
@@ -445,7 +453,8 @@ a|=b        "double turnstyle" ; Model a makes true predicate b
 soundness       "system does not produce invalid conclusions"
 completeness    "system can produce all valid conclusions"
 ```
-Set Notation
+
+#### Set Notation
 ```
 {a, b}      a set containing elements a and b ( Cantor )
 
@@ -548,7 +557,7 @@ a (~E b ?
 a (~e b ?
 ```
 
-Algebra
+#### Algebra
 ```
 (a+b)*c precedence grouping ( HOW TO RECTIFY WITH TUPLES ? )
 a+b     summation / addition of a,b
@@ -589,7 +598,7 @@ a/\b    SPECIALISED : "exterior product" "wedge sum"
 ```
 
 
-Angles
+#### Angles
 ```
 L\      "right angled triangle" ?
 <)      "arc"?
@@ -656,7 +665,7 @@ a|<>|b  line, infinitely passing through a, b
 
 ```
 
-Derivatives
+#### Derivatives
 ```
 a'(x)   "a prime of x" : first derivative of a, with respect to x
 a''(x)  "a prime prime of x" : "second derivative of a, with respect to x
@@ -668,13 +677,13 @@ a(x)=x' "x prime" : the result of a transformation
 \/x     curl : vector calculus
 ```
 
-Factorial
+#### Factorial
 ```
 a!      a-factorial
         3! = 3 x 2 x 1
 ```
 
-Equality
+#### Equality
 ```
 ~=      approximately equal ( how approximate? )
 =/=     not equal
@@ -686,7 +695,7 @@ Equality
 
 
 
-Big Greek Letters
+##### Big Greek Letters
 ```
 |int    long small s : integral symbol ( Leibniz )
 |Sig    big sigma : summation of sequence
@@ -715,36 +724,9 @@ __(bottom)<_(leftbottom)
 #_(bottom)<_(leftbottom)
 <#(left<^(lefttop)
 ```
-Letters
+
+##### Letters
 ```
-
-Greek :
-
-|alp
-|bet
-|gam
-|del
-|eps
-|zet
-|eta
-|the
-|iot
-|kap
-|lam
-|mu
-|nu
-|xi
-|omi
-|pi
-|rho
-|sig
-|tau
-|ups
-|phi
-|chi
-|psi
-|ome
-
 Norwegian :
 
 |ae
@@ -756,14 +738,14 @@ frequently in English texts even those of math and science.
 
 ```
 
-Common Entities
+##### Common Entities
 ```
 |pi     pi, Archimedes' constant
 |i      -/-1
 |e      Euler's constant; base on natural logarithm
 ```
 
-Structural Query Language
+##### Structural Query Language
 ```
 S   ? select
 F   ? from
@@ -778,7 +760,7 @@ D   ? delete
 etc.
 ```
 
-Relational Model
+#### Relational Model
 ```
 relation        : SQL "table"
 heading         : SQL "schema" : list of attributes : (name, type "domain")
@@ -798,7 +780,7 @@ projection      : the set of tuples from a relation, filtered for a
 ```
 
 
-List Comprehensions
+#### List Comprehensions
 ```
 a..b        expansion : integer a to b
 a:b         ( Julia )
@@ -854,7 +836,7 @@ a\/b        sort a on b, descending
             ... output sorted index only?
 ```
 
-Pattern Matching
+#### Pattern Matching
 ```
 erlang, rust, haskell, ocaml, swift
 
@@ -874,12 +856,12 @@ native REGEXC ; consider AWK
 
 ```
 
-OOP / Types
+#### OOP / Types
 ```
 a<3b        a is instance of b ( see elementof in SETS )
 ```
 
-Side Effects / Unboxing / variable binding
+#### Side Effects / Unboxing / variable binding
 ```
 a>>b>>c         execute in sequence ( Haskell )
 do{a;b;c}       restyled as C
@@ -894,7 +876,7 @@ do{ b<-a;       Form 2 : equivalent, different syntax
 ISSUE : <- and -> are not symmetrical
 
 ```
-Memory Pointers
+#### Memory Pointers
 ```
 Review C * and &
 
@@ -919,13 +901,38 @@ a[?]
 
 ```
 
-Types, Kinds, Classes, hinting
+#### Types, Kinds, Classes, hinting
+
+-   Types may affect different layers of data flow. The economics of
+    type systems ( policy design and enforcement ) comes down to the
+    trade-off between PREEMPTIVE and AD HOC checks.
+    -   Lexing : Lexical layer : specific graphemes may indicate tokens which are
+        about the type system. 
+    -   Parsing of semantics : Abstract syntax layer(s) : Tokens may indicate 
+        1.  that specific data is of a specific type,
+        2.  that specific types are related in certain ways, or
+        3.  that specific types are required, allowed, or prohibited,
+            from any operation.
+        This is essentially a "compile time" opportunity to find data
+        that is not where it is wanted. The complexity of analysis at
+        this phase may vary, throughout various stages before the final
+        machine code is produced.
+    -   Runtime type checking : this may be implemented in both
+        interpreted or compiled runtimes. The most performant code is of
+        course, compiled code with no runtime checks, WHEN CODE IS
+        PREDICTABLE. Whereas, CODE THAT BRANCHES HEAVILY may be more
+        performant with just-in-time type checking, depending on the
+        specific nature of the code.
+
+
 ```
 a:b     variable a is of type b ( Rust )
 a::b    ( Haskell )
 ```
 
-Requested
+
+
+# Requested
 ```
 replaces n%m==0 : returns true if perfectly divisible
 
