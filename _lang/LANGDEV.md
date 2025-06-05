@@ -41,13 +41,18 @@
 -    `%%` comment, %{...}% comment
 -    `_` discarded
 -    `!` error
+-    `=` `IFF` equality NOT assignment
 -    `??` nullish coalescing ( see JavaScript )
--    `? : ` ternary branch
+-    `? : ` `IF ELSE` ternary branch
      -    other branching :
-     -    reconsider `case-switch`, `pattern matching` : `mere equivalence` vs `arbitrary logical expression`
--
--    `=` equality NOT assignment
--    `assignee <- assigner` assignment
+     -    reconsider `switch-case`, `pattern matching` : `mere equivalence` vs `arbitrary logical expression`
+          -   general case : given a `consideration`, its truth branches between subsequences `a` and `b`, in a binary logic ( `guards` )
+              -   bound cases : 
+                  -   weak case : `consideration` must be `matched programmatically by some algorithm` ( `pattern matching` )
+                  -   strong case : `consideration` must be `equivalent to some value` ( `switch-case` )
+-    `context` : `environments` and `binding`
+     -    `assignee <- assigner` assignment
+     -    `let BINDING in BLOCK` vs `BLOCK where BINDING`
 -
 -    `number` : `base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada
      -    `|number|` modulus
@@ -171,6 +176,7 @@ Being very literal :
     -   `utf8` is the common format, which is also aligned with `ASCII` at 8-bits
     -   `bitstrings` is thoroughly implemented in Erlang, and provides ONE good example, however the alternatives need to be thought out a bit more, since these are so rare
         -  erlang goes with `data:size/typeSpecifierList`
+        -  Go : `rune` is synonymous with `int32` for utf8 code points; `byte` is synonymous with `uint8` 
 -   consider
     -   the following types ( * consumes more space, if stored in the type, besides/instead of in the compiler )
         -   blocks, untyped (compiler knows the start address, and length* )
