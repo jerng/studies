@@ -44,11 +44,46 @@
          -   `[]` nilist, the protolist
              -   `[<1>]` singly linked lists, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]`
              -   `[<2>]` doubly linked lists
+         -   `<[]>` CONSIDER : Erlang's bitstring syntax
      -   JavaScript utility modes :
          -   `${}` JavaScript objects, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`
          -   `$[]` JavaScript arrays, `mypoja[99]`
-     -    Hard options :
-         -   ``      
+     -   Advanced modes :
+         -   `$<>` JavaScript's ArrayBuffer + TypedArray : later swap this to a non-JS API if there are gains to be had     
+-    CONSIDER :
+     -    make equivalent
+          -    `fun2(fun1(a,b))`
+          -    
+          -    `fun2<(fun1<(a,b))`
+          -    `fun2 <( fun1 <(a,b)`
+          -    `fun2 <( fun1 <( a, b`
+          -    `fun2 <( fun1 <( a b` CHECK : COMPARE FORTH but backwards
+          -
+          -    `((a,b)>fun1)>fun2`
+          -    `(a,b)> fun1 )> fun2`
+          -    `a, b )> fun1 )> fun2`
+          -    ` b a )> fun1 )> fun2`  COMPARE : FORTH, APL, FP, FL, POSIX SCL : tacit / pointfree / function-level programming
+          -    `<F`
+     -    `fun2(fun1(a))` bound execution, function style, applicative style, excel style        
+          -   when `containers with methods` are returned, lends itself to the chained dereferencing style `fun1(a).fun2(b).fun3(c)` 
+          -   when `functions` are returned, lends itself to the sequential binding style `fun1(a)(b)(c)` TODO: make sure this is semantically identical with `fun1(a, b, c)`
+     -    `a  fun1 fun2` bound execution, tacit style, pointfree style, composed style, pipe style
+     -
+     -    `a |-> b` math, `a.b` Haskell, `a|>b` R, Elixir, `a %>% b` R, `a (o) b` math
+     -
+     -    `_->()` JavaScript, `|a:t1, b:t2| -> t3 {}` `|a| b` Rust?, `a:b->c` maths,`\a->b` Haskell, `fn a,b -> c`, `fn name a,b -> c`, `fn name a,b -> {}`, `fn name a<T:x>, b<T:y> | <T:a>, <T:b> -> `
+     -    GUARD? See Erlang, Haskell
+     -    
+     -    CONSIDER : INFIX 
+          -   How does a built-in like `+`, work?
+          -   What's the standard way to define infix functions? CONSIDER : assuming in JS `(a,b)=>a*b+b`, `<infix|(a,b)=>a*b+b>`, `ff = fn <infix> (a,b)=>a*b+b`, `1 ff 2` returns 4, `<PN:ff> 1 2`, `1 2 <ff:RPN>`
+     -    
+     -    
+     -    
+     -    
+     -    
+     -    
+-    
 -    ` \t\n` internal field separators
 -    `%%` comment, %{...}% comment
 -    `_` discarded, `1_000_000` digit spacer, `mycube_[3]_[2]_[4]` `[13,44,22]_[0]` box-address spacer WARNING:UNSURE_GOOD
@@ -89,40 +124,6 @@
           -    `<sigil_identifier>QUOTECHARmarked_up_sourceQUOTE_CHAR`
           -    
           -    
--    CONSIDER :
-     -    make equivalent
-          -    `fun2(fun1(a,b))`
-          -    
-          -    `fun2<(fun1<(a,b))`
-          -    `fun2 <( fun1 <(a,b)`
-          -    `fun2 <( fun1 <( a, b`
-          -    `fun2 <( fun1 <( a b` CHECK : COMPARE FORTH but backwards
-          -
-          -    `((a,b)>fun1)>fun2`
-          -    `(a,b)> fun1 )> fun2`
-          -    `a, b )> fun1 )> fun2`
-          -    ` b a )> fun1 )> fun2`  COMPARE : FORTH, APL, FP, FL, POSIX SCL : tacit / pointfree / function-level programming
-          -    `<F`
-     -    `fun2(fun1(a))` bound execution, function style, applicative style, excel style        
-          -   when `containers with methods` are returned, lends itself to the chained dereferencing style `fun1(a).fun2(b).fun3(c)` 
-          -   when `functions` are returned, lends itself to the sequential binding style `fun1(a)(b)(c)` TODO: make sure this is semantically identical with `fun1(a, b, c)`
-     -    `a  fun1 fun2` bound execution, tacit style, pointfree style, composed style, pipe style
-     -
-     -    `a |-> b` math, `a.b` Haskell, `a|>b` R, Elixir, `a %>% b` R, `a (o) b` math
-     -
-     -    `_->()` JavaScript, `|a:t1, b:t2| -> t3 {}` `|a| b` Rust?, `a:b->c` maths,`\a->b` Haskell, `fn a,b -> c`, `fn name a,b -> c`, `fn name a,b -> {}`, `fn name a<T:x>, b<T:y> | <T:a>, <T:b> -> `
-     -    GUARD? See Erlang, Haskell
-     -    
-     -    CONSIDER : INFIX 
-          -   How does a built-in like `+`, work?
-          -   What's the standard way to define infix functions? CONSIDER : assuming in JS `(a,b)=>a*b+b`, `<infix|(a,b)=>a*b+b>`, `ff = fn <infix> (a,b)=>a*b+b`, `1 ff 2` returns 4, `<PN:ff> 1 2`, `1 2 <ff:RPN>`
-     -    
-     -    
-     -    
-     -    
-     -    
-     -    
--    
 -    `types` / `classes / categories` : <T:more_syntax_to_be_defined>
             |Hinting,Declaration|
             |-|-|
