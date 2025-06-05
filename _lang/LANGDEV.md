@@ -39,7 +39,7 @@
 -
 -    ` \t\n` internal field separators
 -    `%%` comment, %{...}% comment
--    `_` discarded
+-    `_` discarded, `1_000_000` digit spacer, `mycube_[3]_[2]_[4]` `[13,44,22]_[0]` box-address spacer WARNING:UNSURE_GOOD
 -    `!` error
 -    `=` `IFF` equality NOT assignment
 -    `??` nullish coalescing ( see JavaScript )
@@ -56,8 +56,9 @@
 -
 -    `number` : `base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada
      -    `|number|` modulus
+     -    `$.` sugar for the respective ASCII code point as an integer ( from Erlang )
 -
--    `ordinary variables` : `_a-zA-Z` first character, `_a-zA-Z0-9` middle characters, `a-zA-Z0-9` last character
+-    `ordinary variables` : `[_A-Z]` first character, `[_@a-zA-Z0-9]` middle characters (Erlang rules), but CONSIDER : `@a-zA-Z0-9` last character
 -    `<...>` some keywords, readonly
 -    `A-Z` some keywords, readonly
 -    `|a-zA-Z|` some keywords, readonly : otherwise, 
