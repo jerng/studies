@@ -51,7 +51,13 @@
                              -   In order for such ML-esque `currying to be ubiquitous and implicit in all polyadic functions`, we will need to `make JavaScript implement it accordingly`.
          -   ITERABLE DATA STRUCTURE MODES : CONSIDER : `unified utility library interface`, including generators `eager/lazy`
              -   Loops :
-                 -   0 Do all looping control structures get abstracted to something like this?   
+                 -   0 Do all looping control structures get abstracted to something like this?
+                     -   `while () do {}`
+                         -   `for a, change a, until b do {}`
+                     -   `do {} while ()`
+                         -   `for a, change a, do {} until b `
+                     -   `for key in/of b do {}`
+                         -   `for value in/of b do {}`
              -   Easy :
                  -   1 `()` tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER :
                      -   `mytuple_[5]_[17]`
