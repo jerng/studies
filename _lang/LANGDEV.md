@@ -112,7 +112,7 @@
     
 -    `ZFC-sets` : `{}`, `{{}}`, `{0}`, `{0,3,null,(),['a','bb',3,undefined]}`,
      -    `{ x | x <e N and x modulo 2 = 0 }`, assume affinity with `cpp std::unordered_set`,
-     -    `a <= b`, `a =/> b`, `a =e> b`, `a </e= b`, `a =_> b`, `a </_= b`
+     -    `a <= b`, `a =/> b`, `a e> b`, `a </e b`, `a =_> b`, `a </_= b`
 -    `tuples` contiguous in memory : `()`, `(0,3,null,(),['a','bb',3,undefined])`,
      -    `<(124,4,55)>` bitstrings copied from Erlang, or Rust, or Go?,
      -    `cpp struct` unless they have fixed the bug in `cpp std::tuple`?
