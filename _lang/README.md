@@ -30,6 +30,10 @@ LET a=b         ( BASIC 1964 )
 let a=b in a+1;;( Ocaml )
 let a=b         ( Haskell )
     in c=a
+where           (ISWIM 1965 )
+
+ `let BINDING in BLOCK` vs `BLOCK where BINDING`
+
 ```
 
 #### AVOID OVERLOADING
@@ -360,6 +364,12 @@ case a of       ( Haskell )
     | b2 = c2
     where   g1
             g2
+
+     -    reconsider `case-switch`, `pattern matching` : `mere
+          equivalence` vs `arbitrary logical expression`
+    -   general case : given a `consideration`, its
+        truth branches between subsequences `a` and `b`,
+        in a binary logic
 ```
 
 #### Bitshift
@@ -585,7 +595,9 @@ a (~e b ?
 (a+b)*c precedence grouping ( HOW TO RECTIFY WITH TUPLES ? )
 a+b     summation / addition of a,b
 
-a*b     multiplication of a,b; addition of a, to a, b times
+a*b     multiplication of a,b; addition of a, to a, b times 
+            ( FORTRAN 1957 )
+
 a(x)b   ?
 a(b)    ?
 
@@ -861,11 +873,15 @@ a\/b        sort a on b, descending
 
 #### Pattern Matching
 ```
+This is basically about branch selection.
+
 COMIT 1957, SNOBOL 1962, erlang, rust, haskell, ocaml, swift
 
 "where" : declarations or statementsi
 "offside rule" : indentation for blocking
 -( ISWIM 1965, the next 700 programming languages )
+
+
 
 TODO : destructuring operators like ... in JS
 
@@ -874,11 +890,23 @@ unbound = source    will throw exception if unmatched ( Erlang )
 
 | operator from SNOBOL 4, 1967
 
+SUBJECT PATTERN IFMATCHED(GOHERE) IFNOT(GOHERE) ( SNOBOL )
+
+FUN NAME PATTERN : BRANCH   ( ML 1973, for LCF, where Caml had -> in 1985 )
+    | PATTERN    : BRANCH
+
+Isabelle descends from LCF ... so it is sort of a sibling tech to
+ML which also descends from LCF. ML implemented pattern matching using
+the `case:bock, case:block` syntax, which OCaml and Haskell adapted into
+`case->block,case->block`, and so you see it in Rust as `case => block`.
+
 native BNF ; consider SNOBOL
 native REGEXC ; consider AWK
 
 =~      regex match ( Perl )
 !=~     negated 
+
+
 
 Context free grammar : SNOBOL, Raku ( Perl 6 )
 
@@ -1021,6 +1049,9 @@ This section aims to quickly tour you through the following concerns :
         Unicode, which may represent a SEQUENCE OF CODE POINTS :
         font-wise atom 
     -   FONT : a collection of glyphs
+    -    Go : `rune` is synonymous with `int32` for utf8 code points;
+         `byte` is synonymous with `uint8` 
+
 
 #### Programming languages typically mean CODE POINTS when referring to
 'characters'
@@ -1190,6 +1221,12 @@ INSTRUCTIONS.
 
 
 # Surveys
+
+Remember, all computations may be reduced to :
+
+- sequence
+- selection
+- iteration
 
 # Survey : Explicit Env Passing
 
