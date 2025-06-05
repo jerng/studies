@@ -146,7 +146,9 @@ a_a     ? underscore separated numerals
 
 #### Piping / Composition
 ```
-a o b   "ring operator" ( maths, Standard Meta Language (SML)  )
+a o b   "ring operator" ( maths, Standard Meta Language (SML)  ) 
+                (Bourbaki group 1944)
+
 a<o>b   "the composition of a and b" : (a o b)(x) = (a(b(x))
         maths::"composition"
 
@@ -187,6 +189,8 @@ SEE BITWISE SHIFTS
 
 #### Matrices
 ```
+See Algebra
+
 a x b   row x column
         follows Cartesian convention ( horizontal, vertical )
 a__     ? a is a matrix ( from double underline )
@@ -211,9 +215,18 @@ TODO : See BQN's matrix notation
 
 a(x)b       multiplication "matmul"
 
+||a||   norm of a vector a
+|a|     ditto, but may be confused with the absolute value, which is a
+        type of norm 
+
+
 a(x)b   "cross product", "vector product" : a vector
+        (Wilson 1902, vector analysis)
+[a,b]   older notation
+
 a(.)b   "dot product", "scalar product" : a scalar
         special case of inner product
+        (Wilson 1902, vector analysis)
 
 <a,b>   inner product ( LEARN THIS FIRST )
 (a,b)
@@ -252,14 +265,20 @@ SEE : Memory Pointers
 
 #### Error
 ```
-_|_     "bottom" throws an error ( Haskell 1990, FP 1977, Plankalkul 1946 )
+_|_     "bottom, uninhabitable, type with no members" throws an error ( Haskell 1990, FP 1977)
+
+nil     nil=false=() : Lisp's falsy type
+
+|       syntactical bottom, not about types (Plankalkul 1946 )
+
+
 Maybe   type is used to wrap question marks
 ```
 
 #### Functions
 ```
 a(b)=c                                      ( maths )
-a:b->c                                      ( maths )
+a:b->c                                      ( maths , topology, 1940s )
 
 \a->b                                       ( Haskell )
 fun a->b                                    ( caml )
@@ -290,7 +309,7 @@ CONSIDER :
 
 ###### blocks / subroutines / functions / procedures / methods
 
-applicative style : bound execution, function style, applicative style, excel style
+applicative style : bound execution, function style, applicative style, excel style, Euler 1734
 ```
 e = c(b(a))(d)
 ```
@@ -391,6 +410,13 @@ a>>>b   unsigned right shift ( Java )
 
 #### Logic
 ```
+See Sets
+
+history
+https://mathshistory.st-andrews.ac.uk/Miller/mathsym/set/
+https://en.wikipedia.org/wiki/List_of_logic_symbols
+
+
 E|a     ? there exists at least one a
 E]a     ?
 
@@ -476,6 +502,31 @@ a|||b       a=)b.b=)a
 
 a.a=)b.=)b  inference by modus ponens
 
+
+-    `order-0 logic`, `propositional logic` :
+     -    `a AND NOT b`, `OR NAND NOR XOR XAND IMPLY NIMPLY IFF`
+     -    CHECK, CONSIDER:SYNONYM_SYMBOLS?
+          - `a /\ b` wedge, `a AND b`, `a & b` common computing
+          - `a \/ b` vee, `a OR b`, `a | b` common computing
+          - `~a` common computing, `NOT a`
+          - `a \/_ b` veebar, `a (+) b` oplus, `a =/= b` not equivalent, `a XOR b`
+          - `_|_` bottom, `false`, `F`
+          - `^|^` top, `true`, `T`
+          - `a --> b` implies, `a IMPLY b`, `a |-- b`, `a /.\ b` `a :^ b` therefore
+          - `a <-- b` is implied by, `a --| b`, `a \./ b` `a :. b` because
+          - `a -/> b` does not imply, `a NIMPLY b`, `a |/- b`
+-    `order-1 logic`, `predicate logic` :
+     -    `<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`,
+          - `<A>` for all, all, universal quantification, `\-/`
+          - `<E>` for some, there exists, existential quantification
+          - `<E>!` there exists exactly one, unique quantification
+-    `order-N logic`, `higher order logic` :
+     -    `<E>x<A>y:F(x) NAND B(y) AND <A>z:NOT Q(z) AND Y(x)` WARNING:NOT_SURE_IF_GOOD_MODEL
+-    `model logic`
+     -    `[]<E>x:P(x)` it is possible that something has property P   
+     -    `<><E>x:P(x)` it is necessary that something has property P   
+
+
 ```
 
 #### Model Theory
@@ -489,6 +540,10 @@ completeness    "system can produce all valid conclusions"
 
 #### Set Notation
 ```
+history
+https://mathshistory.st-andrews.ac.uk/Miller/mathsym/set/
+
+
 {a, b}      a set containing elements a and b ( Cantor )
 
 {}          empty set
@@ -504,7 +559,7 @@ PROPER :
 
 a(=b    a is a subset of b; b is a superset of a
 a(set b ?
-a <e b
+a <e b          ( for Peano's epsilon, est, Latin: the entire work )
 
 a (/= b
 a ~(= b
@@ -541,6 +596,7 @@ a&b     ( Python )
 
 a|delb  "symmetric difference" of a,b
 a(+)b   "elements in a, or b, but not not in both a and b"
+        from "addition modulo 2"
 a/_\b   "disjunction union" "set sum"
 
 a ^ b   ? intersection of a,b ( Cantor )
@@ -592,7 +648,15 @@ a (~e b ?
 
 #### Algebra
 ```
-(a+b)*c precedence grouping ( HOW TO RECTIFY WITH TUPLES ? )
+History of math operators :
+https://mathshistory.st-andrews.ac.uk/Miller/mathsym/operation/
+
+RANGE NOTATION
+
+
+(a+b)*c precedence grouping ( HOW TO RECTIFY WITH TUPLES ? ) 
+                ( 1544 Stifel )
+
 a+b     summation / addition of a,b
 
 a*b     multiplication of a,b; addition of a, to a, b times 
@@ -627,7 +691,7 @@ a|cx|b      ? linear proportionality, without detail :
                 a=kb, without defining k
 
 +/-     plus or minus
-|a|     absolute value
+|a|     absolute value, modulus (Weierstrass 1841)
 
 a/\b    SPECIALISED : "exterior product" "wedge sum"
 ```
@@ -734,7 +798,7 @@ a!      a-factorial
 ```
 |int    long small s : integral symbol ( Leibniz )
 |Sig    big sigma : summation of sequence
-|Pi     big pi : multiplicative product of sequence ( Gauss )
+|Pi     big pi : multiplicative product of sequence ( Gauss or Descartes)
 |Om     big omega : various context
 |Del    big delta : change or difference
 |Phi    big phi : golden ratio, etc.
