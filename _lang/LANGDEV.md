@@ -34,20 +34,28 @@
 ## Latest
 
 -    CONFLICT : `[1]`, `<[1]>`, `$[]`, `variable[key]`
--    UNDONE : `|`, `||`, `&`, `&&`, `~`, `bitwise?`, and alternatives?
+-    UNDONE : `|`, `||`, `&`, `&&`, `~`, `bitwise?`, and alternatives?, APL/J analogues
 -
 -
 -    ` \t\n` internal field separators
 -    `%%` comment, %{...}% comment
 -    `_` discarded
 -    `!` error
+-    `=` `IFF` equality NOT assignment
 -    `??` nullish coalescing ( see JavaScript )
--
--    `=` equality NOT assignment
--    `assignee <- assigner` assignment
+-    `? : ` `IF ELSE` ternary branch
+     -    other branching :
+     -    reconsider `switch-case`, `pattern matching` : `mere equivalence` vs `arbitrary logical expression`
+          -   general case : given a `consideration`, its truth branches between subsequences `a` and `b`, in a binary logic ( `guards` )
+              -   bound cases : 
+                  -   weak case : `consideration` must be `matched programmatically by some algorithm` ( `pattern matching` )
+                  -   strong case : `consideration` must be `equivalent to some value` ( `switch-case` )
+-    `context` : `environments` and `binding`
+     -    `assignee <- assigner` assignment
+     -    `let BINDING in BLOCK` vs `BLOCK where BINDING`
 -
 -    `number` : `base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada
--    `|number|` modulus
+     -    `|number|` modulus
 -
 -    `ordinary variables` : `_a-zA-Z` first character, `_a-zA-Z0-9` middle characters, `a-zA-Z0-9` last character
 -    `<...>` some keywords, readonly
@@ -57,9 +65,27 @@
 -    `axial phrasing` : `|SIGMA|__0^^5>>i^i+i`
 -    `value@?` get the pointer to value, `?@address` get the value at address
 -    `4-logic` : `true`, `false`, `null`, `undefined`
+-
 -    `<` sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|`
--    
--    CONSIDER : make `fun2(fun1(a,b))` equivalent with `fun2 <( fun1 <(a,b)` `fun2 <( fun1 <( a, b`and `(a,b)> fun1 )> fun2` `a, b )> fun1 )> fun2` ` b a )> fun1 )> fun2`  
+     -    general form :
+          -    
+          -    
+          -    
+          -    
+-    CONSIDER :
+     -    make equivalent
+          -    `fun2(fun1(a,b))`
+          -    
+          -    `fun2<(fun1<(a,b))`
+          -    `fun2 <( fun1 <(a,b)`
+          -    `fun2 <( fun1 <( a, b`
+          -    `fun2 <( fun1 <( a b` CHECK : COMPARE FORTH but backwards
+          -
+          -    `((a,b)>fun1)>fun2`
+          -    `(a,b)> fun1 )> fun2`
+          -    `a, b )> fun1 )> fun2`
+          -    ` b a )> fun1 )> fun2`  COMPARE : FORTH, APL, FP, FL, POSIX SCL : tacit / pointfree / function-level programming
+          -    `<F`
      -    `fun2(fun1(a))` bound execution, function style, applicative style, excel style        
           -   when `containers with methods` are returned, lends itself to the chained dereferencing style `fun1(a).fun2(b).fun3(c)` 
           -   when `functions` are returned, lends itself to the sequential binding style `fun1(a)(b)(c)` TODO: make sure this is semantically identical with `fun1(a, b, c)`
@@ -69,23 +95,55 @@
      -
      -    `_->()` JavaScript, `|a:t1, b:t2| -> t3 {}` `|a| b` Rust?, `a:b->c` maths,`\a->b` Haskell, `fn a,b -> c`, `fn name a,b -> c`, `fn name a,b -> {}`, `fn name a<T:x>, b<T:y> | <T:a>, <T:b> -> `
      -    GUARD? See Erlang, Haskell
+     -    
+     -    
+     -    
+     -    
+     -    
+     -    
+     -    
+     -    
+     -    
 -    
 -    `types` / `classes / categories` : <T:more_syntax_to_be_defined>
--    
--    `ZFC-sets` : `{}`, `{{}}`, `{0}`, `{0,3,null,(),['a','bb',3,undefined]}`, `{ x | x <e N and x modulo 2 = 0 }`, assume affinity with `cpp std::unordered_set`, `a <= b`, `a =/> b`, `a =e> b`, `a </e= b`, `a =_> b`, `a </_= b`
--    `tuples` contiguous in memory : `()`, `(0,3,null,(),['a','bb',3,undefined])`, `<(124,4,55)>` bitstrings copied from Erlang, or Rust, or Go?, `cpp struct` unless they have fixed the bug in `cpp std::tuple`?
+            |Hinting,Declaration|
+            |-|-|
+            |`THING/type`, `THING::type`, `THING:type`, `THING<type>`, `type THING` | Erlang, Haskell & Rust, Python & TypeScript, C++, C, respectively |
+    
+-    `ZFC-sets` : `{}`, `{{}}`, `{0}`, `{0,3,null,(),['a','bb',3,undefined]}`,
+     -    `{ x | x <e N and x modulo 2 = 0 }`, assume affinity with `cpp std::unordered_set`,
+     -    `a <= b`, `a =/> b`, `a =e> b`, `a </e= b`, `a =_> b`, `a </_= b`
+-    `tuples` contiguous in memory : `()`, `(0,3,null,(),['a','bb',3,undefined])`,
+     -    `<(124,4,55)>` bitstrings copied from Erlang, or Rust, or Go?,
+     -    `cpp struct` unless they have fixed the bug in `cpp std::tuple`?
 -
--    `singly or doubly linked lists` : `[]` nilist, `[head:body:tail]` cons, `[ not_the_empty_list:[] ]` implicit nilist at CDR position of a singly linked list, `<[ []:not_the_empty_list:[] ]>` implicit nilist at HEAD and TAIL position of final element WARNING:NOT_SURE_IF_GOOD_MODEL, `[ x | { x | x <e N AND x MODULO 2 = 0 } | pipeable | pipeable | terminal_pipeable ]` WARNING:NOT_SURE_IF_GOOD_MODEL, `[0,3,null,(),['a','bb',3,undefined]]`
+-    `singly or doubly linked lists`
+     -    `[]` nilist, `[head:tail]` singly, `<[head:body:tail]>` doubly,
+     -    `[ not_the_empty_list:[] ]` implicit nilist at CDR position of a singly linked list,
+     -    `<[ []:not_the_empty_list:[] ]>` implicit nilist at HEAD and TAIL position of final element WARNING:NOT_SURE_IF_GOOD_MODEL
+     -    `[ x | { x | x <e N AND x MODULO 2 = 0 } | pipeable | pipeable | terminal_pipeable ]` WARNING:NOT_SURE_IF_GOOD_MODEL,
+     -    `[0,3,null,(),['a','bb',3,undefined]]`
 -
 -    `$` any JavaScript analog
--    `cpp std::unordered_map` : ${ a:1, b:2, ${ something:'else'}, f:44, h:88 }`, `${lazyAssign}`
--    `cpp std:vector` : `$['asd', 'aad', 125]`, `varname[i][j]`, `varname_[i]_[j]` sugared, WARNING:NOT_SURE_IF_GOOD_MODEL
+     -    `cpp std::unordered_map` : ${ a:1, b:2, ${ something:'else'}, f:44, h:88 }`, `${lazyAssign}`
+     -    `cpp std:vector` : `$['asd', 'aad', 125]`
+          -    `varname[i][j]`, `varname_[i]_[j]` sugared, WARNING:NOT_SURE_IF_GOOD_MODEL
 -    
--    `.` `[]` dereference, `?.` `?[key]` weak dereference : `{}.random()`, `[22,33,44,55].3` 0-based-index:3, `<[22,33,44,55]>.1` 0-based-index:1, `(22,33,44).2` 0-based-index:2, `${a:1,b:2}.a`, `$[23,56,643].2` 0-based-index:2 
+-    `.` `[]` dereference, `?.` `?[key]` weak dereference
+     -    `{}.random()`,
+     -    `[22,33,44,55].3` 0-based-index:3,
+     -    `<[22,33,44,55]>.1` 0-based-index:1,
+     -    `(22,33,44).2` 0-based-index:2,
+     -    `${a:1,b:2}.a`,
+     -    `$[23,56,643].2` 0-based-index:2 
 -    
--    `order-0 logic`, `propositional logic` : `a AND NOT b`, `OR NAND NOR XOR XAND IMPLY NIMPLY IFF`, CHECK, CONSIDER:SYNONYM_SYMBOLS?
--    `order-1 logic`, `predicate logic` : `<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`,
--    `order-N logic`, `higher order logic` : `<E>x<A>y:F(x) NAND B(y) AND <A>z:NOT Q(z) AND Y(x)` WARNING:NOT_SURE_IF_GOOD_MODEL
+-    `order-0 logic`, `propositional logic` :
+     -    `a AND NOT b`, `OR NAND NOR XOR XAND IMPLY NIMPLY IFF`
+     -    CHECK, CONSIDER:SYNONYM_SYMBOLS?
+-    `order-1 logic`, `predicate logic` :
+     -    `<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`,
+-    `order-N logic`, `higher order logic` :
+     -    `<E>x<A>y:F(x) NAND B(y) AND <A>z:NOT Q(z) AND Y(x)` WARNING:NOT_SURE_IF_GOOD_MODEL
 
 ## Lexemes
 
@@ -118,6 +176,7 @@ Being very literal :
     -   `utf8` is the common format, which is also aligned with `ASCII` at 8-bits
     -   `bitstrings` is thoroughly implemented in Erlang, and provides ONE good example, however the alternatives need to be thought out a bit more, since these are so rare
         -  erlang goes with `data:size/typeSpecifierList`
+        -  Go : `rune` is synonymous with `int32` for utf8 code points; `byte` is synonymous with `uint8` 
 -   consider
     -   the following types ( * consumes more space, if stored in the type, besides/instead of in the compiler )
         -   blocks, untyped (compiler knows the start address, and length* )
@@ -272,15 +331,6 @@ this is a block_d0
 
 ###### blocks / subroutines / functions / procedures / methods
 
-applicative style :
-```
-e = c(b(a))(d)
-```
-
-tacit style :
-```
-d b c 
-```
 
 
 
@@ -347,10 +397,6 @@ visual mocks :
 |`a<^c`|`c` is spatially NorthWest of centre, to the TopLeft of `a` |
 
 ## Types
-
-|Hinting,Declaration|
-|-|-|
-|`THING/type`, `THING::type`, `THING:type`, `THING<type>`, `type THING` | Erlang, Haskell & Rust, Python & TypeScript, C++, C, respectively |
 
 |Primitives|Qualifier||
 |-|-|-|
