@@ -248,7 +248,7 @@ SEE : Memory Pointers
 
 #### Error
 ```
-_|_     "bottom" throws an error ( Haskell )
+_|_     "bottom" throws an error ( Haskell 1990, FP 1977, Plankalkul 1946 )
 Maybe   type is used to wrap question marks
 ```
 
@@ -282,6 +282,18 @@ CONSIDER :
 - named parameters
 - default parameter arguments
 - destructuring of monoidal argument into multiple arguments
+```
+
+###### blocks / subroutines / functions / procedures / methods
+
+applicative style : bound execution, function style, applicative style, excel style
+```
+e = c(b(a))(d)
+```
+
+tacit style : FORTH, APL, FP, FL, POSIX SCL : tacit / pointfree / function-level programming
+```
+d b c 
 ```
 
 #### Namespaced Referencing
