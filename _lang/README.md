@@ -274,7 +274,7 @@ func a[complicated]
 a(b1) when g1 ->c1;     ( Erlang )
 a(b2) when g2 ->c2;
 
-a b | g1 = c1           ( Haskell )
+a b | g1 = c1           ( Haskell, Ocaml, ML )
     | g2 = c2
 
 CONSIDER :
@@ -861,21 +861,26 @@ a\/b        sort a on b, descending
 
 #### Pattern Matching
 ```
-erlang, rust, haskell, ocaml, swift
+COMIT 1957, SNOBOL 1962, erlang, rust, haskell, ocaml, swift
 
-"where" : declarations or statements
+"where" : declarations or statementsi
+"offside rule" : indentation for blocking
+-( ISWIM 1965, the next 700 programming languages )
 
 TODO : destructuring operators like ... in JS
 
 
 unbound = source    will throw exception if unmatched ( Erlang ) 
 
+| operator from SNOBOL 4, 1967
 
 native BNF ; consider SNOBOL
 native REGEXC ; consider AWK
 
 =~      regex match ( Perl )
 !=~     negated 
+
+Context free grammar : SNOBOL, Raku ( Perl 6 )
 
 ```
 
