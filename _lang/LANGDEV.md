@@ -41,27 +41,29 @@
      -   TOP LEVEL MODE :
          -   PRIMITIVES :
              -   
-         -   DATA STRUCTURE MODES :
+         -   ITERABLE DATA STRUCTURE MODES : CONSIDER : `unified utility library interface`, including generators `eager/lazy`
+             -   Loops :
+                 -   0 Do all looping control structures get abstracted to something like this?   
              -   Easy :
-                 -   `()` tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER :
+                 -   1 `()` tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER :
                      -   `mytuple_[5]_[17]`
                      -   `mytuple.5.17`
                      -   `mytuple_5_17`
                      -   `mytuple_(5)_(17)`
-                 -   `{}` ZFC sets, `cpp std::unordered_set`, CONSIDER :
+                 -   2 `{}` ZFC sets, `cpp std::unordered_set`, CONSIDER :
                      -   `{ x | predicate(x) }`
                      -   `{ expression(x) FOR x IN iterable WHERE }`
                      -   `{ x<e<N~0> | x<10 /\ x/%2==0 }`
                      -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }`
-                 -   `[]` nilist, the protolist
+                 -   3 `[]` nilist, the protolist
                      -   `[<1>]` singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]`
                      -   `[<2>]` doubly linked lists, `cpp std::list` 
-                 -   `<[]>` CONSIDER : Erlang's bitstring syntax
+                 -   4 `<[]>` CONSIDER : Erlang's bitstring syntax
              -   JavaScript utility :
-                 -   `${}` JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`
-                 -   `$[]` JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`
+                 -   5 `${}` JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`
+                 -   6 `$[]` JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`
              -   Advanced :
-                 -   `$<//TODO//>` JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had     
+                 -   7 `$<//TODO//>` JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had     
 -    CONSIDER :
      -    make equivalent
           -    `fun2(fun1(a,b))`
