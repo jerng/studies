@@ -35,7 +35,7 @@
 
 -    CONFLICT : `[1]`, `<[1]>`, `$[]`, `variable[key]`
 -    UNDONE : `|`, `||`, `&`, `&&`, `~`, `bitwise?`, and alternatives?, APL/J analogues
--
+-    BROADLY : `define lexing rules at the top-level context`, `define lexing rules which enter and exit subcontexts`, `define lexing rules for each subcontext`
 -
 -    ` \t\n` internal field separators
 -    `%%` comment, %{...}% comment
