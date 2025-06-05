@@ -35,8 +35,20 @@
 
 -    CONFLICT : `[1]`, `<[1]>`, `$[]`, `variable[key]`
 -    UNDONE : ',',';','.',`|`, `||`, `&`, `&&`, `~`, `bitwise?`, and alternatives?, APL/J analogues
+     -   `,` additive connotation, from English ( C family, Erlang, etc. )
+     -   '.' terminal connotation, from English ( Prolog, Erlang, COBOL )
 -    BROADLY : `define lexing rules at the top-level context`, `define lexing rules which enter and exit subcontexts`, `define lexing rules for each subcontext`
--
+     -   Base mode at the top level :
+         -   `()` tuples, CONSIDER : `mytuple_[5]_[17]` `mytuple.5.17` `mytuple_5_17` `mytuple_(5)_(17)`
+         -   `{}` ZFC sets, CONSIDER : `{ x | predicate(x) }` `{ expression(x) FOR x IN iterable WHERE }` `{ x <e <N~0> | x < 10 /\ x /% 2 == 0 }` `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }`
+         -   `[]` nilist, the protolist
+             -   `[<1>]` singly linked lists, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]`
+             -   `[<2>]` doubly linked lists
+     -   JavaScript utility modes :
+         -   `${}` JavaScript objects, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`
+         -   `$[]` JavaScript arrays, `mypoja[99]`
+     -    Hard options :
+         -   ``      
 -    ` \t\n` internal field separators
 -    `%%` comment, %{...}% comment
 -    `_` discarded, `1_000_000` digit spacer, `mycube_[3]_[2]_[4]` `[13,44,22]_[0]` box-address spacer WARNING:UNSURE_GOOD
@@ -59,6 +71,7 @@
      -    `|number|` modulus
      -    `3-/5` viculum, 3rd root of 5
      -    `$.` sugar for the respective ASCII code point as an integer ( from Erlang )
+     -    `a..b` `a(+1)..b` `a(a=>a+1)..b` `a (+1) UNTIL b`
 -
 -    `ordinary variables` : `[_A-Z]` first character, `[_@a-zA-Z0-9]` middle characters (Erlang rules), but CONSIDER : `@a-zA-Z0-9` last character
 -    `<...>` some keywords, readonly
@@ -71,9 +84,9 @@
 -
 -    `<` sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|`
      -    `<)` sigil for variables of an arc
-     -    general form :
-          -    
-          -    
+     -    general form : CONSIDER
+          -    `<sigil_identifier:marked_up_source>` `<marked_up_source:sigil_identifier>`
+          -    `<sigil_identifier>QUOTECHARmarked_up_sourceQUOTE_CHAR`
           -    
           -    
 -    CONSIDER :
@@ -100,8 +113,9 @@
      -    `_->()` JavaScript, `|a:t1, b:t2| -> t3 {}` `|a| b` Rust?, `a:b->c` maths,`\a->b` Haskell, `fn a,b -> c`, `fn name a,b -> c`, `fn name a,b -> {}`, `fn name a<T:x>, b<T:y> | <T:a>, <T:b> -> `
      -    GUARD? See Erlang, Haskell
      -    
-     -    
-     -    
+     -    CONSIDER : INFIX 
+          -   How does a built-in like `+`, work?
+          -   What's the standard way to define infix functions? CONSIDER : assuming in JS `(a,b)=>a*b+b`, `<infix|(a,b)=>a*b+b>`, `ff = fn <infix> (a,b)=>a*b+b`, `1 ff 2` returns 4, `<PN:ff> 1 2`, `1 2 <ff:RPN>`
      -    
      -    
      -    
@@ -121,7 +135,10 @@
 -    `tuples` contiguous in memory : `()`, `(0,3,null,(),['a','bb',3,undefined])`,
      -    `<(124,4,55)>` bitstrings copied from Erlang, or Rust, or Go?,
      -    `cpp struct` unless they have fixed the bug in `cpp std::tuple`?
-     -
+     -    punning / sugaring :
+          -   `(a,b,c)` is the unsugared form, `evaluate a, then b, then c`
+          -   `a,b,c` is this viable, as sugar?
+          -   `c b a` what about this? `put c on the stack, then b, then a`
 -    `singly or doubly linked lists`
      -    `[]` nilist, `[head:tail]` singly, `<[head:body:tail]>` doubly,
      -    `[ not_the_empty_list:[] ]` implicit nilist at CDR position of a singly linked list,
@@ -381,10 +398,11 @@ this is a block_d0
 ###### List Phrasing
 >    Can all iteration be unified with list comprehension?
 
-|`1`|`1`|`M`|M|M|`1`|`1`|
+|`1`|`1`|`M`|`M`|`M`|`1`|`1`|
 |-|-|-|-|-|-|-|
 |`[`|`input`|`fanout`|`map`|`fanin`|`output`|`]`|
 |-|-|-|-|-|-|-|
+|-|-|`<\|`|`\|=\|`|`\|>`|-|-|
 |-|`0-to-N`|`N-to-P`|`P-to-P`|`P-to-Q`|`Q-to-0`|-|
 |-|`pipe from source`|`unfold`|-|`fold`|`pipe to sink`|-|
 |-|`generator expression`|`increase`|-|`reduce`|`consumer expression`|-|
@@ -479,7 +497,12 @@ uses auto-boxing to methodise immutable primitives. |
 |There should be some sort of UI for configuring customisable memory
 layouts of customised datatypes|
 
-###### Datatype Design considerations
+#### Datatype Design considerations
+
+-   System should maintain the easiest & safest path, at the cost of performance, for the dumbest user.
+-   System should allow opt-ins to longer & riskier paths, with performance benefits, for a smarter user.
+
+###### Ways to Layout an Array in Memory
 
 >    2025-06-04 : This is ... not as insightful as I'd hoped it'd be. There are very many permutations of how to create an array. The array's metadata can be stored in the array's own address space (data plane) or in the address space occupied by working memory of the compiled instructions (control plane). 
 I am not even sure that I captured what I wanted! But it was a good exercise. Somewhat stressy tho 
