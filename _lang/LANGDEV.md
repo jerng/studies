@@ -43,6 +43,7 @@
 -    `!` error
 -    `=` `IFF` equality NOT assignment
 -    `??` nullish coalescing ( see JavaScript )
+-    `a ??= b` ensure assignment of b to a, if a is falsy ( see JavaScript )
 -    `? : ` `IF ELSE` ternary branch
      -    other branching :
      -    reconsider `switch-case`, `pattern matching` : `mere equivalence` vs `arbitrary logical expression`
@@ -56,6 +57,7 @@
 -
 -    `number` : `base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada
      -    `|number|` modulus
+     -    `3-/5` viculum, 3rd root of 5
      -    `$.` sugar for the respective ASCII code point as an integer ( from Erlang )
 -
 -    `ordinary variables` : `[_A-Z]` first character, `[_@a-zA-Z0-9]` middle characters (Erlang rules), but CONSIDER : `@a-zA-Z0-9` last character
@@ -68,6 +70,7 @@
 -    `4-logic` : `true`, `false`, `null`, `undefined`
 -
 -    `<` sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|`
+     -    `<)` sigil for variables of an arc
      -    general form :
           -    
           -    
@@ -114,22 +117,23 @@
 -    `ZFC-sets` : `{}`, `{{}}`, `{0}`, `{0,3,null,(),['a','bb',3,undefined]}`,
      -    `{ x | x <e N and x modulo 2 = 0 }`, assume affinity with `cpp std::unordered_set`,
      -    `a <= b`, `a =/> b`, `a e> b`, `a </e b`, `a =_> b`, `a </_= b`
+     -    
 -    `tuples` contiguous in memory : `()`, `(0,3,null,(),['a','bb',3,undefined])`,
      -    `<(124,4,55)>` bitstrings copied from Erlang, or Rust, or Go?,
      -    `cpp struct` unless they have fixed the bug in `cpp std::tuple`?
--
+     -
 -    `singly or doubly linked lists`
      -    `[]` nilist, `[head:tail]` singly, `<[head:body:tail]>` doubly,
      -    `[ not_the_empty_list:[] ]` implicit nilist at CDR position of a singly linked list,
      -    `<[ []:not_the_empty_list:[] ]>` implicit nilist at HEAD and TAIL position of final element WARNING:NOT_SURE_IF_GOOD_MODEL
      -    `[ x | { x | x <e N AND x MODULO 2 = 0 } | pipeable | pipeable | terminal_pipeable ]` WARNING:NOT_SURE_IF_GOOD_MODEL,
      -    `[0,3,null,(),['a','bb',3,undefined]]`
--
+     -
 -    `$` any JavaScript analog
      -    `cpp std::unordered_map` : ${ a:1, b:2, ${ something:'else'}, f:44, h:88 }`, `${lazyAssign}`
      -    `cpp std:vector` : `$['asd', 'aad', 125]`
           -    `varname[i][j]`, `varname_[i]_[j]` sugared, WARNING:NOT_SURE_IF_GOOD_MODEL
--    
+          -    
 -    `.` `[]` dereference, `?.` `?[key]` weak dereference
      -    `{}.random()`,
      -    `[22,33,44,55].3` 0-based-index:3,
@@ -137,14 +141,51 @@
      -    `(22,33,44).2` 0-based-index:2,
      -    `${a:1,b:2}.a`,
      -    `$[23,56,643].2` 0-based-index:2 
--    
+     -    
 -    `order-0 logic`, `propositional logic` :
      -    `a AND NOT b`, `OR NAND NOR XOR XAND IMPLY NIMPLY IFF`
      -    CHECK, CONSIDER:SYNONYM_SYMBOLS?
+          - `a /\ b` wedge, `a AND b`, `a & b` common computing
+          - `a \/ b` vee, `a OR b`, `a | b` common computing
+          - `~a` common computing, `NOT a`
+          - `a \/_ b` veebar, `a (+) b` oplus, `a =/= b` not equivalent, `a XOR b`
+          - `_|_` bottom, `false`, `F`
+          - `^|^` top, `true`, `T`
+          - `a --> b` implies, `a IMPLY b`, `a |-- b`, `a /.\ b` `a :^ b` therefore
+          - `a <-- b` is implied by, `a --| b`, `a \./ b` `a :. b` because
+          - `a -/> b` does not imply, `a NIMPLY b`, `a |/- b`
 -    `order-1 logic`, `predicate logic` :
      -    `<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`,
+          - `<A>` for all, all, universal quantification, `\-/`
+          - `<E>` for some, there exists, existential quantification
+          - `<E>!` there exists exactly one, unique quantification
 -    `order-N logic`, `higher order logic` :
      -    `<E>x<A>y:F(x) NAND B(y) AND <A>z:NOT Q(z) AND Y(x)` WARNING:NOT_SURE_IF_GOOD_MODEL
+-    `model logic`
+     -    `[]<E>x:P(x)` it is possible that something has property P   
+     -    `<><E>x:P(x)` it is necessary that something has property P   
+
+```
+|N~0    ? set of natural numbers, beginning with 0
+|N      ? set of natural numbers, beginning with 1
+|Z      ? set of integers ( from Zahlen )
+|Q      ? set of rational numbers ( from Quotient )
+|P      ? set of irrational numbers
+|R      ? set of real numbers
+|C      ? set of complex numbers
+
+|X~0    ? X excluding 0  ( consistent with Peano ~ )
+|X>0    ? X greater than 0
+|X<0    ? X less than 0
+
+|Z_p    ? integers modulo p ( advanced )
+
+|inf    ? infinity
+|oxo|
+
+VECTOR NOTATION?
+```
+
 
 ## Lexemes
 
