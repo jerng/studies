@@ -44,7 +44,11 @@
                  -   we are exploring the notion of `all blocks have explicitly passed environments` which is analogous to conventional function application
                      -   GENERAL FORM of `block execution` : `do { environmental_context_map >bind> block_with_interface_to_map }`
                          -   So, the next question of syntactical design is, how do we make this more elegant : `take_env, modify_env, bind_env_to_block, execute_block`
-                             -   Haskell : `do { thing1; x <- thing2; thing3 }` is `thing1 >> thing2 >>= \x->thing3` where `>> is to do in sequence` and `>> is to do in sequence, while additionally binding a variable` 
+                             -   Haskell : `do { thing1; x <- thing2; thing3 x }` is `thing1 >> thing2 >>= \x->thing3 x` where `>> is to do in sequence` and `>> is to do in sequence, while additionally binding a variable`
+                             -   It warrants the question if we can just replace `, for >>` and `; for >>=` to chop down the ( semantic and visual ) noise
+                                 -   This might have the added benefit of removing the implicit binding where people do either of the following
+                                     -    C : `int x = 1, y = x+1`, OK; but this will be an error : `int x = y+1, y = 1`, because it treats the entire line as a statement ( sequential )
+                                     -    JavaScript : `let x = 1, y = x+z, z = 2 ` OK, because it treats the entire line as a declaration ( timeless )
                      -   `envs are tuples` seems fair, conventional `F<-(Args=>block); F(a)` might as well be read "whenever a function is found next to a tuple, it will gobble it up"
                          -   moreover we add the `<` and `>` operators as shown below, such that `function<tuple = tuple>function`
                              -   note however, as tuples are ordered, there remains an asymmetry in the passage of arguments e.g.
