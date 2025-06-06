@@ -25,7 +25,8 @@ https://www.cuemath.com/numbers/math-symbols/
 a:=b            assignment, from b to a ( ALGOL 1958, Pascal, Python, Smalltalk )
 a=b             ( Superplan 1949, CPL->BCPL->B->C->etc.  )
 a<-b            ( APL 1962, Haskell 1996, R )
-b=>a            ( Plankalkul 1946 )
+b=>a            ( Plankalkul 1948 )
+b>=a            ( Plankalkul 1948, discarded notation )
 LET a=b         ( BASIC 1964 )
 let a=b in a+1;;( Ocaml )
 let a=b         ( Haskell )
@@ -125,8 +126,8 @@ a_a     ? underscore separated numerals
 
 0ra     ? roman numerals
 
-|N~0    ? set of natural numbers, beginning with 0
-|N      ? set of natural numbers, beginning with 1
+|N      ? set of natural numbers, beginning with 0
+|N~0    ? set of natural numbers, beginning with 1
 |Z      ? set of integers ( from Zahlen )
 |Q      ? set of rational numbers ( from Quotient )
 |P      ? set of irrational numbers
@@ -292,8 +293,8 @@ a := [ :b | c = b+1 ]                       ( Smalltalk )
 |arg1:type1, arg2:type2| -> type3 { body }  ( Rust )
 |arg1:type1, arg2:type2| body               ( Rust )
 func a[complicated]
-    (b type1, c type2) type3 { body }     ( Go )
-
+    (b type1, c type2) type3 { body }       ( Go )
+[ :a | a + 1 ]                              ( Smalltalk 1972 )
 a(b1) when g1 ->c1;     ( Erlang )
 a(b2) when g2 ->c2;
 
@@ -307,6 +308,25 @@ CONSIDER :
 - destructuring of monoidal argument into multiple arguments
 ```
 
+ -   `fn` as the sigil for quote ( as in Lisp `QUOTE` ) , may be
+     conceptually sound : a function is just a block you quote now, and
+     maybe run later
+ -   we are exploring the notion of `all blocks have explicitly
+     passed environments` which is analogous to conventional
+     function application
+ -   GENERAL FORM of `block execution` : `do {
+     environmental_context_map >bind>
+     block_with_interface_to_map }`
+ -   `envs are tuples` seems fair, conventional
+     `F<-(Args=>block); F(a)` might as well be read "whenever a
+     function is found next to a tuple, it will gobble it up"
+     -   moreover we add the `<` and `>` operators as shown
+         below, such that `function<tuple = tuple>function`
+         -   note however, as tuples are ordered, there remains an
+             asymmetry in the passage of arguments e.g.
+             -   unexpanded. `function<(a,b) = (a,b)>function`
+             -   expanded. `(function<(a))<(b) = (b)>(function<(a))`
+
 ###### blocks / subroutines / functions / procedures / methods
 
 applicative style : bound execution, function style, applicative style, excel style, Euler 1734
@@ -318,6 +338,11 @@ tacit style : FORTH, APL, FP, FL, POSIX SCL : tacit / pointfree / function-level
 ```
 d b c 
 ```
+
+begin ... end   ( ALGOL 1958 )
+brace ... brace ( BCPL 1967 : $() [] {} varied by physical keyboard )
+indentation     "offside rule" ( ISWIM 1965, the next 700 programming languages )
+"."             "end of statement" ( FORTRAN 1956, also used END )
 
 #### Namespaced Referencing
 ```
@@ -389,6 +414,16 @@ case a of       ( Haskell )
     -   general case : given a `consideration`, its
         truth branches between subsequences `a` and `b`,
         in a binary logic
+
+-   Loops :
+    -   0 Do all looping control structures get abstracted to something like this?
+        -   `while () do {}`
+            -   `for a, change a, until b do {}`
+        -   `do {} while ()`
+            -   `for a, change a, do {} until b `
+        -   `for key in/of b do {}`
+            -   `for value in/of b do {}`
+        -   GENERAL FORM : `<cometo:start> state ? exit : { perform, optionally_modify_state, goto:start }`
 ```
 
 #### Bitshift
@@ -669,11 +704,18 @@ a-b     subtraction of b, from a
 a/b     division of a by b; subtraction of b, from a, RESULT times
 a\b     for symmetry
 
-a//b    "floor divide" : returns quotient, discards remainder
+a//b    "floor divide" "integer division"
+        returns quotient, discards remainder 
+a/b        ( Python, Swift, BASIC 1964, Plankalkul 1948 )
 
-a%b     modulo OR remainder (CHECK PYTHON VS C TODO )
-a%%b        CHECK
+'modulus' Latin : a small remainder : NOUN
+'modulo' derived : VERB
 
+a%b     ( C returns remainder 1972 )
+a%%b    ( is apocryphal, but not well documented : 
+            Netwide Assembler, CoffeeScript ) 
+a REM b ( BCPL 1966, BASIC 1964 )
+a MOD b ( BASIC 1964 )
 
 a/%b    ?
 a\%b    ? for symmetry
