@@ -40,10 +40,11 @@
 -    BROADLY : `define lexing rules at the top-level context`, `define lexing rules which enter and exit subcontexts`, `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
          -   PRIMITIVES :
-             -   `fn` as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound :
-                 -   a function is just a block you quote now, and maybe run later
+             -   `fn` as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later
                  -   we are exploring the notion of `all blocks have explicitly passed environments` which is analogous to conventional function application
                      -   GENERAL FORM of `block execution` : `do { environmental_context_map >bind> block_with_interface_to_map }`
+                         -   So, the next question of syntactical design is, how do we make this more elegant : `take_env, modify_env, bind_env_to_block, execute_block`
+                             -   Haskell : `do { thing1; x <- thing2; thing3 }` is `thing1 >> thing2 >>= \x->thing3` where `>> is to do in sequence` and `>> is to do in sequence, while additionally binding a variable` 
                      -   `envs are tuples` seems fair, conventional `F<-(Args=>block); F(a)` might as well be read "whenever a function is found next to a tuple, it will gobble it up"
                          -   moreover we add the `<` and `>` operators as shown below, such that `function<tuple = tuple>function`
                              -   note however, as tuples are ordered, there remains an asymmetry in the passage of arguments e.g.
