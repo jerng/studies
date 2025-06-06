@@ -34,11 +34,13 @@
 ## Latest
 
 -    CONFLICT : `[1]`, `<[1]>`, `$[]`, `variable[key]`
--    UNDONE : `,`,`;`,`.`,`|`, `||`, `&`, `&&`, `~`, `bitwise?`, and alternatives?, APL/J analogues
+-    UNDONE : `,`,`;`,`.`,`|`, `||`, `&`, `&&`, `~`, `bitwise?`, and alternatives?, APL/J analogues, `::`, `->`
      -   `,` additive connotation, from English ( C family, Erlang, etc. )
      -   '.' terminal connotation, from English ( Prolog, Erlang, COBOL )
 -    BROADLY : `define lexing rules at the top-level context`, `define lexing rules which enter and exit subcontexts`, `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
+         -   PATTERN MATCHING :
+             -   Semantics should match Erlang's ( simplest ! ) see : `term`, `pattern`, `_`, `compound pattern operator` 
          -   PRIMITIVES :
              -   `fn` as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later
                  -   we are exploring the notion of `all blocks have explicitly passed environments` which is analogous to conventional function application
@@ -47,8 +49,7 @@
                              -   Haskell : `do { thing1; x <- thing2; thing3 x }` is `thing1 >> thing2 >>= \x->thing3 x` where `>> is to do in sequence` and `>> is to do in sequence, while additionally binding a variable`
                              -   It warrants the question if we can just replace `, for >>` and `; for >>=` to chop down the ( semantic and visual ) noise
                                  -   This might have the added benefit of removing the implicit binding where people do either of the following
-                                     -    C : `int x = 1, y = x+1`, OK; but this will be an error : `int x = y+1, y = 1`, because it treats the entire line as a statement ( sequential )
-                                     -    JavaScript : `let x = 1, y = x+z, z = 2 ` OK, because it treats the entire line as a declaration ( timeless )
+                                     -    C-fam : `int x = 1, y = x+1`, OK; but this will be an error : `int x = y+1, y = 1`, because it treats the entire line as a statement ( sequential ), where `, and ; are both >>=` differentiated by `;` ending the statement 
                      -   `envs are tuples` seems fair, conventional `F<-(Args=>block); F(a)` might as well be read "whenever a function is found next to a tuple, it will gobble it up"
                          -   moreover we add the `<` and `>` operators as shown below, such that `function<tuple = tuple>function`
                              -   note however, as tuples are ordered, there remains an asymmetry in the passage of arguments e.g.
@@ -153,11 +154,11 @@
 -    `value@?` get the pointer to value, `?@address` get the value at address
 -    `4-logic` : `true`, `false`, `null`, `undefined`
 -
--    `<` sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|`
+-    extra-dimensional SIGILS / QUOTES : `<` sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|`
      -    `<)` sigil for variables of an arc
      -    general form : CONSIDER
-          -    `<sigil_identifier:marked_up_source>` `<marked_up_source:sigil_identifier>`
-          -    `<sigil_identifier>QUOTECHARmarked_up_sourceQUOTE_CHAR`
+          -    `<sigil_identifierQUOTECHARquoted_source>` `<quoted_sourceQUOTECHARsigil_identifier>` e.g. `<js:QUOTED>` `<QUOTED:js>` `<js:QUOTED:js>` `<js{QUOTED}` `<js(QUOTED)` ; the following seem to introduce mess : `<AQUOTEDA` `<AquotedA`; the following might collide with other forms : `<js<QUOTED>>`  
+          -    `<sigil_identifier>QUOTECHARquoted_sourceQUOTE_CHAR` e.g. `<js{}`
           -    
           -    
 -    `types` / `classes / categories` : <T:more_syntax_to_be_defined>
