@@ -112,7 +112,8 @@
                               -   `<AQUOTEDA` `<AquotedA`
                           -   the following might collide with other forms :
                               -   `<js<QUOTED>>`  
-                      -    `<)` sigil for variables of an arc
+                      -   `<)` sigil for variables of an arc
+                          -   CONTINUE HERE : `sigils with no paired tag`, vs `sigils with a paired tag` 
           -    
           -    
 -    CONSIDER :
