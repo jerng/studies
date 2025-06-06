@@ -43,15 +43,18 @@
              -   `fn` as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound :
                  -   a function is just a block you quote now, and maybe run later
                  -   we are exploring the notion of `all blocks have explicitly passed environments` which is analogous to conventional function application
-                 -   `envs are tuples` seems fair, conventional `F<-(Args=>block); F(a)` might as well be read "whenever a function is found next to a tuple, it will gobble it up"
-                     -   moreover we add the `<` and `>` operators as shown below, such that `function<tuple = tuple>function`
-                         -   note however, as tuples are ordered, there remains an asymmetry in the passage of arguments e.g.
-                             -   unexpanded. `function<(a,b) = (a,b)>function`
-                             -   expanded. `(function<(a))<(b) = (b)>(function<(a))`
-                             -   In order for such ML-esque `currying to be ubiquitous and implicit in all polyadic functions`, we will need to `make JavaScript implement it accordingly`.
+                     -   GENERAL FORM of `block execution` : `do { environmental_context_map >bind> block_with_interface_to_map }`
+                     -   `envs are tuples` seems fair, conventional `F<-(Args=>block); F(a)` might as well be read "whenever a function is found next to a tuple, it will gobble it up"
+                         -   moreover we add the `<` and `>` operators as shown below, such that `function<tuple = tuple>function`
+                             -   note however, as tuples are ordered, there remains an asymmetry in the passage of arguments e.g.
+                                 -   unexpanded. `function<(a,b) = (a,b)>function`
+                                 -   expanded. `(function<(a))<(b) = (b)>(function<(a))`
+                                 -   In order for such ML-esque `currying to be ubiquitous and implicit in all polyadic functions`, we will need to `make JavaScript implement it accordingly`.
          -   ITERABLE DATA STRUCTURE MODES : CONSIDER : `unified utility library interface`, including generators `eager/lazy`
              -   Loops :
-                 -   0 Do all looping control structures get abstracted to something like this? CONTINUE HERE
+                 -   0 Do all looping control structures get abstracted to something like this?
+                     -   GENERAL FORM : `<cometo:start> state ? exit : { perform, optionally_modify_state, goto:start }`
+                         -   FUNCTIONAL FORM : `fn Myloop -> `
                      -   `while () do {}`
                          -   `for a, change a, until b do {}`
                      -   `do {} while ()`
