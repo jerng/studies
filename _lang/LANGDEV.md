@@ -33,12 +33,26 @@
 
 ## Latest
 
--    CONFLICT : `[1]`, `<[1]>`, `$[]`, `variable[key]`
+-    CONFLICT : ``
 -    UNDONE : `,`,`;`,`.`,`|`, `||`, `&`, `&&`, `~`, `bitwise?`, and alternatives?, APL/J analogues, `::`, `->`
      -   `,` additive connotation, from English ( C family, Erlang, etc. )
      -   '.' terminal connotation, from English ( Prolog, Erlang, COBOL )
--    BROADLY : `define lexing rules at the top-level context`, `define lexing rules which enter and exit subcontexts`, `define lexing rules for each subcontext`
+-    BROADLY :
+     -   IMPLEMENTATION STRATEGY :
+         -   Stage 1 : `JavaScript`
+         -   Stage 2 : `C++`
+     -   STYLING TENDENCIES :
+         -   Erlang's lexical style ( desc. Prolog )
+         -   Haskell's currying semantics ( desc. ML )
+         -   C++'s containerisation flexibility ( desc. C )
+         -   Idioms of utility from : JavaScript, Python, J ( desc. APL )
+         -   Manual memory management : this is far, far away from the present, but I guess we should consider how C++ and Rust do things
+     -   STRATEGY :
+         -   `define lexing rules at the top-level context`,
+         -   `define lexing rules which enter and exit subcontexts`,
+         -   `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
+         -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
          -   PATTERN MATCHING :
              -   Semantics should match Erlang's ( simplest ! ) see : `term`, `pattern`, `_`, `compound pattern operator` 
          -   PRIMITIVES :
@@ -80,13 +94,27 @@
                      -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }`
                  -   3 `[]` nilist, the protolist
                      -   `[<1>]` singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]`
-                     -   `[<2>]` doubly linked lists, `cpp std::list` 
+                     -   `[<2>]` doubly linked lists, `cpp std::list`
+                     -   WARNING : inconsistent prefix ; CONSIDER : swapping to TYPE ANNOTATION `<T:???>`
                  -   4 `<[]>` CONSIDER : Erlang's bitstring syntax
-             -   JavaScript utility :
+                     -   WARNING : CONSIDER : Unify under SIGILS : `<<:value:size/typespecifiedlist:>>` or `<[:value:size/typespecifiedlist:]>`
+             -   JavaScript utility : the only reason to give these a special sigil is `standards` and `ubiquity` : reconsider!
                  -   5 `${}` JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`
                  -   6 `$[]` JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`
              -   Advanced :
                  -   7 `$<//TODO//>` JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had     
+                 -   EXTRA-dimensional SIGILS / QUOTES : general form : CONSIDER
+                      -   `<` sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|`
+                          -   `<sigil_identifierQUOTECHARquoted_source>` `<quoted_sourceQUOTECHARsigil_identifier>` `<sigil_identifier>QUOTECHARquoted_sourceQUOTE_CHAR` e.g.
+                              -   `<js:QUOTED>` `<QUOTED:js>`
+                              -   `<js:QUOTED:js>` `<js{QUOTED}` `<js(QUOTED)`
+                          -   the following seem to introduce mess :
+                              -   `<AQUOTEDA` `<AquotedA`
+                          -   the following might collide with other forms :
+                              -   `<js<QUOTED>>`  
+                      -    `<)` sigil for variables of an arc
+          -    
+          -    
 -    CONSIDER :
      -    make equivalent
           -    `fun2(fun1(a,b))`
@@ -154,13 +182,6 @@
 -    `value@?` get the pointer to value, `?@address` get the value at address
 -    `4-logic` : `true`, `false`, `null`, `undefined`
 -
--    extra-dimensional SIGILS / QUOTES : `<` sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|`
-     -    `<)` sigil for variables of an arc
-     -    general form : CONSIDER
-          -    `<sigil_identifierQUOTECHARquoted_source>` `<quoted_sourceQUOTECHARsigil_identifier>` e.g. `<js:QUOTED>` `<QUOTED:js>` `<js:QUOTED:js>` `<js{QUOTED}` `<js(QUOTED)` ; the following seem to introduce mess : `<AQUOTEDA` `<AquotedA`; the following might collide with other forms : `<js<QUOTED>>`  
-          -    `<sigil_identifier>QUOTECHARquoted_sourceQUOTE_CHAR` e.g. `<js{}`
-          -    
-          -    
 -    `types` / `classes / categories` : <T:more_syntax_to_be_defined>
             |Hinting,Declaration|
             |-|-|
