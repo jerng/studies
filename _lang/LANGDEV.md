@@ -42,11 +42,11 @@
          -   Stage 1 : `JavaScript`
          -   Stage 2 : `C++`
      -   STYLING TENDENCIES :
-         -   Erlang's lexical style ( desc. Prolog )
-         -   Haskell's currying semantics ( desc. ML )
-         -   C++'s containerisation flexibility ( desc. C )
-         -   Idioms of utility from : JavaScript, Python, J ( desc. APL )
-         -   Manual memory management : this is far, far away from the present, but I guess we should consider how C++ and Rust do things
+         -   `Erlang's lexical style` ( desc. Prolog )
+         -   `Haskell's currying semantics` ( desc. ML )
+         -   `C++'s containerisation flexibility` ( desc. C )
+         -   `Idioms of utility` from : `JavaScript, Python, J ( desc. APL )`
+         -   `Manual memory` management : this is far, far away from the present, but I guess we should consider how `C++ and Rust` do things
      -   STRATEGY :
          -   `define lexing rules at the top-level context`,
          -   `define lexing rules which enter and exit subcontexts`,
