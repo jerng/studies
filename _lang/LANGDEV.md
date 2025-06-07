@@ -29,7 +29,11 @@
              ||If anything is lexed / parsed in a `program source` and `not assigned to one of the three` types above, then `an error results`. |
              ||What are generally referred to as `declarations` or `statements` in the vernacular of computer programming, are assumed under the breadth of `3`, whereas `2` covers the intuitive category of propositions which may be evaluated for truth or falsity by the sorts of programs casually referred to as automated theorem provers, proof assistants, or artifical intelligence agents.|
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
-              -   CONSIDERATIONS
+              -   Could it be simply implicit that all white space implies a tuple?
+                  -   This is a 3-tuple : `a <- 1` = `((a),(<-),(1))`
+                  -   But this is a 2-tuple : `function1<(a,b)` = `((function1) <((a),(b)))` = `(((a),(b))> (function1))`
+                      -   ... which reduces to : `function2<(b)` = `((function2)<(b))`
+         -   CONSIDERATIONS
                    -   ` ` `\n` `\t`
                         -   `IFS`
                         -   possibly `offside rulings`
