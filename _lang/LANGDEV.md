@@ -160,9 +160,11 @@
 -    `A-Z` some keywords, readonly
 -    `|a-zA-Z|` some keywords, readonly : otherwise, 
 -
--    `axial phrasing` : `|SIGMA|__0^^5>>i^i+i`
--    `value@?` `*>value` `value<*` get the pointer to value, `?@address` `<*address` `address*>` get the value at address
 -    `4-logic` : `true`, `false`, `null`, `undefined`
+-    `axial phrasing` : `|SIGMA|__0^^5>>i^i+i`
+-    pointers
+     -    `value@?` `*>value` `value<*` get the pointer to value
+     -    `?@address` `<*address` `address*>` get the value at address
 -
 -    `types` / `classes / categories` : <T:more_syntax_to_be_defined>
             |Hinting,Declaration|
