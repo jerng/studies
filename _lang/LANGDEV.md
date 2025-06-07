@@ -21,6 +21,15 @@
          -   `define lexing rules which enter and exit subcontexts`,
          -   `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
+         -   formal `program sources` consist of formal `expressions`
+             -   formal `comments` are non-normative expressions
+             -   formal `propositions` are non-normative expressions
+                 -   `a priori` propositions are true/false (have epistemic determination) based on assumed rules
+                 -   `a posteriori` propositions are true/false based on values in a memory buffer ( space ), at a specific ( time ) 
+             -   formal `operations` are normative expressions
+                 -   for all practical purposes, computational operations occur upon `data in a memory buffer` so those are `the only operands`
+                 -   e.g. `var a = 1` means `label 'a' refers to address 'A' in memory, address 'A' has value '1'`
+            -    if anything is lexed / parsed in a `program source` and `not assigned to one of the three` types above, then `an error results` 
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
               -   CONSIDERATIONS
                    -   ` ` `\n` `\t`
