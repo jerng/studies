@@ -22,7 +22,16 @@
          -   `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
-         -   ` ` `\n` `\t` `,` `.` `;` `()` `-> <- <-- <== ==> --> ->> <<- <<= =>> |-> |=> <=| <-| !> <! @> <@ #> <# %> <% &> <& *> <* +> <+ <[ ]> <] [> <{ <} {> }> \> /> <\ </ <| |> <? ?>`
+              -   CONSIDERATIONS
+                   -   ` ` `\n` `\t`
+                        -   `IFS`
+                        -   possibly `offside rulings`
+                   -   `,`
+                        - `IFS` e.g. in `linear data structure literals`
+                        - in `expression sequences`
+                        - in `function calls for arguments` 
+                   -   `.` `;` `()`
+                   -   `-> <- <-- <== ==> --> ->> <<- <<= =>> |-> |=> <=| <-| !> <! @> <@ #> <# %> <% &> <& *> <* +> <+ <[ ]> <] [> <{ <} {> }> \> /> <\ </ <| |> <? ?>`
              -   In each context. IFS? Expression-end?  Are tuples implicit everywhere, resulting in their use for phrasing?
          -   PATTERN MATCHING :
              -   Semantics should match Erlang's ( simplest ! ) see : `term`, `pattern`, `_`, `compound pattern operator` 
