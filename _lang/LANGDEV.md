@@ -28,7 +28,7 @@
                         -   possibly `offside rulings`
                    -   `,`
                         - `IFS` e.g. in `linear data structure literals`
-                        - in `expression sequences` : C-fam : a binary operator that executes the LHS and discards the result, then executes the RHS 
+                        - in `expression sequences` : [C-fam](https://en.wikipedia.org/wiki/Comma_operator) : a binary operator that executes the LHS and discards the result, then executes the RHS 
                         - in `function calls for arguments` 
                    -   `.` `;` `()`
                    -   `-> <- <-- <== ==> --> ->> <<- <<= =>> |-> |=> <=| <-| !> <! @> <@ #> <# %> <% &> <& *> <* +> <+ <[ ]> <] [> <{ <} {> }> \> /> <\ </ <| |> <? ?>`
