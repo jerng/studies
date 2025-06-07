@@ -27,7 +27,7 @@
                         -   `IFS`
                         -   possibly `offside rulings`
                    -   `,`
-                        - `IFS` e.g. in `linear data structure literals`
+                        - `NO ISSUE AS QUOTES ARE EXPLICIT ( TODO : tuples?! )` : `IFS` e.g. in `linear data structure literals`
                         - in `expression sequences` : [C-fam](https://en.wikipedia.org/wiki/Comma_operator) : a binary operator that executes the LHS and discards the result, then executes the RHS 
                         - in `function calls for arguments` 
                    -   `.` `;` `()`
