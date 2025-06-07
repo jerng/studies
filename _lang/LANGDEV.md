@@ -31,7 +31,14 @@
                         - in `expression sequences` : [C-fam](https://en.wikipedia.org/wiki/Comma_operator) : a binary operator that executes the LHS and discards the result, then executes the RHS 
                         - in `function calls for arguments` 
                    -   `.` `;` `()`
-                   -   `-> <- <-- <== ==> --> ->> <<- <<= =>> |-> |=> <=| <-| !> <! @> <@ #> <# %> <% &> <& *> <* +> <+ <[ ]> <] [> <{ <} {> }> \> /> <\ </ <| |> <? ?>`
+                   -   Sigh. What can we do with all these?
+                       ||||||
+                       |-|-|-|-|-|
+                       |`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
+                       |`\|-> <-\|`|`\|=> <=\|`| `!> <!`| `@> <@`| `#> <#`|
+                       | `%> <%`| `&> <&`| `*> <*`| `+> <+`| `<[ ]>`|
+                       | `<] [>`| `<{ }>`|`<} {>`| `\> </` |`/> <\`|
+                       |  `<\| \|>`| `<? ?>`|
              -   In each context. IFS? Expression-end?  Are tuples implicit everywhere, resulting in their use for phrasing?
          -   PATTERN MATCHING :
              -   Semantics should match Erlang's ( simplest ! ) see : `term`, `pattern`, `_`, `compound pattern operator` 
