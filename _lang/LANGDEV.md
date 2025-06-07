@@ -1,36 +1,5 @@
 # DRAFT
 
-## Language Description Document / LDL : Decisions
--   stage 1
-    -   source code files implicitly form block?
-    -   explicit or implicit environments?
-    -   scoping rules?
-    -   comments character? types?
-    -   variable declaration & conventions?
-    -   assignment operator & conventions?
-    -   nullish / undefined / logic arity / empty list / nil ?
-    -   character sets
-    -   operators ? overloading?
-    -   bitstrings? ( maybe you are just a CRUD lang, not a systems language )
-    -   SQL internalised?
-    -   primitives ? what and how?
-    -   numbers? what and how?
-    -   special constants?
-    -   i18n for all keywords?
--   stage N
-    -   syntax mode switching?
-    -   sigils?
-    -   annotation conventions?
-    -   preprocessor? how many passes?
--   stage P
-    -   interpreted? just use JS : has JIT, and leads to other targets anyway
-    -   compiled? you might have to wait a while
-    -   type system? how does this work?
-        -   static or dynamic typing? static or dynamic dispatch - is there a difference if typing is already selected?
-        -   guaranteed?
-    -   pointers ? how ?
-    -   garbage collection? how?
-
 ## Latest
 
 -    CONFLICT : ``
@@ -53,6 +22,8 @@
          -   `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
+         -   ` ` `\n` `\t` `,` `.` `;` `()` `-> <- <-- <== ==> --> ->> <<- <<= =>> |-> |=> <=| <-| !> <! @> <@ #> <# %> <% &> <& *> <* +> <+ <[ ]> <] [> <{ <} {> }> \> /> <\ </ <| |> <? ?>`
+             -   In each context. IFS? Expression-end?  Are tuples implicit everywhere, resulting in their use for phrasing?
          -   PATTERN MATCHING :
              -   Semantics should match Erlang's ( simplest ! ) see : `term`, `pattern`, `_`, `compound pattern operator` 
          -   PRIMITIVES :
@@ -715,3 +686,34 @@ Each operator is typed, for safety. `A mechanism should be available for overloa
 |`D`  |? delete|
 |`@`  | ? as|
 |||
+
+## Language Description Document / LDL : Decisions
+-   stage 1
+    -   source code files implicitly form block?
+    -   explicit or implicit environments?
+    -   scoping rules?
+    -   comments character? types?
+    -   variable declaration & conventions?
+    -   assignment operator & conventions?
+    -   nullish / undefined / logic arity / empty list / nil ?
+    -   character sets
+    -   operators ? overloading?
+    -   bitstrings? ( maybe you are just a CRUD lang, not a systems language )
+    -   SQL internalised?
+    -   primitives ? what and how?
+    -   numbers? what and how?
+    -   special constants?
+    -   i18n for all keywords?
+-   stage N
+    -   syntax mode switching?
+    -   sigils?
+    -   annotation conventions?
+    -   preprocessor? how many passes?
+-   stage P
+    -   interpreted? just use JS : has JIT, and leads to other targets anyway
+    -   compiled? you might have to wait a while
+    -   type system? how does this work?
+        -   static or dynamic typing? static or dynamic dispatch - is there a difference if typing is already selected?
+        -   guaranteed?
+    -   pointers ? how ?
+    -   garbage collection? how?
