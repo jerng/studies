@@ -153,7 +153,7 @@
      -    `3-/5` viculum, 3rd root of 5
      -    `$.` sugar for the respective ASCII code point as an integer ( from Erlang )
      -    `a..b` `a(+1)..b` `a(a=>a+1)..b` `a (+1) UNTIL b`
-     -    `++` and `--` as `de/increment and return OR the converse` are sugar for `i=i+/-1`, `j=i;i=i+/11;j` ; the sugar INTRODUCES subtlety ... not sure if this is worth keeping
+     -    `++` and `--` as `de/increment and return OR the converse` are sugar for `i=i+/-1`, `j=i;i=i+/11;j` ; the sugar INTRODUCES subtlety ... not sure if this is worth keeping; for example FP-style SSA just does away with this entirely
 -
 -    `ordinary variables` : `[_A-Z]` first character, `[_@a-zA-Z0-9]` middle characters (Erlang rules), but CONSIDER : `@a-zA-Z0-9` last character
 -    `<...>` some keywords, readonly
