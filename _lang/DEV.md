@@ -45,6 +45,11 @@
              ||Advanced Data Structures :|
              |7 `$<//TODO//>$` `<$A[]A$>` `<js##js>` | JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
              |`<` |     -   EXTRA-dimensional SIGILS / QUOTES : general form : CONSIDER <br>  sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|` <br> -   `<sigil_identifierQUOTECHARquoted_source>` `<quoted_sourceQUOTECHARsigil_identifier>` `<sigil_identifier>QUOTECHARquoted_sourceQUOTE_CHAR` e.g.<br>  -   `<js:QUOTED>` `<QUOTED:js>` <br> -   `<js:QUOTED:js>` `<js{QUOTED}` `<js(QUOTED)` <br>  -   the following seem to introduce mess : <br>  -   `<AQUOTEDA` `<AquotedA` <br> -   the following might collide with other forms : <br> -   `<js<QUOTED>>` <br>  -   `<)` sigil for variables of an arc <br>  -   CONTINUE HERE : `sigils with no paired tag`, vs `sigils with a paired tag` |
+             |`name :: TypeA >- TypeB >- TypeC ->> TypeD`|e.g. Full Signature only : pretty|
+             |`( name : arg1 arg2 arg3 : body )`|e.g. Full Function only : pretty, returns final term|
+             |`( name : arg1::TypeA >- arg2::TypeB >- arg3::TypeC ->> TypeD : body )`|e.g. Oneline Function with Signature : pretty, returns final term|
+             |`(::)`|e.g. Shortest Function with no Signature, returns `undefined`|
+             |||
              
          -   CONSIDERATIONS
              -   `,`
@@ -783,11 +788,11 @@ name :: TypeA >- TypeB >- TypeC ->> TypeD         <% sugared pretty %>
                          <% long fn, fully typed, oneline, returns TypeD final term %>
 
 ( fn, null, ( (null, arg1),
-              (null, arg2) ), null, body )    <% unsugared %>
-( arg1 arg2 ->> body )                        <% sugared pretty, short fn, returns final term %>
+              (null, arg2) ), null, body )     <% unsugared %>
+(: arg1 arg2 : body )                          <% sugared pretty, short fn, returns final term %>
 
-( fn, null, (), null, () )                    <% unsugared %>
-(->>)                                         <% sugared pretty, shortest fn, returns undefined %>
+( fn, null, (), null, () )                     <% unsugared %>
+(::)                                           <% sugared pretty, shortest fn, returns undefined %>
 ```
 
 # Explicit Environments & Bindings
