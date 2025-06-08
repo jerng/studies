@@ -21,13 +21,7 @@
          -   `define lexing rules which enter and exit subcontexts`,
          -   `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
-         -   ||Formal `program sources` consist of formal `expressions`.|
-             |-|-|                
-             |`1`|Formal `comments` are `non-normative` expressions.|
-             |`2`|   Formal `propositions` are `non-normative` expressions. <br> -   `a priori` propositions are true/false (have epistemic determination) `based on assumed rules`. <br> -   `a posteriori` propositions are true/false `based on values in a memory buffer ( space ), at a specific ( time )`. |
-             |`3`|   Formal `operations` are `normative` expressions <br> -   for all practical purposes, computational operations occur upon `data in a memory buffer` so those are `the only operands` <br> -   e.g. `var a = 1` means `label 'a' refers to address 'A' in memory, address 'A' has value '1'`.|
-             ||If anything is lexed / parsed in a `program source` and `not assigned to one of the three` types above, then `an error results`. |
-             ||What are generally referred to as `declarations` or `statements` in the vernacular of computer programming, are assumed under the breadth of `3`, whereas `2` covers the intuitive category of propositions which may be evaluated for truth or falsity by the sorts of programs casually referred to as automated theorem provers, proof assistants, or artifical intelligence agents.|
+         -   ``
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
 
          -   CONSIDERATIONS
@@ -765,3 +759,12 @@ I am not even sure that I captured what I wanted! But it was a good exercise. So
        |`fn1 <( a b`|`b a )> fn1`|`unambiguous`  |
        |as above    |as above    |               |
 
+# Program Sources Consist of Formal Expressions
+
+||Formal `program sources` consist of formal `expressions`.|
+|-|-|                
+|`1`|Formal `comments` are `non-normative` expressions.|
+|`2`|   Formal `propositions` are `non-normative` expressions. <br> -   `a priori` propositions are true/false (have epistemic determination) `based on assumed rules`. <br> -   `a posteriori` propositions are true/false `based on values in a memory buffer ( space ), at a specific ( time )`. |
+|`3`|   Formal `operations` are `normative` expressions <br> -   for all practical purposes, computational operations occur upon `data in a memory buffer` so those are `the only operands` <br> -   e.g. `var a = 1` means `label 'a' refers to address 'A' in memory, address 'A' has value '1'`.|
+||If anything is lexed / parsed in a `program source` and `not assigned to one of the three` types above, then `an error results`. |
+||What are generally referred to as `declarations` or `statements` in the vernacular of computer programming, are assumed under the breadth of `3`, whereas `2` covers the intuitive category of propositions which may be evaluated for truth or falsity by the sorts of programs casually referred to as automated theorem provers, proof assistants, or artifical intelligence agents.|
