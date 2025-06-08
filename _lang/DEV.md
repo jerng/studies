@@ -754,10 +754,46 @@ The difference between `infix dyadic` and `ordinary dyadic` functions, is a diff
 | `<] [>`| `<{ }>`|`<} {>`| `\> </` |`/> <\`|
 |  `<\| \|>`| `<? ?>`|
 
+# Function Definition & Type Signatures
+
+```
+( fn, name, ( (TypeA, null),
+              (TypeB, null),
+              (TypeC, null) ), TypeD, null )      <% unsugared %> 
+name :: TypeA TypeB TypeC TypeD                   <% sugared %>
+name :: (TypeA)(TypeB)(TypeC)(TypeD)              <% sugared unambiguous %>
+name :: TypeA >- TypeB >- TypeC ->> TypeD         <% sugared pretty %>
+
+( fn, name, ( (null, arg1),
+              (null, arg2),
+              (null, arg3) ), null, body )        <% unsugared %> 
+( name : arg1 arg2 arg3 : body )                  <% sugared %>
+
+                         <% long fn, fully typed, returns TypeD final term %>
+
+---
+
+( fn, name, ( (TypeA, arg1),
+              (TypeB, arg2),
+              (TypeC, arg3) ), TypeD, body )                           <% unsugared %> 
+( name : arg1::TypeA arg2::TypeB arg3::TypeC TypeD : body )            <% sugared %>
+( name : (arg1::TypeA)(arg2::TypeB)(arg3::TypeC)(TypeD) : body )       <% sugared unambiguous %>
+( name : arg1::TypeA >- arg2::TypeB >- arg3::TypeC ->> TypeD : body )  <% sugared pretty %>
+
+                         <% long fn, fully typed, oneline, returns TypeD final term %>
+
+( fn, null, ( (null, arg1),
+              (null, arg2) ), null, body )    <% unsugared %>
+( arg1 arg2 ->> body )                        <% sugared pretty, short fn, returns final term %>
+
+( fn, null, (), null, () )                    <% unsugared %>
+(->>)                                         <% sugared pretty, shortest fn, returns undefined %>
+```
+
 # Explicit Environments & Bindings
 
 ```
-fn definition <% => ( "fn", "definition" ) %>
+fn definition       <% => ( "fn", "definition" ) %>
 F <- fn definition
 F<()                <% execute F with no bound vars? %>
 F<(a,b,c)           <% execute F, binding lexically local vars a,b,c to a,b,c in the execution env %>
