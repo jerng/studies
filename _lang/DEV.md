@@ -33,7 +33,6 @@
              |`(...)`| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `(operand)>block` for function application|
              |`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `() and \`\`` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - `operand1 \`dyadic_function\` operand2` *converts an ordinary dyadic function into an infix dyadic function* |
              |` ` `\n` `\t`|-   `IFS` <br> -   possibly `offside rulings`|
-             |looping?|GENERAL FORM : `<cometo:start> state ? exit : { perform, optionally_modify_state, goto:start }` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
              ||Easy Data Structures :|
              |1 `()`| tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER : <br>  -   `mytuple_[5]_[17]` <br>  -   `mytuple.5.17` <br>  -   `mytuple_5_17` <br>  -   `mytuple_(5)_(17)` |
              |2 `{}`|ZFC sets, `cpp std::unordered_set`, CONSIDER : <br>  -   `{ x | predicate(x) }`  <br> -   `{ expression(x) FOR x IN iterable WHERE }` <br>  -   `{ x<e<N~0> | x<10 /\ x/%2==0 }` <br> -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }`|
@@ -49,6 +48,11 @@
              |`( name : arg1 arg2 arg3 : body )`|e.g. Full Function only : pretty, returns final term|
              |`( name : arg1::TypeA >- arg2::TypeB >- arg3::TypeC ->> TypeD : body )`|e.g. Oneline Function with Signature : pretty, returns final term|
              |`(::)`|e.g. Shortest Function with no Signature, returns `undefined`|
+             |GENERAL FORM : `<cometo:start> state ? exit : { perform, optionally_modify_state, goto:start }` <br> - FUNCTIONAL FORM : `fn Myloop -> `|General iterable|
+             ||General selection|
+             ||General proposition : `guard`?|
+             ||General error|
+             |||
              |||
              
          -   CONSIDERATIONS
@@ -62,21 +66,6 @@
                    
           -    
           -    
--    CONSIDER :
-     -    `a |-> b` math, `a.b` Haskell, `a|>b` R, Elixir, `a %>% b` R, `a (o) b` math
-     -
-     -    `_->()` JavaScript, `|a:t1, b:t2| -> t3 {}` `|a| b` Rust?, `a:b->c` maths,`\a->b` Haskell, `fn a,b -> c`, `fn name a,b -> c`, `fn name a,b -> {}`, `fn name a<T:x>, b<T:y> | <T:a>, <T:b> -> `
-     -    GUARD? See Erlang, Haskell
-     -    
-     -    CONSIDER : INFIX 
-          -   How does a built-in like `+`, work?
-          -   What's the standard way to define infix functions? CONSIDER : assuming in JS `(a,b)=>a*b+b`, `<infix|(a,b)=>a*b+b>`, `ff = fn <infix> (a,b)=>a*b+b`, `1 ff 2` returns 4, `<PN:ff> 1 2`, `1 2 <ff:RPN>`
-     -    
-     -    
-     -    
-     -    
-     -    
-     -    
 -    
 -    ` \t\n` internal field separators
 -    `%%` comment, <%...%> comment
