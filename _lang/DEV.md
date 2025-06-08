@@ -46,10 +46,16 @@
                       |`(fn2 <(b) undefined)`|             |`(fn2_applied_to_b)`  |`(undefined (c)> fn3)`|
                       |`(fn2_applied_to_b)`  |             |                      |`(fn3_applied_to_c)`  |
 
-                  -    ||
-                       |-|
-                       |`  fn1 <((a))  `|` fn1 <((a, b))  `|`  fn1 <( a, b    `|`fn1 <( b  a  `|
-                       |`( fn1 <(a)   )`|` fn1 <( a, b )  `|`  fn1 <( a, b )  `|`fn1 <( a, b )`|
+                  -   |`    fn1 <((a))   `|`  fn1 <((a, b))  `|`  fn1 <( a, b    `|`fn1 <( b  a  `|`fn1 <( c b a  `|
+                      |-|-|-|-|-|
+                      |`(   fn1 <( a )  )`|`( fn1 <( a, b ) )`|`  fn1 <( a, b )  `|`fn1 <( a, b )`|`fn1 <( c b a )`|
+                      |`( ( fn1 <() ) a )`|`( fn1 <( a) b   )`|-|-|-|
+                      |                   |`( fn1 <( a) b   )`|-|-|-|
+
+                  -   |`    fn1 <(   a      `|
+                      |-|
+                      |`( ( fn1 <( ) a     )`|
+                      |`( fn1_applied_to_a )`|
                       
          -   CONSIDERATIONS
                    -   ` ` `\n` `\t`
