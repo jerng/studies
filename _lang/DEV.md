@@ -26,7 +26,7 @@
              |-|-|
              |`%%` `<% %>`| comments |
              |`value::Type`|type association ( Haskellism )|
-             |`:this_is_an_atom_aka_symbol`| ala Ruby, CommonLisp, Julia ... having minimal collision with `::` for typing; no further quoting is needed for disambiguation |
+             |`:atom_aka_symbol`| ala Ruby, CommonLisp, Julia ... having minimal collision with `::` for typing; no further quoting is needed for disambiguation |
              |`fn` |as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
              |`_`|explicitly ignored `value`; `type`?|
              |`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env`
