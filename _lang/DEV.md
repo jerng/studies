@@ -23,7 +23,7 @@
      -   TOP LEVEL MODE :
          -   [Program Sources Consist of Formal Expressions](#program-sources-consist-of-formal-expressions)
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
-              -   a variety of tuple is `(a,b)>c` the function application operator / [lexical disambiguation](#lexical-disambiguation-of-function-application)
+              -   a variety of tuple is `(a,b)>c` the `function operative tuple` / [lexical disambiguation](#lexical-disambiguation-of-function-application)
                    -   Polish notation : `afunction<( argument1, argument2 )`
                         -   `afunction <( argument1 argument2 )` *sugared*
                         -   `afunction <( argument1 argument2` *more sugared*
