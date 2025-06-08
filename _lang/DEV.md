@@ -757,10 +757,13 @@ I am not even sure that I captured what I wanted! But it was a good exercise. So
        |`fn1 <( a b`|`b a )> fn1`|`unambiguous`  |
        |as above    |as above    |               |
 
-# infix operators, as applied functions
+## infix operators, as applied functions
 
 LEXING PRECEDENCE RULES ?!
 
+[Follow Haskell's style](https://wiki.haskell.org/index.php?title=Infix_operator).
+-   `a infix_fn b = (infix_fn)<(a, b)` *infix becomes ordinary*
+-   `ordinary_fn a b c = a \`ordinary_fn\` b c` *ordinary becomes infix*
 -   `operand1 infixfunction operand2` *sugared*
 -   Parsing
     -   Step 1 : `( operand1, infixfunction, operand2 ) `
@@ -768,6 +771,20 @@ LEXING PRECEDENCE RULES ?!
 -   Execution
     -   Step 1 : `( fn_partially_applied_to_o1 <(operand2) )`
     -   Step 2 : `( all_done )`
+
+## partially applied functions
+
+[Follow Haskell's style](https://wiki.haskell.org/index.php?title=Infix_operator).
+
+-    Following Haskell's styles, ALL `N-adic functions where N>1` may be partially applied, but `unless you (write a wrapper / use other flippy floppy operators) to rearrange the order of operands`, you may `only partially apply the function by the order of its operands`.
+-    `(1 +) = (+ 1)` *Haskell compiler will do extra work to make this possible, however*
+     -    not sure if we should adopt this lock-stock
+     -    on the other hand, we could go full retard and implement wildcards : `f = \a b c d -> a+b+c+d; g = f _ 1 _ 1; g 2 2` *returns 6* : seems like a bug generator, though. Not nice.
+
+#### recap : infix operators are just ordinary dyadic functions
+
+The difference between `infix dyadic` and `ordinary dyadic` functions, is a difference in lexing rules. After lexing, they are parsed the same.
+
 -   PN and RPN
     -   PN : `(infixfunction)<( operand1, operand2 )`  
          -   `(infixfunction) <( operand1 operand2 )`  *sugared*
