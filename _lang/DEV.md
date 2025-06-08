@@ -22,100 +22,39 @@
          -   `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
          -   [Program Sources Consist of Formal Expressions](#program-sources-consist-of-formal-expressions)
-         -   `::` type association ( Haskellism )
-         -   `parent.child` for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env`
-         -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
-              -   Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer
-              -   a variety of tuple is `(a,b)>c` the `function operative tuple` / [lexical disambiguation](#lexical-disambiguation-of-function-application)
-                   -   Polish notation : `afunction<( argument1, argument2 )`
-                        -   `afunction <( argument1 argument2 )` *sugared*
-                        -   `afunction <( argument1 argument2` *more sugared*
-                   -   Semi-reverse Polish notation : `( argument1, argument2 )> afunction`
-                   -   Reverse Polish notation :
-                        -   `( argument2 argument1 )> afunction`   *sugared*
-                        -   `argument2 argument1 )> afunction`   *more sugared*
-         -   `\`backticks\`` may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `() and \`\`` to flip `infix and ordinary` lexical operand positioning for function application )
-             -   `operand1 \`dyadic_function\` operand2` *converts an ordinary dyadic function into an infix dyadic function*
-         -   `:this_is_an_atom_aka_symbol` ala Ruby, CommonLisp, Julia ... having minimal collision with `::` for typing
+         -   |char|designation|
+             |-|-|
+             |`%%` `<% %>`| comments |
+             |`value::Type`|type association ( Haskellism )|
+             |`:this_is_an_atom_aka_symbol`| ala Ruby, CommonLisp, Julia ... having minimal collision with `::` for typing; no further quoting is needed for disambiguation |
+             |`fn` |as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
+             |`_`|explicitly ignored `value`; `type`?|
+             |`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env`
+             |`(...)`| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `(operand)>block` for function application|
+             |`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `() and \`\`` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - `operand1 \`dyadic_function\` operand2` *converts an ordinary dyadic function into an infix dyadic function* |
+             |` ` `\n` `\t`|-   `IFS` <br> -   possibly `offside rulings`|
+             |looping?|GENERAL FORM : `<cometo:start> state ? exit : { perform, optionally_modify_state, goto:start }` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
+             ||Easy Data Structures :|
+             |1 `()`| tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER : <br>  -   `mytuple_[5]_[17]` <br>  -   `mytuple.5.17` <br>  -   `mytuple_5_17` <br>  -   `mytuple_(5)_(17)` |
+             |2 `{}`|ZFC sets, `cpp std::unordered_set`, CONSIDER : <br>  -   `{ x | predicate(x) }`  <br> -   `{ expression(x) FOR x IN iterable WHERE }` <br>  -   `{ x<e<N~0> | x<10 /\ x/%2==0 }` <br> -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }`|
+             |3 `[]`| nilist, the protolist <br> -   `[<1>]` `[]` singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]` <br>  -   `[<2>]` doubly linked lists, `cpp std::list` <br>  -   WARNING : inconsistent prefix ; CONSIDER : swapping to TYPE ANNOTATION `<T:???>` |
+             |4 `<[]>` `<<>>`|CONSIDER : Erlang's bitstring syntax <br>  -   WARNING : CONSIDER : Unify under SIGILS : `<<:value:size/typespecifiedlist:>>` or `<[:value:size/typespecifiedlist:]>` |
+             ||JavaScript utility Data Structures : the only reason to give these a special sigil is `standards` and `ubiquity` : reconsider!|
+             |5 `${}$` `<${}$>` `<js{}js>`| JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
+             |6 `$[]$` `<$[]$>` `<js[]js>`|JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`|
+             ||Advanced Data Structures :|
+             |7 `$<//TODO//>$` `<$A[]A$>` `<js##js>` | JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
+             |`<` |     -   EXTRA-dimensional SIGILS / QUOTES : general form : CONSIDER <br>  sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|` <br> -   `<sigil_identifierQUOTECHARquoted_source>` `<quoted_sourceQUOTECHARsigil_identifier>` `<sigil_identifier>QUOTECHARquoted_sourceQUOTE_CHAR` e.g.<br>  -   `<js:QUOTED>` `<QUOTED:js>` <br> -   `<js:QUOTED:js>` `<js{QUOTED}` `<js(QUOTED)` <br>  -   the following seem to introduce mess : <br>  -   `<AQUOTEDA` `<AquotedA` <br> -   the following might collide with other forms : <br> -   `<js<QUOTED>>` <br>  -   `<)` sigil for variables of an arc <br>  -   CONTINUE HERE : `sigils with no paired tag`, vs `sigils with a paired tag` |
+             
          -   CONSIDERATIONS
-             -   ` ` `\n` `\t`
-                 -   `IFS`
-                 -   possibly `offside rulings`
              -   `,`
                  - in `expression sequences` : [C-fam](https://en.wikipedia.org/wiki/Comma_operator) : a binary operator that executes the LHS and discards the result, then executes the RHS 
                  - in `function calls for arguments` 
              -   `.` `;` `()`
-             -   Now that the `function operative tuple` is lexically defined ... we can consider the issue of explicit environments and bindings.
-                 ```
-                 fn definition <% => ( "fn", "definition" ) %>
-                 F <- fn definition
-                 F<()                <% execute F with no bound vars? %>
-                 F<(a,b,c)           <% execute F, binding lexically local vars a,b,c to a,b,c in the execution env %>
-                 F<((((a,b,c))))     <% will auto-unbox to an infinite degree %>
-                 F<(<ENV>)           <% passes the entire lexical env to the execution env %>
-                 <ENV> )> F          <% an idiom %>
-                 ```   
          -   PATTERN MATCHING :
              -   Semantics should match Erlang's ( simplest ! ) see : `term`, `pattern`, `_`, `compound pattern operator` 
          -   PRIMITIVES :
-             -   `fn` as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later
-                 -   we are exploring the notion of `all blocks have explicitly passed environments` which is analogous to conventional function application
-                     -   GENERAL FORM of `block execution` : `do { environmental_context_map >bind> block_with_interface_to_map }`
-                         -   So, the next question of syntactical design is, how do we make this more elegant : `take_env, modify_env, bind_env_to_block, execute_block`
-                             -   Haskell : `do { thing1; x <- thing2; thing3 x }` is `thing1 >> thing2 >>= \x->thing3 x` where `>> is to do in sequence` and `>> is to do in sequence, while additionally binding a variable`
-                             -   It warrants the question if we can just replace `, for >>` and `; for >>=` to chop down the ( semantic and visual ) noise
-                                 -   This might have the added benefit of removing the implicit binding where people do either of the following
-                                     -    C-fam : `int x = 1, y = x+1`, OK; but this will be an error : `int x = y+1, y = 1`, because it treats the entire line as a statement ( sequential ), where `, and ; are both >>=` differentiated by `;` ending the statement 
-                     -   `envs are tuples` seems fair, conventional `F<-(Args=>block); F(a)` might as well be read "whenever a function is found next to a tuple, it will gobble it up"
-                         -   moreover we add the `<` and `>` operators as shown below, such that `function<tuple = tuple>function`
-                             -   note however, as tuples are ordered, there remains an asymmetry in the passage of arguments e.g.
-                                 -   unexpanded. `function<(a,b) = (a,b)>function`
-                                 -   expanded. `(function<(a))<(b) = (b)>(function<(a))`
-                                 -   In order for such ML-esque `currying to be ubiquitous and implicit in all polyadic functions`, we will need to `make JavaScript implement it accordingly`.
-         -   ITERABLE DATA STRUCTURE MODES : CONSIDER : `unified utility library interface`, including generators `eager/lazy`
-             -   Loops :
-                 -   0 Do all looping control structures get abstracted to something like this?
-                     -   GENERAL FORM : `<cometo:start> state ? exit : { perform, optionally_modify_state, goto:start }`
-                         -   FUNCTIONAL FORM : `fn Myloop -> `
-                     -   `while () do {}`
-                         -   `for a, change a, until b do {}`
-                     -   `do {} while ()`
-                         -   `for a, change a, do {} until b `
-                     -   `for key in/of b do {}`
-                         -   `for value in/of b do {}`
-             -   Easy :
-                 -   1 `()` tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER :
-                     -   `mytuple_[5]_[17]`
-                     -   `mytuple.5.17`
-                     -   `mytuple_5_17`
-                     -   `mytuple_(5)_(17)`
-                 -   2 `{}` ZFC sets, `cpp std::unordered_set`, CONSIDER :
-                     -   `{ x | predicate(x) }`
-                     -   `{ expression(x) FOR x IN iterable WHERE }`
-                     -   `{ x<e<N~0> | x<10 /\ x/%2==0 }`
-                     -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }`
-                 -   3 `[]` nilist, the protolist
-                     -   `[<1>]` `[]` singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]`
-                     -   `[<2>]` doubly linked lists, `cpp std::list`
-                     -   WARNING : inconsistent prefix ; CONSIDER : swapping to TYPE ANNOTATION `<T:???>`
-                 -   4 `<[]>` `<<>>` CONSIDER : Erlang's bitstring syntax
-                     -   WARNING : CONSIDER : Unify under SIGILS : `<<:value:size/typespecifiedlist:>>` or `<[:value:size/typespecifiedlist:]>`
-             -   JavaScript utility : the only reason to give these a special sigil is `standards` and `ubiquity` : reconsider!
-                 -   5 `${}$` `<${}$>` `<js{}js>` JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`
-                 -   6 `$[]$` `<$[]$>` `<js[]js>` JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`
-             -   Advanced :
-                 -   7 `$<//TODO//>$` `<$A[]A$>` `<js##js>` JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had     
-                 -   EXTRA-dimensional SIGILS / QUOTES : general form : CONSIDER
-                      -   `<` sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|`
-                          -   `<sigil_identifierQUOTECHARquoted_source>` `<quoted_sourceQUOTECHARsigil_identifier>` `<sigil_identifier>QUOTECHARquoted_sourceQUOTE_CHAR` e.g.
-                              -   `<js:QUOTED>` `<QUOTED:js>`
-                              -   `<js:QUOTED:js>` `<js{QUOTED}` `<js(QUOTED)`
-                          -   the following seem to introduce mess :
-                              -   `<AQUOTEDA` `<AquotedA`
-                          -   the following might collide with other forms :
-                              -   `<js<QUOTED>>`  
-                      -   `<)` sigil for variables of an arc
-                          -   CONTINUE HERE : `sigils with no paired tag`, vs `sigils with a paired tag` 
+                   
           -    
           -    
 -    CONSIDER :
@@ -703,8 +642,16 @@ I am not even sure that I captured what I wanted! But it was a good exercise. So
 
 # lexical disambiguation of function application
 
--   Could it be simply implicit that all white space implies a tuple?
-   -   `()>` means, `the contents of this tuple are lexically bound in a closure, and the block I point to shall be executed immediately in that closure`  
+-  Could it be simply implicit that all white space implies a tuple?
+   -   `()>` means, `the contents of this tuple are lexically bound in a closure, and the block I point to shall be executed immediately in that closure`
+   -   a variety of tuple is `(a,b)>c` the `function operative tuple` / [lexical disambiguation](#lexical-disambiguation-of-function-application)
+         -   Polish notation : `afunction<( argument1, argument2 )`
+              -   `afunction <( argument1 argument2 )` *sugared*
+              -   `afunction <( argument1 argument2` *more sugared*
+         -   Semi-reverse Polish notation : `( argument1, argument2 )> afunction`
+         -   Reverse Polish notation :
+              -   `( argument2 argument1 )> afunction`   *sugared*
+         -   `argument2 argument1 )> afunction`   *more sugared*
    -   |general lexing pattern|`traditional` notation, results in a passive tuple|
        |-|-|
        |`a <- 1`    |`fn1(a)`   |   
@@ -806,3 +753,27 @@ The difference between `infix dyadic` and `ordinary dyadic` functions, is a diff
 | `%> <%`| `&> <&`| `*> <*`| `+> <+`| `<[ ]>`|
 | `<] [>`| `<{ }>`|`<} {>`| `\> </` |`/> <\`|
 |  `<\| \|>`| `<? ?>`|
+
+# Explicit Environments & Bindings
+
+```
+fn definition <% => ( "fn", "definition" ) %>
+F <- fn definition
+F<()                <% execute F with no bound vars? %>
+F<(a,b,c)           <% execute F, binding lexically local vars a,b,c to a,b,c in the execution env %>
+F<((((a,b,c))))     <% will auto-unbox to an infinite degree %>
+F<(<ENV>)           <% passes the entire lexical env to the execution env %>
+<ENV> )> F          <% an idiom %>
+```   
+
+# Iterables
+
+-   ITERABLE DATA STRUCTURE MODES : CONSIDER : `unified utility library interface`, including generators `eager/lazy`
+   -   Loops :
+       -   0 Do all looping control structures get abstracted to something like this?
+           -   `while () do {}`
+               -   `for a, change a, until b do {}`
+           -   `do {} while ()`
+               -   `for a, change a, do {} until b `
+           -   `for key in/of b do {}`
+               -   `for value in/of b do {}`
