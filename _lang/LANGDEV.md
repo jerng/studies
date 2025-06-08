@@ -30,6 +30,7 @@
              ||What are generally referred to as `declarations` or `statements` in the vernacular of computer programming, are assumed under the breadth of `3`, whereas `2` covers the intuitive category of propositions which may be evaluated for truth or falsity by the sorts of programs casually referred to as automated theorem provers, proof assistants, or artifical intelligence agents.|
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
               -   Could it be simply implicit that all white space implies a tuple?
+                      - `()>` means, `the contents of this tuple are lexically bound in a closure, and the block I point to shall be executed immediately in that closure`  
                   -   |`a <- 1`    |`fn1 (a)`  |`fn1 <(a)`            |`fn1 <( a b`           |   
                       |-|-|-|-|
                       |`(a, <-, 1)`|`(fn1,(a))`|`(fn1 <(a) undefined)`|`(fn1 <(a) b)`         |
