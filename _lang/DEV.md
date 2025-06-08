@@ -23,6 +23,7 @@
      -   TOP LEVEL MODE :
          -   [Program Sources Consist of Formal Expressions](#program-sources-consist-of-formal-expressions)
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
+              -   Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer
               -   a variety of tuple is `(a,b)>c` the `function operative tuple` / [lexical disambiguation](#lexical-disambiguation-of-function-application)
                    -   Polish notation : `afunction<( argument1, argument2 )`
                         -   `afunction <( argument1 argument2 )` *sugared*
@@ -33,15 +34,13 @@
                         -   `argument2 argument1 )> afunction`   *more sugared*
          -   CONSIDERATIONS
              -   ` ` `\n` `\t`
-                        -   `IFS`
-                        -   possibly `offside rulings`
+                 -   `IFS`
+                 -   possibly `offside rulings`
              -   `,`
-                        - `NO ISSUE AS QUOTES ARE EXPLICIT ( TODO : tuples?! )` : `IFS` e.g. in `linear data structure literals`
-                        - in `expression sequences` : [C-fam](https://en.wikipedia.org/wiki/Comma_operator) : a binary operator that executes the LHS and discards the result, then executes the RHS 
-                        - in `function calls for arguments` 
+                 - in `expression sequences` : [C-fam](https://en.wikipedia.org/wiki/Comma_operator) : a binary operator that executes the LHS and discards the result, then executes the RHS 
+                 - in `function calls for arguments` 
              -   `.` `;` `()`
-
-             -   In each context. IFS? Expression-end?  Are tuples implicit everywhere, resulting in their use for phrasing?
+             -   Now that the `function operative tuple` is lexically defined ... we can consider the issue of explicit environments and bindings.
          -   PATTERN MATCHING :
              -   Semantics should match Erlang's ( simplest ! ) see : `term`, `pattern`, `_`, `compound pattern operator` 
          -   PRIMITIVES :
