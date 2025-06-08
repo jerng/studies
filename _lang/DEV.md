@@ -21,8 +21,13 @@
          -   `define lexing rules which enter and exit subcontexts`,
          -   `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
-         -   [Program Sources Consist of Formal Expressions](https://github.com/jerng/studies/blob/main/_lang/DEV.md#program-sources-consist-of-formal-expressions)
+         -   [Program Sources Consist of Formal Expressions](#program-sources-consist-of-formal-expressions)
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
+         -   function application operator / [lexical disambiguation](#lexical-disambiguation-of-function-application)
+              -   `afunction<( argument1, argument2 )`
+              -   `afunction <( argument1 argument2`
+              -   `( argument1, argument2 )> afunction`
+              -   `argument2 argument1 )> afunction`   
          -   CONSIDERATIONS
              -   ` ` `\n` `\t`
                         -   `IFS`
@@ -32,14 +37,7 @@
                         - in `expression sequences` : [C-fam](https://en.wikipedia.org/wiki/Comma_operator) : a binary operator that executes the LHS and discards the result, then executes the RHS 
                         - in `function calls for arguments` 
              -   `.` `;` `()`
-             -   Sigh. What can we do with all these?
-                 ||||||
-                 |-|-|-|-|-|
-                 |`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
-                 |`\|-> <-\|`|`\|=> <=\|`| `!> <!`| `@> <@`| `#> <#`|
-                 | `%> <%`| `&> <&`| `*> <*`| `+> <+`| `<[ ]>`|
-                 | `<] [>`| `<{ }>`|`<} {>`| `\> </` |`/> <\`|
-                 |  `<\| \|>`| `<? ?>`|
+
              -   In each context. IFS? Expression-end?  Are tuples implicit everywhere, resulting in their use for phrasing?
          -   PATTERN MATCHING :
              -   Semantics should match Erlang's ( simplest ! ) see : `term`, `pattern`, `_`, `compound pattern operator` 
@@ -709,9 +707,7 @@ I am not even sure that I captured what I wanted! But it was a good exercise. So
 |`allow enumerated passes`|
 
 
-# lexical disambiguation
-
-## function application
+# lexical disambiguation of function application
 
 -   Could it be simply implicit that all white space implies a tuple?
    -   `()>` means, `the contents of this tuple are lexically bound in a closure, and the block I point to shall be executed immediately in that closure`  
@@ -767,3 +763,14 @@ I am not even sure that I captured what I wanted! But it was a good exercise. So
 |`3`|   Formal `operations` are `normative` expressions <br> -   for all practical purposes, computational operations occur upon `data in a memory buffer` so those are `the only operands` <br> -   e.g. `var a = 1` means `label 'a' refers to address 'A' in memory, address 'A' has value '1'`.|
 ||If anything is lexed / parsed in a `program source` and `not assigned to one of the three` types above, then `an error results`. |
 ||What are generally referred to as `declarations` or `statements` in the vernacular of computer programming, are assumed under the breadth of `3`, whereas `2` covers the intuitive category of propositions which may be evaluated for truth or falsity by the sorts of programs casually referred to as automated theorem provers, proof assistants, or artifical intelligence agents.|
+
+# Unassigned Arrows
+
+-   Sigh. What can we do with all these?
+||||||
+|-|-|-|-|-|
+|`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
+|`\|-> <-\|`|`\|=> <=\|`| `!> <!`| `@> <@`| `#> <#`|
+| `%> <%`| `&> <&`| `*> <*`| `+> <+`| `<[ ]>`|
+| `<] [>`| `<{ }>`|`<} {>`| `\> </` |`/> <\`|
+|  `<\| \|>`| `<? ?>`|
