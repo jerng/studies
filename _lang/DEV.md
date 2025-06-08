@@ -29,51 +29,6 @@
              ||If anything is lexed / parsed in a `program source` and `not assigned to one of the three` types above, then `an error results`. |
              ||What are generally referred to as `declarations` or `statements` in the vernacular of computer programming, are assumed under the breadth of `3`, whereas `2` covers the intuitive category of propositions which may be evaluated for truth or falsity by the sorts of programs casually referred to as automated theorem provers, proof assistants, or artifical intelligence agents.|
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
-              -   Could it be simply implicit that all white space implies a tuple?
-                  -   `()>` means, `the contents of this tuple are lexically bound in a closure, and the block I point to shall be executed immediately in that closure`  
-                  -   |general lexing pattern|`traditional` notation, results in a passive tuple|
-                      |-|-|
-                      |`a <- 1`    |`fn1(a)`   |   
-                      |`(a, <-, 1)`|`(fn1,(a))`|
-
-                  -   |`      fn1 <(   a    `| This is Haskell-ian syntax.  |-|`      fn1 <( a )    `|This is modified traditional f(a)|
-                      |-|-|-|-|-|
-                      |`(   ( fn1 <( ) a   )`| Hence, it would be confusing.|-|`( fn1_applied_to_a )`||
-                      |`(   ( <( ) fn1 a   )`|                              |-|                      ||
-                      |`( fn1_applied_to_a )`|                              |-|                      ||
-
-                  -   We can remove the SASL/ML-lian rule of `function application by juxtaposition`
-                    
-                  -   Of particular concern are the asymmetrical rules, `<(a b) = <(a,b)` and `(b a)> = (a, b)>`
-
-                  -   |`    fn1 <( a      `|`   fn1 <( a b    )`|`    b  a )> fn1  )`|
-                      |-|-|-|
-                      |`    fn1 <( a )    `|`   fn1 <( a, b ) )`|`  ( b  a )> fn1  )`|
-                      |`(   fn1 <( a )   )`|`(  fn2 <(    b ) )`|`  ( a, b )> fn1  )`|
-                      |`(fn1_applied_to_a)`|`(fn2_applied_to_b)`|`( (    b )> fn2  )`|
-                      |                    |                    |`(fn2_applied_to_b)`|
-
-                  -   |Then, we have to address lexing ambiguity.|-|-|
-                      |-|-|-|
-                      |||Lexing :|
-                      |`  notarg  fn1 <(  a b     notarg  `|`  notarg     b a  )> fn1  notarg  `|`ambiguous`  |
-                      |`  notarg  fn1 <(  a b   , notarg  `|`  notarg,    b a  )> fn1  notarg  `|`ambiguous`  |
-                      |`  notarg  fn1 <(  a b  )  notarg  `|`  notarg  (  b a  )> fn1  notarg  `|`unambiguous`|
-                      |||Parsing :|
-                      |`  notarg, fn1 <(  a b  ), notarg  `|`  notarg, (  b a  )> fn1, notarg  `|`step 1`|
-                      |`( notarg, fn1 <( (a,b) ), notarg )`|`( notarg, ( (a,b) )> fn1, notarg )`|`step 2`|
-                      |`( notarg, fn1 <(a) <(b),  notarg )`|`( notarg,  (b)> (a)> fn1, notarg )`|`step 3`|
-                      |||Execution :|
-                      |`( notarg,      fn2 <(b),  notarg )`|`( notarg,       (b)> fn2, notarg )`|`step 1`|
-                      |`( notarg,      all_done,  notarg )`|`( notarg,       all_done, notarg )`|`step 2`|
-
-                  -   Without adjacent tokens, lexer can make more inferences.
-                      
-                  -   |-|-|-|
-                      |-|-|-|
-                      |||Lexing :|
-                      |`fn1 <( a b`|`b a )> fn1`|`unambiguous`  |
-                      |as above    |as above    |               |
 
          -   CONSIDERATIONS
              -   ` ` `\n` `\t`
@@ -761,4 +716,52 @@ I am not even sure that I captured what I wanted! But it was a good exercise. So
 |`allow enumerated passes`|
 
 
+# lexical disambiguation
+
+## function application
+
+-   Could it be simply implicit that all white space implies a tuple?
+   -   `()>` means, `the contents of this tuple are lexically bound in a closure, and the block I point to shall be executed immediately in that closure`  
+   -   |general lexing pattern|`traditional` notation, results in a passive tuple|
+       |-|-|
+       |`a <- 1`    |`fn1(a)`   |   
+       |`(a, <-, 1)`|`(fn1,(a))`|
+
+   -   |`      fn1 <(   a    `| This is Haskell-ian syntax.  |-|`      fn1 <( a )    `|This is modified traditional f(a)|
+       |-|-|-|-|-|
+       |`(   ( fn1 <( ) a   )`| Hence, it would be confusing.|-|`( fn1_applied_to_a )`||
+       |`(   ( <( ) fn1 a   )`|                              |-|                      ||
+       |`( fn1_applied_to_a )`|                              |-|                      ||
+
+   -   We can remove the SASL/ML-lian rule of `function application by juxtaposition`
+     
+   -   Of particular concern are the asymmetrical rules, `<(a b) = <(a,b)` and `(b a)> = (a, b)>`
+
+   -   |`    fn1 <( a      `|`   fn1 <( a b    )`|`    b  a )> fn1  )`|
+       |-|-|-|
+       |`    fn1 <( a )    `|`   fn1 <( a, b ) )`|`  ( b  a )> fn1  )`|
+       |`(   fn1 <( a )   )`|`(  fn2 <(    b ) )`|`  ( a, b )> fn1  )`|
+       |`(fn1_applied_to_a)`|`(fn2_applied_to_b)`|`( (    b )> fn2  )`|
+       |                    |                    |`(fn2_applied_to_b)`|
+
+   -   |Then, we have to address lexing ambiguity.|-|-|
+       |-|-|-|
+       |||Lexing :|
+       |`  notarg  fn1 <(  a b     notarg  `|`  notarg     b a  )> fn1  notarg  `|`ambiguous`  |
+       |`  notarg  fn1 <(  a b   , notarg  `|`  notarg,    b a  )> fn1  notarg  `|`ambiguous`  |
+       |`  notarg  fn1 <(  a b  )  notarg  `|`  notarg  (  b a  )> fn1  notarg  `|`unambiguous`|
+       |||Parsing :|
+       |`  notarg, fn1 <(  a b  ), notarg  `|`  notarg, (  b a  )> fn1, notarg  `|`step 1`|
+       |`( notarg, fn1 <( (a,b) ), notarg )`|`( notarg, ( (a,b) )> fn1, notarg )`|`step 2`|
+       |`( notarg, fn1 <(a) <(b),  notarg )`|`( notarg,  (b)> (a)> fn1, notarg )`|`step 3`|
+       |||Execution :|
+       |`( notarg,      fn2 <(b),  notarg )`|`( notarg,       (b)> fn2, notarg )`|`step 1`|
+       |`( notarg,      all_done,  notarg )`|`( notarg,       all_done, notarg )`|`step 2`|
+
+   -   Without adjacent tokens, lexer can make more inferences.
+       
+   -   |||Lexing :|
+       |-|-|-|
+       |`fn1 <( a b`|`b a )> fn1`|`unambiguous`  |
+       |as above    |as above    |               |
 
