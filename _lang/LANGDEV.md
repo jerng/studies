@@ -48,8 +48,8 @@
 
                   -    ||
                        |-|
-                       |`   fn1 <((a))   `|`   fn1 <((a,b))  `|`   fn1 <( a, b  `|`   fn1 <( b a  `|
-                       |`(  fn1 <(a)    )`|
+                       |`  fn1 <((a))  `|` fn1 <((a, b))  `|`  fn1 <( a, b    `|`fn1 <( b  a  `|
+                       |`( fn1 <(a)   )`|` fn1 <( a, b )  `|`  fn1 <( a, b )  `|`fn1 <( a, b )`|
                       
          -   CONSIDERATIONS
                    -   ` ` `\n` `\t`
