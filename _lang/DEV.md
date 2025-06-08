@@ -60,6 +60,7 @@
 
                   -   |We can remove the rule of `function application by juxtaposition|
                       |-|  
+                      |Of particular concern are the asymmetrical rules, `<(a b) = <(a,b)` and `(b a)> = (a, b)>`|  
 
                   -   |`    fn1 <( a      `|`   fn1 <( a b    )`|`    b  a )> fn1  )`|
                       |-|-|-|
@@ -68,9 +69,11 @@
                       |`(fn1_applied_to_a)`|`(fn2_applied_to_b)`|`( (    b )> fn2  )`|
                       |                    |                    |`(fn2_applied_to_b)`|
 
-                  -   |Then, we have to address lexing ambiguity.|
-                      |-|
-                      |`notarg fn1 <( a b notarg `|
+                  -   |Then, we have to address lexing ambiguity.|-|-|
+                      |-|-|-|
+                      |`  notarg    fn1 <( a b      notarg  `|`notarg     b a )> fn1   notarg`|`ambiguous`  |
+                      |`  notarg  ( fn1 <( a b ) )  notarg  `|`notarg ( ( b a )> fn1 ) notarg`|`unambiguous`|
+                      |`( notarg, ( fn1 <( a,b ) ), notarg )`|`notarg ( ( a,b )> fn1 ) notarg`|`unambiguous`|
 
 
          -   CONSIDERATIONS
