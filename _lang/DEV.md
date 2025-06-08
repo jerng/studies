@@ -21,9 +21,8 @@
          -   `define lexing rules which enter and exit subcontexts`,
          -   `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
-         -   ``
+         -   [Program Sources Consist of Formal Expressions](https://github.com/jerng/studies/blob/main/_lang/DEV.md#program-sources-consist-of-formal-expressions)
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
-
          -   CONSIDERATIONS
              -   ` ` `\n` `\t`
                         -   `IFS`
