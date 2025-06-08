@@ -23,11 +23,11 @@
      -   TOP LEVEL MODE :
          -   [Program Sources Consist of Formal Expressions](#program-sources-consist-of-formal-expressions)
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
-         -   function application operator / [lexical disambiguation](#lexical-disambiguation-of-function-application)
-              -   `afunction<( argument1, argument2 )`
-              -   `afunction <( argument1 argument2`
-              -   `( argument1, argument2 )> afunction`
-              -   `argument2 argument1 )> afunction`   
+              -   a variety of tuple is `(a,b)>c` the function application operator / [lexical disambiguation](#lexical-disambiguation-of-function-application)
+                   -   Polish notation : `afunction<( argument1, argument2 )`
+                   -   Polish notation : `afunction <( argument1 argument2` *sugared*
+                   -   Semi-reverse Polish notation : `( argument1, argument2 )> afunction`
+                   -   Reverse Polish notation : `argument2 argument1 )> afunction`   *sugared*
          -   CONSIDERATIONS
              -   ` ` `\n` `\t`
                         -   `IFS`
@@ -753,6 +753,23 @@ I am not even sure that I captured what I wanted! But it was a good exercise. So
        |-|-|-|
        |`fn1 <( a b`|`b a )> fn1`|`unambiguous`  |
        |as above    |as above    |               |
+
+# infix operators, as applied functions
+
+LEXING PRECEDENCE RULES ?!
+
+-   `operand1 infixfunction operand2` *sugared*
+-   Parsing
+    -   Step 1 : `( operand1, infixfunction, operand2 ) `
+    -   Step 2 : `( (infixfunction) <(operand1) <(operand2) ) `
+-   Execution
+    -   Step 1 : `( fn_partially_applied_to_o1 <(operand2) )`
+    -   Step 2 : `( all_done )`
+-   PN and RPN
+    -   PN : `(infixfunction)<( operand1, operand2 )`  
+    -   PN : `(infixfunction) <( operand1 operand2`  *sugared*
+    -   semi-RPN : `(operand1, operand2)>(infixfunction)`  
+    -   RPN : `operand2 operand1 )> (infixfunction)`  *sugared*
 
 # Program Sources Consist of Formal Expressions
 
