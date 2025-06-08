@@ -564,70 +564,6 @@ uses auto-boxing to methodise immutable primitives. |
 |`environments`|
 |``|
 
-### Boxes / Containers 
-
-|Data Structures|-|
-|-|-|
-|`records` or `map` of some sort|
-|`linked list` of some sort|
-|`raw array` of some sort|
-|`smart array` of some sort|
-|See Erlang's built-ins for other common types|
-|There should be some sort of UI for configuring customisable memory
-layouts of customised datatypes|
-
-#### Datatype Design considerations
-
--   System should maintain the easiest & safest path, at the cost of performance, for the dumbest user.
--   System should allow opt-ins to longer & riskier paths, with performance benefits, for a smarter user.
-
-###### Ways to Layout an Array in Memory
-
->    2025-06-04 : This is ... not as insightful as I'd hoped it'd be. There are very many permutations of how to create an array. The array's metadata can be stored in the array's own address space (data plane) or in the address space occupied by working memory of the compiled instructions (control plane). 
-I am not even sure that I captured what I wanted! But it was a good exercise. Somewhat stressy tho 
-
-- `start` : address where the array starts
-- `end` : address where the array ends; alternatively, `length` : length of the array in some unit ( bytes, or multiples of bytes )
-- `control` : metadata is stored in runtime's working memory (? stackframe) not the memory the runtime is allocating to
-- `data` : metadata is stored in the memory the runtime is allocating to
-- `N points to P` : 1-dimensional or >1-dimensional depth
-- `Total OH` : total overhead metadata stored in either `control` plane or `data` plane
-
-`64-bit system` :
-|Max Data Stored `B`|NStart @control `B`|NEnd `B` @control|NEnd `B` @dataN|NLength `B` @control|NLength `B` @data |N PointsTo P|TotalOH `B` @control|TotalOH `B` @data|Note|
-|-|-|-|-|-|-|-|-|-|-|
-|`2^8`              |`x<8` (weird)|                       |               |`1` (min)           |                  |No          |`(x<8)+1` (min)     |             |
-|`2^8`              |`x<8` (weird)|                       |               |                    |`1` (min)         |No          |`x<8`     (min)     |`1` (min)    |
-|`2^8`              |`8` (norm)   |                       |               |`1` (min)           |                  |No          |`8+1`     (min)     |             | small VLA|
-|`2^8`              |`8` (norm)   |                       |               |                    |`1` (min)         |No          |`8`                 |`1` (min)    | small VLA|
-|-|skip weird cases|-|-|-|-|-|-|-|-|
-|`(2^64)-y`         |`8`          |`8` (min)              |               |                    |                  |No          |`8+8`     (min)     |             | big VLA |
-|`(2^64)-y`         |`8`          |                       |`8` (min)      |                    |                  |No          |`8`                 |`8` (min)    | big VLA |
-
-`64-bit system`, expanding just on the VLA examples :
-|Max Data Stored `B`|NSt @con `B`|NEn `B` @con|NEn `B` @dat|NLen `B` @con|NLen `B` @dat|N Pts To P|PEn `B` @con|PEn `B` @dat|PLen `B` @con|PLen `B` @dat |Tot `B` @con|Tot `B` @dat|
-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-|`2^(8+8)`          |`8` (norm)   |                       |               |`1` (min)           |                  |Yes         |                 |               |`1` (min)           |                  |`8+1+(1*1)` (min)   |                 |
-|`2^(8+8)`          |`8` (norm)   |                       |               |                    |`1` (min)         |Yes         |                 |               |                    |`1` (min)         |`8`                 |`1+(1*1)` (min)  |       
-|`(2^64)-y`         |`8`          |`8` (min)              |               |                    |                  |Yes         |`8` (min)        |               |                    |                  |`8+8+(8*1)`(min)    |                 |
-|`(2^64)-y`         |`8`          |                       |`8` (min)      |                    |                  |Yes         |                 |`8` (min)      |                    |                  |`8`                 |`8+(8*1)` (min)  |                
-
-
--   underlying hardware architecture
-    -    `pointers on 64-bit systems are 64-bits long, and respectively for 32-bit systems` : a moderate, and practical, assumption; the evolution of growth in system-word-sizes has been mainly motivated by how much memory can be addressed with a single word. On 64-bit systems one can compile with 32-bit pointers, limiting a process' RAM and increasing the number of pointers you can stuff into cache, but that is an optimisation, not the baseline.
-    -    `cache lines on 64-bit systems are 64-bits wide` : another moderate, and practical, assumption
-
-
-
-|Generics|
-|-|
-|`compile time` vs `runtime` : as yet undefined|
-
-|Preprocessor Transformations|
-|-|
-|`allow enumerated passes`|
-
-
 ## Operations
 
 |Operator|[Properties](https://en.wikipedia.org/wiki/Relation_(mathematics)#Properties_of_relations)|Pronunciation|
@@ -735,33 +671,70 @@ Each operator is typed, for safety. `A mechanism should be available for overloa
 |`@`  | ? as|
 |||
 
-## Language Description Document / LDL : Decisions
--   stage 1
-    -   source code files implicitly form block?
-    -   explicit or implicit environments?
-    -   scoping rules?
-    -   comments character? types?
-    -   variable declaration & conventions?
-    -   assignment operator & conventions?
-    -   nullish / undefined / logic arity / empty list / nil ?
-    -   character sets
-    -   operators ? overloading?
-    -   bitstrings? ( maybe you are just a CRUD lang, not a systems language )
-    -   SQL internalised?
-    -   primitives ? what and how?
-    -   numbers? what and how?
-    -   special constants?
-    -   i18n for all keywords?
--   stage N
-    -   syntax mode switching?
-    -   sigils?
-    -   annotation conventions?
-    -   preprocessor? how many passes?
--   stage P
-    -   interpreted? just use JS : has JIT, and leads to other targets anyway
-    -   compiled? you might have to wait a while
-    -   type system? how does this work?
-        -   static or dynamic typing? static or dynamic dispatch - is there a difference if typing is already selected?
-        -   guaranteed?
-    -   pointers ? how ?
-    -   garbage collection? how?
+## Types ( continued )
+
+### Boxes / Containers 
+
+|Data Structures|-|
+|-|-|
+|`records` or `map` of some sort|
+|`linked list` of some sort|
+|`raw array` of some sort|
+|`smart array` of some sort|
+|See Erlang's built-ins for other common types|
+|There should be some sort of UI for configuring customisable memory
+layouts of customised datatypes|
+
+#### Datatype Design considerations
+
+-   System should maintain the easiest & safest path, at the cost of performance, for the dumbest user.
+-   System should allow opt-ins to longer & riskier paths, with performance benefits, for a smarter user.
+
+###### Ways to Layout an Array in Memory
+
+>    2025-06-04 : This is ... not as insightful as I'd hoped it'd be. There are very many permutations of how to create an array. The array's metadata can be stored in the array's own address space (data plane) or in the address space occupied by working memory of the compiled instructions (control plane). 
+I am not even sure that I captured what I wanted! But it was a good exercise. Somewhat stressy tho 
+
+- `start` : address where the array starts
+- `end` : address where the array ends; alternatively, `length` : length of the array in some unit ( bytes, or multiples of bytes )
+- `control` : metadata is stored in runtime's working memory (? stackframe) not the memory the runtime is allocating to
+- `data` : metadata is stored in the memory the runtime is allocating to
+- `N points to P` : 1-dimensional or >1-dimensional depth
+- `Total OH` : total overhead metadata stored in either `control` plane or `data` plane
+
+`64-bit system` :
+|Max Data Stored `B`|NStart @control `B`|NEnd `B` @control|NEnd `B` @dataN|NLength `B` @control|NLength `B` @data |N PointsTo P|TotalOH `B` @control|TotalOH `B` @data|Note|
+|-|-|-|-|-|-|-|-|-|-|
+|`2^8`              |`x<8` (weird)|                       |               |`1` (min)           |                  |No          |`(x<8)+1` (min)     |             |
+|`2^8`              |`x<8` (weird)|                       |               |                    |`1` (min)         |No          |`x<8`     (min)     |`1` (min)    |
+|`2^8`              |`8` (norm)   |                       |               |`1` (min)           |                  |No          |`8+1`     (min)     |             | small VLA|
+|`2^8`              |`8` (norm)   |                       |               |                    |`1` (min)         |No          |`8`                 |`1` (min)    | small VLA|
+|-|skip weird cases|-|-|-|-|-|-|-|-|
+|`(2^64)-y`         |`8`          |`8` (min)              |               |                    |                  |No          |`8+8`     (min)     |             | big VLA |
+|`(2^64)-y`         |`8`          |                       |`8` (min)      |                    |                  |No          |`8`                 |`8` (min)    | big VLA |
+
+`64-bit system`, expanding just on the VLA examples :
+|Max Data Stored `B`|NSt @con `B`|NEn `B` @con|NEn `B` @dat|NLen `B` @con|NLen `B` @dat|N Pts To P|PEn `B` @con|PEn `B` @dat|PLen `B` @con|PLen `B` @dat |Tot `B` @con|Tot `B` @dat|
+|-|-|-|-|-|-|-|-|-|-|-|-|-|
+|`2^(8+8)`          |`8` (norm)   |                       |               |`1` (min)           |                  |Yes         |                 |               |`1` (min)           |                  |`8+1+(1*1)` (min)   |                 |
+|`2^(8+8)`          |`8` (norm)   |                       |               |                    |`1` (min)         |Yes         |                 |               |                    |`1` (min)         |`8`                 |`1+(1*1)` (min)  |       
+|`(2^64)-y`         |`8`          |`8` (min)              |               |                    |                  |Yes         |`8` (min)        |               |                    |                  |`8+8+(8*1)`(min)    |                 |
+|`(2^64)-y`         |`8`          |                       |`8` (min)      |                    |                  |Yes         |                 |`8` (min)      |                    |                  |`8`                 |`8+(8*1)` (min)  |                
+
+
+-   underlying hardware architecture
+    -    `pointers on 64-bit systems are 64-bits long, and respectively for 32-bit systems` : a moderate, and practical, assumption; the evolution of growth in system-word-sizes has been mainly motivated by how much memory can be addressed with a single word. On 64-bit systems one can compile with 32-bit pointers, limiting a process' RAM and increasing the number of pointers you can stuff into cache, but that is an optimisation, not the baseline.
+    -    `cache lines on 64-bit systems are 64-bits wide` : another moderate, and practical, assumption
+
+
+
+|Generics|
+|-|
+|`compile time` vs `runtime` : as yet undefined|
+
+|Preprocessor Transformations|
+|-|
+|`allow enumerated passes`|
+
+
+

@@ -1051,6 +1051,15 @@ a<?
 a@?     "at" : a in the context / space of ?
 ?[a]
 
+value@?
+*>value
+value<*     get the pointer to value
+
+?@address
+<*address
+address*>   get the value at address
+
+
 a->     returns value at address a
 <-a
 a>?
