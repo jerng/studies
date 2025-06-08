@@ -52,11 +52,27 @@
                       |`( ( fn1 <() ) a )`|`( fn1 <( a) b   )`|-|-|-|
                       |                   |`( fn1 <( a) b   )`|-|-|-|
 
-                  -   |`      fn1 <(   a    `| This is ML-compliant syntax.           |-|`      fn1 <( a )    `|This is modified traditional f(a)|
+                  -   |`      fn1 <(   a    `| This is Haskell-ian syntax.  |-|`      fn1 <( a )    `|This is modified traditional f(a)|
                       |-|-|-|-|-|
-                      |`(   ( fn1 <( ) a   )`| This is too, but it would be confusing.|-|`( fn1_applied_to_a )`||
-                      |`( fn1_applied_to_a )`|                                        |-|                      ||
-                      
+                      |`(   ( fn1 <( ) a   )`| Hence, it would be confusing.|-|`( fn1_applied_to_a )`||
+                      |`(   ( <( ) fn1 a   )`|                              |-|                      ||
+                      |`( fn1_applied_to_a )`|                              |-|                      ||
+
+                  -   |We can remove the rule of `function application by juxtaposition|
+                      |-|  
+
+                  -   |`    fn1 <( a      `|`   fn1 <( a b    )`|`    b  a )> fn1  )`|
+                      |-|-|-|
+                      |`    fn1 <( a )    `|`   fn1 <( a, b ) )`|`  ( b  a )> fn1  )`|
+                      |`(   fn1 <( a )   )`|`(  fn2 <(    b ) )`|`  ( a, b )> fn1  )`|
+                      |`(fn1_applied_to_a)`|`(fn2_applied_to_b)`|`( (    b )> fn2  )`|
+                      |                    |                    |`(fn2_applied_to_b)`|
+
+                  -   |Then, we have to address lexing ambiguity.|
+                      |-|
+                      |`notarg fn1 <( a b notarg `|
+
+
          -   CONSIDERATIONS
                    -   ` ` `\n` `\t`
                         -   `IFS`
