@@ -25,9 +25,12 @@
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
               -   a variety of tuple is `(a,b)>c` the function application operator / [lexical disambiguation](#lexical-disambiguation-of-function-application)
                    -   Polish notation : `afunction<( argument1, argument2 )`
-                   -   Polish notation : `afunction <( argument1 argument2` *sugared*
+                        -   `afunction <( argument1 argument2 )` *sugared*
+                        -   `afunction <( argument1 argument2` *more sugared*
                    -   Semi-reverse Polish notation : `( argument1, argument2 )> afunction`
-                   -   Reverse Polish notation : `argument2 argument1 )> afunction`   *sugared*
+                   -   Reverse Polish notation :
+                        -   `( argument2 argument1 )> afunction`   *sugared*
+                        -   `argument2 argument1 )> afunction`   *more sugared*
          -   CONSIDERATIONS
              -   ` ` `\n` `\t`
                         -   `IFS`
@@ -767,9 +770,12 @@ LEXING PRECEDENCE RULES ?!
     -   Step 2 : `( all_done )`
 -   PN and RPN
     -   PN : `(infixfunction)<( operand1, operand2 )`  
-    -   PN : `(infixfunction) <( operand1 operand2`  *sugared*
+         -   `(infixfunction) <( operand1 operand2 )`  *sugared*
+         -   `(infixfunction) <( operand1 operand2`  *more sugared*
     -   semi-RPN : `(operand1, operand2)>(infixfunction)`  
-    -   RPN : `operand2 operand1 )> (infixfunction)`  *sugared*
+    -   RPN :
+         -   `( operand2 operand1 )> (infixfunction)`  *sugared*
+         -   `operand2 operand1 )> (infixfunction)`  *more sugared*
 
 # Program Sources Consist of Formal Expressions
 
@@ -784,6 +790,7 @@ LEXING PRECEDENCE RULES ?!
 # Unassigned Arrows
 
 -   Sigh. What can we do with all these?
+
 ||||||
 |-|-|-|-|-|
 |`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
