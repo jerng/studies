@@ -52,10 +52,10 @@
                       |`( ( fn1 <() ) a )`|`( fn1 <( a) b   )`|-|-|-|
                       |                   |`( fn1 <( a) b   )`|-|-|-|
 
-                  -   |`    fn1 <(   a      `|
-                      |-|
-                      |`( ( fn1 <( ) a     )`|
-                      |`( fn1_applied_to_a )`|
+                  -   |`      fn1 <(   a    `| This is ML-compliant syntax.           |-|`      fn1 <( a )    `|This is modified traditional f(a)|
+                      |-|-|-|-|-|
+                      |`(   ( fn1 <( ) a   )`| This is too, but it would be confusing.|-|`( fn1_applied_to_a )`||
+                      |`( fn1_applied_to_a )`|                                        |-|                      ||
                       
          -   CONSIDERATIONS
                    -   ` ` `\n` `\t`
