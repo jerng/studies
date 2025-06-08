@@ -58,14 +58,25 @@
 
                   -   |Then, we have to address lexing ambiguity.|-|-|
                       |-|-|-|
-                      |`  notarg    fn1 <( a b      notarg  `|`  notarg      b a )> fn1    notarg  `|`ambiguous`  |
-                      |`  notarg    fn1 <( a b   ,  notarg  `|`  notarg  ,   b a )> fn1    notarg  `|`ambiguous`  |
-                      |-|-|-|
-                      |`  notarg    fn1 <( a b )    notarg  `|`  notarg    ( b a )> fn1    notarg  `|`unambiguous`|
-                      |`  notarg  , fn1 <( a b ) ,  notarg  `|`  notarg  , ( b a )> fn1 ,  notarg  `|`unambiguous`|
-                      |`  notarg  ( fn1 <( a b ) )  notarg  `|`  notarg  ( ( b a )> fn1 )  notarg  `|`unambiguous`|
-                      |`( notarg, ( fn1 <( a,b ) ), notarg )`|`( notarg, ( ( a,b )> fn1 ), notarg )`|`unambiguous`|
+                      |||Lexing :|
+                      |`  notarg  fn1 <(  a b     notarg  `|`  notarg     b a  )> fn1  notarg  `|`ambiguous`  |
+                      |`  notarg  fn1 <(  a b   , notarg  `|`  notarg,    b a  )> fn1  notarg  `|`ambiguous`  |
+                      |`  notarg  fn1 <(  a b  )  notarg  `|`  notarg  (  b a  )> fn1  notarg  `|`unambiguous`|
+                      |||Parsing :|
+                      |`  notarg, fn1 <(  a b  ), notarg  `|`  notarg, (  b a  )> fn1, notarg  `|`step 1`|
+                      |`( notarg, fn1 <( (a,b) ), notarg )`|`( notarg, ( (a,b) )> fn1, notarg )`|`step 2`|
+                      |`( notarg, fn1 <(a) <(b),  notarg )`|`( notarg,  (b)> (a)> fn1, notarg )`|`step 3`|
+                      |||Execution :|
+                      |`( notarg,      fn2 <(b),  notarg )`|`( notarg,       (b)> fn2, notarg )`|`step 1`|
+                      |`( notarg,      all_done,  notarg )`|`( notarg,       all_done, notarg )`|`step 2`|
 
+                  -   Without adjacent tokens, lexer can make more inferences.
+                      
+                  -   |-|-|-|
+                      |-|-|-|
+                      |||Lexing :|
+                      |`fn1 <( a b`|`b a )> fn1`|`unambiguous`  |
+                      |as above    |as above    |               |
 
          -   CONSIDERATIONS
              -   ` ` `\n` `\t`
