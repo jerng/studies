@@ -12,7 +12,7 @@
          -   Stage 2 : `C++`
      -   STYLING TENDENCIES :
          -   `Erlang's lexical style` ( desc. Prolog )
-         -   `Haskell's currying semantics` ( desc. ML )
+         -   `Haskell's currying semantics` ( desc. ML, ? )
          -   `C++'s containerisation flexibility` ( desc. C )
          -   `Idioms of utility` from : `JavaScript, Python, J ( desc. APL )`
          -   `Manual memory` management : this is far, far away from the present, but I guess we should consider how `C++ and Rust` do things
@@ -30,10 +30,12 @@
              ||What are generally referred to as `declarations` or `statements` in the vernacular of computer programming, are assumed under the breadth of `3`, whereas `2` covers the intuitive category of propositions which may be evaluated for truth or falsity by the sorts of programs casually referred to as automated theorem provers, proof assistants, or artifical intelligence agents.|
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
               -   Could it be simply implicit that all white space implies a tuple?
-                      - `()>` means, `the contents of this tuple are lexically bound in a closure, and the block I point to shall be executed immediately in that closure`  
-                  -   |`a <- 1`    |`fn1 (a)`  |`fn1 <(a)`            |`fn1 <( a b`           |   
+                  - `()>` means, `the contents of this tuple are lexically bound in a closure, and the block I point to shall be executed immediately in that closure`  
+                  -   |general lexing pattern|`traditional` notation, results in a passive tuple|`operative tuple` notation executes variable binding, and block execution||   
                       |-|-|-|-|
-                      |`(a, <-, 1)`|`(fn1,(a))`|`(fn1 <(a) undefined)`|`(fn1 <(a) b)`         |
+                      |`a <- 1`    |`fn1(a)`   |`(  fn1 <((a))  )`    |`fn1 <( (a, b) )`      |   
+                      |`(a, <-, 1)`|`(fn1,(a))`|`fn1 <(a)`            |`fn1 <( a b`           |
+                      |            |           |`(fn1 <(a) undefined)`|`(fn1 <(a) b)`         |
                       |            |           |`(fn1_applied_to_a)`  |`(fn2 <(b) undefined )`|
                       |            |           |                      |`(fn2_applied_to_b)`   |
                       
@@ -43,6 +45,11 @@
                       |`(fn1 <(a) b)`        |`((b)>fn2)`  |`(undefined (b)> fn2)`|`(  c (b)> fn2)`      |
                       |`(fn2 <(b) undefined)`|             |`(fn2_applied_to_b)`  |`(undefined (c)> fn3)`|
                       |`(fn2_applied_to_b)`  |             |                      |`(fn3_applied_to_c)`  |
+
+                  -    ||
+                       |-|
+                       |`   fn1 <((a))   `|`   fn1 <((a,b))  `|`   fn1 <( a, b  `|`   fn1 <( b a  `|
+                       |`(  fn1 <(a)    )`|
                       
          -   CONSIDERATIONS
                    -   ` ` `\n` `\t`
