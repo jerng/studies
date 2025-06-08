@@ -22,6 +22,8 @@
          -   `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
          -   [Program Sources Consist of Formal Expressions](#program-sources-consist-of-formal-expressions)
+         -   `::` type association ( Haskellism )
+         -   `parent.child` for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env`
          -   `(...)` for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important!
               -   Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer
               -   a variety of tuple is `(a,b)>c` the `function operative tuple` / [lexical disambiguation](#lexical-disambiguation-of-function-application)
@@ -32,6 +34,9 @@
                    -   Reverse Polish notation :
                         -   `( argument2 argument1 )> afunction`   *sugared*
                         -   `argument2 argument1 )> afunction`   *more sugared*
+         -   `\`backticks\`` may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `() and \`\`` to flip `infix and ordinary` lexical operand positioning for function application )
+             -   `operand1 \`dyadic_function\` operand2` *converts an ordinary dyadic function into an infix dyadic function*
+         -   `:this_is_an_atom_aka_symbol` ala Ruby, CommonLisp, Julia ... having minimal collision with `::` for typing
          -   CONSIDERATIONS
              -   ` ` `\n` `\t`
                  -   `IFS`
@@ -41,6 +46,15 @@
                  - in `function calls for arguments` 
              -   `.` `;` `()`
              -   Now that the `function operative tuple` is lexically defined ... we can consider the issue of explicit environments and bindings.
+                 ```
+                 fn definition <% => ( "fn", "definition" ) %>
+                 F <- fn definition
+                 F<()                <% execute F with no bound vars? %>
+                 F<(a,b,c)           <% execute F, binding lexically local vars a,b,c to a,b,c in the execution env %>
+                 F<((((a,b,c))))     <% will auto-unbox to an infinite degree %>
+                 F<(<ENV>)           <% passes the entire lexical env to the execution env %>
+                 <ENV> )> F          <% an idiom %>
+                 ```   
          -   PATTERN MATCHING :
              -   Semantics should match Erlang's ( simplest ! ) see : `term`, `pattern`, `_`, `compound pattern operator` 
          -   PRIMITIVES :
@@ -81,16 +95,16 @@
                      -   `{ x<e<N~0> | x<10 /\ x/%2==0 }`
                      -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }`
                  -   3 `[]` nilist, the protolist
-                     -   `[<1>]` singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]`
+                     -   `[<1>]` `[]` singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]`
                      -   `[<2>]` doubly linked lists, `cpp std::list`
                      -   WARNING : inconsistent prefix ; CONSIDER : swapping to TYPE ANNOTATION `<T:???>`
-                 -   4 `<[]>` CONSIDER : Erlang's bitstring syntax
+                 -   4 `<[]>` `<<>>` CONSIDER : Erlang's bitstring syntax
                      -   WARNING : CONSIDER : Unify under SIGILS : `<<:value:size/typespecifiedlist:>>` or `<[:value:size/typespecifiedlist:]>`
              -   JavaScript utility : the only reason to give these a special sigil is `standards` and `ubiquity` : reconsider!
-                 -   5 `${}` JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`
-                 -   6 `$[]` JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`
+                 -   5 `${}$` `<${}$>` `<js{}js>` JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`
+                 -   6 `$[]$` `<$[]$>` `<js[]js>` JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`
              -   Advanced :
-                 -   7 `$<//TODO//>` JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had     
+                 -   7 `$<//TODO//>$` `<$A[]A$>` `<js##js>` JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had     
                  -   EXTRA-dimensional SIGILS / QUOTES : general form : CONSIDER
                       -   `<` sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|`
                           -   `<sigil_identifierQUOTECHARquoted_source>` `<quoted_sourceQUOTECHARsigil_identifier>` `<sigil_identifier>QUOTECHARquoted_sourceQUOTE_CHAR` e.g.
@@ -105,24 +119,6 @@
           -    
           -    
 -    CONSIDER :
-     -    make equivalent
-          -    `fun2(fun1(a,b))`
-          -    
-          -    `fun2<(fun1<(a,b))`
-          -    `fun2 <( fun1 <(a,b)`
-          -    `fun2 <( fun1 <( a, b`
-          -    `fun2 <( fun1 <( a b` CHECK : COMPARE FORTH but backwards
-          -
-          -    `((a,b)>fun1)>fun2`
-          -    `(a,b)> fun1 )> fun2`
-          -    `a, b )> fun1 )> fun2`
-          -    ` b a )> fun1 )> fun2`  COMPARE : FORTH, APL, FP, FL, POSIX SCL : tacit / pointfree / function-level programming
-          -    `<F`
-     -    `fun2(fun1(a))` bound execution, function style, applicative style, excel style        
-          -   when `containers with methods` are returned, lends itself to the chained dereferencing style `fun1(a).fun2(b).fun3(c)` 
-          -   when `functions` are returned, lends itself to the sequential binding style `fun1(a)(b)(c)` TODO: make sure this is semantically identical with `fun1(a, b, c)`
-     -    `a  fun1 fun2` bound execution, tacit style, pointfree style, composed style, pipe style
-     -
      -    `a |-> b` math, `a.b` Haskell, `a|>b` R, Elixir, `a %>% b` R, `a (o) b` math
      -
      -    `_->()` JavaScript, `|a:t1, b:t2| -> t3 {}` `|a| b` Rust?, `a:b->c` maths,`\a->b` Haskell, `fn a,b -> c`, `fn name a,b -> c`, `fn name a,b -> {}`, `fn name a<T:x>, b<T:y> | <T:a>, <T:b> -> `
@@ -139,7 +135,7 @@
      -    
 -    
 -    ` \t\n` internal field separators
--    `%%` comment, %{...}% comment
+-    `%%` comment, <%...%> comment
 -    `_` discarded, `1_000_000` digit spacer, `mycube_[3]_[2]_[4]` `[13,44,22]_[0]` box-address spacer WARNING:UNSURE_GOOD
 -    `!` error
 -    `=` `IFF` equality NOT assignment
@@ -163,10 +159,9 @@
      -    `a..b` `a(+1)..b` `a(a=>a+1)..b` `a (+1) UNTIL b`
      -    `++` and `--` as `de/increment and return OR the converse` are sugar for `i=i+/-1`, `j=i;i=i+/11;j` ; the sugar INTRODUCES subtlety ... not sure if this is worth keeping; for example FP-style SSA just does away with this entirely
 -
--    `ordinary variables` : `[_A-Z]` first character, `[_@a-zA-Z0-9]` middle characters (Erlang rules), but CONSIDER : `@a-zA-Z0-9` last character
--    `<...>` some keywords, readonly
--    `A-Z` some keywords, readonly
--    `|a-zA-Z|` some keywords, readonly : otherwise, 
+-    `ordinary variables and atoms/symbols` : `[_a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlang rules), but CONSIDER : `@a-zA-Z0-9` last character
+-    `types / kinds / classes` : `[_A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlang rules)
+-    `<...>` see sigil space
 -
 -    `4-logic` : `true`, `false`, `null`, `undefined`
 -    `axial phrasing` : `|SIGMA|__0^^5>>i^i+i`
@@ -175,10 +170,7 @@
      -    `?@address` `<*address` `address*>` get the value at address
 -
 -    `types` / `classes / categories` : <T:more_syntax_to_be_defined>
-            |Hinting,Declaration|
-            |-|-|
-            |`THING/type`, `THING::type`, `THING:type`, `THING<type>`, `type THING` | Erlang, Haskell & Rust, Python & TypeScript, C++, C, respectively |
-    
+-    
 -    `ZFC-sets` : `{}`, `{{}}`, `{0}`, `{0,3,null,(),['a','bb',3,undefined]}`,
      -    `{ x | x <e N and x modulo 2 = 0 }`, assume affinity with `cpp std::unordered_set`,
      -    `a <= b`, `a =/> b`, `a e> b`, `a </e b`, `a =_> b`, `a </_= b`
@@ -379,7 +371,7 @@ Being very literal :
 
 |Character Sets|Domain|Details|
 |-|-|-|
-|`%.*$`|`comments`| beginning at `%` and ending at the end of the line; there are no block comments; this reduces one branch of decisions |
+|`%%.*$`|`comments`| beginning at `%` and ending at the end of the line; there are no block comments; this reduces one branch of decisions | or block comments are `<% within the sigil namespace %>`
 |`base_10_digits` `#` `underscore_separated_digits` `.` `undescore_separated_digits` `#` `e` `exponent`|`numeric literal`|base 1 to 36|
 |`--` `type` `opening_delimiter` `utf8_string` `closing_delimiter`|`sigils`|Compile time or run time branching?|
 |`{...}` `[...]` `(...)` `<...>`  |`sigil asymmetrical delimiters`|
