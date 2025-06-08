@@ -38,19 +38,6 @@
                       |            |           |`(fn1 <(a) undefined)`|`(fn1 <(a) b)`         |
                       |            |           |`(fn1_applied_to_a)`  |`(fn2 <(b) undefined )`|
                       |            |           |                      |`(fn2_applied_to_b)`   |
-                      
-                  -   |`fn1 <(a,b)`          |`(a,b)>fn1`  |`b a )> fn1`          |`c b a )> fn1`        |
-                      |-|-|-|-|
-                      |`(fn1 <(a,b) )`       |`((a,b)>fn1)`|`(b (a)> fn1)`        |`(c b (a)> fn1)`      |
-                      |`(fn1 <(a) b)`        |`((b)>fn2)`  |`(undefined (b)> fn2)`|`(  c (b)> fn2)`      |
-                      |`(fn2 <(b) undefined)`|             |`(fn2_applied_to_b)`  |`(undefined (c)> fn3)`|
-                      |`(fn2_applied_to_b)`  |             |                      |`(fn3_applied_to_c)`  |
-
-                  -   |`    fn1 <((a))   `|`  fn1 <((a, b))  `|`  fn1 <( a, b    `|`fn1 <( b  a  `|`fn1 <( c b a  `|
-                      |-|-|-|-|-|
-                      |`(   fn1 <( a )  )`|`( fn1 <( a, b ) )`|`  fn1 <( a, b )  `|`fn1 <( a, b )`|`fn1 <( c b a )`|
-                      |`( ( fn1 <() ) a )`|`( fn1 <( a) b   )`|-|-|-|
-                      |                   |`( fn1 <( a) b   )`|-|-|-|
 
                   -   |`      fn1 <(   a    `| This is Haskell-ian syntax.  |-|`      fn1 <( a )    `|This is modified traditional f(a)|
                       |-|-|-|-|-|
@@ -71,28 +58,32 @@
 
                   -   |Then, we have to address lexing ambiguity.|-|-|
                       |-|-|-|
-                      |`  notarg    fn1 <( a b      notarg  `|`notarg     b a )> fn1   notarg`|`ambiguous`  |
-                      |`  notarg  ( fn1 <( a b ) )  notarg  `|`notarg ( ( b a )> fn1 ) notarg`|`unambiguous`|
-                      |`( notarg, ( fn1 <( a,b ) ), notarg )`|`notarg ( ( a,b )> fn1 ) notarg`|`unambiguous`|
+                      |`  notarg    fn1 <( a b      notarg  `|`  notarg      b a )> fn1    notarg  `|`ambiguous`  |
+                      |`  notarg    fn1 <( a b   ,  notarg  `|`  notarg  ,   b a )> fn1    notarg  `|`ambiguous`  |
+                      |-|-|-|
+                      |`  notarg    fn1 <( a b )    notarg  `|`  notarg    ( b a )> fn1    notarg  `|`unambiguous`|
+                      |`  notarg  , fn1 <( a b ) ,  notarg  `|`  notarg  , ( b a )> fn1 ,  notarg  `|`unambiguous`|
+                      |`  notarg  ( fn1 <( a b ) )  notarg  `|`  notarg  ( ( b a )> fn1 )  notarg  `|`unambiguous`|
+                      |`( notarg, ( fn1 <( a,b ) ), notarg )`|`( notarg, ( ( a,b )> fn1 ), notarg )`|`unambiguous`|
 
 
          -   CONSIDERATIONS
-                   -   ` ` `\n` `\t`
+             -   ` ` `\n` `\t`
                         -   `IFS`
                         -   possibly `offside rulings`
-                   -   `,`
+             -   `,`
                         - `NO ISSUE AS QUOTES ARE EXPLICIT ( TODO : tuples?! )` : `IFS` e.g. in `linear data structure literals`
                         - in `expression sequences` : [C-fam](https://en.wikipedia.org/wiki/Comma_operator) : a binary operator that executes the LHS and discards the result, then executes the RHS 
                         - in `function calls for arguments` 
-                   -   `.` `;` `()`
-                   -   Sigh. What can we do with all these?
-                       ||||||
-                       |-|-|-|-|-|
-                       |`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
-                       |`\|-> <-\|`|`\|=> <=\|`| `!> <!`| `@> <@`| `#> <#`|
-                       | `%> <%`| `&> <&`| `*> <*`| `+> <+`| `<[ ]>`|
-                       | `<] [>`| `<{ }>`|`<} {>`| `\> </` |`/> <\`|
-                       |  `<\| \|>`| `<? ?>`|
+             -   `.` `;` `()`
+             -   Sigh. What can we do with all these?
+                 ||||||
+                 |-|-|-|-|-|
+                 |`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
+                 |`\|-> <-\|`|`\|=> <=\|`| `!> <!`| `@> <@`| `#> <#`|
+                 | `%> <%`| `&> <&`| `*> <*`| `+> <+`| `<[ ]>`|
+                 | `<] [>`| `<{ }>`|`<} {>`| `\> </` |`/> <\`|
+                 |  `<\| \|>`| `<? ?>`|
              -   In each context. IFS? Expression-end?  Are tuples implicit everywhere, resulting in their use for phrasing?
          -   PATTERN MATCHING :
              -   Semantics should match Erlang's ( simplest ! ) see : `term`, `pattern`, `_`, `compound pattern operator` 
