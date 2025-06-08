@@ -45,9 +45,9 @@
                       |`(   ( <( ) fn1 a   )`|                              |-|                      ||
                       |`( fn1_applied_to_a )`|                              |-|                      ||
 
-                  -   |We can remove the SASL/ML-lian rule of `function application by juxtaposition`|
-                      |-|  
-                      |Of particular concern are the asymmetrical rules, `<(a b) = <(a,b)` and `(b a)> = (a, b)>`|  
+                  -   We can remove the SASL/ML-lian rule of `function application by juxtaposition`
+                    
+                  -   Of particular concern are the asymmetrical rules, `<(a b) = <(a,b)` and `(b a)> = (a, b)>`
 
                   -   |`    fn1 <( a      `|`   fn1 <( a b    )`|`    b  a )> fn1  )`|
                       |-|-|-|
