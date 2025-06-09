@@ -2,10 +2,7 @@
 
 ## Latest
 
--    CONFLICT : ``
 -    UNDONE : `,`,`;`,`.`,`|`, `||`, `&`, `&&`, `~`, `bitwise?`, and alternatives?, APL/J analogues, `::`, `->`
-     -   `,` additive connotation, from English ( C family, Erlang, etc. )
-     -   '.' terminal connotation, from English ( Prolog, Erlang, COBOL )
 -    BROADLY :
      -   IMPLEMENTATION STRATEGY :
          -   Stage 1 : `JavaScript`
@@ -22,60 +19,91 @@
          -   `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
          -   [Program Sources Consist of Formal Expressions](#program-sources-consist-of-formal-expressions)
-         -   |domain|char|designation|
-             |-|-|-|
-             |analogs|`\|` `:`|`where` `whereas` `such that` `onlyif` `and`|
-             ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
-             ||`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `()` and `` `...` `` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - ``operand1 `dyadic_function` operand2`` *converts an ordinary dyadic function into an infix dyadic function* |
-             |specified|`%%` `<%...%>`| comments |
-             ||` ` `\n` `\t`|-   `IFS`|
-             ||`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
-             ||`:atom`| literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. Potentially a parallel plane with variable names, i.e. as a quoted plane. |
-             ||`_`|explicitly ignored `value`; `type`?|
-             ||`:=`|LHS HANDLE points to a memory ADDRESS whose value shall be assigned RHS VALUE |
-             ||`=`| `if and only if` `iff`, NOT assignment|
-             ||`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JavaScript, as opposed to `::` and `->` from C++|
-             ||`true`, `false`, `null`, `undefined`| four-logic|
-             ||`SIGMA __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
-             |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
-             ||`addr_of_data <(x)`|unambiguous indirection to data|
-             |charsets|`symbols` `:atoms` | `[_a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlang rules), but CONSIDER : `@a-zA-Z0-9` last character|
-             ||`types / kinds / classes`|`[_A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` other characters (Erlang rules)
-             |numbers||`base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada|
-             ||`_`|`1_000_000` digit spacer, `mycube_[3]_[2]_[4]` `[13,44,22]_[0]` box-address spacer WARNING:UNSURE_GOOD|
-             ||`rune`|synonym for `Int32` in Golang|
-             ||`byte`|synonym for `Uint8` in Golang|
-             ||`<)`| sigil for arc values |
-             ||`$.`|sugar for the respective ASCII code point as an integer ( from Erlang )|
-             ||`\|algebraic entity\|`| modulus, also `abs( algebraic entity)`|
-             ||`3-/5`| viculum, 3rd root of 5|
-             ||`a..b`|`a(+1)..b` `a(a=>a+1)..b` `a (+1) UNTIL b`|
-             ||`++` `--`|`de/increment and return OR the converse` are sugar for `i=i+/-1`, `j=i;i=i+/11;j` ; the sugar INTRODUCES subtlety ... not sure if this is worth keeping; for example FP-style SSA just does away with this entirely|
-             |Data Structures|Unassigned Symbols | RULE : symmetrical opening/ closing tags <br> `    ` `-{}-` `*{}*` `#{}#` `... @$%^` <br>  `    ` `    ` `    ` `#[]#` `... @$%^`<br> `    ` `-()-` `*()*` `#()#` `... @$%^` <br> `    ` `-<>-` `*<>*` `#<>#` `... @$%^`
-             |1 `()`|| tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER : <br>  -   `mytuple_[5]_[17]` <br>  -   `mytuple.5.17` <br>  -   `mytuple_5_17` <br>  -   `mytuple_(5)_(17)` |
-             ||| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `lexical_block<(operand)` for function application <br> - `a b c` `a,b,c` `(a b c)` `(a,b,c)` `(((((a),(b),(((c)))))))`: all equivalent, `except in special contexts` |
-             |2 `[]`|| nilist, the protolist <br> -   `[]` `[]` singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]` <br>  -   `-[]-` doubly linked lists, `cpp std::list` <br>  -   WARNING : inconsistent prefix ; CONSIDER : swapping to TYPE ANNOTATION `<T:???>` |
-             |3 `{}`||ZFC sets, `cpp std::unordered_set`, CONSIDER : <br>  -   `{ x \| predicate(x) }`  <br> -   `{ expression(x) FOR x IN iterable WHERE }` <br>  -   `{ x<e<N~0> \| x<10 /\ x/%2==0 }` <br> -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }`|
-             |4 `+{}+` || JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
-             |5 `+[]+` ||JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`|
-             |6 `*[]*` || JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
-             |`<...>` | |namespace for SIGILS / QUOTES|
-             |`<q...q>`|Unassigned Symbols| where q is a single character : `<!...!>` `<@...@>` `<#...#>` `<$...$>` `<%...%>` `<^...^>` `<&...&>` `<=...=>` `<_..._>` `<+...+>` `<]...[>` `<[...]>` `<{...}>` `<}...{>` `<\|...\|>` `<\.../>` `</...\>` `<"...">` `<'...'>` `<~...~>` `<?...?>` |
-             ||Symbols used elsewhere|`<*` `*>` for *est* element-of boolean operator <br> `->` pattern-matched branching (`<-` is unused) <br> `<)` `(>` values of arc <br> `<(` `)>` function application <br> |
-             ||`<%...%>`|multi-line comment|
-             |7|`<<...>>`|bitstring syntax from Erlang WARNING : possible collision with `<<` `>>` for axial phrasing |
-             |`<qq:...:qq>`|Unassigned Symbols| where qq is >1 character|
-             |`fn` ||sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
-             ||Signature only |`(name : TypeA TypeB TypeC TypeD)` <br> `fn name : TypeA TypeB TypeC TypeD end`|
-             ||Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
-             ||Oneline Signed Function : pretty, returns final term| `( name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body )` <br> `fn name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body end` |
-             ||e.g. Shortest Unsigned Function, returns `undefined`|`(:::)` `fn ::: end`|
-             |`selection`|General iterable| `while expression : performance_with_optional_state_modification end` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
-             ||simple `if`|`if expression : branch_if_true : branch_if_false end`|
-             ||complex `if`|`case expression : pattern and caveat -> branch_if_matched : default_branch end `|
-             ||General error||
-             ||||
-             ||||
+      
+           
+|domain|char|designation|
+|-|-|-|
+|analogs|`\|` `:`|`where` `whereas` `such that` `onlyif` `and`|
+||`,`| additive connotation, from English ( C family, Erlang, etc. )|
+||`.`| terminal connotation, from English ( Prolog, Erlang, COBOL )|
+||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
+||`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `()` and `` `...` `` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - ``operand1 `dyadic_function` operand2`` *converts an ordinary dyadic function into an infix dyadic function* |
+|specified|`%%` `<%...%>`| comments |
+||` ` `\n` `\t`|-   `IFS`|
+||`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
+||`:atom`| literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. Potentially a parallel plane with variable names, i.e. as a quoted plane. |
+||`_`|explicitly ignored `value`; `type`?|
+||`:=`|LHS HANDLE points to a memory ADDRESS whose value shall be assigned RHS VALUE |
+||`=`| `if and only if` `iff`, NOT assignment|
+||`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JavaScript, as opposed to `::` and `->` from C++|
+||`true`, `false`, `null`, `undefined`| four-logic|
+||`SIGMA __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
+|pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
+||`addr_of_data <(x)`|unambiguous indirection to data|
+|charsets|`symbols` `:atoms` | `[_a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlang rules), but CONSIDER : `@a-zA-Z0-9` last character|
+||`types / kinds / classes`|`[_A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` other characters (Erlang rules)
+|numbers||`base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada|
+||`_`|`1_000_000` digit spacer, `mycube_[3]_[2]_[4]` `[13,44,22]_[0]` box-address spacer <br> WARNING:UNSURE_GOOD|
+||`rune`|synonym for `Int32` in Golang|
+||`byte`|synonym for `Uint8` in Golang|
+||`<)` `(>`| sigil for arc values |
+||`$.`|sugar for the respective ASCII code point as an integer ( from Erlang )|
+||`\|algebraic entity\|`| modulus, also `abs( algebraic entity)`|
+||`3-/5`| viculum, 3rd root of 5|
+||`a..b`|`a(+1)..b` `a(a=>a+1)..b` `a (+1) UNTIL b`|
+||`++` `--`|`de/increment and return OR the converse` are sugar for `i=i+/-1`, `j=i;i=i+/11;j` ; the sugar INTRODUCES subtlety ... not sure if this is worth keeping; for example FP-style SSA just does away with this entirely|
+|`order-0` `propositional` `boolean` `bitwise` logics||`NAND NOR XAND` : MORE CHECKING NEEDED|
+||`a \| b`|common computing : `OR`, `a \/ b` vee|
+||`a & b`|common computing : `AND`, `a /\ b` wedge|
+||`~a`|common computing : `NOT`|
+||`a =/= b`|not equivalent, `a \/_ b` veebar, `a (+) b` oplus,`XOR`|
+||`a <-> b`|equivalent, `a IFF b` if and only if |
+||`a <- b`|a because b, `a -\| b`, `a \./ b` | 
+||`a </- b`|a not because b, `a -/\| b` | 
+||`a -> b`|a therefore b, `a \|- b`, `a /.\ b` `IMPLY` |
+||`a -/> b`|a does not imply b, `a \|/- b` `NIMPLY`|
+||`_\|_` |bottom, `false`, `F`|
+||`^\|^` |top, `true`, `T`|
+|`order-1` `predicate` logics|e.g.|`<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`|
+||`<A>`|for ALL, all, universal quantification, `\-/`|
+||`<E>`|for SOME, there exists, existential quantification|
+||`<E>!`|there exists exactly ONE, unique quantification|
+|`order-N` `higher order` logics|e.g.|`<E>x<A>y:F(x) NAND B(y) AND <A>z:NOT Q(z) AND Y(x)` WARNING:NOT_SURE_IF_GOOD_MODEL|
+|`model logic`||`[]<E>x:P(x)`|it is possible that something has property P|
+||`<><E>x:P(x)`|it is necessary that something has property P|
+|Data Structures|Unassigned Symbols | RULE : symmetrical opening/ closing tags <br> `    ` `-{}-` `*{}*` `#{}#` `... @$%^` <br>  `    ` `    ` `    ` `#[]#` `... @$%^`<br> `    ` `-()-` `*()*` `#()#` `... @$%^` <br> `    ` `-<>-` `*<>*` `#<>#` `... @$%^`
+|`()` 1|| tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER : <br>  -   `mytuple_[5]_[17]` <br>  -   `mytuple.5.17` <br>  -   `mytuple_5_17` <br>  -   `mytuple_(5)_(17)` |
+||| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `lexical_block<(operand)` for function application <br> - `a b c` `a,b,c` `(a b c)` `(a,b,c)` `(((((a),(b),(((c)))))))`: all equivalent, `except in special contexts` |
+|`[]`|| nilist, the protolist  |
+|`[]` 2/LL || singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]` |
+|`-[]-` 3/LL || doubly linked lists, `cpp std::list` |
+|`{}` 4||ZFC sets, `cpp std::unordered_set`, CONSIDER : builder notation <br>  -   `{ x \| predicate(x) }`  <br> -   `{ expression(x) FOR x IN iterable WHERE }` <br>  -   `{ x<e<N~0> \| x<10 /\ x/%2==0 }` <br> -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }` <br> `{ x \| x <e N and x modulo 2 = 0 }`|
+||`a <* b` `b *> a`|a is an element of b, derived from `<e` epsilon for *est* element-of boolean operator, Peano|
+||`a </* b` `b */> a`|a is not an element of b|
+||`a <= b` `b => a`|a is a PROPER subset of b|
+||`a </= b` `b =/> a`|a is not a PROPER subset of b|
+||`a <_= b` `b =_> a`|a is a subset of b|
+||`a </_= b` `b =_/> a`|a is not a subset of b|
+|`+{}+` 5/JS || JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
+|`+[]+` 6/JS ||JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`|
+|`*[]*` 7/JS || JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
+|`<...>` | |namespace for SIGILS / QUOTES|
+|`<q...q>`|Unassigned Symbols| where q is a single character : `<!...!>` `<@...@>` `<#...#>` `<$...$>` `<%...%>` `<^...^>` `<&...&>` `<=...=>` `<_..._>` `<+...+>` `<]...[>` `<[...]>` `<{...}>` `<}...{>` `<\|...\|>` `<\.../>` `</...\>` `<"...">` `<'...'>` `<~...~>` `<?...?>` |
+||Symbols used elsewhere|`<*` `*>` for *est* element-of boolean operator <br> `->` pattern-matched branching (`<-` is unused) <br> `<)` `(>` values of arc <br> `<(` `)>` function application <br> |
+||`<%...%>`|multi-line comment|
+|8|`<<...>>`|- bitstring syntax from Erlang <br> - WARNING : possible collision with `<<` `>>` for axial phrasing |
+|`<qq:...:qq>`|Unassigned Symbols| where qq is >1 character|
+|`fn` ||sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
+||Signature only |`(name : TypeA TypeB TypeC TypeD)` <br> `fn name : TypeA TypeB TypeC TypeD end`|
+||Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
+||Oneline Signed Function : pretty, returns final term| `( name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body )` <br> `fn name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body end` |
+||e.g. Shortest Unsigned Function, returns `undefined`|`(:::)` `fn ::: end`|
+|`selection`|General iterable| `while expression : performance_with_optional_state_modification end` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
+||simple `if`|`if expression : branch_if_true : branch_if_false end`|
+||complex `if`|`case expression : pattern and caveat -> branch_if_matched : default_branch end `|
+||General error||
+||||
+||||
 
 ### Unassigned Arrows
 
@@ -84,11 +112,7 @@
 ||||||
 |-|-|-|-|-|
 |`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
-|`\|-> <-\|`|`\|=> <=\|`| `!> <!`| `@> <@`| `#> <#`|
-| `%> <%`| `&> <&`| `*> <*`| `+> <+`| `<[ ]>`|
-| `<] [>`| `<{ }>`|`<} {>`| `\> </` |`/> <\`|
-|  `<\| \|>`| `<? ?>`|
-
+|`\|-> <-\|`|`\|=> <=\|`|
 
 ### CONSIDERATIONS
              -   `,`
@@ -133,29 +157,9 @@
      -    `(22,33,44).2` 0-based-index:2,
      -    `${a:1,b:2}.a`,
      -    `$[23,56,643].2` 0-based-index:2 
+ 
      -    
--    `order-0 logic`, `propositional logic` :
-     -    `a AND NOT b`, `OR NAND NOR XOR XAND IMPLY NIMPLY IFF`
-     -    CHECK, CONSIDER:SYNONYM_SYMBOLS?
-          - `a /\ b` wedge, `a AND b`, `a & b` common computing
-          - `a \/ b` vee, `a OR b`, `a | b` common computing
-          - `~a` common computing, `NOT a`
-          - `a \/_ b` veebar, `a (+) b` oplus, `a =/= b` not equivalent, `a XOR b`
-          - `_|_` bottom, `false`, `F`
-          - `^|^` top, `true`, `T`
-          - `a --> b` implies, `a IMPLY b`, `a |-- b`, `a /.\ b` `a :^ b` therefore
-          - `a <-- b` is implied by, `a --| b`, `a \./ b` `a :. b` because
-          - `a -/> b` does not imply, `a NIMPLY b`, `a |/- b`
--    `order-1 logic`, `predicate logic` :
-     -    `<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`,
-          - `<A>` for all, all, universal quantification, `\-/`
-          - `<E>` for some, there exists, existential quantification
-          - `<E>!` there exists exactly one, unique quantification
--    `order-N logic`, `higher order logic` :
-     -    `<E>x<A>y:F(x) NAND B(y) AND <A>z:NOT Q(z) AND Y(x)` WARNING:NOT_SURE_IF_GOOD_MODEL
--    `model logic`
-     -    `[]<E>x:P(x)` it is possible that something has property P   
-     -    `<><E>x:P(x)` it is necessary that something has property P   
+
 
 ```
 |N~0    ? set of natural numbers, beginning with 0
@@ -293,30 +297,10 @@ Being very literal :
 |`"..."`| delimiter ? |
 ||
 |`DD...DD`, `DDD...DDD`| prior rows show delimiters as `D...D` but it maybe further desirable to use increase the variety of delimiter tokens simply by repeating the basic delimiters; it is possible of course to define any string of characters as a delimiter, but that might become overwhelmingly cumbersome later, unless the delimiters are very clear, for example `|BEGIN|` `|END|`, such tokens as defaults should be chosen judiciously if at all |
-||
-|`sigils` : are on a separate plane, allowing reuse of nearly all delimiters |
-||
 |`head:tail`, `head::tail`, `head|tail`| these are example of `cons` operators in Haskell, OCaml, and Erlang, respectively ; it seems feasible to apply this syntax to a `stack` linear data structure, also|
 |`head:body:tail`, `head::body::tail`, `head|body|tail`| fancifully, head-tail syntax seems extensible to head-body-tail, for `doubly-linked-lists` and `unprioritised queues`|
 
 ### Character Sets
-
-|Character Sets|Domain|Details|
-|-|-|-|
-|`%%.*$`|`comments`| beginning at `%` and ending at the end of the line; there are no block comments; this reduces one branch of decisions | or block comments are `<% within the sigil namespace %>`
-|`base_10_digits` `#` `underscore_separated_digits` `.` `undescore_separated_digits` `#` `e` `exponent`|`numeric literal`|base 1 to 36|
-|`--` `type` `opening_delimiter` `utf8_string` `closing_delimiter`|`sigils`|Compile time or run time branching?|
-|`{...}` `[...]` `(...)` `<...>`  |`sigil asymmetrical delimiters`|
-|`[^-\s{}[]()<>]`|`sigil symmetrical delimiters`|no escapes?| 
-|`?[_a-zA-Z]*[_a-zA-Z0-9]` or `quoted utf8`|`variable names`|
-
-###### Underscore
-
-|Uses of the Underscore Character '_'|
-|-|
-|`variable names`|
-|`unused variable` compiler hint|
-|`visual spacer in sequences of digits`|
 
 ###### Exclamation Mark
 
@@ -362,11 +346,6 @@ this is a block_d0
 { :purpose, arguments ARGUMENTS, guards GUARDS: body }
 {| purpose, arguments ARGUMENTS, guards GUARDS | body }
 ```
-
-###### blocks / subroutines / functions / procedures / methods
-
-
-
 
 ### Domain Specific Lexemes
 
@@ -478,14 +457,6 @@ uses auto-boxing to methodise immutable primitives. |
 
 |Operator|Arity / Property|Pronunciation|Discarded Alternatives|Gate|
 |-|-|-|-|-|
-|`~a`  |                |`negates, logically`                   |`!a`*B, C*,`a^^-`, `not a`|`NOT`|
-|`a.b` |`commutative`   |`are multiplied, logically`,`both`        |`a/\b`, `a&b`, `a&&b`, `a and b`|`AND`|   
-|`a\/b`|`commutative`   |`are summed, logically`,`either, or both` |`a\|b`, `a\|\|b`, `a or b`|`OR`|
-|`a=)b`|`noncommutative`|`implies, logically`                      |`a=>b`, `a->b`|? `IMPLY`|
-|`a:b`|`noncommutative`|`all, apply to all on`|`(a):(b)`|-|
-||
-|`i\|a`|-|`the`|-|-|
-|`Df a`||`a definition is presented, where`|-|-|
 |`\|- a`||`the truth is asserted, of` *Pp, a primitive proposition / axiom*|-|-|
 |`A(b)` *PM 2nd edition*, `A(b,c)`|`noncommutative`|`is predicated, upon the subject`,`is a formula, containing a free variable`|`bA` *PM 1st edition*|-|
 |`(E\|c)B(c)`|`ternary`|`there exists some c, where B(c) is true`|`[E\|c]B(c)`, `E\|c:B(c)`, `(3]c)B(c)`, `(3c)B(c)`|-|
@@ -512,12 +483,6 @@ uses auto-boxing to methodise immutable primitives. |
 |`{a,b}`||a set containing elements a and b ( Cantor )|
 |`{a\|b(a)}`|| set-builder notation; set of as defined by property b ( Cantor )|
 |`a'` ||"a prime" : the complement of set a ( Cantor )|`a^c` ( Cantor )|
-|`a <= b`|`a </= b`| a is a proper subset of b|
-|`a => b`|`a =/> b`| a is a proper superset of b|
-|`a <e= b`|`a </e= b`| a is an element of b|`a <E b`, `a (E b`, `a </E b`, `a (/E b`, `a (E' b` |
-|`a =e> b`|`a =e/> b`| b is an element of a|
-|`a <_= b`|`a </_= b`| a is a subset of b|
-|`a =_> b`|`a =_/> b`| a is a superset of b|
 |`a \|v\| b`||union of a and b|
 |`a \|^\| b`||intersection of a and b (Cantor)|`a ^ b`, `a /\b`, `a /set\ b`|
 |`a /_\ b`||  "xor", "symmetric difference" of a,b; "elements in a, or b, but not not in both a and b"; "disjunction union" "set sum"|`a \|del\| b`, `a (+) b`|
