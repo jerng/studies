@@ -31,7 +31,9 @@ LET a=b         ( BASIC 1964 )
 let a=b in a+1;;( Ocaml )
 let a=b         ( Haskell )
     in c=a
-where           (ISWIM 1965 )
+where           ( ISWIM 1965 )
+when            ( OCaml, SML )
+onlyif          ( Gradle) 
 
  `let BINDING in BLOCK` vs `BLOCK where BINDING`
 
@@ -170,6 +172,7 @@ a^b(x)  functional power ( maths: varies by domain )
 ```
 [head|tail]     ( Erlang )
 head:tail       ( Haskell )
+head::tail      ( OCaml )
 ```
 
 #### Tuples
@@ -276,10 +279,36 @@ nil     nil=false=() : Lisp's falsy type
 Maybe   type is used to wrap question marks
 ```
 
-#### Functions
+#### blocks / subroutines / functions / procedures / methods
+
 ```
+applicative style : bound execution, function style, applicative style, excel style, Euler 1734, FORTRAN 1957
+e = c(b(a))(d)
+
+SASL : St Andrews Static language 1972, function application by
+juxtaposition, left associative : not clear if SASL or ML went first as
+SASL changed over time 
+
+tacit style : FORTH, APL, FP, FL, POSIX SCL : tacit / pointfree / function-level programming
+d b c 
+
+begin ... end   ( ALGOL 1958 )
+brace ... brace ( BCPL 1967 : $() [] {} varied by physical keyboard )
+indentation     "offside rule" ( ISWIM 1965, the next 700 programming languages )
+"."             "end of statement" ( FORTRAN 1956, also used END )
+
+CONSIDER :
+- ordered parameters
+- named parameters
+- default parameter arguments
+- destructuring of monoidal argument into multiple arguments
+
 a(b)=c                                      ( maths )
 a:b->c                                      ( maths , topology, 1940s )
+a:b|->c
+DEF a(b,c)->d                               ( BCPL, 1966 )
+a[b c]:d
+DEF a(b) = b+c                              ( BASIC 1964 )
 
 \a->b                                       ( Haskell )
 fun a->b                                    ( caml )
@@ -295,17 +324,15 @@ a := [ :b | c = b+1 ]                       ( Smalltalk )
 func a[complicated]
     (b type1, c type2) type3 { body }       ( Go )
 [ :a | a + 1 ]                              ( Smalltalk 1972 )
-a(b1) when g1 ->c1;     ( Erlang )
-a(b2) when g2 ->c2;
 
-a b | g1 = c1           ( Haskell, Ocaml, ML )
+a(b1) when g1 ->c1;                         ( Erlang )
+a(b2) when g2 ->c2.
+
+a b | g1 = c1                               ( Haskell, Ocaml, ML 1973 )
     | g2 = c2
 
-CONSIDER :
-- ordered parameters
-- named parameters
-- default parameter arguments
-- destructuring of monoidal argument into multiple arguments
+rec         recursion : ISWIM 1966
+
 ```
 
  -   `fn` as the sigil for quote ( as in Lisp `QUOTE` ) , may be
@@ -326,23 +353,6 @@ CONSIDER :
              asymmetry in the passage of arguments e.g.
              -   unexpanded. `function<(a,b) = (a,b)>function`
              -   expanded. `(function<(a))<(b) = (b)>(function<(a))`
-
-###### blocks / subroutines / functions / procedures / methods
-
-applicative style : bound execution, function style, applicative style, excel style, Euler 1734
-```
-e = c(b(a))(d)
-```
-
-tacit style : FORTH, APL, FP, FL, POSIX SCL : tacit / pointfree / function-level programming
-```
-d b c 
-```
-
-begin ... end   ( ALGOL 1958 )
-brace ... brace ( BCPL 1967 : $() [] {} varied by physical keyboard )
-indentation     "offside rule" ( ISWIM 1965, the next 700 programming languages )
-"."             "end of statement" ( FORTRAN 1956, also used END )
 
 #### Namespaced Referencing
 ```
@@ -370,6 +380,10 @@ a,b,c;      ( C, JavaScript )
 
 #### Control
 ```
+
+do loop                                    ( FORTRAN 1957 )
+let / do / until / while / for to do       ( BCPL 1966 )
+
 a?b             if a then b
 
 a?b:c           if a then b else c "ternary operator" 
@@ -866,6 +880,11 @@ __(bottom)<_(leftbottom)
 <#(left<^(lefttop)
 ```
 
+##### Atoms / Symbols
+```
+:atom       prefix used by Common Lisp, Ruby, Julia
+```
+
 ##### Letters
 ```
 Norwegian :
@@ -923,6 +942,9 @@ projection      : the set of tuples from a relation, filtered for a
 
 #### List Comprehensions
 ```
+SASL 1983? inspired by Darlington
+
+
 a..b        expansion : integer a to b
 a:b         ( Julia )
 
@@ -979,6 +1001,11 @@ a\/b        sort a on b, descending
 
 #### Pattern Matching
 ```
+NPL New Programming language 1974 : replaced case expressions with
+multi-equation functions; Darlington inspired by Keene's recursive
+equations ( Turner, 2012 )
+
+
 This is basically about branch selection.
 
 COMIT 1957, SNOBOL 1962, erlang, rust, haskell, ocaml, swift
@@ -1097,8 +1124,17 @@ a[?]
 
 
 ```
-a:b     variable a is of type b ( Rust )
+a:b     variable a is of type b ( Rust,  Python, OCaml )
 a::b    ( Haskell )
+b a     ( C ) 
+b<a>    ( C++ )
+
+a :: b -> c -> d    curried polyadic function, type signature 
+                    ( Haskell)
+
+a : b >- c >- d ->> e
+a : b )- c )- d )-> e
+a : b *- c *- d *** e
 ```
 
 

@@ -25,42 +25,42 @@
          -   |domain|char|designation|
              |-|-|-|
              ||`\|` `:`|analogs of `where` `whereas` `such that` `onlyif` `and`|
-             |`<-` `=>`|analogs of `travels to` `points at` `and then, in sequence or logic`|
-             |`%%` `<% %>`| comments |
-             |`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
-             |`:atom`| ala Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. Potentially a parallel plane with variable names, i.e. as a quoted plane. |
-             |??`fn` |as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
-             |`_`|explicitly ignored `value`; `type`?|
-             |`:=`|LHS HANDLE points to a memory ADDRESS whose value shall be assigned RHS VALUE |
-             |`data_at_addr<(x)`|unambiguous dereferencing of pointer|
-             |`addr_of_data<(x)`|unambiguous indirection to data|
-             |`true`, `false`, `null`, `undefined`| four-logic|
-             |`SIGMA__0^^5>>i^i+i`|axial phrasing|
-             |`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JavaScript, as opposed to `::` and `->` from C++|
-             |`(...)`| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `lexical_block<(operand)` for function application <br> - `a b c` `a,b,c` `(a b c)` `(a,b,c)` `(((((a),(b),(((c)))))))`: all equivalent, `except in special contexts` |
-             |`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `() and \`\`` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - `operand1 \`dyadic_function\` operand2` *converts an ordinary dyadic function into an infix dyadic function* |
-             |` ` `\n` `\t`|-   `IFS` <br> -   possibly `offside rulings`|
-             ||Easy Data Structures :|
-             |1 `()`| tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER : <br>  -   `mytuple_[5]_[17]` <br>  -   `mytuple.5.17` <br>  -   `mytuple_5_17` <br>  -   `mytuple_(5)_(17)` |
-             |2 `{}`|ZFC sets, `cpp std::unordered_set`, CONSIDER : <br>  -   `{ x | predicate(x) }`  <br> -   `{ expression(x) FOR x IN iterable WHERE }` <br>  -   `{ x<e<N~0> | x<10 /\ x/%2==0 }` <br> -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }`|
-             |3 `[]`| nilist, the protolist <br> -   `[<1>]` `[]` singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]` <br>  -   `[<2>]` doubly linked lists, `cpp std::list` <br>  -   WARNING : inconsistent prefix ; CONSIDER : swapping to TYPE ANNOTATION `<T:???>` |
-             |4 `<[]>` `<<>>`|CONSIDER : Erlang's bitstring syntax <br>  -   WARNING : CONSIDER : Unify under SIGILS : `<<:value:size/typespecifiedlist:>>` or `<[:value:size/typespecifiedlist:]>` |
-             ||JavaScript utility Data Structures : the only reason to give these a special sigil is `standards` and `ubiquity` : reconsider!|
-             |5 `${}$` `<${}$>` `<js{}js>`| JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
-             |6 `$[]$` `<$[]$>` `<js[]js>`|JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`|
-             ||Advanced Data Structures :|
-             |7 `$<//TODO//>$` `<$A[]A$>` `<js##js>` | JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
-             |`<` |     -   EXTRA-dimensional SIGILS / QUOTES : general form : CONSIDER <br>  sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|` <br> -   `<sigil_identifierQUOTECHARquoted_source>` `<quoted_sourceQUOTECHARsigil_identifier>` `<sigil_identifier>QUOTECHARquoted_sourceQUOTE_CHAR` e.g.<br>  -   `<js:QUOTED>` `<QUOTED:js>` <br> -   `<js:QUOTED:js>` `<js{QUOTED}` `<js(QUOTED)` <br>  -   the following seem to introduce mess : <br>  -   `<AQUOTEDA` `<AquotedA` <br> -   the following might collide with other forms : <br> -   `<js<QUOTED>>` <br>  -   `<)` sigil for variables of an arc <br>  -   CONTINUE HERE : `sigils with no paired tag`, vs `sigils with a paired tag` |
-             |Full Signature only |`(name : TypeA TypeB TypeC TypeD)` <br> `fn name : TypeA TypeB TypeC TypeD end`|
-             |Full Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
-             |Oneline Function with Signature : pretty, returns final term| `( name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body )` <br> `fn name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body end` |
-             |e.g. Shortest Function with no Signature, returns `undefined`|`(:::)` `fn ::: end`|
-             |General iterable| `while expression : performance_with_optional_state_modification end` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
-             |simple `if`|`if expression : branch_if_true : branch_if_false end`|
-             |complex `if`|`case expression : pattern and caveat -> branch_if_matched : default_branch end `|
-             |General error||
-             |||
-             |||
+             ||`<-` `=>`|analogs of `travels to` `points at` `and then, in sequence or logic`|
+             ||`%%` `<% %>`| comments |
+             ||`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
+             ||`:atom`| ala Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. Potentially a parallel plane with variable names, i.e. as a quoted plane. |
+             ||??`fn` |as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
+             ||`_`|explicitly ignored `value`; `type`?|
+             ||`:=`|LHS HANDLE points to a memory ADDRESS whose value shall be assigned RHS VALUE |
+             ||`data_at_addr<(x)`|unambiguous dereferencing of pointer|
+             ||`addr_of_data<(x)`|unambiguous indirection to data|
+             ||`true`, `false`, `null`, `undefined`| four-logic|
+             ||`SIGMA__0^^5>>i^i+i`|axial phrasing|
+             ||`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JavaScript, as opposed to `::` and `->` from C++|
+             ||`(...)`| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `lexical_block<(operand)` for function application <br> - `a b c` `a,b,c` `(a b c)` `(a,b,c)` `(((((a),(b),(((c)))))))`: all equivalent, `except in special contexts` |
+             ||`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `() and \`\`` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - `operand1 \`dyadic_function\` operand2` *converts an ordinary dyadic function into an infix dyadic function* |
+             ||` ` `\n` `\t`|-   `IFS` <br> -   possibly `offside rulings`|
+             |||Easy Data Structures :|
+             ||1 `()`| tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER : <br>  -   `mytuple_[5]_[17]` <br>  -   `mytuple.5.17` <br>  -   `mytuple_5_17` <br>  -   `mytuple_(5)_(17)` |
+             ||2 `{}`|ZFC sets, `cpp std::unordered_set`, CONSIDER : <br>  -   `{ x | predicate(x) }`  <br> -   `{ expression(x) FOR x IN iterable WHERE }` <br>  -   `{ x<e<N~0> | x<10 /\ x/%2==0 }` <br> -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }`|
+             ||3 `[]`| nilist, the protolist <br> -   `[<1>]` `[]` singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]` <br>  -   `[<2>]` doubly linked lists, `cpp std::list` <br>  -   WARNING : inconsistent prefix ; CONSIDER : swapping to TYPE ANNOTATION `<T:???>` |
+             ||4 `<[]>` `<<>>`|CONSIDER : Erlang's bitstring syntax <br>  -   WARNING : CONSIDER : Unify under SIGILS : `<<:value:size/typespecifiedlist:>>` or `<[:value:size/typespecifiedlist:]>` |
+             |||JavaScript utility Data Structures : the only reason to give these a special sigil is `standards` and `ubiquity` : reconsider!|
+             ||5 `${}$` `<${}$>` `<js{}js>`| JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
+             ||6 `$[]$` `<$[]$>` `<js[]js>`|JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`|
+             |||Advanced Data Structures :|
+             ||7 `$<//TODO//>$` `<$A[]A$>` `<js##js>` | JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
+             ||`<` |     -   EXTRA-dimensional SIGILS / QUOTES : general form : CONSIDER <br>  sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|` <br> -   `<sigil_identifierQUOTECHARquoted_source>` `<quoted_sourceQUOTECHARsigil_identifier>` `<sigil_identifier>QUOTECHARquoted_sourceQUOTE_CHAR` e.g.<br>  -   `<js:QUOTED>` `<QUOTED:js>` <br> -   `<js:QUOTED:js>` `<js{QUOTED}` `<js(QUOTED)` <br>  -   the following seem to introduce mess : <br>  -   `<AQUOTEDA` `<AquotedA` <br> -   the following might collide with other forms : <br> -   `<js<QUOTED>>` <br>  -   `<)` sigil for variables of an arc <br>  -   CONTINUE HERE : `sigils with no paired tag`, vs `sigils with a paired tag` |
+             ||Full Signature only |`(name : TypeA TypeB TypeC TypeD)` <br> `fn name : TypeA TypeB TypeC TypeD end`|
+             ||Full Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
+             ||Oneline Function with Signature : pretty, returns final term| `( name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body )` <br> `fn name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body end` |
+             ||e.g. Shortest Function with no Signature, returns `undefined`|`(:::)` `fn ::: end`|
+             ||General iterable| `while expression : performance_with_optional_state_modification end` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
+             ||simple `if`|`if expression : branch_if_true : branch_if_false end`|
+             ||complex `if`|`case expression : pattern and caveat -> branch_if_matched : default_branch end `|
+             ||General error||
+             ||||
+             ||||
              
          -   CONSIDERATIONS
              -   `,`
