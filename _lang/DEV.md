@@ -34,6 +34,8 @@
              |`:=`|LHS HANDLE points to a memory ADDRESS whose value shall be assigned RHS VALUE |
              |`data_at_addr<(x)`|unambiguous dereferencing of pointer|
              |`addr_of_data<(x)`|unambiguous indirection to data|
+             |`true`, `false`, `null`, `undefined`| four-logic|
+             |`SIGMA__0^^5>>i^i+i`|axial phrasing|
              |`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JavaScript, as opposed to `::` and `->` from C++|
              |`(...)`| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `lexical_block<(operand)` for function application <br> - `a b c` `a,b,c` `(a b c)` `(a,b,c)` `(((((a),(b),(((c)))))))`: all equivalent, `except in special contexts` |
              |`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `() and \`\`` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - `operand1 \`dyadic_function\` operand2` *converts an ordinary dyadic function into an infix dyadic function* |
@@ -98,8 +100,6 @@
 -    `types / kinds / classes` : `[_A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlang rules)
 -    `<...>` see sigil space
 -
--    `4-logic` : `true`, `false`, `null`, `undefined`
--    `axial phrasing` : `|SIGMA|__0^^5>>i^i+i`
 
 -    `types` / `classes / categories` : <T:more_syntax_to_be_defined>
 -    
