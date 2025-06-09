@@ -71,6 +71,18 @@
 |`order-N` `higher order` logics|e.g.|`<E>x<A>y:F(x) NAND B(y) AND <A>z:NOT Q(z) AND Y(x)` WARNING:NOT_SURE_IF_GOOD_MODEL|
 |`model logic`|`[]<E>x:P(x)`|it is possible that something has property P|
 ||`<><E>x:P(x)`|it is necessary that something has property P|
+|`fn` ||sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
+||Signature only |`(name : TypeA TypeB TypeC TypeD)` <br> `fn name : TypeA TypeB TypeC TypeD end`|
+||Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
+||Oneline Signed Function : pretty, returns final term| `( name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body )` <br> `fn name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body end` |
+||e.g. Shortest Unsigned Function, returns `undefined`|`(:::)` `fn ::: end`|
+|`selection`|General iterable| `while expression : performance_with_optional_state_modification end` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
+||simple `if`|`if expression : branch_if_true : branch_if_false end`|
+||complex `if`|`case expression : pattern and caveat -> branch_if_matched : default_branch end `|
+||General error||
+||||
+||||
+
 |Data Structures|Unassigned Symbols | RULE : symmetrical opening/ closing tags <br> `    ` `-{}-` `*{}*` `#{}#` `... @$%^` <br>  `    ` `    ` `    ` `#[]#` `... @$%^`<br> `    ` `-()-` `*()*` `#()#` `... @$%^` <br> `    ` `-<>-` `*<>*` `#<>#` `... @$%^`
 |`()` 1|| tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER : <br>  -   `mytuple_[5]_[17]` <br>  -   `mytuple.5.17` <br>  -   `mytuple_5_17` <br>  -   `mytuple_(5)_(17)` |
 ||| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `lexical_block<(operand)` for function application <br> - `a b c` `a,b,c` `(a b c)` `(a,b,c)` `(((((a),(b),(((c)))))))`: all equivalent, `except in special contexts` |
@@ -93,17 +105,6 @@
 ||`<%...%>`|multi-line comment|
 |8|`<<...>>`|- bitstring syntax from Erlang <br> - WARNING : possible collision with `<<` `>>` for axial phrasing |
 |`<qq:...:qq>`|Unassigned Symbols| where qq is >1 character|
-|`fn` ||sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
-||Signature only |`(name : TypeA TypeB TypeC TypeD)` <br> `fn name : TypeA TypeB TypeC TypeD end`|
-||Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
-||Oneline Signed Function : pretty, returns final term| `( name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body )` <br> `fn name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body end` |
-||e.g. Shortest Unsigned Function, returns `undefined`|`(:::)` `fn ::: end`|
-|`selection`|General iterable| `while expression : performance_with_optional_state_modification end` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
-||simple `if`|`if expression : branch_if_true : branch_if_false end`|
-||complex `if`|`case expression : pattern and caveat -> branch_if_matched : default_branch end `|
-||General error||
-||||
-||||
 
 ### Unassigned Arrows
 
