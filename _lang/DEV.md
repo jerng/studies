@@ -86,9 +86,6 @@
               -   bound cases : 
                   -   weak case : `consideration` must be `matched programmatically by some algorithm` ( `pattern matching` )
                   -   strong case : `consideration` must be `equivalent to some value` ( `switch-case` )
--    `context` : `environments` and `binding`
-     -    `assignee <- assigner` assignment
-     -    `let BINDING in BLOCK` vs `BLOCK where BINDING`
 -
 -    `number` : `base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada
      -    `|number|` modulus
@@ -103,10 +100,7 @@
 -
 -    `4-logic` : `true`, `false`, `null`, `undefined`
 -    `axial phrasing` : `|SIGMA|__0^^5>>i^i+i`
--    pointers
-     -    `value@?` `*>value` `value<*` get the pointer to value
-     -    `?@address` `<*address` `address*>` get the value at address
--
+
 -    `types` / `classes / categories` : <T:more_syntax_to_be_defined>
 -    
 -    `ZFC-sets` : `{}`, `{{}}`, `{0}`, `{0,3,null,(),['a','bb',3,undefined]}`,
