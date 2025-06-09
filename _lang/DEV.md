@@ -22,9 +22,9 @@
          -   `define lexing rules for each subcontext`
      -   TOP LEVEL MODE :
          -   [Program Sources Consist of Formal Expressions](#program-sources-consist-of-formal-expressions)
-         -   |char|designation|
-             |-|-|
-             |`|` `:`|analogs of `where` `whereas` `such that` `onlyif` `and`|
+         -   |domain|char|designation|
+             |-|-|-|
+             ||`\|` `:`|analogs of `where` `whereas` `such that` `onlyif` `and`|
              |`<-` `=>`|analogs of `travels to` `points at` `and then, in sequence or logic`|
              |`%%` `<% %>`| comments |
              |`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
