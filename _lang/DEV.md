@@ -76,7 +76,7 @@
 ||Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
 ||Oneline Signed Function : pretty, returns final term| `( name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body )` <br> `fn name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body end` |
 ||e.g. Shortest Unsigned Function, returns `undefined`|`(:::)` `fn ::: end`|
-|`selection`|General iterable| `while expression : performance_with_optional_state_modification end` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
+|`selection`|General iterable| - general form : 'while expression : performance_with_optional_state_modification end` <br> - general function : `fn whiledoloop : (Int->Bool) Fun Int (Int->Int) : condition performance init_state mod_state : if not condition<(init_state) : :done : performance, whiledoloop <( condition performance mod_state<(init_state) mod_state ) end end` |
 ||simple `if`|`if expression : branch_if_true : branch_if_false end`|
 ||complex `if`|`case expression : pattern and caveat -> branch_if_matched : default_branch end `|
 ||General error||
