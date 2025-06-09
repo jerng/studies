@@ -38,7 +38,6 @@
              ||`SIGMA __0 ^^5 >>i^i+i`|axial phrasing|
              ||`data_at_addr <(x)`|unambiguous dereferencing of pointer|
              ||`addr_of_data <(x)`|unambiguous indirection to data|
-             ||`(...)`| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `lexical_block<(operand)` for function application <br> - `a b c` `a,b,c` `(a b c)` `(a,b,c)` `(((((a),(b),(((c)))))))`: all equivalent, `except in special contexts` |
              |`charsets`|`ordinary variables and atoms/ symbols` | `[_a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlang rules), but CONSIDER : `@a-zA-Z0-9` last character|
              ||`types / kinds / classes`|`[_A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` other characters (Erlang rules)
              |`number`||`base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada|
@@ -51,15 +50,17 @@
              ||`++` `--`|`de/increment and return OR the converse` are sugar for `i=i+/-1`, `j=i;i=i+/11;j` ; the sugar INTRODUCES subtlety ... not sure if this is worth keeping; for example FP-style SSA just does away with this entirely|
              |||Easy Data Structures :|
              |1 `()`|| tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER : <br>  -   `mytuple_[5]_[17]` <br>  -   `mytuple.5.17` <br>  -   `mytuple_5_17` <br>  -   `mytuple_(5)_(17)` |
-             |2 `{}`||ZFC sets, `cpp std::unordered_set`, CONSIDER : <br>  -   `{ x | predicate(x) }`  <br> -   `{ expression(x) FOR x IN iterable WHERE }` <br>  -   `{ x<e<N~0> | x<10 /\ x/%2==0 }` <br> -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }`|
-             |3 `[]`|| nilist, the protolist <br> -   `[<1>]` `[]` singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]` <br>  -   `[<2>]` doubly linked lists, `cpp std::list` <br>  -   WARNING : inconsistent prefix ; CONSIDER : swapping to TYPE ANNOTATION `<T:???>` |
-             |4 `<[]>` `<<>>`||CONSIDER : Erlang's bitstring syntax <br>  -   WARNING : CONSIDER : Unify under SIGILS : `<<:value:size/typespecifiedlist:>>` or `<[:value:size/typespecifiedlist:]>` |
+             ||| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `lexical_block<(operand)` for function application <br> - `a b c` `a,b,c` `(a b c)` `(a,b,c)` `(((((a),(b),(((c)))))))`: all equivalent, `except in special contexts` |
+             |2 `[]`|| nilist, the protolist <br> -   `[<1>]` `[]` singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]` <br>  -   `[<2>]` doubly linked lists, `cpp std::list` <br>  -   WARNING : inconsistent prefix ; CONSIDER : swapping to TYPE ANNOTATION `<T:???>` |
+             |3 `{}`||ZFC sets, `cpp std::unordered_set`, CONSIDER : <br>  -   `{ x | predicate(x) }`  <br> -   `{ expression(x) FOR x IN iterable WHERE }` <br>  -   `{ x<e<N~0> | x<10 /\ x/%2==0 }` <br> -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }`|
              |||JavaScript utility Data Structures : the only reason to give these a special sigil is `standards` and `ubiquity` : reconsider!|
-             |5 `${}$` `<${}$>` `<js{}js>`|| JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
-             |6 `$[]$` `<$[]$>` `<js[]js>`||JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`|
+             |4 `${}$` `<${}$>` `<js{}js>`|| JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
+             |5 `$[]$` `<$[]$>` `<js[]js>`||JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`|
              |||Advanced Data Structures :|
-             |7 `$<// TODO //>$` `<$A[]A$>` `<js##js>` || JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
+             |6 `$<// TODO //>$` `<$A[]A$>` `<js##js>` || JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
              |`<` ||     -   EXTRA-dimensional SIGILS / QUOTES : general form : CONSIDER <br>  sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|` <br> -   `<sigil_identifierQUOTECHARquoted_source>` `<quoted_sourceQUOTECHARsigil_identifier>` `<sigil_identifier>QUOTECHARquoted_sourceQUOTE_CHAR` e.g.<br>  -   `<js:QUOTED>` `<QUOTED:js>` <br> -   `<js:QUOTED:js>` `<js{QUOTED}` `<js(QUOTED)` <br>  -   the following seem to introduce mess : <br>  -   `<AQUOTEDA` `<AquotedA` <br> -   the following might collide with other forms : <br> -   `<js<QUOTED>>` <br>  -   `<)` sigil for variables of an arc <br>  -   CONTINUE HERE : `sigils with no paired tag`, vs `sigils with a paired tag` |
+             ||`<%...%>`|multi-line comment|
+             ||7 `<<...>>`|bitstring syntax from Erlang|
              |`fn` ||sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
              ||Signature only |`(name : TypeA TypeB TypeC TypeD)` <br> `fn name : TypeA TypeB TypeC TypeD end`|
              ||Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
