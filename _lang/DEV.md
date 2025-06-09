@@ -54,7 +54,7 @@
              |Full Signature only |`(name : TypeA TypeB TypeC TypeD)` <br> `fn name : TypeA TypeB TypeC TypeD end`|
              |Full Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
              |Oneline Function with Signature : pretty, returns final term| `( name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body )` <br> `fn name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body end` |
-             |e.g. Shortest Function with no Signature, returns `undefined`|`(::)` `fn :: end`|
+             |e.g. Shortest Function with no Signature, returns `undefined`|`(:::)` `fn ::: end`|
              |General iterable| `while expression : performance_with_optional_state_modification end` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
              |simple `if`|`if expression : branch_if_true : branch_if_false end`|
              |complex `if`|`case expression : pattern and caveat -> branch_if_matched : default_branch end `|
@@ -747,6 +747,7 @@ The difference between `infix dyadic` and `ordinary dyadic` functions, is a diff
 
 fn name                                                                    <% sugared, signed fun %>
 : TypeA TypeB TypeC TypeD
+: arg1 arg2 arg3
 : body
 end    
 
@@ -754,26 +755,29 @@ end
   
                                                        <% long fn, fully typed, oneline, returns TypeD final term %>
 
-(:: body )                                             <% sugared pretty, short fn, returns final term %>
+(::: body )                                             <% sugared pretty, short fn, returns final term %>
 
 fn :                                                   <% sugared %>
+: arguments
 : pattern and caveat -> branch_if_matched
 : default_branch
 end
 
-fn ::                                                  <% intermediate desugaring %>
-  case (arguments)
+fn :                                                  <% intermediate desugaring %>
+: arguments
+: case (arguments)
   : pattern and caveat -> branch_if_matched
   : default_branch
   end
 end
 
-(::)                                                   <% sugared pretty, shortest fn, returns undefined %>
-fn :: end
-fn :: undefined end                                    <% intermediate desugaring %>
+(:::)                                                   <% sugared pretty, shortest fn, returns undefined %>
+fn ::: end
+fn ::: undefined end                                    <% intermediate desugaring %>
 
 fn name
 : TypeA TypeB TypeC TypeD
+: arg1 arg2 arg3
 :   case (arg1 arg2 arg3)
     : pattern and caveat -> branch_if_matched
     : pattern and caveat -> branch_if_matched
@@ -819,6 +823,17 @@ end
 while expression
 : performance_with_optional_state_modification 
 end
+
+fn whiledoloop
+: (Int->Bool) Fun Int (Int->Int)
+: condition performance init_state mod_state
+: if not condition<(init_state)
+  : :done
+  : performance,
+      whiledoloop <( condition performance mod_state<(init_state) mod_state )
+  end     
+end
+
 ```
 -   ITERABLE DATA STRUCTURE MODES : CONSIDER : `unified utility library interface`, including generators `eager/lazy`
    -   Loops :
