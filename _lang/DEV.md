@@ -24,18 +24,18 @@
          -   [Program Sources Consist of Formal Expressions](#program-sources-consist-of-formal-expressions)
          -   |char|designation|
              |-|-|
+             |`|` `:`|analogs of `where` `whereas` `such that`|
+             |`<-` `=>`|analogs of `travels to` `points at` `and then, in sequence or logic`|
              |`%%` `<% %>`| comments |
-             |`value::Type`|type association ( Haskellism )|
-             |`:atom`| ala Ruby, CommonLisp, Julia ... having minimal collision with `::` for typing; no further quoting is needed for disambiguation. Non-symbolic by definition. |
-             |`fn` |as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
+             |`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
+             |`:atom`| ala Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. Potentially a parallel plane with variable names, i.e. as a quoted plane. |
+             |??`fn` |as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
              |`_`|explicitly ignored `value`; `type`?|
              |`:=`|LHS HANDLE points to a memory ADDRESS whose value shall be assigned RHS VALUE |
              |`data_at_addr<(x)`|unambiguous dereferencing of pointer|
              |`addr_of_data<(x)`|unambiguous indirection to data|
-             |`|` `:`|analogs of `where` `such that`|
-             |`<-` `=>`|analogs of `travels to` `points at`|
-             |`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env`
-             |`(...)`| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `(operand)>block` for function application|
+             |`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JavaScript, as opposed to `::` and `->` from C++|
+             |`(...)`| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `lexical_block<(operand)` for function application <br> - `a b c` `a,b,c` `(a b c)` `(a,b,c)` `(((((a),(b),(((c)))))))`: all equivalent, `except in special contexts` |
              |`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `() and \`\`` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - `operand1 \`dyadic_function\` operand2` *converts an ordinary dyadic function into an infix dyadic function* |
              |` ` `\n` `\t`|-   `IFS` <br> -   possibly `offside rulings`|
              ||Easy Data Structures :|
@@ -752,48 +752,36 @@ The difference between `infix dyadic` and `ordinary dyadic` functions, is a diff
 ```
 ( fn, name, ( (TypeA, null),
               (TypeB, null),
-              (TypeC, null) ), TypeD, null )      <% unsugared %> 
-( name : TypeA TypeB TypeC TypeD )                <% sugared %>
-( name : (TypeA)(TypeB)(TypeC)(TypeD) )           <% sugared unambiguous %>
-( name : TypeA >- TypeB >- TypeC ->> TypeD )      <% sugared pretty %>
-  name : TypeA >- TypeB >- TypeC ->> TypeD        <% sugared lazy %>
-
-name : TypeA *- TypeB *- TypeC *** TypeD          <% sugared pretty %>
+              (TypeC, null) ), TypeD, null )                     <% unsugared, sig only %> 
 
 
 ( fn, name, ( (null, arg1),
               (null, arg2),
-              (null, arg3) ), null, body )        <% unsugared %> 
-( name : arg1 arg2 arg3 : body )                  <% sugared %>
-  name : arg1 arg2 arg3 : body                    <% sugared lazy %>
-
-                         <% long fn, fully typed, returns TypeD final term %>
-
----
+              (null, arg3) ), null, body )                       <% unsugared, fun only %> 
 
 ( fn, name, ( (TypeA, arg1),
               (TypeB, arg2),
-              (TypeC, arg3) ), TypeD, body )                           <% unsugared %> 
-( name : arg1::TypeA arg2::TypeB arg3::TypeC TypeD : body )            <% sugared %>
-( name : (arg1::TypeA)(arg2::TypeB)(arg3::TypeC)(TypeD) : body )       <% sugared unambiguous %>
-( name : arg1::TypeA >- arg2::TypeB >- arg3::TypeC ->> TypeD : body )  <% sugared pretty %>
-  name : arg1::TypeA >- arg2::TypeB >- arg3::TypeC ->> TypeD : body    <% sugared pretty %>
+              (TypeC, arg3) ), TypeD, body )                     <% unsugared, signed fun %> 
 
-  name : arg1<*TypeA  *- arg2<*TypeB  *- arg3<*TypeC  *** TypeD : body    <% sugared pretty %>
-  name : arg1<*TypeA  -> arg2<*TypeB  -> arg3<*TypeC  ->> TypeD : body    <% sugared pretty %>
+( name : arg1^TypeA arg2^TypeB arg3^TypeC TypeD : body )         <% sugared pretty %>
+fn name : arg1^TypeA arg2^TypeB arg3^TypeC TypeD : body end    
 
-  name : arg1<*TypeA  -* arg2<*TypeB  -* arg3<*TypeC  -** TypeD : body    <% sugared pretty %>
-  name : TypeA*>arg1  -> TypeB*>arg2  -> TypeC*>arg3  -*  TypeD : body    <% sugared pretty %>
-  name : TypeA*>arg1  ,  TypeB*>arg2  ,  TypeC*>arg3  ,   TypeD : body    <% sugared pretty %>
+( name : (arg1^TypeA)(arg2^TypeB)(arg3^TypeC)(TypeD) : body )    <% lexically equivalent %>
+( name :  arg1^TypeA, arg2^TypeB, arg3^TypeC, TypeD  : body )    <% lexically equivalent %>
+  name : (arg1^TypeA)(arg2^TypeB)(arg3^TypeC)(TypeD) : body      <% lexically equivalent %>
+  name :  arg1^TypeA, arg2^TypeB, arg3^TypeC, TypeD  : body      <% lexically equivalent %>
   
                          <% long fn, fully typed, oneline, returns TypeD final term %>
 
 ( fn, null, ( (null, arg1),
               (null, arg2) ), null, body )     <% unsugared %>
 (: arg1 arg2 : body )                          <% sugared pretty, short fn, returns final term %>
+fn: arg1 arg2:body end
 
 ( fn, null, (), null, () )                     <% unsugared %>
 (::)                                           <% sugared pretty, shortest fn, returns undefined %>
+fn :: end
+
 ```
 
 # Explicit Environments & Bindings
