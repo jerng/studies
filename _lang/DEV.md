@@ -74,8 +74,21 @@
              ||General error||
              ||||
              ||||
-             
-         -   CONSIDERATIONS
+
+### Unassigned Arrows
+
+-   Sigh. What can we do with all these?
+
+||||||
+|-|-|-|-|-|
+|`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
+|`\|-> <-\|`|`\|=> <=\|`| `!> <!`| `@> <@`| `#> <#`|
+| `%> <%`| `&> <&`| `*> <*`| `+> <+`| `<[ ]>`|
+| `<] [>`| `<{ }>`|`<} {>`| `\> </` |`/> <\`|
+|  `<\| \|>`| `<? ?>`|
+
+
+### CONSIDERATIONS
              -   `,`
                  - in `expression sequences` : [C-fam](https://en.wikipedia.org/wiki/Comma_operator) : a binary operator that executes the LHS and discards the result, then executes the RHS 
                  - in `function calls for arguments` 
@@ -709,18 +722,6 @@ The difference between `infix dyadic` and `ordinary dyadic` functions, is a diff
 |`3`|   Formal `operations` are `normative` expressions <br> -   for all practical purposes, computational operations occur upon `data in a memory buffer` so those are `the only operands` <br> -   e.g. `var a = 1` means `label 'a' refers to address 'A' in memory, address 'A' has value '1'`.|
 ||If anything is lexed / parsed in a `program source` and `not assigned to one of the three` types above, then `an error results`. |
 ||What are generally referred to as `declarations` or `statements` in the vernacular of computer programming, are assumed under the breadth of `3`, whereas `2` covers the intuitive category of propositions which may be evaluated for truth or falsity by the sorts of programs casually referred to as automated theorem provers, proof assistants, or artifical intelligence agents.|
-
-# Unassigned Arrows
-
--   Sigh. What can we do with all these?
-
-||||||
-|-|-|-|-|-|
-|`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
-|`\|-> <-\|`|`\|=> <=\|`| `!> <!`| `@> <@`| `#> <#`|
-| `%> <%`| `&> <&`| `*> <*`| `+> <+`| `<[ ]>`|
-| `<] [>`| `<{ }>`|`<} {>`| `\> </` |`/> <\`|
-|  `<\| \|>`| `<? ?>`|
 
 # Function Definition & Type Signatures
 
