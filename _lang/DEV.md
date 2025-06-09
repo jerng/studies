@@ -24,7 +24,7 @@
          -   [Program Sources Consist of Formal Expressions](#program-sources-consist-of-formal-expressions)
          -   |char|designation|
              |-|-|
-             |`|` `:`|analogs of `where` `whereas` `such that` `onlyif`|
+             |`|` `:`|analogs of `where` `whereas` `such that` `onlyif` `and`|
              |`<-` `=>`|analogs of `travels to` `points at` `and then, in sequence or logic`|
              |`%%` `<% %>`| comments |
              |`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
@@ -53,10 +53,11 @@
              |`<` |     -   EXTRA-dimensional SIGILS / QUOTES : general form : CONSIDER <br>  sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|` <br> -   `<sigil_identifierQUOTECHARquoted_source>` `<quoted_sourceQUOTECHARsigil_identifier>` `<sigil_identifier>QUOTECHARquoted_sourceQUOTE_CHAR` e.g.<br>  -   `<js:QUOTED>` `<QUOTED:js>` <br> -   `<js:QUOTED:js>` `<js{QUOTED}` `<js(QUOTED)` <br>  -   the following seem to introduce mess : <br>  -   `<AQUOTEDA` `<AquotedA` <br> -   the following might collide with other forms : <br> -   `<js<QUOTED>>` <br>  -   `<)` sigil for variables of an arc <br>  -   CONTINUE HERE : `sigils with no paired tag`, vs `sigils with a paired tag` |
              |Full Signature only |`(name : TypeA TypeB TypeC TypeD)` <br> `fn name : TypeA TypeB TypeC TypeD end`|
              |Full Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
-             |Oneline Function with Signature : pretty, returns final term| `( name : arg1^TypeA arg2^TypeB arg3^TypeC TypeD : body )` <br> `fn name : arg1^TypeA arg2^TypeB arg3^TypeC TypeD : body end` |
-             |e.g. Shortest Function with no Signature, returns `undefined`|`(::)`|
+             |Oneline Function with Signature : pretty, returns final term| `( name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body )` <br> `fn name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body end` |
+             |e.g. Shortest Function with no Signature, returns `undefined`|`(::)` `fn :: end`|
              |General iterable| `\<cometo:start> state ? exit : { perform, optionally_modify_state, goto:start }` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
-             |General selection||
+             |simple `if`|`if expression : branch_if_true : branch_if_false end`|
+             |complex `if`|`case expression : pattern and caveat -> branch_if_matched : default_branch end `|
              |General proposition : `guard`?||
              |General error||
              |||
@@ -767,13 +768,13 @@ end
 (:: body )                                             <% sugared pretty, short fn, returns final term %>
 
 fn :                                                   <% sugared %>
-: pattern | caveat -> branch_if_matched
+: pattern and caveat -> branch_if_matched
 : default_branch
 end
 
 fn ::                                                  <% intermediate desugaring %>
   case (arguments)
-  : pattern | caveat -> branch_if_matched
+  : pattern and caveat -> branch_if_matched
   : default_branch
   end
 end
@@ -785,8 +786,8 @@ fn :: undefined end                                    <% intermediate desugarin
 fn name
 : TypeA TypeB TypeC TypeD
 :   case (arg1 arg2 arg3)
-    : pattern | caveat -> branch_if_matched
-    : pattern | caveat -> branch_if_matched
+    : pattern and caveat -> branch_if_matched
+    : pattern and caveat -> branch_if_matched
     : default_branch
     end
 end
@@ -815,8 +816,8 @@ if expression
 end
 
 case expression                              <% a.k.a complexif %>
-: pattern | caveat -> branch_if_matched
-: pattern | caveat -> branch_if_matched
+: pattern and caveat -> branch_if_matched
+: pattern and caveat -> branch_if_matched
 : default_branch
 end
 
