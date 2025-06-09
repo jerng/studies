@@ -29,6 +29,11 @@
              |`:atom`| ala Ruby, CommonLisp, Julia ... having minimal collision with `::` for typing; no further quoting is needed for disambiguation. Non-symbolic by definition. |
              |`fn` |as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
              |`_`|explicitly ignored `value`; `type`?|
+             |`:=`|LHS HANDLE points to a memory ADDRESS whose value shall be assigned RHS VALUE |
+             |`data_at_addr<(x)`|unambiguous dereferencing of pointer|
+             |`addr_of_data<(x)`|unambiguous indirection to data|
+             |`|` `:`|analogs of `where` `such that`|
+             |`<-` `=>`|analogs of `travels to` `points at`|
              |`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env`
              |`(...)`| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `(operand)>block` for function application|
              |`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `() and \`\`` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - `operand1 \`dyadic_function\` operand2` *converts an ordinary dyadic function into an infix dyadic function* |
@@ -780,10 +785,12 @@ name : TypeA *- TypeB *- TypeC *** TypeD          <% sugared pretty %>
 ( name : arg1::TypeA >- arg2::TypeB >- arg3::TypeC ->> TypeD : body )  <% sugared pretty %>
   name : arg1::TypeA >- arg2::TypeB >- arg3::TypeC ->> TypeD : body    <% sugared pretty %>
 
-  name : arg1<eTypeA  *- arg2<eTypeB  *- arg3<eTypeC  *** TypeD : body    <% sugared pretty %>
   name : arg1<*TypeA  *- arg2<*TypeB  *- arg3<*TypeC  *** TypeD : body    <% sugared pretty %>
-  name : arg1<*TypeA  *- arg2<*TypeB  *- arg3<*TypeC  *** TypeD : body    <% sugared pretty %>
+  name : arg1<*TypeA  -> arg2<*TypeB  -> arg3<*TypeC  ->> TypeD : body    <% sugared pretty %>
 
+  name : arg1<*TypeA  -* arg2<*TypeB  -* arg3<*TypeC  -** TypeD : body    <% sugared pretty %>
+  name : TypeA*>arg1  -> TypeB*>arg2  -> TypeC*>arg3  -*  TypeD : body    <% sugared pretty %>
+  name : TypeA*>arg1  ,  TypeB*>arg2  ,  TypeC*>arg3  ,   TypeD : body    <% sugared pretty %>
   
                          <% long fn, fully typed, oneline, returns TypeD final term %>
 
