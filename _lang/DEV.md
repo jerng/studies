@@ -24,7 +24,7 @@
          -   [Program Sources Consist of Formal Expressions](#program-sources-consist-of-formal-expressions)
          -   |char|designation|
              |-|-|
-             |`|` `:`|analogs of `where` `whereas` `such that`|
+             |`|` `:`|analogs of `where` `whereas` `such that` `onlyif`|
              |`<-` `=>`|analogs of `travels to` `points at` `and then, in sequence or logic`|
              |`%%` `<% %>`| comments |
              |`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
@@ -750,41 +750,47 @@ The difference between `infix dyadic` and `ordinary dyadic` functions, is a diff
 # Function Definition & Type Signatures
 
 ```
-( fn, name, ( (TypeA, null),
-              (TypeB, null),
-              (TypeC, null) ), TypeD, null )                     <% unsugared, sig only %> 
+( name : TypeA TypeB TypeC TypeD )                                         <% sugared, sig only %>
+( name :: body )                                                           <% sugared, fun only %>
 
-( fn, name, ( (null, arg1),
-              (null, arg2),
-              (null, arg3) ), null, body )                       <% unsugared, fun only %> 
+( name : TypeA TypeB TypeC TypeD : body )                                  <% sugared, signed fun %>
 
-( fn, name, ( (TypeA, arg1),
-              (TypeB, arg2),
-              (TypeC, arg3) ), TypeD, body )                     <% unsugared, signed fun %> 
+fn name                                                                    <% sugared, signed fun %>
+: TypeA TypeB TypeC TypeD
+: body
+end    
 
-( name : TypeA TypeB TypeC TypeD )                               <% sugared, sig only %>
-( name : arg1 arg2 arg3 : body )                                 <% sugared, fun only %>
-
-( name : arg1^TypeA arg2^TypeB arg3^TypeC TypeD : body )         <% sugared, signed fun %>
-fn name : arg1^TypeA arg2^TypeB arg3^TypeC TypeD : body end    
-
-( name :  TypeA^arg1 TypeB^arg2 TypeC^arg3 TypeD : body )             <% lexically equivalent %>
-( name : (arg1^TypeA)(arg2^TypeB)(arg3^TypeC)(TypeD) : body )         <% lexically equivalent %>
-( name :  arg1^TypeA, arg2^TypeB, arg3^TypeC, TypeD  : body )         <% lexically equivalent %>
-( name :  arg1^TypeA )> arg2^TypeB )> arg3^TypeC )> TypeD : body )    <% lexically equivalent %>
-
-( name :  arg1^TypeA )> arg2^TypeB )> arg3^TypeC )> TypeD : body ) <( 1 2 3  <% IIFE %>
+( name : TypeA TypeB TypeC TypeD : body ) <( 1 2 3     <% IIFE %>
   
-                         <% long fn, fully typed, oneline, returns TypeD final term %>
+                                                       <% long fn, fully typed, oneline, returns TypeD final term %>
 
-( fn, null, ( (null, arg1),
-              (null, arg2) ), null, body )     <% unsugared %>
-(: arg1 arg2 : body )                          <% sugared pretty, short fn, returns final term %>
-fn: arg1 arg2:body end
+(:: body )                                             <% sugared pretty, short fn, returns final term %>
 
-( fn, null, (), null, () )                     <% unsugared %>
-(::)                                           <% sugared pretty, shortest fn, returns undefined %>
+fn :                                                   <% sugared %>
+: pattern | caveat -> branch_if_matched
+: default_branch
+end
+
+fn ::                                                  <% intermediate desugaring %>
+  case (arguments)
+  : pattern | caveat -> branch_if_matched
+  : default_branch
+  end
+end
+
+(::)                                                   <% sugared pretty, shortest fn, returns undefined %>
 fn :: end
+fn :: undefined end                                    <% intermediate desugaring %>
+
+fn name
+: TypeA TypeB TypeC TypeD
+:   case (arg1 arg2 arg3)
+    : pattern | caveat -> branch_if_matched
+    : pattern | caveat -> branch_if_matched
+    : default_branch
+    end
+end
+
 
 ```
 
@@ -799,6 +805,22 @@ F<((((a,b,c))))     <% will auto-unbox to an infinite degree %>
 F<(<ENV>)           <% passes the entire lexical env to the execution env %>
 <ENV> )> F          <% an idiom %>
 ```   
+
+# Selection
+
+```
+if expression
+: branch_if_true
+: branch_if false
+end
+
+case expression                              <% a.k.a complexif %>
+: pattern | caveat -> branch_if_matched
+: pattern | caveat -> branch_if_matched
+: default_branch
+end
+
+```
 
 # Iterables
 
