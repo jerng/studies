@@ -51,14 +51,14 @@
              ||Advanced Data Structures :|
              |7 `$<//TODO//>$` `<$A[]A$>` `<js##js>` | JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
              |`<` |     -   EXTRA-dimensional SIGILS / QUOTES : general form : CONSIDER <br>  sigil prefix, sigil delimiters : `{...}` `[...]` `(...)` asymmetrical; symmetrical, nearly any single non-IFS character, except `<` `>` `|` <br> -   `<sigil_identifierQUOTECHARquoted_source>` `<quoted_sourceQUOTECHARsigil_identifier>` `<sigil_identifier>QUOTECHARquoted_sourceQUOTE_CHAR` e.g.<br>  -   `<js:QUOTED>` `<QUOTED:js>` <br> -   `<js:QUOTED:js>` `<js{QUOTED}` `<js(QUOTED)` <br>  -   the following seem to introduce mess : <br>  -   `<AQUOTEDA` `<AquotedA` <br> -   the following might collide with other forms : <br> -   `<js<QUOTED>>` <br>  -   `<)` sigil for variables of an arc <br>  -   CONTINUE HERE : `sigils with no paired tag`, vs `sigils with a paired tag` |
-             |`name :: TypeA >- TypeB >- TypeC ->> TypeD`|e.g. Full Signature only : pretty|
-             |`( name : arg1 arg2 arg3 : body )`|e.g. Full Function only : pretty, returns final term|
-             |`( name : arg1::TypeA >- arg2::TypeB >- arg3::TypeC ->> TypeD : body )`|e.g. Oneline Function with Signature : pretty, returns final term|
-             |`(::)`|e.g. Shortest Function with no Signature, returns `undefined`|
-             |GENERAL FORM : `<cometo:start> state ? exit : { perform, optionally_modify_state, goto:start }` <br> - FUNCTIONAL FORM : `fn Myloop -> `|General iterable|
-             ||General selection|
-             ||General proposition : `guard`?|
-             ||General error|
+             |Full Signature only |`(name : TypeA TypeB TypeC TypeD)` <br> `fn name : TypeA TypeB TypeC TypeD end`|
+             |Full Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
+             |Oneline Function with Signature : pretty, returns final term| `( name : arg1^TypeA arg2^TypeB arg3^TypeC TypeD : body )` <br> `fn name : arg1^TypeA arg2^TypeB arg3^TypeC TypeD : body end` |
+             |e.g. Shortest Function with no Signature, returns `undefined`|`(::)`|
+             |General iterable| `\<cometo:start> state ? exit : { perform, optionally_modify_state, goto:start }` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
+             |General selection||
+             |General proposition : `guard`?||
+             |General error||
              |||
              |||
              
@@ -754,7 +754,6 @@ The difference between `infix dyadic` and `ordinary dyadic` functions, is a diff
               (TypeB, null),
               (TypeC, null) ), TypeD, null )                     <% unsugared, sig only %> 
 
-
 ( fn, name, ( (null, arg1),
               (null, arg2),
               (null, arg3) ), null, body )                       <% unsugared, fun only %> 
@@ -763,13 +762,18 @@ The difference between `infix dyadic` and `ordinary dyadic` functions, is a diff
               (TypeB, arg2),
               (TypeC, arg3) ), TypeD, body )                     <% unsugared, signed fun %> 
 
-( name : arg1^TypeA arg2^TypeB arg3^TypeC TypeD : body )         <% sugared pretty %>
+( name : TypeA TypeB TypeC TypeD )                               <% sugared, sig only %>
+( name : arg1 arg2 arg3 : body )                                 <% sugared, fun only %>
+
+( name : arg1^TypeA arg2^TypeB arg3^TypeC TypeD : body )         <% sugared, signed fun %>
 fn name : arg1^TypeA arg2^TypeB arg3^TypeC TypeD : body end    
 
-( name : (arg1^TypeA)(arg2^TypeB)(arg3^TypeC)(TypeD) : body )    <% lexically equivalent %>
-( name :  arg1^TypeA, arg2^TypeB, arg3^TypeC, TypeD  : body )    <% lexically equivalent %>
-  name : (arg1^TypeA)(arg2^TypeB)(arg3^TypeC)(TypeD) : body      <% lexically equivalent %>
-  name :  arg1^TypeA, arg2^TypeB, arg3^TypeC, TypeD  : body      <% lexically equivalent %>
+( name :  TypeA^arg1 TypeB^arg2 TypeC^arg3 TypeD : body )             <% lexically equivalent %>
+( name : (arg1^TypeA)(arg2^TypeB)(arg3^TypeC)(TypeD) : body )         <% lexically equivalent %>
+( name :  arg1^TypeA, arg2^TypeB, arg3^TypeC, TypeD  : body )         <% lexically equivalent %>
+( name :  arg1^TypeA )> arg2^TypeB )> arg3^TypeC )> TypeD : body )    <% lexically equivalent %>
+
+( name :  arg1^TypeA )> arg2^TypeB )> arg3^TypeC )> TypeD : body ) <( 1 2 3  <% IIFE %>
   
                          <% long fn, fully typed, oneline, returns TypeD final term %>
 
