@@ -69,7 +69,7 @@
 ||`<E>`|for SOME, there exists, existential quantification|
 ||`<E>!`|there exists exactly ONE, unique quantification|
 |`order-N` `higher order` logics|e.g.|`<E>x<A>y:F(x) NAND B(y) AND <A>z:NOT Q(z) AND Y(x)` WARNING:NOT_SURE_IF_GOOD_MODEL|
-|`model logic`||`[]<E>x:P(x)`|it is possible that something has property P|
+|`model logic`|`[]<E>x:P(x)`|it is possible that something has property P|
 ||`<><E>x:P(x)`|it is necessary that something has property P|
 |Data Structures|Unassigned Symbols | RULE : symmetrical opening/ closing tags <br> `    ` `-{}-` `*{}*` `#{}#` `... @$%^` <br>  `    ` `    ` `    ` `#[]#` `... @$%^`<br> `    ` `-()-` `*()*` `#()#` `... @$%^` <br> `    ` `-<>-` `*<>*` `#<>#` `... @$%^`
 |`()` 1|| tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER : <br>  -   `mytuple_[5]_[17]` <br>  -   `mytuple.5.17` <br>  -   `mytuple_5_17` <br>  -   `mytuple_(5)_(17)` |
