@@ -55,10 +55,9 @@
              |Full Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
              |Oneline Function with Signature : pretty, returns final term| `( name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body )` <br> `fn name : TypeA TypeB TypeC TypeD : arg1 arg2 arg3 : body end` |
              |e.g. Shortest Function with no Signature, returns `undefined`|`(::)` `fn :: end`|
-             |General iterable| `\<cometo:start> state ? exit : { perform, optionally_modify_state, goto:start }` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
+             |General iterable| `while expression : performance_with_optional_state_modification end` <br> - FUNCTIONAL FORM : `fn Myloop -> `|
              |simple `if`|`if expression : branch_if_true : branch_if_false end`|
              |complex `if`|`case expression : pattern and caveat -> branch_if_matched : default_branch end `|
-             |General proposition : `guard`?||
              |General error||
              |||
              |||
@@ -572,16 +571,6 @@ Each operator is typed, for safety. `A mechanism should be available for overloa
 
 ### Boxes / Containers 
 
-|Data Structures|-|
-|-|-|
-|`records` or `map` of some sort|
-|`linked list` of some sort|
-|`raw array` of some sort|
-|`smart array` of some sort|
-|See Erlang's built-ins for other common types|
-|There should be some sort of UI for configuring customisable memory
-layouts of customised datatypes|
-
 #### Datatype Design considerations
 
 -   System should maintain the easiest & safest path, at the cost of performance, for the dumbest user.
@@ -824,7 +813,13 @@ end
 ```
 
 # Iterables
+```
+\<cometo:start> state ? exit : { perform, optionally_modify_state, goto:start }
 
+while expression
+: performance_with_optional_state_modification 
+end
+```
 -   ITERABLE DATA STRUCTURE MODES : CONSIDER : `unified utility library interface`, including generators `eager/lazy`
    -   Loops :
        -   0 Do all looping control structures get abstracted to something like this?
