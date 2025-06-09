@@ -39,7 +39,7 @@
              ||`SIGMA __0 ^^5 >>i^i+i`|axial phrasing|
              ||`data_at_addr <(x)`|unambiguous dereferencing of pointer|
              ||`addr_of_data <(x)`|unambiguous indirection to data|
-             |`charsets`|`ordinary variables and atoms/ symbols` | `[_a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlang rules), but CONSIDER : `@a-zA-Z0-9` last character|
+             |`charsets`|`symbols` `:atoms` | `[_a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlang rules), but CONSIDER : `@a-zA-Z0-9` last character|
              ||`types / kinds / classes`|`[_A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` other characters (Erlang rules)
              |`number`||`base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada|
              ||`_`|`1_000_000` digit spacer, `mycube_[3]_[2]_[4]` `[13,44,22]_[0]` box-address spacer WARNING:UNSURE_GOOD|
