@@ -26,7 +26,7 @@
              |-|-|
              |`%%` `<% %>`| comments |
              |`value::Type`|type association ( Haskellism )|
-             |`:atom_aka_symbol`| ala Ruby, CommonLisp, Julia ... having minimal collision with `::` for typing; no further quoting is needed for disambiguation |
+             |`:atom`| ala Ruby, CommonLisp, Julia ... having minimal collision with `::` for typing; no further quoting is needed for disambiguation. Non-symbolic by definition. |
              |`fn` |as the sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
              |`_`|explicitly ignored `value`; `type`?|
              |`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env`
@@ -754,14 +754,19 @@ The difference between `infix dyadic` and `ordinary dyadic` functions, is a diff
 ( fn, name, ( (TypeA, null),
               (TypeB, null),
               (TypeC, null) ), TypeD, null )      <% unsugared %> 
-name :: TypeA TypeB TypeC TypeD                   <% sugared %>
-name :: (TypeA)(TypeB)(TypeC)(TypeD)              <% sugared unambiguous %>
-name :: TypeA >- TypeB >- TypeC ->> TypeD         <% sugared pretty %>
+( name : TypeA TypeB TypeC TypeD )                <% sugared %>
+( name : (TypeA)(TypeB)(TypeC)(TypeD) )           <% sugared unambiguous %>
+( name : TypeA >- TypeB >- TypeC ->> TypeD )      <% sugared pretty %>
+  name : TypeA >- TypeB >- TypeC ->> TypeD        <% sugared lazy %>
+
+name : TypeA *- TypeB *- TypeC *** TypeD          <% sugared pretty %>
+
 
 ( fn, name, ( (null, arg1),
               (null, arg2),
               (null, arg3) ), null, body )        <% unsugared %> 
 ( name : arg1 arg2 arg3 : body )                  <% sugared %>
+  name : arg1 arg2 arg3 : body                    <% sugared lazy %>
 
                          <% long fn, fully typed, returns TypeD final term %>
 
@@ -773,7 +778,13 @@ name :: TypeA >- TypeB >- TypeC ->> TypeD         <% sugared pretty %>
 ( name : arg1::TypeA arg2::TypeB arg3::TypeC TypeD : body )            <% sugared %>
 ( name : (arg1::TypeA)(arg2::TypeB)(arg3::TypeC)(TypeD) : body )       <% sugared unambiguous %>
 ( name : arg1::TypeA >- arg2::TypeB >- arg3::TypeC ->> TypeD : body )  <% sugared pretty %>
+  name : arg1::TypeA >- arg2::TypeB >- arg3::TypeC ->> TypeD : body    <% sugared pretty %>
 
+  name : arg1<eTypeA  *- arg2<eTypeB  *- arg3<eTypeC  *** TypeD : body    <% sugared pretty %>
+  name : arg1<*TypeA  *- arg2<*TypeB  *- arg3<*TypeC  *** TypeD : body    <% sugared pretty %>
+  name : arg1<*TypeA  *- arg2<*TypeB  *- arg3<*TypeC  *** TypeD : body    <% sugared pretty %>
+
+  
                          <% long fn, fully typed, oneline, returns TypeD final term %>
 
 ( fn, null, ( (null, arg1),
@@ -807,3 +818,8 @@ F<(<ENV>)           <% passes the entire lexical env to the execution env %>
                -   `for a, change a, do {} until b `
            -   `for key in/of b do {}`
                -   `for value in/of b do {}`
+
+# Assignment
+
+- `unbound_variable <bind- value` *sugared*
+- `unbound_variable <- value` *sugared*
