@@ -33,6 +33,7 @@
              ||`:atom`| ala Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. Potentially a parallel plane with variable names, i.e. as a quoted plane. |
              ||`_`|explicitly ignored `value`; `type`?|
              ||`:=`|LHS HANDLE points to a memory ADDRESS whose value shall be assigned RHS VALUE |
+             ||`=`| `if and only if` `iff`, NOT assignment|
              ||`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JavaScript, as opposed to `::` and `->` from C++|
              ||`true`, `false`, `null`, `undefined`| four-logic|
              ||`SIGMA __0 ^^5 >>i^i+i`|axial phrasing|
@@ -41,6 +42,7 @@
              |`charsets`|`ordinary variables and atoms/ symbols` | `[_a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlang rules), but CONSIDER : `@a-zA-Z0-9` last character|
              ||`types / kinds / classes`|`[_A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` other characters (Erlang rules)
              |`number`||`base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada|
+             ||`_`|`1_000_000` digit spacer, `mycube_[3]_[2]_[4]` `[13,44,22]_[0]` box-address spacer WARNING:UNSURE_GOOD|
              ||`rune`|synonym for `Int32` in Golang|
              ||`byte`|synonym for `Uint8` in Golang|
              ||`$.`|sugar for the respective ASCII code point as an integer ( from Erlang )|
@@ -80,31 +82,12 @@
              -   `.` `;` `()`
          -   PATTERN MATCHING :
              -   Semantics should match Erlang's ( simplest ! ) see : `term`, `pattern`, `_`, `compound pattern operator` 
-         -   PRIMITIVES :
-                   
-          -    
-          -    
--    
--    ` \t\n` internal field separators
--    `%%` comment, <%...%> comment
--    `_` discarded, `1_000_000` digit spacer, `mycube_[3]_[2]_[4]` `[13,44,22]_[0]` box-address spacer WARNING:UNSURE_GOOD
--    `!` error
--    `=` `IFF` equality NOT assignment
+             
+-    -    `!` error
 -    `??` nullish coalescing ( see JavaScript )
 -    `a ??= b` ensure assignment of b to a, if a is falsy ( see JavaScript )
--    `? : ` `IF ELSE` ternary branch
-     -    other branching :
-     -    reconsider `switch-case`, `pattern matching` : `mere equivalence` vs `arbitrary logical expression`
-          -   general case : given a `consideration`, its truth branches between subsequences `a` and `b`, in a binary logic ( `guards` )
-              -   bound cases : 
-                  -   weak case : `consideration` must be `matched programmatically by some algorithm` ( `pattern matching` )
-                  -   strong case : `consideration` must be `equivalent to some value` ( `switch-case` )
--
--
--
 
--    `types` / `classes / categories` : <T:more_syntax_to_be_defined>
--    
+   
 -    `ZFC-sets` : `{}`, `{{}}`, `{0}`, `{0,3,null,(),['a','bb',3,undefined]}`,
      -    `{ x | x <e N and x modulo 2 = 0 }`, assume affinity with `cpp std::unordered_set`,
      -    `a <= b`, `a =/> b`, `a e> b`, `a </e b`, `a =_> b`, `a </_= b`
