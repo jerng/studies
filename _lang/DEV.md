@@ -69,7 +69,6 @@
 ||`@@>` `@CRS`|right shift|
 |`arithmetic` `signed`|`@$<` `@SLS`|left shift |
 ||`@$>` `@SRS`|right shift|
-||``||
 |`order-0` `propositional` `boolean` logics||`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
 ||`a \| b`|common computing : `OR`, `a \/ b` vee|
 ||`a & b`|common computing : `AND`, `a /\ b` wedge|
