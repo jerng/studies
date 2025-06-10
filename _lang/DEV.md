@@ -96,17 +96,17 @@
 |`arithmetic` `signed`|`@$<` `@SSL`|left shift |
 ||`@$>` `@SSR`|right shift|
 |`order-0` `propositional` `boolean` logics|consider : overload with `operational` logic words|`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
-||`a \| b` |`OR`, `a \/ b` vee|
-||`a & b`|`AND`, `a /\ b` wedge|
-||`~a`|`NOT`|
-||`a </> b` |not equivalent, `a \/_ b` `⊻` veebar, `a (+) b` oplus,`XOR`|
-||`a <=> b` |equivalent, `a IFF b` if and only if |
-||`a <= b`|a because b, `a -\| b`, `a \./ b` `∵`| 
-||`a </= b`|a not because b, `a -/\| b` | 
-||`a => b`|a therefore b, `a \|- b`, `a /.\ b` `IMPLY` `∴`|
-||`a =/> b`|a does not imply b, `a \|/- b` `NIMPLY`|
-||`_\|_` |bottom, `false`, `F`|
-||`^\|^` |top, `true`, `T`|
+||`a \| b` ` `|`OR`, `a \/ b` vee|
+||`a & b` ` `|`AND`, `a /\ b` wedge|
+||`~a` ` `|`NOT`|
+||`a </> b` ` ` |not equivalent, `a \/_ b` `⊻` veebar, `a (+) b` oplus,`XOR`|
+||`a <=> b` ` ` |equivalent, `a IFF b` if and only if |
+||`a <= b` ` `|a because b, `a -\| b`, `a \./ b` `∵`| 
+||`a </= b` ` `|a not because b, `a -/\| b` | 
+||`a => b` ` `|a therefore b, `a \|- b`, `a /.\ b` `IMPLY` `∴`|
+||`a =/> b` ` `|a does not imply b, `a \|/- b` `NIMPLY`|
+||`_\|_` ` ` |bottom, `false`, `F`|
+||`^\|^` ` ` |top, `true`, `T`|
 |`order-1` `predicate` logics|e.g.|`<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`|
 ||`<A>`|for ALL, all, universal quantification, `\-/` `∀`|
 ||`<E>`|for SOME, there exists, existential quantification `∃`|
