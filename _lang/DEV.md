@@ -2,12 +2,12 @@
 
 ## Latest
 
--    UNDONE : `APL/J analogues`, `proof assistant features / go read about it`
+-    UNDONE : [`APL/J analogues`](https://code.jsoftware.com/wiki/NuVoc), `proof assistant features / go read about it`
 -    UNASSIGNED : 
-     |`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
+     |``|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
-     |`\|-> <-\|`|`\|=> <=\|`|`:-> <-:`||
-     |`;`|`\|\|`|`&&`|`::`|
+     |`\|-> <-\|`|`\|=> <=\|`|`:-> <-:`|``|``|
+     |`;`|`\|\|`|`&&`|`::`|``|
 -    BROADLY :
      -   IMPLEMENTATION STRATEGY :
          -   Stage 1 : `JavaScript`
@@ -42,7 +42,7 @@
 ||`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
 ||`:atom`| literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. Potentially a parallel plane with variable names, i.e. as a quoted plane. |
 ||`_`|explicitly ignored `value`; `type`?|
-||`=`|`Single Static Assignment`: LHS HANDLE points to a memory ADDRESS, whose FIRST AND ONLY value shall be RHS VALUE; ala maths ; assigns from RHS to LHS only|
+||`=` `<-`|`Single Static Assignment`: LHS HANDLE points to a memory ADDRESS, whose FIRST AND ONLY value shall be RHS VALUE; ala maths ; assigns from RHS to LHS only|
 ||`:=`|`Destructive Assignment` : LHS HANDLE points to a memory ADDRESS, whose FIRST OR NEW value shall be RHS VALUE; ala ALGOL; disallow `=:` |
 ||`)=`|`Application & Destructive Reassignment` : LHS HANDLE points to a memory ADDRESS, whose NEW value shall be ( RHS FUNCTION applied to LHS's OLD value ); graphical reference to `)>` ; disallow `=(`|
 ||`parent.child`| (valid_symbol)subscript, for subscoping : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JS, as opposed to `::` and `->` from C++|
@@ -784,12 +784,49 @@ end
 
 ```
 fn definition       <% => ( "fn", "definition" ) %>
-F <- fn definition
+F = fn definition
 F<()                <% execute F with no bound vars? %>
 F<(a,b,c)           <% execute F, binding lexically local vars a,b,c to a,b,c in the execution env %>
 F<((((a,b,c))))     <% will auto-unbox to an infinite degree %>
 F<(<ENV>)           <% passes the entire lexical env to the execution env %>
 <ENV> )> F          <% an idiom %>
+
+
+"theorem" : Only 6 distinct species are needed to derive
+all common scoping concerns in contemporary computer programming
+
+i.e. applying a function /1,2 to arguments /3,
+     is the same as running code with "where" or "let";
+
+     to that, we add only namespaces /4, classes /5, and objects /6;
+
+     is it further reduceable? not sure!
+
+(i)
+( PARAMETERS /1 ){ UNPARAMETERISED_BLOCK /2 }
+     <=> PARAMETERISED_BLOCK
+     <=> SUB/PROCEDURE
+     <=> SUB/ROUTINE
+     <=> FUNCTION
+      
+(ii)
+( PARAMETERS <- ARGUMENTS /3 )
+     <=> ENVIRONMENT_MAP
+     <=> DEFINITIONS 
+
+(iii)
+FUNCTION <( ARGUMENTS
+     <=> let DEFINITIONS in UNPARAMETERISED_BLOCK          %% BASIC 1964
+     <=> UNPARAMETERISED_BLOCK where DEFINITIONS           %% ISWIM 1966
+
+(iv)
+NAMESPACE /4 .OBJECT /5
+     <- cloneAndInit PARAMETERISED_BLOCK_TEMPLATE /6       %% Simula 1962
+
+NAMESPACE.OBJECT.METHOD /1,2
+     <- PARAMETERISED_BLOCK
+
+
 ```   
 
 # Selection
@@ -810,8 +847,6 @@ end
 
 # Iterables
 ```
-\<cometo:start> state ? exit : { perform, optionally_modify_state, goto:start }
-
 while expression
 : performance_with_optional_state_modification 
 end
@@ -836,8 +871,3 @@ end
                -   `for a, change a, do {} until b `
            -   `for key in/of b do {}`
                -   `for value in/of b do {}`
-
-# Assignment
-
-- `unbound_variable <bind- value` *sugared*
-- `unbound_variable <- value` *sugared*
