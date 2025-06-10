@@ -78,7 +78,7 @@
 ||e.g. Shortest Unsigned Function, returns `undefined`|`(:::)` `fn ::: end`|
 |`iteration`|| - general form : `while expression : performance_with_optional_state_modification end` <br> - general function : `fn whiledoloop : (Int->Bool) Fun Int (Int->Int) : condition performance init_state mod_state : if not condition<(init_state) : :done : performance, whiledoloop <( condition performance mod_state<(init_state) mod_state ) end end` |
 |`selection`|simple `if`|`if expression : branch_if_true : branch_if_false end`|
-||complex `if`|`case expression : pattern and caveat -> branch_if_matched : default_branch end `|
+||complex `if`|`case expression : pattern and condition -> branch_if_matched : default_branch end `|
 |General error||
 ||||
 ||||
@@ -712,14 +712,14 @@ end
 
 fn :                                                   <% sugared %>
 : arguments
-: pattern and caveat -> branch_if_matched
+: pattern and condition -> branch_if_matched
 : default_branch
 end
 
 fn :                                                  <% intermediate desugaring %>
 : arguments
 : case (arguments)
-  : pattern and caveat -> branch_if_matched
+  : pattern and condition -> branch_if_matched
   : default_branch
   end
 end
@@ -732,8 +732,8 @@ fn name
 : TypeA TypeB TypeC TypeD
 : arg1 arg2 arg3
 :   case (arg1 arg2 arg3)
-    : pattern and caveat -> branch_if_matched
-    : pattern and caveat -> branch_if_matched
+    : pattern and condition -> branch_if_matched
+    : pattern and condition -> branch_if_matched
     : default_branch
     end
 end
@@ -762,8 +762,8 @@ if expression
 end
 
 case expression                              <% a.k.a complexif %>
-: pattern and caveat -> branch_if_matched
-: pattern and caveat -> branch_if_matched
+: pattern and condition -> branch_if_matched
+: pattern and condition -> branch_if_matched
 : default_branch
 end
 
