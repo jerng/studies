@@ -90,7 +90,7 @@
 ||`@@>` `@CRS`|right shift|
 |`arithmetic` `signed`|`@$<` `@SLS`|left shift |
 ||`@$>` `@SRS`|right shift|
-|`order-0` `propositional` `boolean` logics||`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
+|`order-0` `propositional` `boolean` logics|consider : overload with `operational` logic words|`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
 ||`a \| b` |`OR`, `a \/ b` vee|
 ||`a & b`|`AND`, `a /\ b` wedge|
 ||`~a`|`NOT`|
