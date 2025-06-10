@@ -48,15 +48,33 @@
 |charsets|`symbols` `:atoms` |- `[\|a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlangism), and `\|@a-zA-Z0-9` last character <br> - symbols beginning with `\|` must have a minimum of `3` characters <br> - OK : `a` `\|aa` `\|a\|` `a\|` `a_b` `a@` `a0` <br> - ERROR : `\|a` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns |
 ||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` other characters (Erlang rules)
 |numbers||`base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada|
-||`_`|`1_000_000` digit spacer, `mycube_[3]_[2]_[4]` `[13,44,22]_[0]` box-address spacer <br> WARNING:UNSURE_GOOD|
 ||`rune`|synonym for `Int32` in Golang|
 ||`byte`|synonym for `Uint8` in Golang|
+||`_`|`1_000_000` digit spacer, `mycube_[3]_[2]_[4]` `[13,44,22]_[0]` box-address spacer <br> WARNING:UNSURE_GOOD|
 ||`<)` `(>`| sigil for arc values `∡∢`|
 ||`$.`|sugar for the respective ASCII code point as an integer ( from Erlang )|
 ||`\|(algebraic entity)\|`| modulus, also `abs( algebraic entity)`; `()` are required to avoid collision with `\|ordinary_variable\|` |
-||`3-/5`| viculum, 3rd root of 5 `√`|
 ||`a..b`|`a(+1)..b` `a(a=>a+1)..b` `a (+1) UNTIL b`|
 ||`++` `--`|`de/increment and return OR the converse` are sugar for `i=i+/-1`, `j=i;i=i+/11;j` ; the sugar INTRODUCES subtlety ... not sure if this is worth keeping; for example FP-style SSA just does away with this entirely|
+||`a + b`|a added to b, a plus b|
+||`a - b`|b subtracted from a, a minus b|
+||`a * b`|a multiplied by b, a times b|
+||`a / b` `b \ a`| `quotient` of : a fractionally-divided by b |
+||`a /int b` `b int\ a`| `quotient` of: a integrally-divided by b |
+||`a /rem b` `b rem\ a`| `remainder` of: a integrally-divided by b |
+||`a -/ b`| viculum, ath root of b `√`|
+||`a ^ b `| super, a to the bth power|
+|||TODO : logarithms|
+||||
+||||
+||||
+|`operational` logic||for general computing (? what do you call this)|
+||`and`|no synonymity with `&&`, which is an unassigned symbol|
+||`or`|no synonymity with `||`, which is an unassigned symbol|
+||`not`|no synonymity with `!`, which is an operator for communcations|
+||`in` `not in`|SEE : data structures|
+||`is` `is not`|strict identity|
+||`equals` `not equals`|equivalence|
 |`bitwise operator prefix`|`@`|bitwise operations are `domain specific` given that they are mainly used in the computing context to regard `bits` and `bytes` and `words`. Here we avoid the conventional `\|` `&` `~` as these operators will be used in a more general context. Following the style of Erlang, bitwise operators all have a common prefix. [Swift docs are pretty](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/advancedoperators/). <br> - complicated : different operators in various languages are overloaded for different underlying data types|
 |`logical` `unsigned`|`@` `@OR`||
 ||`@&` `@AND`||
@@ -70,15 +88,15 @@
 |`arithmetic` `signed`|`@$<` `@SLS`|left shift |
 ||`@$>` `@SRS`|right shift|
 |`order-0` `propositional` `boolean` logics||`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
-||`a \| b`|common computing : `OR`, `a \/ b` vee|
-||`a & b`|common computing : `AND`, `a /\ b` wedge|
-||`~a`|common computing : `NOT`|
-||`a =/= b`|not equivalent, `a \/_ b` `⊻` veebar, `a (+) b` oplus,`XOR`|
-||`a <-> b`|equivalent, `a IFF b` if and only if |
-||`a <- b`|a because b, `a -\| b`, `a \./ b` `∵`| 
-||`a </- b`|a not because b, `a -/\| b` | 
-||`a -> b`|a therefore b, `a \|- b`, `a /.\ b` `IMPLY` `∴`|
-||`a -/> b`|a does not imply b, `a \|/- b` `NIMPLY`|
+||`a \| b` |`OR`, `a \/ b` vee|
+||`a & b`|`AND`, `a /\ b` wedge|
+||`~a`|`NOT`|
+||`a </> b` |not equivalent, `a \/_ b` `⊻` veebar, `a (+) b` oplus,`XOR`|
+||`a <=> b` |equivalent, `a IFF b` if and only if |
+||`a <= b`|a because b, `a -\| b`, `a \./ b` `∵`| 
+||`a </= b`|a not because b, `a -/\| b` | 
+||`a => b`|a therefore b, `a \|- b`, `a /.\ b` `IMPLY` `∴`|
+||`a =/> b`|a does not imply b, `a \|/- b` `NIMPLY`|
 ||`_\|_` |bottom, `false`, `F`|
 ||`^\|^` |top, `true`, `T`|
 |`order-1` `predicate` logics|e.g.|`<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`|
