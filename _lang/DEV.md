@@ -50,7 +50,7 @@
 ||`byte`|synonym for `Uint8` in Golang|
 ||`<)` `(>`| sigil for arc values |
 ||`$.`|sugar for the respective ASCII code point as an integer ( from Erlang )|
-||`\|algebraic entity\|`| modulus, also `abs( algebraic entity)`|
+||`\|(algebraic entity)\|`| modulus, also `abs( algebraic entity)`; `()` are required to avoid collision with `\|ordinary_variable\|` |
 ||`3-/5`| viculum, 3rd root of 5|
 ||`a..b`|`a(+1)..b` `a(a=>a+1)..b` `a (+1) UNTIL b`|
 ||`++` `--`|`de/increment and return OR the converse` are sugar for `i=i+/-1`, `j=i;i=i+/11;j` ; the sugar INTRODUCES subtlety ... not sure if this is worth keeping; for example FP-style SSA just does away with this entirely|
