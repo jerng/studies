@@ -89,12 +89,12 @@
 ||`@~` `@NOT`||
 ||`@^` `@XOR`||
 ||`@&^` `@CLEAR`|See Golang `AND NOT` : `a &^ y = a & ~y`|
-||`@<` `@ULS`|left shift |
-||`@>` `@URS`|right shift|
-|`circular` `rotary`|`@@<` `@CLS`|left shift |
-||`@@>` `@CRS`|right shift|
-|`arithmetic` `signed`|`@$<` `@SLS`|left shift |
-||`@$>` `@SRS`|right shift|
+||`@<` `@USL`|left shift |
+||`@>` `@USR`|right shift|
+|`circular` `rotary`|`@@<` `@CSL`|left shift |
+||`@@>` `@CSR`|right shift|
+|`arithmetic` `signed`|`@$<` `@SSL`|left shift |
+||`@$>` `@SSR`|right shift|
 |`order-0` `propositional` `boolean` logics|consider : overload with `operational` logic words|`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
 ||`a \| b` |`OR`, `a \/ b` vee|
 ||`a & b`|`AND`, `a /\ b` wedge|
