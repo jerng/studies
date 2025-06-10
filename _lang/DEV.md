@@ -22,9 +22,9 @@
           
 |domain|char|designation|
 |-|-|-|
-|[`expressions`](#program-sources-consist-of-formal-expressions)|`non- normative`|- `comments`|
-|||- `propositions` : <br> + - `a priori` : true/ false based on rule definitions <br> + - `a posteriori` : true/ false based on values at a memory address|
-||`normative`|- `operations` : resulting in mutation of values in memory addresses |
+|[`expressions`](#program-sources-consist-of-formal-expressions)|`non- normative`|`comments`|
+|||`propositions` : <br> - `a priori` : true/ false based on rule definitions <br> - `a posteriori` : true/ false based on values at a memory address|
+||`normative`|`operations` : resulting in mutation of values in memory addresses |
 |analogs|`,`| additive connotation, from English ( C family, Erlang, etc. )|
 ||`.`| terminal connotation, from English ( Prolog, Erlang, COBOL )|
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
@@ -95,7 +95,7 @@
 |`-[]-` 3/LL || doubly linked lists, `cpp std::list` |
 |`{}` 4||ZFC sets, `cpp std::unordered_set`, CONSIDER : builder notation <br>  -   `{ x \| predicate(x) }`  <br> -   `{ expression(x) FOR x IN iterable WHERE }` <br>  -   `{ x<e<N~0> \| x<10 /\ x/%2==0 }` <br> -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }` <br> `{ x \| x <e N and x modulo 2 = 0 }`|
 ||`a <* b` `b *> a`|a is an element of b, derived from `<e` epsilon for *est* element-of boolean operator, Peano `∈ ∋` |
-||`a </* b` `b */> a`|a is not an element of b `∉	∌`|
+||`a </* b` `b */> a`|a is not an element of b `∉ ∌`|
 ||`a <= b` `b => a`|a is a PROPER subset of b `⊂ ⊃` |
 ||`a </= b` `b =/> a`|a is not a PROPER subset of b `⊄ ⊅`|
 ||`a <_= b` `b =_> a`|a is a subset of b `⊆ ⊇`|
