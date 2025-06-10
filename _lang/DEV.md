@@ -37,15 +37,16 @@
 ||`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
 ||`:atom`| literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. Potentially a parallel plane with variable names, i.e. as a quoted plane. |
 ||`_`|explicitly ignored `value`; `type`?|
-||`:=`|LHS HANDLE points to a memory ADDRESS whose value shall be assigned RHS VALUE |
-||`=`| `if and only if` `iff`, NOT assignment|
-||`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JavaScript, as opposed to `::` and `->` from C++|
+||`=`|`Single Static Assignment`: LHS HANDLE points to a memory ADDRESS, whose FIRST AND ONLY value shall be RHS VALUE; ala maths |
+||`:=`|`Destructive Assignment` : LHS HANDLE points to a memory ADDRESS, whose FIRST OR NEW value shall be RHS VALUE; ala ALGOL |
+||`)=`|`Application & Destructive Reassignment` : LHS HANDLE points to a memory ADDRESS, whose NEW value shall be ( RHS FUNCTION applied to LHS's OLD value ); graphical reference to `)>` |
+||`parent.child`| (valid_symbol)subscript, for subscoping : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JS, as opposed to `::` and `->` from C++|
 ||`!`|reserved for future use as a `communications operator` : from Erlang's messaging operator, but with diversified use to include `throwing exceptions`, etc.|
 ||`true`, `false`, `null`, `undefined`| four-logic|
 ||`|SIGMA| __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
 ||`addr_of_data <(x)`|unambiguous indirection to data|
-|charsets|`symbols` `:atoms` |- `[\|a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlangism), and `\|@a-zA-Z0-9` last character <br> - symbols beginning with `\|` must have a minimum of `3` characters <br> - OK : `a` `\|aa` `\|a\|` `a\|` `a_b` `a@` `a0` <br> - ERROR : `\|a` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns |
+|charsets|`valid_symbol` `:valid_atom` |- `[\|a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlangism), and `[\|@a-zA-Z0-9]` last character <br> - symbols beginning with `\|` must have a minimum of `3` characters <br> - OK : `a` `\|aa` `\|a\|` `a\|` `a_b` `a@` `a0` <br> - ERROR : `\|a` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns |
 ||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` other characters (Erlang rules)
 |numbers||`base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada|
 ||`rune`|synonym for `Int32` in Golang|
@@ -62,19 +63,21 @@
 ||`a / b` `b \ a`| `quotient` of : a fractionally-divided by b |
 ||`a /int b` `b int\ a`| `quotient` of: a integrally-divided by b |
 ||`a /rem b` `b rem\ a`| `remainder` of: a integrally-divided by b |
-||`a -/ b`| viculum, ath root of b `√`|
-||`a ^ b `| super, a to the bth power|
+||`a -/ b`| vinculum, ath root of b `√`|
+||`a ^ b `| - superscript, a to the bth power; not to be confused with `value^Type` `Type^value`, which the lexer should deduce |
+||`a _[b]`| - ([0-9].*)subscript, for subscoping : bth member of a ( 0-based indexing ) : idiomatically applies to ALL data structures <br> - ala JS, SEE : `parent.child` (valid_symbol)subscript <br> - do not confuse with : `[b]` a singly-linked list; `_` the pattern of ignorance  |
+||`a )= function`| Application & Destructive Reassignment, where `a += b` would be `a )= + b` |
 |||TODO : logarithms|
 ||||
 ||||
 ||||
 |`operational` logic||for general computing (? what do you call this)|
-||`and`|no synonymity with `&&`, which is an unassigned symbol|
-||`or`|no synonymity with `||`, which is an unassigned symbol|
-||`not`|no synonymity with `!`, which is an operator for communcations|
-||`in` `not in`|SEE : data structures|
-||`is` `is not`|strict identity|
-||`equals` `not equals`|equivalence|
+||`and` `AND`|no synonymity with `&&`, which is an unassigned symbol|
+||`or` `OR`|no synonymity with `||`, which is an unassigned symbol|
+||`not` `NOT`|no synonymity with `!`, which is an operator for communcations; no synonymity with `~` which presents as bitwise `@~`|
+||`in` `not in` `IN` `NOT IN`|SEE : data structures|
+||`is` `is not` `IS` `IS NOT`|strict identity, like `<=>` `</> in `order-0` logic; like `===` `!==` in JS |
+||`eq` `not eq` `EQ` `NOT EQ`|equivalence, like `==` `!=` in JS |
 |`bitwise operator prefix`|`@`|bitwise operations are `domain specific` given that they are mainly used in the computing context to regard `bits` and `bytes` and `words`. Here we avoid the conventional `\|` `&` `~` as these operators will be used in a more general context. Following the style of Erlang, bitwise operators all have a common prefix. [Swift docs are pretty](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/advancedoperators/). <br> - complicated : different operators in various languages are overloaded for different underlying data types|
 |`logical` `unsigned`|`@` `@OR`||
 ||`@&` `@AND`||
@@ -114,7 +117,10 @@
 |`iteration`|| - general form : `while expression : performance_with_optional_state_modification end` <br> - general function : `fn whiledoloop : (Int->Bool) Fun Int (Int->Int) : condition performance init_state mod_state : if not condition<(init_state) : :done : performance, whiledoloop <( condition performance mod_state<(init_state) mod_state ) end end` |
 |`selection`|simple `if`|`if expression : branch_if_true : branch_if_false end`|
 ||complex `if`|`case expression : pattern and condition -> branch_if_matched : default_branch end `|
+||||
+|TODO |||
 |General error||
+|`let ... in ... ` `... where ...`||`to be unified with a bind syntax`|
 ||||
 ||||
 |Data Structures|Unassigned Symbols | RULE : symmetrical opening/ closing tags <br> `    ` `-{}-` `*{}*` `#{}#` `... @$%^` <br>  `    ` `    ` `    ` `#[]#` `... @$%^`<br> `    ` `-()-` `*()*` `#()#` `... @$%^` <br> `    ` `-<>-` `*<>*` `#<>#` `... @$%^`
