@@ -153,7 +153,7 @@
 |`<...>` | |namespace for SIGILS / QUOTES|
 |`<q...q>`|Unassigned Symbols| `quote` : where q is a single character : `<!...!>` `<@...@>` `<#...#>` `<$...$>` `<%...%>` `<^...^>` `<&...&>` `<=...=>` `<_..._>` `<+...+>` `<]...[>` `<[...]>` `<{...}>` `<}...{>` `<\|...\|>` `<\.../>` `</...\>` `<"...">` `<'...'>` `<~...~>` `<?...?>` |
 ||Symbols used elsewhere|`<*` `*>` for *est* element-of boolean operator <br> `->` pattern-matched branching (`<-` is unused) <br> `<)` `(>` values of arc <br> `<(` `)>` function application <br> |
-||`<%...%>`|`multi-line comment|
+||`<%...%>`|`multi-line comment`|
 |8|`<<...>>`|- bitstring syntax from Erlang <br> - WARNING : possible collision with `<<` `>>` for axial phrasing |
 ||`<asm: ... :asm>`|reserved for `assembly languages`|
 |`<qq:...:qq>`|Unassigned Symbols| `quote` : where qq is >1 character|
