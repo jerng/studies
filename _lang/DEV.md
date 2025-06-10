@@ -43,7 +43,7 @@
 ||`parent.child`| (valid_symbol)subscript, for subscoping : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JS, as opposed to `::` and `->` from C++|
 ||`!`|reserved for future use as a `communications operator` : from Erlang's messaging operator, but with diversified use to include `throwing exceptions`, etc.|
 ||`true`, `false`, `null`, `undefined`| four-logic|
-||`|SIGMA| __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
+||e.g. `\|SIGMA\| __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
 ||`addr_of_data <(x)`|unambiguous indirection to data|
 |charsets|`valid_symbol` `:valid_atom` |- `[\|a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlangism), and `[\|@a-zA-Z0-9]` last character <br> - symbols beginning with `\|` must have a minimum of `3` characters <br> - OK : `a` `\|aa` `\|a\|` `a\|` `a_b` `a@` `a0` <br> - ERROR : `\|a` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns |
