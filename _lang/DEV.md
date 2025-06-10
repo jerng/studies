@@ -38,6 +38,7 @@
 ||`:=`|LHS HANDLE points to a memory ADDRESS whose value shall be assigned RHS VALUE |
 ||`=`| `if and only if` `iff`, NOT assignment|
 ||`parent.child`| for scope resolution : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JavaScript, as opposed to `::` and `->` from C++|
+||`!`|reserved for future use as a `communications operator` : from Erlang's messaging operator, but with diversified use to include `throwing exceptions`, etc.|
 ||`true`, `false`, `null`, `undefined`| four-logic|
 ||`|SIGMA| __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
