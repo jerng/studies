@@ -2,11 +2,12 @@
 
 ## Latest
 
--    UNDONE : APL/J analogues
--    UNASSIGNED : `;` `||` `&&` APL/J analogues, `::`,
+-    UNDONE : `APL/J analogues`, `proof assistant features / go read about it`
+-    UNASSIGNED : 
      |`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
      |`\|-> <-\|`|`\|=> <=\|`|`:-> <-:`||
+     |`;`|`\|\|`|`&&`|`::`|
 -    BROADLY :
      -   IMPLEMENTATION STRATEGY :
          -   Stage 1 : `JavaScript`
