@@ -131,6 +131,7 @@
 ||Symbols used elsewhere|`<*` `*>` for *est* element-of boolean operator <br> `->` pattern-matched branching (`<-` is unused) <br> `<)` `(>` values of arc <br> `<(` `)>` function application <br> |
 ||`<%...%>`|`multi-line comment|
 |8|`<<...>>`|- bitstring syntax from Erlang <br> - WARNING : possible collision with `<<` `>>` for axial phrasing |
+||`<asm: ... :asm>|reserved for `assembly languages`|
 |`<qq:...:qq>`|Unassigned Symbols| `quote` : where qq is >1 character|
 |`<x>`||`symbol` not `quote` : where x is exactly 1 character|
 |`<xyz>`||`symbol` not `quote` :where x and z are not the same character; and y is >0 characters, none of which are `:`|
