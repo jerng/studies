@@ -2,7 +2,11 @@
 
 ## Latest
 
--    UNDONE : `,`,`;`,`.`,`|`, `||`, `&`, `&&`, `~`, `bitwise?`, and alternatives?, APL/J analogues, `::`, `->`
+-    UNDONE : APL/J analogues
+-    UNASSIGNED : `;` `||` `&&` APL/J analogues, `::`,
+     |`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
+     |-|-|-|-|-|
+     |`\|-> <-\|`|`\|=> <=\|`|`:-> <-:`||
 -    BROADLY :
      -   IMPLEMENTATION STRATEGY :
          -   Stage 1 : `JavaScript`
@@ -37,9 +41,9 @@
 ||`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
 ||`:atom`| literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. Potentially a parallel plane with variable names, i.e. as a quoted plane. |
 ||`_`|explicitly ignored `value`; `type`?|
-||`=`|`Single Static Assignment`: LHS HANDLE points to a memory ADDRESS, whose FIRST AND ONLY value shall be RHS VALUE; ala maths |
-||`:=`|`Destructive Assignment` : LHS HANDLE points to a memory ADDRESS, whose FIRST OR NEW value shall be RHS VALUE; ala ALGOL |
-||`)=`|`Application & Destructive Reassignment` : LHS HANDLE points to a memory ADDRESS, whose NEW value shall be ( RHS FUNCTION applied to LHS's OLD value ); graphical reference to `)>` |
+||`=`|`Single Static Assignment`: LHS HANDLE points to a memory ADDRESS, whose FIRST AND ONLY value shall be RHS VALUE; ala maths ; assigns from RHS to LHS only|
+||`:=`|`Destructive Assignment` : LHS HANDLE points to a memory ADDRESS, whose FIRST OR NEW value shall be RHS VALUE; ala ALGOL; disallow `=:` |
+||`)=`|`Application & Destructive Reassignment` : LHS HANDLE points to a memory ADDRESS, whose NEW value shall be ( RHS FUNCTION applied to LHS's OLD value ); graphical reference to `)>` ; disallow `=(`|
 ||`parent.child`| (valid_symbol)subscript, for subscoping : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JS, as opposed to `::` and `->` from C++|
 ||`!`|reserved for future use as a `communications operator` : from Erlang's messaging operator, but with diversified use to include `throwing exceptions`, etc.|
 ||`true`, `false`, `null`, `undefined`| four-logic|
@@ -160,14 +164,6 @@
 |`<x>`||`symbol` not `quote` : where x is exactly 1 character|
 |`<xyz>`||`symbol` not `quote` :where x and z are not the same character; and y is >0 characters, none of which are `:`|
 
-### Unassigned Arrows
-
--   Sigh. What can we do with all these?
-
-||||||
-|-|-|-|-|-|
-|`-> <-`|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
-|`\|-> <-\|`|`\|=> <=\|`|
 
 ### CONSIDERATIONS
              -   `,`
