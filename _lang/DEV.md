@@ -23,8 +23,7 @@
            
 |domain|char|designation|
 |-|-|-|
-|analogs|`\|` `:`|`where` `whereas` `such that` `onlyif` `and`|
-||`,`| additive connotation, from English ( C family, Erlang, etc. )|
+|analogs|`,`| additive connotation, from English ( C family, Erlang, etc. )|
 ||`.`| terminal connotation, from English ( Prolog, Erlang, COBOL )|
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
 ||`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `()` and `` `...` `` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - ``operand1 `dyadic_function` operand2`` *converts an ordinary dyadic function into an infix dyadic function* |
