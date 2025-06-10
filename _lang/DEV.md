@@ -55,22 +55,22 @@
 ||`3-/5`| viculum, 3rd root of 5|
 ||`a..b`|`a(+1)..b` `a(a=>a+1)..b` `a (+1) UNTIL b`|
 ||`++` `--`|`de/increment and return OR the converse` are sugar for `i=i+/-1`, `j=i;i=i+/11;j` ; the sugar INTRODUCES subtlety ... not sure if this is worth keeping; for example FP-style SSA just does away with this entirely|
-|`order-0` `propositional` `boolean` `bitwise` logics||`NAND NOR XAND` : MORE CHECKING NEEDED|
+|`order-0` `propositional` `boolean` `bitwise` logics||`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
 ||`a \| b`|common computing : `OR`, `a \/ b` vee|
 ||`a & b`|common computing : `AND`, `a /\ b` wedge|
 ||`~a`|common computing : `NOT`|
-||`a =/= b`|not equivalent, `a \/_ b` veebar, `a (+) b` oplus,`XOR`|
+||`a =/= b`|not equivalent, `a \/_ b` `⊻` veebar, `a (+) b` oplus,`XOR`|
 ||`a <-> b`|equivalent, `a IFF b` if and only if |
-||`a <- b`|a because b, `a -\| b`, `a \./ b` | 
+||`a <- b`|a because b, `a -\| b`, `a \./ b` `∵`| 
 ||`a </- b`|a not because b, `a -/\| b` | 
-||`a -> b`|a therefore b, `a \|- b`, `a /.\ b` `IMPLY` |
+||`a -> b`|a therefore b, `a \|- b`, `a /.\ b` `IMPLY` `∴`|
 ||`a -/> b`|a does not imply b, `a \|/- b` `NIMPLY`|
 ||`_\|_` |bottom, `false`, `F`|
 ||`^\|^` |top, `true`, `T`|
 |`order-1` `predicate` logics|e.g.|`<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`|
-||`<A>`|for ALL, all, universal quantification, `\-/`|
-||`<E>`|for SOME, there exists, existential quantification|
-||`<E>!`|there exists exactly ONE, unique quantification|
+||`<A>`|for ALL, all, universal quantification, `\-/` `∀`|
+||`<E>`|for SOME, there exists, existential quantification `∃`|
+||`<E>!`|there exists exactly ONE, unique quantification `∃!`|
 |`order-N` `higher order` logics|e.g.|`<E>x<A>y:F(x) NAND B(y) AND <A>z:NOT Q(z) AND Y(x)` WARNING:NOT_SURE_IF_GOOD_MODEL|
 |`model logic`|`[]<E>x:P(x)`|it is possible that something has property P|
 ||`<><E>x:P(x)`|it is necessary that something has property P|
@@ -92,21 +92,21 @@
 |`[]` 2/LL || singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]` |
 |`-[]-` 3/LL || doubly linked lists, `cpp std::list` |
 |`{}` 4||ZFC sets, `cpp std::unordered_set`, CONSIDER : builder notation <br>  -   `{ x \| predicate(x) }`  <br> -   `{ expression(x) FOR x IN iterable WHERE }` <br>  -   `{ x<e<N~0> \| x<10 /\ x/%2==0 }` <br> -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }` <br> `{ x \| x <e N and x modulo 2 = 0 }`|
-||`a <* b` `b *> a`|a is an element of b, derived from `<e` epsilon for *est* element-of boolean operator, Peano|
-||`a </* b` `b */> a`|a is not an element of b|
-||`a <= b` `b => a`|a is a PROPER subset of b|
-||`a </= b` `b =/> a`|a is not a PROPER subset of b|
-||`a <_= b` `b =_> a`|a is a subset of b|
-||`a </_= b` `b =_/> a`|a is not a subset of b|
-||`{}`|empty set `(/)`|
+||`a <* b` `b *> a`|a is an element of b, derived from `<e` epsilon for *est* element-of boolean operator, Peano `∈ ∋` |
+||`a </* b` `b */> a`|a is not an element of b `∉	∌`|
+||`a <= b` `b => a`|a is a PROPER subset of b `⊂ ⊃` |
+||`a </= b` `b =/> a`|a is not a PROPER subset of b `⊄ ⊅`|
+||`a <_= b` `b =_> a`|a is a subset of b `⊆ ⊇`|
+||`a </_= b` `b =_/> a`|a is not a subset of b `⊈ ⊉`|
+||`{}`|empty set `(/)` `∅`|
 ||`{a,b}`|a set containing elements a and b ( Cantor )|
 ||`{a\|b(a)}`| set-builder notation; set of as defined by property b ( Cantor )|
 ||`a'` |"a prime" : the complement of set a ( Cantor ) `a^c` ( Cantor )|
-||`a \|_\| b`|union of a and b|
-||`a \|^\| b`|intersection of a and b (Cantor)`a ^ b`, `a /\b`, `a /set\ b`|
-||`a /_\ b`|  "xor", "symmetric difference" of a,b; "elements in a, or b, but not not in both a and b"; "disjunction union" "set sum"`a \|del\| b`, `a (+) b`|
+||`a \|_\| b`|union of a and b `∪`|
+||`a \|^\| b`|intersection of a and b (Cantor)`a ^ b`, `a /\ b`, `a /set\ b` `∩`|
+||`a /_\ b`|  "xor", "symmetric difference" of a,b; "elements in a, or b, but not not in both a and b"; "disjunction union" "set sum"`a \|del\| b`, `a (+) b` `△`|
 ||`\|omega\|` |  ω : "first finite ordinal"; order type of the natural numbers ( Cantor )|
-||`\|ALEPH\|_a`| א :aleph-a : transfinite numbers of order a `A_a`, `A/_a`, `N_a`|
+||`\|ALEPH\|_a`| א :aleph-a : transfinite numbers of order a `A_a`, `A/_a`, `N_a` `ℵ_a`|
 ||`#a`|cardinality of a ; number of elements in a ( Lua, maths ) `\|a\|`|
 ||`P(a)`|    power set of a|
 |`+{}+` 5/JS || JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
