@@ -756,7 +756,7 @@ a/\b    SPECIALISED : "exterior product" "wedge sum"
 #### Angles
 ```
 L\      "right angled triangle" ?
-<)      "arc"?
+<)      "arc"? ∡    ∢
 (>
 
 <)abc   angle of points a,b,c
@@ -827,7 +827,7 @@ a''(x)  "a prime prime of x" : "second derivative of a, with respect to x
 
 a(x)=x' "x prime" : the result of a transformation
 
-\/      "nabla" : gradient in vector calculus
+\/      "nabla" : gradient in vector calculus ∇
 \/.     divergence : vector calculus
 \/x     curl : vector calculus
 ```
