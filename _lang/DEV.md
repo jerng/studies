@@ -86,8 +86,8 @@
 ||`<E>`|for SOME, there exists, existential quantification `∃`|
 ||`<E>!`|there exists exactly ONE, unique quantification `∃!`|
 |`order-N` `higher order` logics|e.g.|`<E>x<A>y:F(x) NAND B(y) AND <A>z:NOT Q(z) AND Y(x)` WARNING:NOT_SURE_IF_GOOD_MODEL|
-|`model logic`|`[]<E>x:P(x)`|it is possible that something has property P|
-||`<><E>x:P(x)`|it is necessary that something has property P|
+|`model logic`|`[]<E>x:P(x)`|it is necessary that something has property P `□` ; `modal` operator for “necessary”@`alethic`, “provable”@`provability`, “obligatory”@`deontic`, “believed”@`doxastic` ... `logics`|
+||`<><E>x:P(x)`|it is possible that something has property P `◇`; `~[]~` not necessarily not, in most modal logics|
 |`fn` ||sigil for quote ( as in Lisp `QUOTE` ) , may be conceptually sound : a function is just a block you quote now, and maybe run later|
 ||Signature only |`(name : TypeA TypeB TypeC TypeD)` <br> `fn name : TypeA TypeB TypeC TypeD end`|
 ||Function only |`(name : arg1 arg2 arg3 : body )` <br> `fn name : arg1 arg2 arg3 : body end`|
@@ -131,7 +131,7 @@
 ||Symbols used elsewhere|`<*` `*>` for *est* element-of boolean operator <br> `->` pattern-matched branching (`<-` is unused) <br> `<)` `(>` values of arc <br> `<(` `)>` function application <br> |
 ||`<%...%>`|`multi-line comment|
 |8|`<<...>>`|- bitstring syntax from Erlang <br> - WARNING : possible collision with `<<` `>>` for axial phrasing |
-||`<asm: ... :asm>|reserved for `assembly languages`|
+||`<asm: ... :asm>`|reserved for `assembly languages`|
 |`<qq:...:qq>`|Unassigned Symbols| `quote` : where qq is >1 character|
 |`<x>`||`symbol` not `quote` : where x is exactly 1 character|
 |`<xyz>`||`symbol` not `quote` :where x and z are not the same character; and y is >0 characters, none of which are `:`|
