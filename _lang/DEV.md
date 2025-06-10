@@ -57,7 +57,20 @@
 ||`3-/5`| viculum, 3rd root of 5 `√`|
 ||`a..b`|`a(+1)..b` `a(a=>a+1)..b` `a (+1) UNTIL b`|
 ||`++` `--`|`de/increment and return OR the converse` are sugar for `i=i+/-1`, `j=i;i=i+/11;j` ; the sugar INTRODUCES subtlety ... not sure if this is worth keeping; for example FP-style SSA just does away with this entirely|
-|`order-0` `propositional` `boolean` `bitwise` logics||`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
+|`bitwise operator prefix`|`@`|bitwise operations are `domain specific` given that they are mainly used in the computing context to regard `bits` and `bytes` and `words`. Here we avoid the conventional `\|` `&` `~` as these operators will be used in a more general context. Following the style of Erlang, bitwise operators all have a common prefix. [Swift docs are pretty](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/advancedoperators/). <br> - complicated : different operators in various languages are overloaded for different underlying data types|
+|`logical` `unsigned`|`@` `@OR`||
+||`@&` `@AND`||
+||`@~` `@NOT`||
+||`@^` `@XOR`||
+||`@&^` `@CLEAR`|See Golang `AND NOT` : `a &^ y = a & ~y`|
+||`@<` `@ULS`|left shift |
+||`@>` `@URS`|right shift|
+|`circular` `rotary`|`@@<` `@CLS`|left shift |
+||`@@>` `@CRS`|right shift|
+|`arithmetic` `signed`|`@$<` `@SLS`|left shift |
+||`@$>` `@SRS`|right shift|
+||``||
+|`order-0` `propositional` `boolean` logics||`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
 ||`a \| b`|common computing : `OR`, `a \/ b` vee|
 ||`a & b`|common computing : `AND`, `a /\ b` wedge|
 ||`~a`|common computing : `NOT`|
