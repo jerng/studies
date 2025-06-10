@@ -29,7 +29,10 @@
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
 ||`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `()` and `` `...` `` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - ``operand1 `dyadic_function` operand2`` *converts an ordinary dyadic function into an infix dyadic function* |
 |specified|`%%` `<%...%>`| comments |
-||` ` `\n` `\t`|-   `IFS`|
+||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
+|`\|` `:`|`analogs`|`where` `whereas` `such that` `onlyif` `and`|
+||`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `\|SIGMA\| \| \|alpha\|`, and will quit upon ambiguity|
+||`:`|`sloppy` : it is legal to introduce lexical ambiguity : lexer may introduce implied IFS, for example where `(:::)` expands to `(undefined:undefined:undefined:undefined)`. Therefore other design decisions about `:` should enable contextual deduction of missing IFS |
 ||`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
 ||`:atom`| literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. Potentially a parallel plane with variable names, i.e. as a quoted plane. |
 ||`_`|explicitly ignored `value`; `type`?|
@@ -95,6 +98,17 @@
 ||`a </= b` `b =/> a`|a is not a PROPER subset of b|
 ||`a <_= b` `b =_> a`|a is a subset of b|
 ||`a </_= b` `b =_/> a`|a is not a subset of b|
+||`{}`|empty set `(/)`|
+||`{a,b}`|a set containing elements a and b ( Cantor )|
+||`{a\|b(a)}`| set-builder notation; set of as defined by property b ( Cantor )|
+||`a'` |"a prime" : the complement of set a ( Cantor ) `a^c` ( Cantor )|
+||`a \|v\| b`|union of a and b|
+||`a \|^\| b`|intersection of a and b (Cantor)`a ^ b`, `a /\b`, `a /set\ b`|
+||`a /_\ b`|  "xor", "symmetric difference" of a,b; "elements in a, or b, but not not in both a and b"; "disjunction union" "set sum"`a \|del\| b`, `a (+) b`|
+||`\|omega\|` |  ω : "first finite ordinal"; order type of the natural numbers ( Cantor )|
+||`\|ALEPH\|_a`| א :aleph-a : transfinite numbers of order a `A_a`, `A/_a`, `N_a`|
+||`#a`|cardinality of a ; number of elements in a ( Lua, maths ) `\|a\|`|
+||`P(a)`|    power set of a|
 |`+{}+` 5/JS || JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
 |`+[]+` 6/JS ||JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`|
 |`*[]*` 7/JS || JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
@@ -477,19 +491,6 @@ uses auto-boxing to methodise immutable primitives. |
 |`a(=b`|`noncommutative`|`is implied by`|as above||
 |`a(/=b`|`noncommutative`|`fails to be implied by, logically`, `is not implied by`|as above||
 
-|Set Notation|Negation|Narration|Discarded Alternatives|
-|-|-|-|-|
-|`{}`||empty set|`(/)`|
-|`{a,b}`||a set containing elements a and b ( Cantor )|
-|`{a\|b(a)}`|| set-builder notation; set of as defined by property b ( Cantor )|
-|`a'` ||"a prime" : the complement of set a ( Cantor )|`a^c` ( Cantor )|
-|`a \|v\| b`||union of a and b|
-|`a \|^\| b`||intersection of a and b (Cantor)|`a ^ b`, `a /\b`, `a /set\ b`|
-|`a /_\ b`||  "xor", "symmetric difference" of a,b; "elements in a, or b, but not not in both a and b"; "disjunction union" "set sum"|`a \|del\| b`, `a (+) b`|
-|`\|omega\|` ||  ω : "first finite ordinal"; order type of the natural numbers ( Cantor )|
-|`\|ALEPH\|_a`|| א :aleph-a : transfinite numbers of order a|`A_a`, `A/_a`, `N_a`|
-|`#a`||cardinality of a ; number of elements in a ( Lua, maths )|`\|a\|`|
-|`P(a)`||    power set of a|
 
 |Binary Operators|
 |-|
