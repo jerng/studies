@@ -49,7 +49,7 @@
 ||`_`|`1_000_000` digit spacer, `mycube_[3]_[2]_[4]` `[13,44,22]_[0]` box-address spacer <br> WARNING:UNSURE_GOOD|
 ||`rune`|synonym for `Int32` in Golang|
 ||`byte`|synonym for `Uint8` in Golang|
-||`<)` `(>`| sigil for arc values |
+||`<)` `(>`| sigil for arc values `∡∢`|
 ||`$.`|sugar for the respective ASCII code point as an integer ( from Erlang )|
 ||`\|(algebraic entity)\|`| modulus, also `abs( algebraic entity)`; `()` are required to avoid collision with `\|ordinary_variable\|` |
 ||`3-/5`| viculum, 3rd root of 5 `√`|
