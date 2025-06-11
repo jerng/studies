@@ -48,13 +48,15 @@
 ||`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `\|SIGMA\| \| \|alpha\|`, and will quit upon ambiguity|
 |||- `{ x \| P(a) }` set builder notation <br> - `[ head \| tail ]` singly-linked-list notation <br> - `-[ head \| body \| tail ]-` doubly-linked-list notation
 ||`:`|`sloppy` : it is legal to introduce lexical ambiguity : lexer may introduce implied IFS, for example where `(:::)` expands to `(undefined:undefined:undefined:undefined)`, `(::::atom)` is `(undefined : undefined : undefined : :atom)`, and `(:::atom)` being ambiguous MAY hurl a lexing error, not being specified to, but out of charity. Therefore other design decisions about `:` should enable contextual deduction of missing IFS |
-|||- `fn name : signature : parameters : body end` `(:::)` function notation <br> `:valid_atom`|
+|||- `fn name : signature : parameters : body end` `(:::)` function notation <br> `:valid_atom` <br> - `+{ key : value }+` JS-eque POJO notation - <br> `<<value:size/typespecifierlist>>`|
 |specified|`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
-||`_`|explicitly ignored `value`; `type`?|
+||`_`|- explicitly ignored `value`;|
+||see `number` ||
 ||`=` `<-`|`Single Static Assignment`: LHS HANDLE points to a memory ADDRESS, whose FIRST AND ONLY value shall be RHS VALUE; ala maths ; assigns from RHS to LHS only|
 ||`:=`|`Destructive Assignment` : LHS HANDLE points to a memory ADDRESS, whose FIRST OR NEW value shall be RHS VALUE; ala ALGOL; disallow `=:` |
 ||`)=`|`Application & Destructive Reassignment` : LHS HANDLE points to a memory ADDRESS, whose NEW value shall be ( RHS FUNCTION applied to LHS's OLD value ); graphical reference to `)>` ; disallow `=(`|
-||`parent.child`| (valid_symbol)subscript, for subscoping : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JS, as opposed to `::` and `->` from C++|
+|`.`|`parent.child`| (valid_symbol)subscript, for subscoping : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JS, as opposed to `::` and `->` from C++|
+||see `number`||
 ||`!`|reserved for future use as a `communications operator` : from Erlang's messaging operator, but with diversified use to include `throwing exceptions`, etc.|
 ||`true`, `false`, `null`, `undefined`| four-logic|
 ||e.g. `\|SIGMA\| __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
@@ -165,7 +167,7 @@
 |`<q...q>`|Unassigned Symbols| `quote` : where q is a single character : `<!...!>` `<@...@>` `<#...#>` `<$...$>` `<%...%>` `<^...^>` `<&...&>` `<=...=>` `<_..._>` `<+...+>` `<]...[>` `<[...]>` `<{...}>` `<}...{>` `<\|...\|>` `<\.../>` `</...\>` `<"...">` `<'...'>` `<~...~>` `<?...?>` |
 ||Symbols used elsewhere|`<*` `*>` for *est* element-of boolean operator <br> `->` pattern-matched branching (`<-` is unused) <br> `<)` `(>` values of arc <br> `<(` `)>` function application <br> |
 ||`<%...%>`|`multi-line comment`|
-|8|`<<...>>`|- bitstring syntax from Erlang <br> - WARNING : possible collision with `<<` `>>` for axial phrasing |
+|8|`<<...>>`|- bitstring syntax from Erlang `<<value:size/typespecifierlist>>` <br> - WARNING : possible collision with `<<` `>>` for axial phrasing |
 ||`<asm: ... :asm>`|reserved for `assembly languages`|
 |`<qq:...:qq>`|Unassigned Symbols| `quote` : where qq is >1 character|
 |`<x>`||`symbol` not `quote` : where x is exactly 1 character|
