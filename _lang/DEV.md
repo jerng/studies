@@ -37,12 +37,11 @@
 |analogs|`,`| additive connotation, from English ( C family, Erlang, etc. )|
 ||`.`| terminal connotation, from English ( Prolog, Erlang, COBOL )|
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
-||`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `()` and `` `...` `` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - ``operand1 `dyadic_function` operand2`` *converts an ordinary dyadic function into an infix dyadic function* |
-|specified|`%%...EOL` `<%...%>`| comments |
-|`quotes`|unassigned |``         `` `   '...'   ` `   "..."   ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `'''...'''` `"""..."""` <br> - also see, Data Structures, particularly the `<q...q>` namespace|
-|`` `...` ``|`JS's template literal strings`|- the implementation of strings is not yet defined; it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
-||||
-||||
+|specified|`%%...EOL` `<%...%>`| comments | 
+|`quotes`|unassigned |``   `...`   `` `         ` `         ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `'''...'''` `"""..."""` <br> - also see, Data Structures, particularly the `<q...q>` namespace|
+||`` '...' `` <br> ala JS template literal strings|- `\'` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
+||`"..."` <br> lexical modifier| - `a infixFunction b c` can be converted to prefix such that `"infixFunction" a b c` <br> - `prefixFunction a b` can be converted to infix such that `a "prefixFunction" b` <br> - Haskell uses two separate operators for this, `(infixFunction)` `` `prefixFunction` ``|
+|||- other uses?|
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
 |`\|` `:`|`analogs`|`where` `whereas` `such that` `onlyif` `and`|
 |`\|` `:`|`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `\|SIGMA\| \| \|alpha\|`, and will quit upon ambiguity|
