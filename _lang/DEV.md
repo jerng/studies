@@ -39,11 +39,12 @@
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
 |specified|`%%...EOL` `<%...%>`| comments | 
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
-|`quotes`|unassigned |``   `...`   `` `         ` `         ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `         ` `"""..."""` <br> - also see, Data Structures, particularly the `<q...q>` namespace|
+|`quotes`|unassigned |``   `...`   `` `         ` `         ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `         ` `"""..."""`|
 ||`'...'` <br> ala JS template literal strings|- single quotes : `\'` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
 ||`'''...'''`|- triple-single quotes : `indentation aware` see Erlang's triple quotes ( or other fancy features )|
 ||`"..."` <br> lexical modifier| - `a infixFunction b c` can be converted to prefix such that `"infixFunction" a b c` <br> - `prefixFunction a b` can be converted to infix such that `a "prefixFunction" b` <br> - Haskell uses two separate operators for this, `(infixFunction)` `` `prefixFunction` ``|
 |||- other uses?|
+||see `data structures`|- `(...)` `{...}` `[...]` `-[...]-` `+{...}+` `+[...]+` `*[...]*` <br> - `<` namespace : `<qr:...:qr>` form, `<q...q>` form, `<x>` form, `<xyz>` form |
 |`\|` `:`|`analogs`|`where` `whereas` `such that` `onlyif` `and`|
 ||`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `\|SIGMA\| \| \|alpha\|`, and will quit upon ambiguity|
 |||- `{ x \| P(a) }` set builder notation <br> - `[ head \| tail ]` singly-linked-list notation <br> - `-[ head \| body \| tail ]-` doubly-linked-list notation
@@ -51,12 +52,12 @@
 |||- `fn name : signature : parameters : body end` `(:::)` function notation <br> `:valid_atom` <br> - `+{ key : value }+` JS-eque POJO notation - <br> `<<value:size/typespecifierlist>>`|
 |specified|`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
 ||`_`|- explicitly ignored `value`;|
-||see `number` ||
+|||- see `number` |
 ||`=` `<-`|`Single Static Assignment`: LHS HANDLE points to a memory ADDRESS, whose FIRST AND ONLY value shall be RHS VALUE; ala maths ; assigns from RHS to LHS only|
 ||`:=`|`Destructive Assignment` : LHS HANDLE points to a memory ADDRESS, whose FIRST OR NEW value shall be RHS VALUE; ala ALGOL; disallow `=:` |
 ||`)=`|`Application & Destructive Reassignment` : LHS HANDLE points to a memory ADDRESS, whose NEW value shall be ( RHS FUNCTION applied to LHS's OLD value ); graphical reference to `)>` ; disallow `=(`|
-|`.`|`parent.child`| (valid_symbol)subscript, for subscoping : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JS, as opposed to `::` and `->` from C++|
-||see `number`||
+||`.`|- `parent.child`: (valid_symbol)subscript, for subscoping : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JS, as opposed to `::` and `->` from C++|
+|||-see `number`||
 ||`!`|reserved for future use as a `communications operator` : from Erlang's messaging operator, but with diversified use to include `throwing exceptions`, etc.|
 ||`true`, `false`, `null`, `undefined`| four-logic|
 ||e.g. `\|SIGMA\| __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
@@ -169,7 +170,7 @@
 ||`<%...%>`|`multi-line comment`|
 |8|`<<...>>`|- bitstring syntax from Erlang `<<value:size/typespecifierlist>>` <br> - WARNING : possible collision with `<<` `>>` for axial phrasing |
 ||`<asm: ... :asm>`|reserved for `assembly languages`|
-|`<qq:...:qq>`|Unassigned Symbols| `quote` : where qq is >1 character|
+|`<qr:...:qr>`|Unassigned Symbols| `quote` : where qr is >1 character|
 |`<x>`||`symbol` not `quote` : where x is exactly 1 character|
 |`<xyz>`||`symbol` not `quote` :where x and z are not the same character; and y is >0 characters, none of which are `:`|
 
