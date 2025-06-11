@@ -20,7 +20,7 @@
          -   `Erlang's lexical style` ( desc. Prolog )
          -   `Haskell's currying semantics` ( desc. ML, ? )
          -   `C++'s containerisation flexibility` ( desc. C )
-         -   `Idioms of utility` from : `JavaScript, Python, J ( desc. APL )`
+         -   `Idioms of utility` from : `JavaScript, Python, Erlang, J ( desc. APL )`
          -   `Manual memory` management : this is far, far away from the present, but I guess we should consider how `C++ and Rust` do things
      -   STRATEGY :
          -   `define lexing rules at the top-level context`,
@@ -38,7 +38,11 @@
 ||`.`| terminal connotation, from English ( Prolog, Erlang, COBOL )|
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
 ||`` `backticks` ``| may be a common LEXICAL ( avoid semantic mangling ) idiom ( because Haskell uses `()` and `` `...` `` to flip `infix and ordinary` lexical operand positioning for function application ); <br> - ``operand1 `dyadic_function` operand2`` *converts an ordinary dyadic function into an infix dyadic function* |
-|specified|`%%` `<%...%>`| comments |
+|specified|`%%...EOL` `<%...%>`| comments |
+|`quotes`|unassigned |``         `` `   '...'   ` `   "..."   ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `'''...'''` `"""..."""` <br> - also see, Data Structures, particularly the `<q...q>` namespace|
+|`` `...` ``|`JS's template literal strings`|- the implementation of strings is not yet defined; it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
+||||
+||||
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
 |`\|` `:`|`analogs`|`where` `whereas` `such that` `onlyif` `and`|
 |`\|` `:`|`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `\|SIGMA\| \| \|alpha\|`, and will quit upon ambiguity|
