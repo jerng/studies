@@ -897,7 +897,9 @@ end
 # Lexing Algorithm
 
 1.  Let there be variables :
-    -   wm : working memory : initialised to an empty string
-    -   tt : token tree : initialised to an empty graph
+    -   `wm` : working memory : initialised to an empty string
+    -   `tt` : token tree : initialised to an empty graph
 2.  Let there be a data source :
-3.        
+    -   `sc` : source code
+3.  Characters read from `sc` shall be written to `wm` one by one
+4.          
