@@ -938,7 +938,7 @@ end
              -   second, only if the `rt` : recognised token : is a `cb` : context beginning
                  -   then
                      -   move `cpt` to point to the new node
-                     -   and, push a corresponding `eoe` upon the `soe
+                     -   and, push a corresponding `eoe` upon the `soe`
              -   clear `wm`, and read the next `character` from `sc`
                  
 7.  If the first `non-IFS` character read is `(`
