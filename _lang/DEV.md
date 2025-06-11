@@ -897,9 +897,54 @@ end
 # Lexing Algorithm
 
 1.  Let there be variables :
-    -   `wm` : working memory : initialised to an empty string
-    -   `tt` : token tree : initialised to an empty graph
-2.  Let there be a data source :
+    -   `wm` : a working memory : initialised to an empty string
+    -   `tt` : a token tree : initialised to an empty graph, with one `rn` : root node
+2.  To maintain an account of the `tt`'s state, let there be
+    -   `soe` : a stack of expectations, upon which `eoe` : expectations of ending are pushed  
+    -   `cpt` : a pointer to the current parent token : initialised to point to the `rn` 
+4.  Let there be a data source :
     -   `sc` : source code
-3.  Characters read from `sc` shall be written to `wm` one by one
-4.          
+      
+5.  `Characters` read from `sc` shall be written to `wm` one by one
+
+<% the first pass is to 
+     (i) recognise tokens 
+     (ii) reject unrecognised tokens 
+     (iii) reject mismatched opening and closing tokens 
+               ... however, it is not yet clear if this is possible without 
+                    deeper semantic parsing
+     %>
+
+6.  Evaluate `wm` after each `character` is read, to branch upon
+    -   identification of
+        -   a `token beginning`
+        -   a `token ending`
+        -   any `error`, which may be
+            -   an `unrecognised character`
+            -   an `ecrt`(A) which has no corresponding `eoe` at the TOP of the `soe`
+            -   an exhaustion of `sc`'s characters while there remain any `eoe` upon the `soe`,
+                 with the exception of an `eoe` created implicitly when the first non-IFS character
+                 of `sc` was `(`
+    -   where the types of recognised `character` are
+        -   `bcrt` : beginning `character` of a recognised token
+             -   if this character is known as its own `ecrt`,
+                 -   then GOTO the `ecrt` procedure below
+                 -   otherwise, read the next character from `sc`
+        -   `icrt` : intermediate character of a recognised token
+             -   this must be checked against `wm` and a whole bunch of rules
+        -   `ecrt` : ending character of a recognised token(A)
+             -   first, append to `cpt`'s children a new node,
+                      corresponding to the newly recognised token 
+             -   second, only if the `rt` : recognised token : is a `cb` : context beginning
+                 -   then
+                     -   move `cpt` to point to the new node
+                     -   and, push a corresponding `eoe` upon the `soe
+             -   clear `wm`, and read the next `character` from `sc`
+                 
+7.  If the first `non-IFS` character read is `(`
+    -   then
+        -   create an `eoc` upon the `soe`
+        -   clear `wm`
+    -   otherwise, proceed as usual
+      
+8.  
