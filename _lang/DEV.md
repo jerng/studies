@@ -893,3 +893,11 @@ end
                -   `for a, change a, do {} until b `
            -   `for key in/of b do {}`
                -   `for value in/of b do {}`
+
+# Lexing Algorithm
+
+1.  Let there be variables :
+    -   wm : working memory : initialised to an empty string
+    -   tt : token tree : initialised to an empty graph
+2.  Let there be a data source :
+3.        
