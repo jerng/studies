@@ -807,7 +807,10 @@ i.e. applying a function /1,2 to arguments /3,
      is it further reduceable? not sure!
 
 (i)
-( PARAMETERS /1 ){ UNPARAMETERISED_BLOCK /2 }
+UNPARAMETERISED_BLOCK /1
+     <=> ADDRESS_OF_INSTRUCTIONS_IN_MEMORY
+(i)
+( PARAMETERS /1 ){ UNPARAMETERISED_BLOCK }
      <=> PARAMETERISED_BLOCK
      <=> SUB/PROCEDURE
      <=> SUB/ROUTINE
@@ -835,6 +838,8 @@ E0     Define Class
 E0N    > Define Sub Classes
 E1     > Instantiate Object, with ENV     : let E(1) in construction
 E2     > Apply Method, with ENV           : let E(2) in application
+
+
 
 
 ```   
