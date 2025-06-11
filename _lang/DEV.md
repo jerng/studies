@@ -2,7 +2,11 @@
 
 ## Latest
 
--    UNDONE : [`APL/J analogues`](https://code.jsoftware.com/wiki/NuVoc), `proof assistant features / go read about it`
+-    UNDONE :
+     -     [`APL/J analogues`](https://code.jsoftware.com/wiki/NuVoc), `proof assistant features / go read about it`
+     -     |General error||
+     -     |`let ... in ... ` `... where ...`||`to be unified with a bind syntax`|
+     -     |[`BNF`](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)||Context-free grammar notations|
 -    UNASSIGNED : 
      |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
@@ -123,9 +127,6 @@
 |`selection`|simple `if`|`if expression : branch_if_true : branch_if_false end`|
 ||complex `if`|`case expression : pattern and condition -> branch_if_matched : default_branch end `|
 ||||
-|TODO |||
-|General error||
-|`let ... in ... ` `... where ...`||`to be unified with a bind syntax`|
 ||||
 ||||
 |Data Structures|Unassigned Symbols | RULE : symmetrical opening/ closing tags <br> `    ` `-{}-` `*{}*` `#{}#` `... @$%^` <br>  `    ` `    ` `    ` `#[]#` `... @$%^`<br> `    ` `-()-` `*()*` `#()#` `... @$%^` <br> `    ` `-<>-` `*<>*` `#<>#` `... @$%^`
