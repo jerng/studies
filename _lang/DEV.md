@@ -827,6 +827,12 @@ NAMESPACE.OBJECT.METHOD /1,2
      <- PARAMETERISED_BLOCK
 
 
+E0     Define Class
+E0N    > Define Sub Classes
+E1     > Instantiate Object, with ENV     : let E(1) in construction
+E2     > Apply Method, with ENV           : let E(2) in application
+
+
 ```   
 
 # Selection
