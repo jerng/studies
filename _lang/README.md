@@ -226,6 +226,7 @@ a(x)b       multiplication "matmul"
 
 a(x)b   "cross product", "vector product" : a vector
         (Wilson 1902, vector analysis)
+        tensor product
 [a,b]   older notation
 
 a(.)b   "dot product", "scalar product" : a scalar
@@ -282,6 +283,9 @@ Maybe   type is used to wrap question marks
 #### blocks / subroutines / functions / procedures / methods
 
 ```
+classes, objects, methods    ( Simula 1962 )
+
+
 applicative style : bound execution, function style, applicative style, excel style, Euler 1734, FORTRAN 1957
 e = c(b(a))(d)
 
@@ -383,6 +387,7 @@ a,b,c;      ( C, JavaScript )
 
 do loop                                    ( FORTRAN 1957 )
 let / do / until / while / for to do       ( BCPL 1966 )
+let                                        ( BASIC 1964 )
 
 a?b             if a then b
 
@@ -455,6 +460,22 @@ a>@b    shift bits in a, right by b positions, rotationally / circularly
 aROTRb
 a>>>b   unsigned right shift ( Java )
 
+logical / unsigned	
+@ @OR	
+@& @AND	
+@~ @NOT	
+@^ @XOR	
+@&^ @CLEAR	See Golang AND NOT : a &^ y = a & ~y
+@< @ULS	left shift
+@> @URS	right shift
+
+circular / rotary	
+@@< @CLS	left shift
+@@> @CRS	right shift
+
+arithmetic / signed	
+@$< @SLS	left shift
+@$> @SRS	right shift
 ```
 
 #### Logic
@@ -572,9 +593,8 @@ a.a=)b.=)b  inference by modus ponens
 -    `order-N logic`, `higher order logic` :
      -    `<E>x<A>y:F(x) NAND B(y) AND <A>z:NOT Q(z) AND Y(x)` WARNING:NOT_SURE_IF_GOOD_MODEL
 -    `model logic`
-     -    `[]<E>x:P(x)` it is possible that something has property P   
-     -    `<><E>x:P(x)` it is necessary that something has property P   
-
+model logic	[]<E>x:P(x)	it is necessary that something has property P □ ; modal operator for “necessary”@alethic, “provable”@provability, “obligatory”@deontic, “believed”@doxastic ... logics
+<><E>x:P(x)	it is possible that something has property P ◇; ~[]~ not necessarily not, in most modal logics
 
 ```
 
@@ -702,6 +722,7 @@ https://mathshistory.st-andrews.ac.uk/Miller/mathsym/operation/
 
 RANGE NOTATION
 
+a=b     equality ( 1557 Recorde )
 
 (a+b)*c precedence grouping ( HOW TO RECTIFY WITH TUPLES ? ) 
                 ( 1544 Stifel )
