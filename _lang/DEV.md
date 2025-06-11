@@ -46,7 +46,7 @@
 |||- other uses?|
 |`\|` `:`|`analogs`|`where` `whereas` `such that` `onlyif` `and`|
 ||`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `\|SIGMA\| \| \|alpha\|`, and will quit upon ambiguity|
-|||- `{ x \| P(a) }` set builder notation <br> - `[ head \| tail ]` singly-linked-list notation <br> - `-[ head \| body \| tail ]- `doubly-linked-list notation
+|||- `{ x \| P(a) }` set builder notation <br> - `[ head \| tail ]` singly-linked-list notation <br> - `-[ head \| body \| tail ]-` doubly-linked-list notation
 ||`:`|`sloppy` : it is legal to introduce lexical ambiguity : lexer may introduce implied IFS, for example where `(:::)` expands to `(undefined:undefined:undefined:undefined)`, `(::::atom)` is `(undefined : undefined : undefined : :atom)`, and `(:::atom)` being ambiguous MAY hurl a lexing error, not being specified to, but out of charity. Therefore other design decisions about `:` should enable contextual deduction of missing IFS |
 |||- `fn name : signature : parameters : body end` `(:::)` function notation |
 |specified|`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
