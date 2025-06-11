@@ -38,11 +38,12 @@
 ||`.`| terminal connotation, from English ( Prolog, Erlang, COBOL )|
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
 |specified|`%%...EOL` `<%...%>`| comments | 
-|`quotes`|unassigned |``   `...`   `` `         ` `         ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `'''...'''` `"""..."""` <br> - also see, Data Structures, particularly the `<q...q>` namespace|
-||`` '...' `` <br> ala JS template literal strings|- `\'` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
+||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
+|`quotes`|unassigned |``   `...`   `` `         ` `         ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `         ` `"""..."""` <br> - also see, Data Structures, particularly the `<q...q>` namespace|
+||`'...'` <br> ala JS template literal strings|- single quotes : `\'` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
+||`'''...'''`|- triple-single quotes : `indentation aware` see Erlang's triple quotes ( or other fancy features )|
 ||`"..."` <br> lexical modifier| - `a infixFunction b c` can be converted to prefix such that `"infixFunction" a b c` <br> - `prefixFunction a b` can be converted to infix such that `a "prefixFunction" b` <br> - Haskell uses two separate operators for this, `(infixFunction)` `` `prefixFunction` ``|
 |||- other uses?|
-||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
 |`\|` `:`|`analogs`|`where` `whereas` `such that` `onlyif` `and`|
 ||`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `\|SIGMA\| \| \|alpha\|`, and will quit upon ambiguity|
 ||`:`|`sloppy` : it is legal to introduce lexical ambiguity : lexer may introduce implied IFS, for example where `(:::)` expands to `(undefined:undefined:undefined:undefined)`, `(::::atom)` is `(undefined : undefined : undefined : :atom)`, and `(:::atom)` being ambiguous MAY hurl a lexing error, not being specified to, but out of charity. Therefore other design decisions about `:` should enable contextual deduction of missing IFS |
@@ -102,18 +103,18 @@
 ||`@@>` `@CSR`|right shift|
 |`arithmetic` `signed`|`@$<` `@SSL`|left shift |
 ||`@$>` `@SSR`|right shift|
-|`order-0` `propositional` `boolean` logics|consider : overload with `operational` logic words|`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
-||`a \| b` ` `|`OR`, `a \/ b` vee|
-||`a & b` ` `|`AND`, `a /\ b` wedge|
-||`~a` ` `|`NOT`|
-||`a </> b` ` ` |not equivalent, `a \/_ b` `⊻` veebar, `a (+) b` oplus,`XOR`|
-||`a <=> b` ` ` |equivalent, `a IFF b` if and only if |
-||`a <= b` ` `|a because b, `a -\| b`, `a \./ b` `∵`| 
-||`a </= b` ` `|a not because b, `a -/\| b` | 
-||`a => b` ` `|a therefore b, `a \|- b`, `a /.\ b` `IMPLY` `∴`|
-||`a =/> b` ` `|a does not imply b, `a \|/- b` `NIMPLY`|
-||`_\|_` ` ` |bottom, `false`, `F`|
-||`^\|^` ` ` |top, `true`, `T`|
+|`order-0` `propositional` `boolean` logics|truth tables?|`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
+||`a \| b` `OR`|`a \/ b` vee|
+||`a & b` `AND`|`a /\ b` wedge|
+||`~a` `NOT`||
+||`a </> b` ?`UNLESS` |not equivalent, `a \/_ b` `⊻` veebar, `a (+) b` oplus|
+||`a <=> b` `IFF` |equivalent, `a IFF b` if and only if |
+||`a <= b` `BECAUSE`|a because b, `a -\| b`, `a \./ b` `∵`| 
+||`a </= b` ?`DESPITE`|a not because b, `a -/\| b` | 
+||`a => b` `THEREFORE`|a therefore b, `a \|- b`, `a /.\ b` `IMPLY` `∴`|
+||`a =/> b` ?`NEVERTHELESS`|a does not imply b, `a \|/- b` `NIMPLY`|
+||`_\|_` `FALSE` |bottom, `false`, `F`|
+||`^\|^` `TRUE` |top, `true`, `T`|
 |`order-1` `predicate` logics|e.g.|`<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`|
 ||`<A>`|for ALL, all, universal quantification, `\-/` `∀`|
 ||`<E>`|for SOME, there exists, existential quantification `∃`|
