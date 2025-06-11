@@ -4,10 +4,10 @@
 
 -    UNDONE : [`APL/J analogues`](https://code.jsoftware.com/wiki/NuVoc), `proof assistant features / go read about it`
 -    UNASSIGNED : 
-     |``|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
+     |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
-     |`\|-> <-\|`|`\|=> <=\|`|`:-> <-:`|``|``|
-     |`;`|`\|\|`|`&&`|`::`|``|
+     |`\|-> <-\|`|`\|=> <=\|`|`:-> <-:`|` `|` `|
+     |`;`|`\|\|`|`&&`|`::`|` `|
 -    BROADLY :
      -   IMPLEMENTATION STRATEGY :
          -   Stage 1 : `JavaScript`
