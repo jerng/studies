@@ -146,7 +146,7 @@
 |`[]` 2/LL || singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]` |
 |`-[]-` 3/LL || doubly linked lists, `cpp std::list` |
 |`{}` 4||ZFC sets, `cpp std::unordered_set`, CONSIDER : builder notation <br>  -   `{ x \| predicate(x) }`  <br> -   `{ expression(x) FOR x IN iterable WHERE }` <br>  -   `{ x<e<N~0> \| x<10 /\ x/%2==0 }` <br> -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }` <br> `{ x \| x <e N and x modulo 2 = 0 }`|
-||`a <* b` `b *> a`|a is an element of b, derived from `<e` epsilon for *est* element-of boolean operator, Peano `∈ ∋` |
+||`a <* b` `b *> a`|a is an element of b, derived from `<e` epsilon for *Latin : est* "is a" element-of boolean operator, Peano `∈ ∋` |
 ||`a </* b` `b */> a`|a is not an element of b `∉ ∌`|
 ||`a <= b` `b => a`|a is a PROPER subset of b `⊂ ⊃` |
 ||`a </= b` `b =/> a`|a is not a PROPER subset of b `⊄ ⊅`|
