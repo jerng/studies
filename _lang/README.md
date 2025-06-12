@@ -628,7 +628,7 @@ PROPER :
 
 a(=b    a is a subset of b; b is a superset of a
 a(set b ?
-a <e b          ( for Peano's epsilon, est, Latin: the entire work )
+a <e b          ( for Peano's epsilon, est, Latin: "is a" / "the entire work" )
 
 a (/= b
 a ~(= b
