@@ -65,7 +65,8 @@
 ||e.g. `\|SIGMA\| __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
 ||`addr_of_data <(x)`|unambiguous indirection to data|
-|charsets|`valid_symbol` `:valid_atom` |- `[\|a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlangism), and `[\|@a-zA-Z0-9]` last character <br> - symbols beginning with `\|` must have a minimum of `3` characters <br> - OK : `a` `\|aa` `\|a\|` `a\|` `a_b` `a@` `a0` <br> - ERROR : `\|a` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
+|charsets|`valid_symbol` `:valid_atom` |- `!!! @ collides with bitwise operators !!!` `[\|a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlangism), and `[\|@a-zA-Z0-9]` last character <br> - symbols beginning with `\|` must have a minimum of `3` characters <br> - OK : `a` `\|aa` `\|a\|` `a\|` `a_b` `a@` `a0` <br> - ERROR : `\|a` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
+|`ASCII -IPA`|||
 ||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` other characters (Erlang rules)
 |numbers||`base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada|
 ||`rune`|synonym for `Int32` in Golang|
