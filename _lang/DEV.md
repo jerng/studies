@@ -8,6 +8,7 @@
      -     |`let ... in ... ` `... where ...`||`to be unified with a bind syntax`|
      -     |[`BNF`](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)||Context-free grammar notations|
      -     | data type implementation transparency|
+     -     `hwloc` vs `data structure configuration`
 -    UNASSIGNED : 
      |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
