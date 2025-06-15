@@ -48,7 +48,7 @@
 |||- other uses?|
 ||see `data structures`|- `(...)` `{...}` `[...]` `-[...]-` `+{...}+` `+[...]+` `*[...]*` <br> - `<` namespace : `<qr:...:qr>` form, `<q...q>` form, `<x>` form, `<xyz>` form |
 |`\|` `:`|`analogs`|`where` `whereas` `such that` `onlyif` `and`|
-||`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `\|SIGMA\| \| \|alpha\|`, and will quit upon ambiguity|
+||`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `(TODO : example)`, and will quit upon ambiguity|
 |||- `{ x \| P(a) }` set builder notation <br> - `[ head \| tail ]` singly-linked-list notation <br> - `-[ head \| body \| tail ]-` doubly-linked-list notation
 ||`:`|`sloppy` : it is legal to introduce lexical ambiguity : lexer may introduce implied IFS, for example where `(:::)` expands to `(undefined:undefined:undefined:undefined)`, `(::::atom)` is `(undefined : undefined : undefined : :atom)`, and `(:::atom)` being ambiguous MAY hurl a lexing error, not being specified to, but out of charity. Therefore other design decisions about `:` should enable contextual deduction of missing IFS |
 |||- `fn name : signature : parameters : body end` `(:::)` function notation <br> `:valid_atom` <br> - `+{ key : value }+` JS-eque POJO notation - <br> `<<value:size/typespecifierlist>>` <br>- `<qr:...:qr>` form |
@@ -63,7 +63,7 @@
 |||-see `number`||
 ||`!`|reserved for future use as a `communications operator` : from Erlang's messaging operator, but with diversified use to include `throwing exceptions`, etc.|
 ||`true`, `false`, `null`, `undefined`| four-logic|
-||e.g. `\|SIGMA\| __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
+||e.g. `` `SIGMA` __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
 ||`addr_of_data <(x)`|unambiguous indirection to data|
 |charsets|`valid_symbol` `:valid_atom` |- `!!! @ collides with bitwise operators !!!` `[\|a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlangism), and `[\|@a-zA-Z0-9]` last character <br> - symbols beginning with `\|` must have a minimum of `3` characters <br> - OK : `a` `\|aa` `\|a\|` `a\|` `a_b` `a@` `a0` <br> - ERROR : `\|a` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
@@ -124,8 +124,8 @@
 ||`a =/> b` ?`NEVERTHELESS`|a does not imply b, `a \|/- b` `NIMPLY`|
 ||`_\|_` `FALSE` |bottom, `false`, `F`|
 ||`^\|^` `TRUE` |top, `true`, `T`|
-||`|-`|single turnstyle|
-||`|=`|double turnstyle ( [difference](https://www.quora.com/What-is-the-difference-between-Turnstile-and-double-Turnstile-in-Logic) ) |
+||`\|-`|single turnstyle|
+||`\|=`|double turnstyle ( [difference](https://www.quora.com/What-is-the-difference-between-Turnstile-and-double-Turnstile-in-Logic) ) |
 |`order-1` `predicate` logics|e.g.|`<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`|
 ||`<A>`|for ALL, all, universal quantification, `\-/` `∀`|
 ||`<E>`|for SOME, there exists, existential quantification `∃`|
@@ -164,8 +164,8 @@
 ||`a \|_\| b`|union of a and b `∪`|
 ||`a \|^\| b`|intersection of a and b (Cantor)`a ^ b`, `a /\ b`, `a /set\ b` `∩`|
 ||`a /_\ b`|  "xor", "symmetric difference" of a,b; "elements in a, or b, but not not in both a and b"; "disjunction union" "set sum"`a \|del\| b`, `a (+) b` `△`|
-||`\|omega\|` |  ω : "first finite ordinal"; order type of the natural numbers ( Cantor )|
-||`\|ALEPH\|_a`| א :aleph-a : transfinite numbers of order a `A_a`, `A/_a`, `N_a` `ℵ_a`|
+||`` `omega` `` |  ω : "first finite ordinal"; order type of the natural numbers ( Cantor )|
+||`` `ALEPH`_a ``| א :aleph-a : transfinite numbers of order a `A_a`, `A/_a`, `N_a` `ℵ_a`|
 ||`#a`|cardinality of a ; number of elements in a ( Lua, maths ) `\|a\|`|
 ||`P(a)`|    power set of a|
 |`+{}+` 5/JS || JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
@@ -315,43 +315,43 @@ Being very literal :
 
 |Code|Glyphs|Predefined
 |-|-|-|
-|`\|ALPHA\|`,`\|alpha\|`|Αα|
-|`\|BETA\|`,`\|beta\|`|Ββ|
-|`\|GAMMA\|`,`\|gamma\|`|Γγ|γ is Euler's constant ( Julia )|
-|`\|DELTA\|`,`\|dekta\|`|Δδ|
-|`\|EPSILON\|`,`\|epsilon\|`|Εε|
-|`\|ZETA\|`,`\|zeta\|`|Ζζ|
-|`\|ETA\|`,`\|eta\|`|Ηη|
-|`\|THETA\|`,`\|theta\|`|Θθ|
-|`\|IOTA\|`,`\|iota\|`|Ιι|
-|`\|KAPPA\|`,`\|kappa\|`|Κκ|
-|`\|LAMBDA\|`,`\|lambda\|`|Λλ|
-|`\|MU\|`,`\|mu\|`|Μμ|
-|`\|NU\|`,`\|nu\|`|Νν|
-|`\|XI\|`,`\|xi\|`|Ξξ|
-|`\|OMICRON\|`,`\|omicron\|`|Οο|
-|`\|PI\|`,`\|pi\|`|Ππ|π is Archimedes' constant ( Julia )|
-|`\|RHO\|`,`\|rho\|`|Ρρ|
-|`\|SIGMA\|`,`\|sigma\|`|Σσς|
-|`\|TAU\|`,`\|tau\|`|Ττ|
-|`\|UPSILON\|`,`\|upsilon\|`|Υυ|
-|`\|PHI\|`,`\|phi\|`|Φφ|φ is golden ratio ( Julia )|
-|`\|CHI\|`,`\|chi\|`|Χχ|
-|`\|PSI\|`,`\|psi\|`|Ψψ|
-|`\|OMEGA\|`,`\|omega\|`|Ωω|
+|`` `ALPHA` ``,`` `alpha` ``|Αα|
+|`` `BETA` ``,`` `beta` ``|Ββ|
+|`` `GAMMA` ``,`` `gamma` ``|Γγ|γ is Euler's constant ( Julia )|
+|`` `DELTA` ``,`` `dekta` ``|Δδ|
+|`` `EPSILON` ``,`` `epsilon` ``|Εε|
+|`` `ZETA` ``,`` `zeta` ``|Ζζ|
+|`` `ETA` ``,`` `eta` ``|Ηη|
+|`` `THETA` ``,`` `theta` ``|Θθ|
+|`` `IOTA` ``,`` `iota` ``|Ιι|
+|`` `KAPPA` ``,`` `kappa` ``|Κκ|
+|`` `LAMBDA` ``,`` `lambda` ``|Λλ|
+|`` `MU` ``,`` `mu` ``|Μμ|
+|`` `NU` ``,`` `nu` ``|Νν|
+|`` `XI` ``,`` `xi` ``|Ξξ|
+|`` `OMICRON` ``,`` `omicron` ``|Οο|
+|`` `PI` ``,`` `pi` ``|Ππ|π is Archimedes' constant ( Julia )|
+|`` `RHO` ``,`` `rho` ``|Ρρ|
+|`` `SIGMA` ``,`` `sigma` ``|Σσς|
+|`` `TAU` ``,`` `tau` ``|Ττ|
+|`` `UPSILON` ``,`` `upsilon` ``|Υυ|
+|`` `PHI` ``,`` `phi` ``|Φφ|φ is golden ratio ( Julia )|
+|`` `CHI` ``,`` `chi` ``|Χχ|
+|`` `PSI` ``,`` `psi` ``|Ψψ|
+|`` `OMEGA` ``,`` `omega` ``|Ωω|
 ||
-|`\|ALEPH\|`|א| ALEPH is the base for transfinite numbers|
-|`\|e\|`|e|Euler's number, Napier's constant ( Julia )|
-|`\|G\|`|G|Catalan's constant ( Julia )|
-|`\|infinity\|`|∞|
-|`\|NaN\|`|IEEE 754 ( 1985 )|
+|`` `ALEPH` ``|א| ALEPH is the base for transfinite numbers|
+|`` `e` ``|e|Euler's number, Napier's constant ( Julia )|
+|`` `G` ``|G|Catalan's constant ( Julia )|
+|`` `infinity` ``|∞|
+|`` `NaN` ``|IEEE 754 ( 1985 )|
 ||
 |Consider : ||runes, Arabic letters, other Hebrew letters, Old Italic Scripts ( various adapted from antiquity , International Phonetic Alphabet |
-|`\|\|`,`\|\|`|Ææ|"air" in Englishy : from Dannish / Norwegian alphabet |
-|`\|\|`,`\|\|`|Øø|"oohr" in Englishy : Dannish / Norwegian alphabet|
-|`\|\|`,`\|\|`|
-|`\|\|`,`\|\|`|
-|`\|\|`,`\|\|`|
+|`` ` ` ``,`` ` ` ``|Ææ|"air" in Englishy : from Dannish / Norwegian alphabet |
+|`` ` ` ``,`` ` ` ``|Øø|"oohr" in Englishy : Dannish / Norwegian alphabet|
+|`` ` ` ``,`` ` ` ``|
+|`` ` ` ``,`` ` ` ``|
+|`` ` ` ``,`` ` ` ``|
 
 ### Lexical Structures
 
@@ -450,16 +450,16 @@ visual mocks :
 [0..5|SUM|i^i+1]
 
 %% Maths :
-|SIGMA|__0^^5>>i^i+i
-|SIGMA|__'0'^^'5'>>'i^i+i'
-|SIGMA|__(i,0)^^(i,5)>>'i^i+i'
-|SIGMA|__'i=0'^^'i=5'>>'i^i+i'
-|SIGMA|__(i,=,0)^^(i,=,5)>>((i,^,i),+,i)
-|SIGMA|__(i,'=',0)^^(i,=,5)>>(('i',^,'i'),+,'i')
+`SIGMA`__0^^5>>i^i+i
+`SIGMA`__'0'^^'5'>>'i^i+i'
+`SIGMA`__(i,0)^^(i,5)>>'i^i+i'
+`SIGMA`__'i=0'^^'i=5'>>'i^i+i'
+`SIGMA`__(i,=,0)^^(i,=,5)>>((i,^,i),+,i)
+`SIGMA`__(i,'=',0)^^(i,=,5)>>(('i',^,'i'),+,'i')
 
 %% Markdown :
 ||5
-||SIGMA|i^i+1
+|`SIGMA`i^i+1
 ||0
 
 %% Markdown Pattern :
