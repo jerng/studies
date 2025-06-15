@@ -124,6 +124,8 @@
 ||`a =/> b` ?`NEVERTHELESS`|a does not imply b, `a \|/- b` `NIMPLY`|
 ||`_\|_` `FALSE` |bottom, `false`, `F`|
 ||`^\|^` `TRUE` |top, `true`, `T`|
+||`|-`|single turnstyle|
+||`|=`|double turnstyle ( [difference](https://www.quora.com/What-is-the-difference-between-Turnstile-and-double-Turnstile-in-Logic) ) |
 |`order-1` `predicate` logics|e.g.|`<E>(x,y):A(x),B(y),other_condition`, `<A>z:X(z)`|
 ||`<A>`|for ALL, all, universal quantification, `\-/` `∀`|
 ||`<E>`|for SOME, there exists, existential quantification `∃`|
