@@ -570,6 +570,11 @@ a|||b       a=)b.b=)a
 |-a     "turnstyle" : assertion of a's truth
         a,b,c|-d = a \/ b \/ c => d
 
+a|-b
+https://www.quora.com/What-is-the-difference-between-Turnstile-and-double-Turnstile-in-Logic
+
+a|=b
+
 a.a=)b.=)b  inference by modus ponens
 
 
