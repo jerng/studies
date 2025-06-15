@@ -343,7 +343,7 @@ Being very literal :
 |`\|ALEPH\|`|א| ALEPH is the base for transfinite numbers|
 |`\|e\|`|e|Euler's number, Napier's constant ( Julia )|
 |`\|G\|`|G|Catalan's constant ( Julia )|
-|`\|infinity\|`||
+|`\|infinity\|`|∞|
 |`\|NaN\|`|IEEE 754 ( 1985 )|
 ||
 |Consider : ||runes, Arabic letters, other Hebrew letters, Old Italic Scripts ( various adapted from antiquity , International Phonetic Alphabet |
