@@ -43,7 +43,7 @@
 |specified|`%%...EOL` `<%...%>`| comments | 
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
 |`quotes`|unassigned |`         ` `         ` `         ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `         ` `"""..."""`|
-||`` `...` ``|`backticks` are allowed in variables/symbol names and atoms|
+||`` `...` ``|- `backticks` are allowed in variables/symbol names and atoms <br> - `convention` : where a variable represents an ( `operator` implemented as a `function`), prefix the name of this variable with backticks : `` `and `` `` `isa `` `` `SIGMA `` resulting in usage similar to where other languages may use `\` for `\and` `\isa` `\SIGMA` etc.|
 ||`'...'` <br> ala JS template literal strings|- single quotes : `\'` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
 ||`'''...'''`|- triple-single quotes : `indentation aware` see Erlang's triple quotes ( or other fancy features )|
 ||`"..."` <br> lexical modifier| - `a infixFunction b c` can be converted to prefix such that `"infixFunction" a b c` <br> - `prefixFunction a b` can be converted to infix such that `a "prefixFunction" b` <br> - Haskell uses two separate operators for this, `(infixFunction)` `` `prefixFunction` ``|
@@ -65,13 +65,13 @@
 |||-see `number`||
 ||`!`|reserved for future use as a `communications operator` : from Erlang's messaging operator, but with diversified use to include `throwing exceptions`, etc.|
 ||`true`, `false`, `null`, `undefined`| four-logic|
-||e.g. `` `SIGMA` __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
+||e.g. `` `SIGMA __0 ^^5 >>i^i+i``|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
 ||`addr_of_data <(x)`|unambiguous indirection to data|
-|charsets|`valid_symbol` `:valid_atom` |-  ``[`a-z]`` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlangism), and ``[`@a-zA-Z0-9]`` last character <br> - symbols beginning with `` ` `` must have a minimum of `3` characters <br> - OK : `a` `` `aa `` `` `a` `` `` a` `` `a_b` `a@` `a0` <br> - ERROR : `` `a `` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
+|charsets|`valid_symbol` `:valid_atom` |-  ``[`a-z]`` first character (Haskellism), ``[`a-z_@A-Z0-9]`` middle characters (Erlangism), and ``[`@a-z@A-Z0-9]`` last character <br> - OK : `a` `` `aa `` `` `a` `` `` a` `` `a_b` `a@` `a0` <br> - ERROR : `` `a `` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
 |`ASCII -IPA`||https://en.wikipedia.org/wiki/Kirshenbaum|
 |audio synthesis|| - https://github.com/lichen-community-systems/Flocking|
-||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlang rules), `[_@a-zA-Z0-9]` last character
+||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[A-Z_@a-z0-9]` middle characters (Erlang rules), `[A-Z@a-z0-9]` last character
 |numbers||`base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada|
 ||`rune`|synonym for `Int32` in Golang|
 ||`byte`|synonym for `Uint8` in Golang|
@@ -317,36 +317,36 @@ Being very literal :
 
 |Code|Glyphs|Predefined
 |-|-|-|
-|`` `ALPHA` ``,`` `alpha` ``|Αα|
-|`` `BETA` ``,`` `beta` ``|Ββ|
-|`` `GAMMA` ``,`` `gamma` ``|Γγ|γ is Euler's constant ( Julia )|
-|`` `DELTA` ``,`` `dekta` ``|Δδ|
-|`` `EPSILON` ``,`` `epsilon` ``|Εε|
-|`` `ZETA` ``,`` `zeta` ``|Ζζ|
-|`` `ETA` ``,`` `eta` ``|Ηη|
-|`` `THETA` ``,`` `theta` ``|Θθ|
-|`` `IOTA` ``,`` `iota` ``|Ιι|
-|`` `KAPPA` ``,`` `kappa` ``|Κκ|
-|`` `LAMBDA` ``,`` `lambda` ``|Λλ|
-|`` `MU` ``,`` `mu` ``|Μμ|
-|`` `NU` ``,`` `nu` ``|Νν|
-|`` `XI` ``,`` `xi` ``|Ξξ|
-|`` `OMICRON` ``,`` `omicron` ``|Οο|
-|`` `PI` ``,`` `pi` ``|Ππ|π is Archimedes' constant ( Julia )|
-|`` `RHO` ``,`` `rho` ``|Ρρ|
-|`` `SIGMA` ``,`` `sigma` ``|Σσς|
-|`` `TAU` ``,`` `tau` ``|Ττ|
-|`` `UPSILON` ``,`` `upsilon` ``|Υυ|
-|`` `PHI` ``,`` `phi` ``|Φφ|φ is golden ratio ( Julia )|
-|`` `CHI` ``,`` `chi` ``|Χχ|
-|`` `PSI` ``,`` `psi` ``|Ψψ|
-|`` `OMEGA` ``,`` `omega` ``|Ωω|
+|`` `ALPHA ``,`` `alpha ``|Αα|
+|`` `BETA ``,`` `beta ``|Ββ|
+|`` `GAMMA ``,`` `gamma ``|Γγ|γ is Euler's constant ( Julia )|
+|`` `DELTA ``,`` `dekta ``|Δδ|
+|`` `EPSILON ``,`` `epsilon ``|Εε|
+|`` `ZETA ``,`` `zeta ``|Ζζ|
+|`` `ETA ``,`` `eta ``|Ηη|
+|`` `THETA ``,`` `theta ``|Θθ|
+|`` `IOTA ``,`` `iota ``|Ιι|
+|`` `KAPPA ``,`` `kappa ``|Κκ|
+|`` `LAMBDA ``,`` `lambda ``|Λλ|
+|`` `MU ``,`` `mu ``|Μμ|
+|`` `NU ``,`` `nu ``|Νν|
+|`` `XI ``,`` `xi ``|Ξξ|
+|`` `OMICRON ``,`` `omicron ``|Οο|
+|`` `PI ``,`` `pi ``|Ππ|π is Archimedes' constant ( Julia )|
+|`` `RHO ``,`` `rho ``|Ρρ|
+|`` `SIGMA ``,`` `sigma ``|Σσς|
+|`` `TAU ``,`` `tau ``|Ττ|
+|`` `UPSILON ``,`` `upsilon` ``|Υυ|
+|`` `PHI ``,`` `phi ``|Φφ|φ is golden ratio ( Julia )|
+|`` `CHI ``,`` `chi ``|Χχ|
+|`` `PSI ``,`` `psi ``|Ψψ|
+|`` `OMEGA ``,`` `omega ``|Ωω|
 ||
-|`` `ALEPH` ``|א| ALEPH is the base for transfinite numbers|
-|`` `e` ``|e|Euler's number, Napier's constant ( Julia )|
-|`` `G` ``|G|Catalan's constant ( Julia )|
-|`` `infinity` ``|∞|
-|`` `NaN` ``|IEEE 754 ( 1985 )|
+|`` `ALEPH ``|א| ALEPH is the base for transfinite numbers|
+|`` `e ``|e|Euler's number, Napier's constant ( Julia )|
+|`` `G ``|G|Catalan's constant ( Julia )|
+|`` `infinity ``|∞|
+|`` `NaN ``|IEEE 754 ( 1985 )|
 ||
 |Consider : ||runes, Arabic letters, other Hebrew letters, Old Italic Scripts ( various adapted from antiquity , International Phonetic Alphabet |
 |`` ` ` ``,`` ` ` ``|Ææ|"air" in Englishy : from Dannish / Norwegian alphabet |
@@ -452,16 +452,16 @@ visual mocks :
 [0..5|SUM|i^i+1]
 
 %% Maths :
-`SIGMA`__0^^5>>i^i+i
-`SIGMA`__'0'^^'5'>>'i^i+i'
-`SIGMA`__(i,0)^^(i,5)>>'i^i+i'
-`SIGMA`__'i=0'^^'i=5'>>'i^i+i'
-`SIGMA`__(i,=,0)^^(i,=,5)>>((i,^,i),+,i)
-`SIGMA`__(i,'=',0)^^(i,=,5)>>(('i',^,'i'),+,'i')
+`SIGMA__0^^5>>i^i+i
+`SIGMA__'0'^^'5'>>'i^i+i'
+`SIGMA__(i,0)^^(i,5)>>'i^i+i'
+`SIGMA__'i=0'^^'i=5'>>'i^i+i'
+`SIGMA__(i,=,0)^^(i,=,5)>>((i,^,i),+,i)
+`SIGMA__(i,'=',0)^^(i,=,5)>>(('i',^,'i'),+,'i')
 
 %% Markdown :
 ||5
-|`SIGMA`i^i+1
+|`SIGMAi^i+1
 ||0
 
 %% Markdown Pattern :
