@@ -71,7 +71,7 @@
 |charsets|`valid_symbol` `:valid_atom` |-  ``[`a-z]`` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlangism), and ``[`@a-zA-Z0-9]`` last character <br> - symbols beginning with `` ` `` must have a minimum of `3` characters <br> - OK : `a` `` `aa `` `` `a` `` `` a` `` `a_b` `a@` `a0` <br> - ERROR : `` `a `` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
 |`ASCII -IPA`||https://en.wikipedia.org/wiki/Kirshenbaum|
 |audio synthesis|| - https://github.com/lichen-community-systems/Flocking|
-||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` other characters (Erlang rules)
+||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlang rules), `[_@a-zA-Z0-9]` last character
 |numbers||`base_10_digits` `#` `underscore_separated_digits` `.` `underscore_separated_digits` `#` `e` `exponent`, base 1 to 36, from Erlang / Ada|
 ||`rune`|synonym for `Int32` in Golang|
 ||`byte`|synonym for `Uint8` in Golang|
