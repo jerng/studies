@@ -68,7 +68,7 @@
 ||e.g. `` `SIGMA __0 ^^5 >>i^i+i``|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
 ||`addr_of_data <(x)`|unambiguous indirection to data|
-|charsets|`valid_symbol` `:valid_atom` |-  ``[`a-z]`` first character (Haskellism), ``[`a-z_@A-Z0-9]`` middle characters (Erlangism), and ``[`@a-z@A-Z0-9]`` last character <br> - OK : `a` `` `aa `` `` `a` `` `` a` `` `a_b` `a@` `a0` <br> - ERROR : `` `a `` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
+|charsets|`valid_symbol` `:valid_atom` |-  ``[`a-z]`` first character (Haskellism), ``[`a-z_@A-Z0-9]`` middle characters (Erlangism), and ``[`@a-z@A-Z0-9]`` last character <br> - OK : `` ` `` `` `aa `` `` `a` `` `` a` `` `a_b` `a@` `a0` <br> - ERROR : `` 0` `` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
 |`ASCII -IPA`||https://en.wikipedia.org/wiki/Kirshenbaum|
 |audio synthesis|| - https://github.com/lichen-community-systems/Flocking|
 ||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[A-Z_@a-z0-9]` middle characters (Erlang rules), `[A-Z@a-z0-9]` last character
