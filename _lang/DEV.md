@@ -7,7 +7,7 @@
      -     |General error||
      -     |`let ... in ... ` `... where ...`||`to be unified with a bind syntax`|
      -     |[`BNF`](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)||Context-free grammar notations|
-     -     | data type implementation transparency|
+     -     | data structures : interfaces vs implementation |
      -     `hwloc` vs `data structure configuration`
 -    UNASSIGNED : 
      |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
@@ -41,8 +41,8 @@
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
 |specified|`%%...EOL` `<%...%>`| comments | 
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
-|`quotes`|unassigned |`        ` `         ` `         ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `         ` `"""..."""`|
-|`` `...` ``|`backticks` are allowed in variables/symbol names and atoms||
+|`quotes`|unassigned |`         ` `         ` `         ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `         ` `"""..."""`|
+||`` `...` ``|`backticks` are allowed in variables/symbol names and atoms|
 ||`'...'` <br> ala JS template literal strings|- single quotes : `\'` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
 ||`'''...'''`|- triple-single quotes : `indentation aware` see Erlang's triple quotes ( or other fancy features )|
 ||`"..."` <br> lexical modifier| - `a infixFunction b c` can be converted to prefix such that `"infixFunction" a b c` <br> - `prefixFunction a b` can be converted to infix such that `a "prefixFunction" b` <br> - Haskell uses two separate operators for this, `(infixFunction)` `` `prefixFunction` ``|
