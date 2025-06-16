@@ -486,6 +486,7 @@ history
 https://mathshistory.st-andrews.ac.uk/Miller/mathsym/set/
 https://en.wikipedia.org/wiki/List_of_logic_symbols
 
+https://en.wikipedia.org/wiki/Natural_deduction#Notation
 
 E|a     ? there exists at least one a
 E]a     ?
@@ -501,12 +502,12 @@ A|a     ? for all a
 ~a                  bitwise : ( C family, JS, etc. )
 a^^-
 
-a/\b    AND gate    ( conflict with Peano )
+a/\b    AND gate    ( conflict with Peano ) ( Lean-lang, 2013 )
 a&b                 bitwise : ( C family, JS, etc. )
 a&&b
 a.b
 
-a/\^^-b NAND gate
+a/\^^-b NAND gate   
 a^^b
 a|b
 a|^b
