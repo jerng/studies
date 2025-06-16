@@ -41,7 +41,8 @@
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
 |specified|`%%...EOL` `<%...%>`| comments | 
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
-|`quotes`|unassigned |``   `...`   `` `         ` `         ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `         ` `"""..."""`|
+|`quotes`|unassigned |`        ` `         ` `         ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `         ` `"""..."""`|
+|`` `...` ``|`backticks` are allowed in variables/symbol names and atoms||
 ||`'...'` <br> ala JS template literal strings|- single quotes : `\'` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
 ||`'''...'''`|- triple-single quotes : `indentation aware` see Erlang's triple quotes ( or other fancy features )|
 ||`"..."` <br> lexical modifier| - `a infixFunction b c` can be converted to prefix such that `"infixFunction" a b c` <br> - `prefixFunction a b` can be converted to infix such that `a "prefixFunction" b` <br> - Haskell uses two separate operators for this, `(infixFunction)` `` `prefixFunction` ``|
@@ -66,7 +67,7 @@
 ||e.g. `` `SIGMA` __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
 ||`addr_of_data <(x)`|unambiguous indirection to data|
-|charsets|`valid_symbol` `:valid_atom` |- `!!! @ collides with bitwise operators !!!` `[\|a-z]` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlangism), and `[\|@a-zA-Z0-9]` last character <br> - symbols beginning with `\|` must have a minimum of `3` characters <br> - OK : `a` `\|aa` `\|a\|` `a\|` `a_b` `a@` `a0` <br> - ERROR : `\|a` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
+|charsets|`valid_symbol` `:valid_atom` |- `!!! @ collides with bitwise operators !!!` ``[`a-z]`` first character (Haskellism), `[_@a-zA-Z0-9]` middle characters (Erlangism), and ``[`@a-zA-Z0-9]`` last character <br> - symbols beginning with `` ` `` must have a minimum of `3` characters <br> - OK : `a` `` `aa `` `` `a` `` `` a` `` `a_b` `a@` `a0` <br> - ERROR : `` `a `` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
 |`ASCII -IPA`||https://en.wikipedia.org/wiki/Kirshenbaum|
 |audio synthesis|| - https://github.com/lichen-community-systems/Flocking|
 ||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[_@a-zA-Z0-9]` other characters (Erlang rules)
