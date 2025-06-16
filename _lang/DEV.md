@@ -42,7 +42,8 @@
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
 |specified|`%%...EOL` `<%...%>`| comments | 
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
-|`quotes`|unassigned |`         ` `         ` `         ` <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `         ` `"""..."""`|
+|`symbols`||- assigned : ``"'`~!@$%^*()_+-={}[]|:<>,.`` <br> - unassigned : `#&?;/\`|
+|`quotes`|unassigned |`         ` `         ` `         `  etc. <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `         ` `"""..."""`|
 ||`` `...` ``|- `backticks` are allowed in variables/symbol names and atoms <br> - `convention` : where a variable represents an ( `operator` implemented as a `function`), prefix the name of this variable with backticks : `` `and `` `` `isa `` `` `SIGMA `` resulting in usage similar to where other languages may use `\` for `\and` `\isa` `\SIGMA` etc.|
 ||`'...'` <br> ala JS template literal strings|- single quotes : `\'` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
 ||`'''...'''`|- triple-single quotes : `indentation aware` see Erlang's triple quotes ( or other fancy features )|
@@ -146,7 +147,7 @@
 ||||
 ||||
 ||||
-|Data Structures|Unassigned Symbols | RULE : symmetrical opening/ closing tags <br> `    ` `-{}-` `*{}*` `#{}#` `... @$%^` <br>  `    ` `    ` `    ` `#[]#` `... @$%^`<br> `    ` `-()-` `*()*` `#()#` `... @$%^` <br> `    ` `-<>-` `*<>*` `#<>#` `... @$%^`
+|Data Structures|Unassigned Symbols | RULE : symmetrical opening/ closing tags <br> `    ` `-{}-` `*{}*` `#{}#` `... @$%^ etc.` <br>  `    ` `    ` `    ` `#[]#` `... @$%^ etc.`<br> `    ` `-()-` `*()*` `#()#` `... @$%^ etc.` <br> `    ` `-<>-` `*<>*` `#<>#` `... @$%^ etc.`
 |`()` 1|| tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER : <br>  -   `mytuple_[5]_[17]` <br>  -   `mytuple.5.17` <br>  -   `mytuple_5_17` <br>  -   `mytuple_(5)_(17)` |
 ||| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `lexical_block<(operand)` for function application <br> - `a b c` `a,b,c` `(a b c)` `(a,b,c)` `(((((a),(b),(((c)))))))`: all equivalent, `except in special contexts` |
 |`[]`|| nilist, the protolist  |
