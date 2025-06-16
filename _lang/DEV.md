@@ -115,8 +115,8 @@
 |`arithmetic` `signed`|`@$<` `@SSL`|left shift |
 ||`@$>` `@SSR`|right shift|
 |`order-0` `propositional` `boolean` logics|truth tables?|`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
-||`a \| b` `OR`|`a \/ b` vee|
-||`a & b` `AND`|`a /\ b` wedge|
+||`a \| b` `OR`|`a \/ b` vee ( Lean-lang )|
+||`a & b` `AND`|`a /\ b` wedge ( Lean-lang )|
 ||`~a` `NOT`||
 ||`a </> b` ?`UNLESS` |not equivalent, `a \/_ b` `⊻` veebar, `a (+) b` oplus|
 ||`a <=> b` `IFF` |equivalent, `a IFF b` if and only if |
