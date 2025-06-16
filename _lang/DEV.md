@@ -24,6 +24,7 @@
          -   `C++'s containerisation flexibility` ( desc. C )
          -   `Idioms of utility` from : `JavaScript, Python, Erlang, J ( desc. APL )`
          -   `Manual memory` management : this is far, far away from the present, but I guess we should consider how `C++ and Rust` do things
+         -   `graphical transliteration of logic notation, maths notation, etc. into ASCII`
      -   STRATEGY :
          -   `define lexing rules at the top-level context`,
          -   `define lexing rules which enter and exit subcontexts`,
