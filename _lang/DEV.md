@@ -1,6 +1,5 @@
 # DRAFT
 
-![508058620_18513042421001756_1035665533606289723_n](https://github.com/user-attachments/assets/1ffe17df-c92e-44d2-b333-66cfdf4d9f42)
 
 ## Latest
 
@@ -960,3 +959,5 @@ end
     -   otherwise, proceed as usual
       
 8.  
+
+![508058620_18513042421001756_1035665533606289723_n](https://github.com/user-attachments/assets/1ffe17df-c92e-44d2-b333-66cfdf4d9f42)
