@@ -10,6 +10,7 @@
      -     |[`BNF`](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)||Context-free grammar notations|
      -     | data structures : interfaces vs implementation |
      -     `hwloc` vs `data structure configuration`
+     -     rename `fn` to `proc` ?
 -    UNASSIGNED : 
      |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
