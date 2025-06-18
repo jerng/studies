@@ -11,6 +11,7 @@
      -     | data structures : interfaces vs implementation |
      -     `hwloc` vs `data structure configuration`
      -     rename `fn` to `proc / prc / rt / blk ` ?
+     -     rename weird FP terms to fit a broader natural language audience?
 -    UNASSIGNED : 
      |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
