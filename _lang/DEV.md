@@ -860,7 +860,7 @@ E0N    > Define Sub Classes
 E1     > Instantiate Object, with ENV     : let E(1) in construction
 E2     > Apply Method, with ENV           : let E(2) in application
 
-
+( Consider : Discourse Representation Theory )
 
 
 ```   
