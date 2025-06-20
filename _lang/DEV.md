@@ -12,6 +12,7 @@
      -     `hwloc` vs `data structure configuration`
      -     rename `fn` to `proc / prc / rt / blk ` ?
      -     rename weird FP terms to fit a broader natural language audience?
+     -     tone letters : https://en.wikipedia.org/wiki/Tone_(linguistics)
 -    UNASSIGNED : 
      |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
