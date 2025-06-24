@@ -14,6 +14,7 @@
      -     rename weird FP terms to fit a broader natural language audience?
      -     tone letters : https://en.wikipedia.org/wiki/Tone_(linguistics)
      -     maths, range notation
+     -     default `left associativity` with `explicit associativity modifiers` ?
 -    UNASSIGNED : 
      |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
