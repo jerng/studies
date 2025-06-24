@@ -16,6 +16,7 @@
      -     maths, range notation
      -     default `left associativity` with `explicit associativity modifiers` ?
      -     Isabelle's [ASCII symbols](https://github.com/seL4/isabelle/blob/master/etc/symbols), [Idris](https://en.wikipedia.org/wiki/Idris_(programming_language)), [Agda](https://en.wikipedia.org/wiki/Agda_(programming_language)), [Lean](https://en.wikipedia.org/wiki/Lean_(proof_assistant)), further [comparison](https://en.wikipedia.org/wiki/Proof_assistant#System_comparison)
+     -    reconsider `\` escaping
 -    UNASSIGNED : 
      |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
