@@ -23,10 +23,10 @@
      -    take `ALL regex features` from JS
      -    decide between `\forall` `\'forall'` `<forall>` `\<forall>` `other`
 -    UNASSIGNED : 
-     |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
+     ||`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
-     |`\|-> <-\|`|`\|=> <=\|`|`:-> <-:`|` `|` `|
-     |` `|`\|\|`|`&&`|`::`|` `|
+     |`\|-> <-\|`|`\|=> <=\|`|`:-> <-:`|||
+     ||`\|\|`|`&&`|`::`||
 -    BROADLY :
      -   IMPLEMENTATION STRATEGY :
          -   Stage 1 : `JavaScript`
