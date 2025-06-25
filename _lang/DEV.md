@@ -167,12 +167,12 @@
 ||||
 ||||
 ||||
-|Data Structures|Unassigned Symbols | RULE : symmetrical opening/ closing tags <br> `    ` `-{}-` `    ` `*{}*` `#{}#` `    ` `... @$%^ etc.` <br>  `    ` `    ` `    ` `    ` `#[]#` `[--]` `... @$%^ etc.`<br> `    ` `-()-` `+()+` `*()*` `#()#` `(--)` `... @$%^ etc.` <br> `    ` `-<>-` `+<>+` `*<>*` `#<>#` `    ` `... @$%^ etc.`
+|Data Structures|Unassigned Symbols | RULE : symmetrical opening/ closing tags <br> ` ` `-{}-` `    ` `+{}+` `    ` `#{}#` `{##}` `*{}*` `{**}` `... @$%^ etc.` <br> ` ` `-()-` `(--)` `+()+` `(++)` `#()#` `(##)` `*()*` `(**)` `... @$%^ etc.` <br> ` ` `-[]-` `    ` `+[]+` `    ` `#[]#` `    ` `*[]*` `[**]` `... @$%^ etc.`<br> ` ` `-<>-` `<-->` `+<>+` `<++>` `#<>#` `<##>` `*<>*` `<**>` `... @$%^ etc.`
 |`()` 1|| tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER : <br>  -   `mytuple_[5]_[17]` <br>  -   `mytuple.5.17` <br>  -   `mytuple_5_17` <br>  -   `mytuple_(5)_(17)` |
 ||| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `lexical_block<(operand)` for function application <br> - `a b c` `a,b,c` `(a b c)` `(a,b,c)` `(((((a),(b),(((c)))))))`: all equivalent, `except in special contexts` |
 |`[]`|| nilist, the protolist  |
 |`[]` 2/LL || singly linked lists, `cpp std::forward_list`, CONSIDER : `[ n * 2 FOR n IN <N~0> WHERE n < 10 ]` |
-|`-[]-` 3/LL || doubly linked lists, `cpp std::list` |
+|`[--]` 3/LL || doubly linked lists, `cpp std::list` |
 |`{}` 4||ZFC sets, `cpp std::unordered_set`, CONSIDER : builder notation <br>  -   `{ x \| predicate(x) }`  <br> -   `{ expression(x) FOR x IN iterable WHERE }` <br>  -   `{ x<e<N~0> \| x<10 /\ x/%2==0 }` <br> -   `{ x <e <N~0> WHERE x < 10 AND x /% 2 == 0 }` <br> `{ x \| x <e N and x modulo 2 = 0 }`|
 ||`a <* b` `b *> a`|a is an element of b, derived from `<e` epsilon for *Latin : est* "is a" element-of boolean operator, Peano `∈ ∋` |
 ||`a </* b` `b */> a`|a is not an element of b `∉ ∌`|
@@ -191,9 +191,9 @@
 ||`'ALEPH'_a ``| א :aleph-a : transfinite numbers of order a `A_a`, `A/_a`, `N_a` `ℵ_a`|
 ||`#a`|cardinality of a ; number of elements in a ( Lua, maths ) `\|a\|`|
 ||`P(a)`|    power set of a|
-|`+{}+` 5/JS || JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
-|`+[]+` 6/JS ||JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`|
-|`*[]*` 7/JS || JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
+|`{++}` 5/JS || JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
+|`[++]` 6/JS ||JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`|
+|`[##]` 7/JS || JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
 |`<...>` |semantic modifier|namespace for SIGILS / QUOTES|
 |`<q...q>`|Unassigned Symbols| `quote` : where q is a single character : `<!...!>` `<@...@>` `<#...#>` `<$...-}` `{-...-}` `<^...^>` `<&...&>` `<=...=>` `<_..._>` `<+...+>` `<]...[>` `<[...]>` `<{...}>` `<}...{>` `<\|...\|>` `<\.../>` `</...\>` `<"...">` `<'...'>` `<~...~>` `<?...?>` |
 ||Symbols used elsewhere|`<*` `*>` for *est* element-of boolean operator <br> `->` pattern-matched branching (`<-` is unused) <br> `<)` `(>` values of arc <br> `<(` `)>` function application <br> |
