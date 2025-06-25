@@ -54,7 +54,7 @@
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
 |specified|`%%...EOL` `<%...%>`| comments | 
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
-|`symbols`||- assigned : ``~!@$%^*()_+-={}[]<>\|:,.`'"`` <br> - unassigned : `#&?;/\`|
+|`symbols`||- assigned : ``~!@#$%^*()_+-={}[]<>\|:,.`'"`` <br> - unassigned : `&?;/\`|
 |`quotes`|unassigned |`         ` `         ` `         `  etc. <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `         ` `"""..."""`|
 ||`` `...` ``|- `backticks` are allowed in variables/symbol names and atoms <br> - `convention` : where a variable represents an ( `operator` implemented as a `function`), prefix the name of this variable with backticks : `` `and `` `` `isa `` `` `SIGMA `` resulting in usage similar to where other languages may use `\` for `\and` `\isa` `\SIGMA` etc.|
 ||`'...'` <br> ala JS template literal strings|- single quotes : `\'` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
