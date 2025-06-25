@@ -56,10 +56,10 @@
 |specified|`%%...EOL` `<%...%>`| comments | 
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
 |`symbols`||- assigned : ``~!@#$%^*()_+-={}[]<>\|:,.`'"`` <br> - unassigned : `&?;/\`|
-|`quotes`|unassigned |`         ` `         ` `         `  etc. <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> ` ```...``` ` `         ` `"""..."""`|
-||`` `...` ``|- `backticks` are allowed in variables/symbol names and atoms <br> - `convention` : where a variable represents an ( `operator` implemented as a `function`), prefix the name of this variable with backticks : `` `and `` `` `isa `` `` `SIGMA `` resulting in usage similar to where other languages may use `\` for `\and` `\isa` `\SIGMA` etc.|
-||`'...'` <br> ala JS template literal strings|- single quotes : `\'` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
-||`'''...'''`|- triple-single quotes : `indentation aware` see Erlang's triple quotes ( or other fancy features )|
+|`quotes`|unassigned |`         ` `         ` `         `  etc. <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> `         ` `'''...'''` `"""..."""`|
+||`` `...` `` <br> `backticks` ala JS template literal strings | - `` \` `` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
+||` ```...``` `|- `triple-backticks` : `indentation aware` see Erlang's triple quotes ( or other fancy features )|
+||`` '...' ``|- `single quotes` are allowed in variables/symbol names and atoms <br> - `convention` : where a variable represents an ( `operator` implemented as a `function`), prefix the name of this variable with single quotes : `'and` `'isa` `'SIGMA` resulting in usage similar to where other languages may use `\` for `\and` `\isa` `\SIGMA` etc.|
 ||`"..."` <br> lexical modifier| - `a infixFunction b c` can be converted to prefix such that `"infixFunction" a b c` <br> - `prefixFunction a b` can be converted to infix such that `a "prefixFunction" b` <br> - Haskell uses two separate operators for this, `(infixFunction)` `` `prefixFunction` ``|
 |||- other uses?|
 ||see `data structures`|- `(...)` `{...}` `[...]` `-[...]-` `+{...}+` `+[...]+` `*[...]*` <br> - `<` namespace : `<qr:...:qr>` form, `<q...q>` form, `<x>` form, `<xyz>` form |
@@ -79,10 +79,10 @@
 |||-see `number`||
 ||`!`|reserved for future use as a `communications operator` : from Erlang's messaging operator, but with diversified use to include `throwing exceptions`, etc.|
 ||`true`, `false`, `null`, `undefined`| four-logic|
-||e.g. `` `SIGMA __0 ^^5 >>i^i+i``|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
+||e.g. `'SIGMA __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
 ||`addr_of_data <(x)`|unambiguous indirection to data|
-|charsets|`valid_symbol` `:valid_atom` |-  ``[`a-z]`` first character (Haskellism), ``[`a-z_@A-Z0-9]`` middle characters (Erlangism), and ``[`@a-z@A-Z0-9]`` last character <br> - OK : `` ` `` `` `aa `` `` `a` `` `` a` `` `a_b` `a@` `a0` <br> - ERROR : `` 0` `` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
+|charsets|`valid_symbol` `:valid_atom` |-  `['a-z]` first character (Haskellism), `['a-z_@A-Z0-9]` middle characters (Erlangism), and `['@a-z@A-Z0-9]` last character <br> - OK : `'` `'aa` `'a'` `a'` `a_b` `a@` `a0` <br> - ERROR : `0'` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
 |`ASCII -IPA`||https://en.wikipedia.org/wiki/Kirshenbaum|
 |audio synthesis|| - https://github.com/lichen-community-systems/Flocking|
 ||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[A-Z_@a-z0-9]` middle characters (Erlang rules), `[A-Z@a-z0-9]` last character
@@ -180,14 +180,14 @@
 ||`a \|_\| b`|union of a and b `∪`|
 ||`a \|^\| b`|intersection of a and b (Cantor)`a ^ b`, `a /\ b`, `a /set\ b` `∩`|
 ||`a /_\ b`|  "xor", "symmetric difference" of a,b; "elements in a, or b, but not not in both a and b"; "disjunction union" "set sum"`a \|del\| b`, `a (+) b` `△`|
-||`` `omega` `` |  ω : "first finite ordinal"; order type of the natural numbers ( Cantor )|
-||`` `ALEPH`_a ``| א :aleph-a : transfinite numbers of order a `A_a`, `A/_a`, `N_a` `ℵ_a`|
+||`'omega` |  ω : "first finite ordinal"; order type of the natural numbers ( Cantor )|
+||`'ALEPH'_a ``| א :aleph-a : transfinite numbers of order a `A_a`, `A/_a`, `N_a` `ℵ_a`|
 ||`#a`|cardinality of a ; number of elements in a ( Lua, maths ) `\|a\|`|
 ||`P(a)`|    power set of a|
 |`+{}+` 5/JS || JavaScript objects, `cpp std::unordered_map`, `mypojo.prop1` `mypojo['prop1']` `mypojo[integer_would_be_coerced_to_string]`|
 |`+[]+` 6/JS ||JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`|
 |`*[]*` 7/JS || JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
-|`<...>` | |namespace for SIGILS / QUOTES|
+|`<...>` |semantic modifier|namespace for SIGILS / QUOTES|
 |`<q...q>`|Unassigned Symbols| `quote` : where q is a single character : `<!...!>` `<@...@>` `<#...#>` `<$...$>` `<%...%>` `<^...^>` `<&...&>` `<=...=>` `<_..._>` `<+...+>` `<]...[>` `<[...]>` `<{...}>` `<}...{>` `<\|...\|>` `<\.../>` `</...\>` `<"...">` `<'...'>` `<~...~>` `<?...?>` |
 ||Symbols used elsewhere|`<*` `*>` for *est* element-of boolean operator <br> `->` pattern-matched branching (`<-` is unused) <br> `<)` `(>` values of arc <br> `<(` `)>` function application <br> |
 ||`<%...%>`|`multi-line comment`|
