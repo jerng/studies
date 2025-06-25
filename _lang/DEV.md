@@ -73,7 +73,7 @@
 |`\|` `:`|`analogs`|`where` `whereas` `such that` `onlyif` `and`|
 ||`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `(TODO : example)`, and will quit upon ambiguity|
 |||- `{ x \| P(a) }` set builder notation <br> - `[ head \| tail ]` singly-linked-list notation <br> - `-[ head \| body \| tail ]-` doubly-linked-list notation
-||`:`|`sloppy` : it is legal to introduce lexical ambiguity : lexer may introduce implied IFS, for example where `(:::)` expands to `(undefined:undefined:undefined:undefined)`, `(::::atom)` is `(undefined : undefined : undefined : :atom)`, and `(:::atom)` being ambiguous MAY hurl a lexing error, not being specified to, but out of charity. Therefore other design decisions about `:` should enable contextual deduction of missing IFS |
+||`:`|`sloppy` : it is legal to introduce lexical ambiguity : lexer may introduce implied IFS, for example where `(:::)` expands to `(undefined:undefined:undefined:undefined)` ... being ambiguous MAY hurl a lexing error, not being specified to, but out of charity. Therefore other design decisions about `:` should enable contextual deduction of missing IFS |
 |||- `fn name : signature : parameters : body end` `(:::)` function notation <br> `:ascii_atom` <br> - `+{ key : value }+` JS-eque POJO notation - <br> `<<value:size/typespecifierlist>>` <br>- `<qr:...:qr>` form |
 |specified|`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
 ||`_`|- explicitly ignored `value`;|
@@ -89,7 +89,7 @@
 ||e.g. `'SIGMA __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
 ||`addr_of_data <(x)`|unambiguous indirection to data|
-|charsets|`ascii_symbol` `:ascii_atom`<br> `` \`unicode_symbol` `` `` :\`unicode_atom` `` |-  `['a-z]` first character (Haskellism), `['a-z_@A-Z0-9]` middle characters (Erlangism), and `['a-z@A-Z0-9]` last character <br> - OK : `'` `'aa` `'a'` `a'` `a_b` `a@` `a0` <br> - ERROR : `0'` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:ascii_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
+|charsets|`ascii_symbol` `%ascii_atom`<br> `` \`unicode_symbol` `` `` %\`unicode_atom` `` |-  `['a-z]` first character (Haskellism), `['a-z_@A-Z0-9]` middle characters (Erlangism), and `['a-z@A-Z0-9]` last character <br> - OK : `'` `'aa` `'a'` `a'` `a_b` `a@` `a0` <br> - ERROR : `0'` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `%ascii_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
 |`ASCII -IPA`||https://en.wikipedia.org/wiki/Kirshenbaum|
 |audio synthesis|| - https://github.com/lichen-community-systems/Flocking|
 ||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[A-Z_@a-z0-9]` middle characters (Erlang rules), `[A-Z@a-z0-9]` last character
