@@ -22,7 +22,7 @@
      -    [boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra_(structure))
      -    take `ALL regex features` from JS
 -    UNASSIGNED : 
-     |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
+     |``|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
      |`\|-> <-\|`|`\|=> <=\|`|`:-> <-:`|` `|` `|
      |`;`|`\|\|`|`&&`|`::`|` `|
@@ -53,8 +53,8 @@
 |analogs|`,`| additive connotation, from English ( C family, Erlang, etc. )|
 ||`.`| terminal connotation, from English ( Prolog, Erlang, COBOL )|
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
-|specified||- assigned : ``~!@#$%^*()_+-={}[]<>\|:,.`'"/\`` <br> - unassigned : `&?;`|
-||`%%...EOL` `<%...%>`| comments | 
+|specified||- assigned : ``~!@#$^*()_+-={}[]<>\|:,.`'"/\`` <br> - unassigned : `%&?;`|
+||`--...EOL` `{-...-}`| comments | 
 ||`\`|`generic escape character` ala JS|
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
 |`quotes`|`` `...` `` <br> `backticks` ala JS template literal strings | - `` \` `` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
@@ -88,7 +88,7 @@
 ||e.g. `'SIGMA __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
 ||`addr_of_data <(x)`|unambiguous indirection to data|
-|charsets|`valid_symbol` `:valid_atom` |-  `['a-z]` first character (Haskellism), `['a-z_@A-Z0-9]` middle characters (Erlangism), and `['@a-z@A-Z0-9]` last character <br> - OK : `'` `'aa` `'a'` `a'` `a_b` `a@` `a0` <br> - ERROR : `0'` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
+|charsets|`valid_symbol` `:valid_atom` |-  `['a-z]` first character (Haskellism), `['a-z_@A-Z0-9]` middle characters (Erlangism), and `['a-z@A-Z0-9]` last character <br> - OK : `'` `'aa` `'a'` `a'` `a_b` `a@` `a0` <br> - ERROR : `0'` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
 |`ASCII -IPA`||https://en.wikipedia.org/wiki/Kirshenbaum|
 |audio synthesis|| - https://github.com/lichen-community-systems/Flocking|
 ||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[A-Z_@a-z0-9]` middle characters (Erlang rules), `[A-Z@a-z0-9]` last character
@@ -133,7 +133,7 @@
 |`circular` `rotary`|`@@<` `@CSL`|left shift |
 ||`@@>` `@CSR`|right shift|
 |`arithmetic` `signed`|`@$<` `@SSL`|left shift |
-||`@$>` `@SSR`|right shift|
+||`@-}` `@SSR`|right shift|
 |`order-0` `propositional` `boolean` logics|truth tables?|`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
 ||`a \| b` `OR`|`a \/ b` vee ( Lean-lang )|
 ||`a & b` `AND`|`a /\ b` wedge ( Lean-lang )|
@@ -194,9 +194,9 @@
 |`+[]+` 6/JS ||JavaScript arrays, `cpp std::unordered_map`, `mypoja[99]`|
 |`*[]*` 7/JS || JavaScript's ArrayBuffer + TypedArray, `cpp std::vector or std::array`, later swap this to a non-JS API if there are gains to be had |
 |`<...>` |semantic modifier|namespace for SIGILS / QUOTES|
-|`<q...q>`|Unassigned Symbols| `quote` : where q is a single character : `<!...!>` `<@...@>` `<#...#>` `<$...$>` `<%...%>` `<^...^>` `<&...&>` `<=...=>` `<_..._>` `<+...+>` `<]...[>` `<[...]>` `<{...}>` `<}...{>` `<\|...\|>` `<\.../>` `</...\>` `<"...">` `<'...'>` `<~...~>` `<?...?>` |
+|`<q...q>`|Unassigned Symbols| `quote` : where q is a single character : `<!...!>` `<@...@>` `<#...#>` `<$...-}` `{-...-}` `<^...^>` `<&...&>` `<=...=>` `<_..._>` `<+...+>` `<]...[>` `<[...]>` `<{...}>` `<}...{>` `<\|...\|>` `<\.../>` `</...\>` `<"...">` `<'...'>` `<~...~>` `<?...?>` |
 ||Symbols used elsewhere|`<*` `*>` for *est* element-of boolean operator <br> `->` pattern-matched branching (`<-` is unused) <br> `<)` `(>` values of arc <br> `<(` `)>` function application <br> |
-||`<%...%>`|`multi-line comment`|
+||`{-...-}`|`multi-line comment`|
 |8|`<<...>>`|- bitstring syntax from Erlang `<<value:size/typespecifierlist>>` <br> - WARNING : possible collision with `<<` `>>` for axial phrasing |
 ||`<asm: ... :asm>`|reserved for `assembly languages`|
 |`<qr:...:qr>`|Unassigned Symbols| `quote` : where qr is >1 character|
@@ -456,22 +456,22 @@ this is a block_d0
 
 visual mocks :
 ```
-%% [ generate | fold | map ] 
+-- [ generate | fold | map ] 
 [0..5|+|i^i+1]
 [0..5|SUM|i^i+1]
 
-%% [ generate | map | fold ] 
+-- [ generate | map | fold ] 
 [0..5|i^i+1|+]
 [0..5|i^i+1|SUM]
 ```
 ###### Axial Phrasing
 visual mocks :
 ```
-%% for comparison with list phrasing
+-- for comparison with list phrasing
 [0..5|+|i^i+1]
 [0..5|SUM|i^i+1]
 
-%% Maths :
+-- Maths :
 `SIGMA__0^^5>>i^i+i
 `SIGMA__'0'^^'5'>>'i^i+i'
 `SIGMA__(i,0)^^(i,5)>>'i^i+i'
@@ -479,12 +479,12 @@ visual mocks :
 `SIGMA__(i,=,0)^^(i,=,5)>>((i,^,i),+,i)
 `SIGMA__(i,'=',0)^^(i,=,5)>>(('i',^,'i'),+,'i')
 
-%% Markdown :
+-- Markdown :
 ||5
 |`SIGMAi^i+1
 ||0
 
-%% Markdown Pattern :
+-- Markdown Pattern :
 |TopLeft|Top|TopRight|
 |Left|Axis|Right|
 |BottomLeft|Bottom|BottomRight|
@@ -772,30 +772,30 @@ The difference between `infix dyadic` and `ordinary dyadic` functions, is a diff
 # Function Definition & Type Signatures
 
 ```
-( name : TypeA TypeB TypeC TypeD )                                         <% sugared, sig only %>
-( name :: body )                                                           <% sugared, fun only %>
+( name : TypeA TypeB TypeC TypeD )                                         {- sugared, sig only -}
+( name :: body )                                                           {- sugared, fun only -}
 
-( name : TypeA TypeB TypeC TypeD : body )                                  <% sugared, signed fun %>
+( name : TypeA TypeB TypeC TypeD : body )                                  {- sugared, signed fun -}
 
-fn name                                                                    <% sugared, signed fun %>
+fn name                                                                    {- sugared, signed fun -}
 : TypeA TypeB TypeC TypeD
 : arg1 arg2 arg3
 : body
 end    
 
-( name : TypeA TypeB TypeC TypeD : body ) <( 1 2 3     <% IIFE %>
+( name : TypeA TypeB TypeC TypeD : body ) <( 1 2 3     {- IIFE -}
   
-                                                       <% long fn, fully typed, oneline, returns TypeD final term %>
+                                                       {- long fn, fully typed, oneline, returns TypeD final term -}
 
-(::: body )                                             <% sugared pretty, short fn, returns final term %>
+(::: body )                                             {- sugared pretty, short fn, returns final term -}
 
-fn :                                                   <% sugared %>
+fn :                                                   {- sugared -}
 : arguments
 : pattern and condition -> branch_if_matched
 : default_branch
 end
 
-fn :                                                  <% intermediate desugaring %>
+fn :                                                  {- intermediate desugaring -}
 : arguments
 : case (arguments)
   : pattern and condition -> branch_if_matched
@@ -803,9 +803,9 @@ fn :                                                  <% intermediate desugaring
   end
 end
 
-(:::)                                                   <% sugared pretty, shortest fn, returns undefined %>
+(:::)                                                   {- sugared pretty, shortest fn, returns undefined -}
 fn ::: end
-fn ::: undefined end                                    <% intermediate desugaring %>
+fn ::: undefined end                                    {- intermediate desugaring -}
 
 fn name
 : TypeA TypeB TypeC TypeD
@@ -823,13 +823,13 @@ end
 # Explicit Environments & Bindings
 
 ```
-fn definition       <% => ( "fn", "definition" ) %>
+fn definition       {- => ( "fn", "definition" ) -}
 F = fn definition
-F<()                <% execute F with no bound vars? %>
-F<(a,b,c)           <% execute F, binding lexically local vars a,b,c to a,b,c in the execution env %>
-F<((((a,b,c))))     <% will auto-unbox to an infinite degree %>
-F<(<ENV>)           <% passes the entire lexical env to the execution env %>
-<ENV> )> F          <% an idiom %>
+F<()                {- execute F with no bound vars? -}
+F<(a,b,c)           {- execute F, binding lexically local vars a,b,c to a,b,c in the execution env -}
+F<((((a,b,c))))     {- will auto-unbox to an infinite degree -}
+F<(<ENV>)           {- passes the entire lexical env to the execution env -}
+<ENV> )> F          {- an idiom -}
 
 
 "theorem" : Only 6 distinct species are needed to derive
@@ -859,12 +859,12 @@ UNPARAMETERISED_BLOCK /1
 
 (iii)
 FUNCTION <( ARGUMENTS
-     <=> let DEFINITIONS in UNPARAMETERISED_BLOCK          %% BASIC 1964
-     <=> UNPARAMETERISED_BLOCK where DEFINITIONS           %% ISWIM 1966
+     <=> let DEFINITIONS in UNPARAMETERISED_BLOCK          -- BASIC 1964
+     <=> UNPARAMETERISED_BLOCK where DEFINITIONS           -- ISWIM 1966
 
 (iv)
 NAMESPACE /4 .OBJECT /5
-     <- cloneAndInit PARAMETERISED_BLOCK_TEMPLATE /6       %% Simula 1962
+     <- cloneAndInit PARAMETERISED_BLOCK_TEMPLATE /6       -- Simula 1962
 
 NAMESPACE.OBJECT.METHOD /1,2
      <- PARAMETERISED_BLOCK
@@ -888,7 +888,7 @@ if expression
 : branch_if false
 end
 
-case expression                              <% a.k.a complexif %>
+case expression                              {- a.k.a complexif -}
 : pattern and condition -> branch_if_matched
 : pattern and condition -> branch_if_matched
 : default_branch
@@ -936,13 +936,13 @@ end
       
 5.  `Characters` read from `sc` shall be written to `wm` one by one
 
-<% the first pass is to 
+{- the first pass is to 
      (i) recognise tokens 
      (ii) reject unrecognised tokens 
      (iii) reject mismatched opening and closing tokens 
                ... however, it is not yet clear if this is possible without 
                     deeper semantic parsing
-     %>
+     -}
 
 6.  Evaluate `wm` after each `character` is read, to branch upon
     -   identification of
