@@ -54,7 +54,7 @@
 |analogs|`,`| additive connotation, from English ( C family, Erlang, etc. )|
 ||`.`| terminal connotation, from English ( Prolog, Erlang, COBOL )|
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
-|specified||- assigned : ``~!@#$^*()_+-={}[]<>\|:,.`'"/\`` <br> - unassigned : `%&?;`|
+|specified||- assigned : ``~!@#$^*()_+-={}[]<>\|:,.`'"/\`` <br> - unassigned : `&?;`|
 ||`--...EOL` `{-...-}`| comments | 
 ||`\`|`generic escape character` ala JS|
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
