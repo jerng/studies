@@ -22,10 +22,10 @@
      -    [boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra_(structure))
      -    take `ALL regex features` from JS
 -    UNASSIGNED : 
-     |``|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
+     |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
      |`\|-> <-\|`|`\|=> <=\|`|`:-> <-:`|` `|` `|
-     |`;`|`\|\|`|`&&`|`::`|` `|
+     |` `|`\|\|`|`&&`|`::`|` `|
 -    BROADLY :
      -   IMPLEMENTATION STRATEGY :
          -   Stage 1 : `JavaScript`
