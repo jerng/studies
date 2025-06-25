@@ -19,7 +19,8 @@
           - [MetaMath](https://en.wikipedia.org/wiki/Metamath), [MetaMath Zero](https://en.wikipedia.org/wiki/Metamath), [OpenTheory](https://www.gilith.com/opentheory/), [Thousands of Problems for Theorem Provers](https://www.tptp.org/)
      -    reconsider `\` escaping
      -    [ABC](https://en.wikipedia.org/wiki/ABC_notation) music notation, [LilyPond](https://en.wikipedia.org/wiki/LilyPond)
-     -    [boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra_(structure)) 
+     -    [boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra_(structure))
+     -    take `ALL regex features` from JS
 -    UNASSIGNED : 
      |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
