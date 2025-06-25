@@ -21,6 +21,7 @@
      -    [ABC](https://en.wikipedia.org/wiki/ABC_notation) music notation, [LilyPond](https://en.wikipedia.org/wiki/LilyPond)
      -    [boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra_(structure))
      -    take `ALL regex features` from JS
+     -    decide between `\forall` `\'forall'` `<forall>` `\<forall>` `other`
 -    UNASSIGNED : 
      |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
@@ -73,7 +74,7 @@
 ||`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `(TODO : example)`, and will quit upon ambiguity|
 |||- `{ x \| P(a) }` set builder notation <br> - `[ head \| tail ]` singly-linked-list notation <br> - `-[ head \| body \| tail ]-` doubly-linked-list notation
 ||`:`|`sloppy` : it is legal to introduce lexical ambiguity : lexer may introduce implied IFS, for example where `(:::)` expands to `(undefined:undefined:undefined:undefined)`, `(::::atom)` is `(undefined : undefined : undefined : :atom)`, and `(:::atom)` being ambiguous MAY hurl a lexing error, not being specified to, but out of charity. Therefore other design decisions about `:` should enable contextual deduction of missing IFS |
-|||- `fn name : signature : parameters : body end` `(:::)` function notation <br> `:valid_atom` <br> - `+{ key : value }+` JS-eque POJO notation - <br> `<<value:size/typespecifierlist>>` <br>- `<qr:...:qr>` form |
+|||- `fn name : signature : parameters : body end` `(:::)` function notation <br> `:ascii_atom` <br> - `+{ key : value }+` JS-eque POJO notation - <br> `<<value:size/typespecifierlist>>` <br>- `<qr:...:qr>` form |
 |specified|`value^Type` `Type^value`|type association, as opposed to `:` in OCaml, Python, `::` in Haskell, July, `type value` in C, `type<value>` in C++|
 ||`_`|- explicitly ignored `value`;|
 |||- see `number` |
@@ -81,14 +82,14 @@
 ||`=` `<-`|`Single Static Assignment`: LHS HANDLE points to a memory ADDRESS, whose FIRST AND ONLY value shall be RHS VALUE; ala maths ; assigns from RHS to LHS only|
 ||`:=`|`Destructive Assignment` : LHS HANDLE points to a memory ADDRESS, whose FIRST OR NEW value shall be RHS VALUE; ala ALGOL; disallow `=:` |
 ||`)=`|`Application & Destructive Reassignment` : LHS HANDLE points to a memory ADDRESS, whose NEW value shall be ( RHS FUNCTION applied to LHS's OLD value ); graphical reference to `)>` ; disallow `=(`|
-||`.`|- `parent.child`: (valid_symbol)subscript, for subscoping : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JS, as opposed to `::` and `->` from C++|
+||`.`|- `parent.child`: `(valid_symbol)subscript`, for subscoping : `container.index` `parent_container.child_container` `parent_type.child_type` `parent_env.child_env` ala JS, as opposed to `::` and `->` from C++|
 |||-see `number`||
 ||`!`|reserved for future use as a `communications operator` : from Erlang's messaging operator, but with diversified use to include `throwing exceptions`, etc.|
 ||`true`, `false`, `null`, `undefined`| four-logic|
 ||e.g. `'SIGMA __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
 ||`addr_of_data <(x)`|unambiguous indirection to data|
-|charsets|`valid_symbol` `:valid_atom` |-  `['a-z]` first character (Haskellism), `['a-z_@A-Z0-9]` middle characters (Erlangism), and `['a-z@A-Z0-9]` last character <br> - OK : `'` `'aa` `'a'` `a'` `a_b` `a@` `a0` <br> - ERROR : `0'` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:valid_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
+|charsets|`ascii_symbol` `:ascii_atom`<br> `` \`unicode_symbol` `` `` :\`unicode_atom` `` |-  `['a-z]` first character (Haskellism), `['a-z_@A-Z0-9]` middle characters (Erlangism), and `['a-z@A-Z0-9]` last character <br> - OK : `'` `'aa` `'a'` `a'` `a_b` `a@` `a0` <br> - ERROR : `0'` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `:ascii_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
 |`ASCII -IPA`||https://en.wikipedia.org/wiki/Kirshenbaum|
 |audio synthesis|| - https://github.com/lichen-community-systems/Flocking|
 ||`types / kinds / classes`|`[A-Z]` first character (Haskellism), `[A-Z_@a-z0-9]` middle characters (Erlang rules), `[A-Z@a-z0-9]` last character
