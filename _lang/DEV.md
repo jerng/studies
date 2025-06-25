@@ -53,9 +53,10 @@
 |analogs|`,`| additive connotation, from English ( C family, Erlang, etc. )|
 ||`.`| terminal connotation, from English ( Prolog, Erlang, COBOL )|
 ||`<-` `=>`|`travels to` `points at` `and then, in sequence or logic`|
-|specified|`%%...EOL` `<%...%>`| comments | 
+|specified||- assigned : ``~!@#$%^*()_+-={}[]<>\|:,.`'"/\`` <br> - unassigned : `&?;`|
+||`%%...EOL` `<%...%>`| comments | 
+||`\`|`generic escape character` ala JS|
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
-|`symbols`||- assigned : ``~!@#$%^*()_+-={}[]<>\|:,.`'"`` <br> - unassigned : `&?;/\`|
 |`quotes`|`` `...` `` <br> `backticks` ala JS template literal strings | - `` \` `` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
 ||` ``...`` `|`unassigned`|
 ||` ```...``` `|- `triple-backticks` : `indentation aware` see Erlang's triple quotes ( or other fancy features )|
@@ -66,6 +67,7 @@
 |||- other uses?|
 ||`""...""`|`unassigned`||
 ||`"""..."""`|`unassigned`||
+||`/.../`|`regex` ala JS|
 ||see `data structures`|- `(...)` `{...}` `[...]` `-[...]-` `+{...}+` `+[...]+` `*[...]*` <br> - `<` namespace : `<qr:...:qr>` form, `<q...q>` form, `<x>` form, `<xyz>` form |
 |`\|` `:`|`analogs`|`where` `whereas` `such that` `onlyif` `and`|
 ||`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `(TODO : example)`, and will quit upon ambiguity|
