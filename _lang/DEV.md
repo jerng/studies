@@ -56,12 +56,16 @@
 |specified|`%%...EOL` `<%...%>`| comments | 
 ||` ` `\n` `\t`|- `IFS` internal field separator; whitespace should be regarded as significant <br> - in the interest of simplifying grapheme differentiation, the lexer should not have to guess too much about ambiguous grapheme-/ word-boundaries |
 |`symbols`||- assigned : ``~!@#$%^*()_+-={}[]<>\|:,.`'"`` <br> - unassigned : `&?;/\`|
-|`quotes`|unassigned |`         ` `         ` `         `  etc. <br> `  ``...``  ` `  ''...''  ` `  ""...""  ` <br> `         ` `'''...'''` `"""..."""`|
-||`` `...` `` <br> `backticks` ala JS template literal strings | - `` \` `` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
+|`quotes`|`` `...` `` <br> `backticks` ala JS template literal strings | - `` \` `` is the escape sequence for embedding the quote character <br> - `${...}` is the escape sequence for embedding code <br> - it is probably simplest to adopt JS's default UTF16 string semantics for the most common cases <br> - and Erlang's bitstring syntax later; Erlang's sugared-string linked-lists may be relevant under the 1LL data structure |
+||` ``...`` `|`unassigned`|
 ||` ```...``` `|- `triple-backticks` : `indentation aware` see Erlang's triple quotes ( or other fancy features )|
-||`` '...' ``|- `single quotes` are allowed in variables/symbol names and atoms <br> - `convention` : where a variable represents an ( `operator` implemented as a `function`), prefix the name of this variable with single quotes : `'and` `'isa` `'SIGMA` resulting in usage similar to where other languages may use `\` for `\and` `\isa` `\SIGMA` etc.|
+||`'...'`|- `single quotes` are allowed in variables/symbol names and atoms <br> - `convention` : where a variable represents an ( `operator` implemented as a `function`), prefix the name of this variable with single quotes : `'and` `'isa` `'SIGMA` resulting in usage similar to where other languages may use `\` for `\and` `\isa` `\SIGMA` etc.|
+||`''...''`|`unassigned`||
+||`'''...'''`|`unassigned`||
 ||`"..."` <br> lexical modifier| - `a infixFunction b c` can be converted to prefix such that `"infixFunction" a b c` <br> - `prefixFunction a b` can be converted to infix such that `a "prefixFunction" b` <br> - Haskell uses two separate operators for this, `(infixFunction)` `` `prefixFunction` ``|
 |||- other uses?|
+||`""...""`|`unassigned`||
+||`"""..."""`|`unassigned`||
 ||see `data structures`|- `(...)` `{...}` `[...]` `-[...]-` `+{...}+` `+[...]+` `*[...]*` <br> - `<` namespace : `<qr:...:qr>` form, `<q...q>` form, `<x>` form, `<xyz>` form |
 |`\|` `:`|`analogs`|`where` `whereas` `such that` `onlyif` `and`|
 ||`\|`|`strict` : it is illegal to introduce lexical ambiguity : lexer should not have to guess about missing IFS `(TODO : example)`, and will quit upon ambiguity|
