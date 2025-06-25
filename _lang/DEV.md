@@ -4,22 +4,22 @@
 ## Latest
 
 -    UNDONE :
-     -     [`APL/J analogues`](https://code.jsoftware.com/wiki/NuVoc), `proof assistant features / go read about it`
-     -     |General error||
-     -     |`let ... in ... ` `... where ...`||`to be unified with a bind syntax`|
-     -     |[`BNF`](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)||Context-free grammar notations|
-     -     | data structures : interfaces vs implementation |
-     -     `hwloc` vs `data structure configuration`
-     -     rename `fn` to `proc / prc / rt / blk ` ?
-     -     rename weird FP terms to fit a broader natural language audience?
-     -     tone letters : https://en.wikipedia.org/wiki/Tone_(linguistics)
-     -     maths, range notation
-     -     default `left associativity` with `explicit associativity modifiers` ?
-     -     Isabelle's [ASCII symbols](https://github.com/seL4/isabelle/blob/master/etc/symbols), [Idris](https://en.wikipedia.org/wiki/Idris_(programming_language)), [Agda](https://en.wikipedia.org/wiki/Agda_(programming_language)), [Lean](https://en.wikipedia.org/wiki/Lean_(proof_assistant)), further [comparison](https://en.wikipedia.org/wiki/Proof_assistant#System_comparison)
-           -     [MetaMath](https://en.wikipedia.org/wiki/Metamath), [MetaMath Zero](https://en.wikipedia.org/wiki/Metamath), [OpenTheory](https://www.gilith.com/opentheory/), [Thousands of Problems for Theorem Provers](https://www.tptp.org/)
-     -     reconsider `\` escaping
-     -     [ABC](https://en.wikipedia.org/wiki/ABC_notation) music notation, [LilyPond](https://en.wikipedia.org/wiki/LilyPond)
-     -     [boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra_(structure)) 
+     -    [`APL/J analogues`](https://code.jsoftware.com/wiki/NuVoc), `proof assistant features / go read about it`
+     -    General error
+     -    `let ... in ... ` `... where ...`,`to be unified with a bind syntax`
+     -    [`BNF`](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form), Context-free grammar notations
+     -    data structures : interfaces vs implementation 
+     -    `hwloc` vs `data structure configuration`
+     -    rename `fn` to `proc / prc / rt / blk ` ?
+     -    rename weird FP terms to fit a broader natural language audience?
+     -    tone letters : https://en.wikipedia.org/wiki/Tone_(linguistics)
+     -    maths, range notation
+     -    default `left associativity` with `explicit associativity modifiers` ?
+     -    Isabelle's [ASCII symbols](https://github.com/seL4/isabelle/blob/master/etc/symbols), [Idris](https://en.wikipedia.org/wiki/Idris_(programming_language)), [Agda](https://en.wikipedia.org/wiki/Agda_(programming_language)), [Lean](https://en.wikipedia.org/wiki/Lean_(proof_assistant)), further [comparison](https://en.wikipedia.org/wiki/Proof_assistant#System_comparison)
+          - [MetaMath](https://en.wikipedia.org/wiki/Metamath), [MetaMath Zero](https://en.wikipedia.org/wiki/Metamath), [OpenTheory](https://www.gilith.com/opentheory/), [Thousands of Problems for Theorem Provers](https://www.tptp.org/)
+     -    reconsider `\` escaping
+     -    [ABC](https://en.wikipedia.org/wiki/ABC_notation) music notation, [LilyPond](https://en.wikipedia.org/wiki/LilyPond)
+     -    [boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra_(structure)) 
 -    UNASSIGNED : 
      |` `|`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
