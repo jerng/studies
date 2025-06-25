@@ -167,7 +167,7 @@
 ||||
 ||||
 ||||
-|Data Structures|Unassigned Symbols | RULE : symmetrical opening/ closing tags <br> ` ` `-{}-` `    ` `+{}+` `    ` `#{}#` `{##}` `*{}*` `{**}` `... @$%^ etc.` <br> ` ` `-()-` `(--)` `+()+` `(++)` `#()#` `(##)` `*()*` `(**)` `... @$%^ etc.` <br> ` ` `-[]-` `    ` `+[]+` `    ` `#[]#` `    ` `*[]*` `[**]` `... @$%^ etc.`<br> ` ` `-<>-` `<-->` `+<>+` `<++>` `#<>#` `<##>` `*<>*` `<**>` `... @$%^ etc.`
+|Data Structures|Unassigned Symbols | RULE : symmetrical opening/ closing tags <br> ` ` `-{}-` `    ` `+{}+` `    ` `#{}#` `{##}` `*{}*` `{**}` `... @$%^ etc.` <br> ` ` `-()-` `(--)` `+()+` `(++)` `#()#` `(##)` `*()*` `(**)` `... @$%^ etc.` <br> ` ` `-[]-` `    ` `+[]+` `    ` `#[]#` `    ` `*[]*` `[**]` `... @$%^ etc.`<br> ` ` `-<>-` `    ` `+<>+` `<++>` `#<>#` `    ` `*<>*` `    ` `... @$%^ etc.`
 |`()` 1|| tuples, `cpp structr` unless they fix `cpp std::tuple`, CONSIDER : <br>  -   `mytuple_[5]_[17]` <br>  -   `mytuple.5.17` <br>  -   `mytuple_5_17` <br>  -   `mytuple_(5)_(17)` |
 ||| - for associative resolution ( lexing or parsing ); giving it this sort of explicit role is quite important! <br>- Reason : the `output of lexing`, is a `single nested tuple of strings`, so adding parentheses in source code are just hints / more explicit input for the lexer <br> - `lexical_block<(operand)` for function application <br> - `a b c` `a,b,c` `(a b c)` `(a,b,c)` `(((((a),(b),(((c)))))))`: all equivalent, `except in special contexts` |
 |`[]`|| nilist, the protolist  |
