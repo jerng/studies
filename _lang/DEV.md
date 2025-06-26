@@ -19,11 +19,13 @@
           - further [comparison](https://en.wikipedia.org/wiki/Proof_assistant#System_comparison)
           - [MetaMath](https://en.wikipedia.org/wiki/Metamath), [MetaMath Zero](https://en.wikipedia.org/wiki/Metamath), [OpenTheory](https://www.gilith.com/opentheory/), [Thousands of Problems for Theorem Provers](https://www.tptp.org/)
           - [shulman](https://www.ams.org/journals/bull/2024-61-02/S0273-0979-2024-01830-8/viewer/) note
+          - [SPARK](https://en.wikipedia.org/wiki/SPARK_(programming_language))
      -    reconsider `\` escaping
      -    [ABC](https://en.wikipedia.org/wiki/ABC_notation) music notation, [LilyPond](https://en.wikipedia.org/wiki/LilyPond)
      -    [boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra_(structure))
      -    take `ALL regex features` from JS
      -    decide between `\forall` `\'forall'` `<forall>` `\<forall>` `other`
+     -    `with` or `where` : [aspects](https://en.wikipedia.org/wiki/Aspect-oriented_programming)
 -    UNASSIGNED : 
      ||`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
