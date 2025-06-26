@@ -15,8 +15,10 @@
      -    tone letters : https://en.wikipedia.org/wiki/Tone_(linguistics)
      -    maths, range notation
      -    default `left associativity` with `explicit associativity modifiers` ?
-     -    Isabelle's [ASCII symbols](https://github.com/seL4/isabelle/blob/master/etc/symbols), [Idris](https://en.wikipedia.org/wiki/Idris_(programming_language)), [Agda](https://en.wikipedia.org/wiki/Agda_(programming_language)), [Lean](https://en.wikipedia.org/wiki/Lean_(proof_assistant)), further [comparison](https://en.wikipedia.org/wiki/Proof_assistant#System_comparison)
+     -    Isabelle's [ASCII symbols](https://github.com/seL4/isabelle/blob/master/etc/symbols), [Idris](https://en.wikipedia.org/wiki/Idris_(programming_language)), [Agda](https://en.wikipedia.org/wiki/Agda_(programming_language)), [Lean](https://en.wikipedia.org/wiki/Lean_(proof_assistant)), [Logic Theorist](https://en.wikipedia.org/wiki/Logic_Theorist)
+          - further [comparison](https://en.wikipedia.org/wiki/Proof_assistant#System_comparison)
           - [MetaMath](https://en.wikipedia.org/wiki/Metamath), [MetaMath Zero](https://en.wikipedia.org/wiki/Metamath), [OpenTheory](https://www.gilith.com/opentheory/), [Thousands of Problems for Theorem Provers](https://www.tptp.org/)
+          - [shulman](https://www.ams.org/journals/bull/2024-61-02/S0273-0979-2024-01830-8/viewer/) note
      -    reconsider `\` escaping
      -    [ABC](https://en.wikipedia.org/wiki/ABC_notation) music notation, [LilyPond](https://en.wikipedia.org/wiki/LilyPond)
      -    [boolean algebra](https://en.wikipedia.org/wiki/Boolean_algebra_(structure))
