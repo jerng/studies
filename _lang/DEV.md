@@ -90,7 +90,7 @@
 |||-see `number`||
 ||`!`|reserved for future use as a `communications operator` : from Erlang's messaging operator, but with diversified use to include `throwing exceptions`, etc.|
 ||`true`, `false`, `null`, `undefined`| four-logic|
-||e.g. `'SIGMA __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where `xy`-axis|
+||e.g. `'SIGMA __0 ^^5 >>i^i+i`|axial phrasing `^^` `>^` `>>` `>_` `__` `<_` `<<` `<^` where the order of `xy` should not matter |
 |pointers|`data_at_addr <(x)`|unambiguous dereferencing of pointer|
 ||`addr_of_data <(x)`|unambiguous indirection to data|
 |charsets|`ascii_symbol` `%ascii_atom`<br> `` \`unicode_symbol` `` `` %\`unicode_atom` `` |-  `['a-z]` first character (Haskellism), `['a-z_@A-Z0-9]` middle characters (Erlangism), and `['a-z@A-Z0-9]` last character <br> - OK : `'` `'aa` `'a'` `a'` `a_b` `a@` `a0` <br> - ERROR : `0'` `0a` `_a` `a_` `@a` <br>- also see `<x>` and `<xyz>` patterns <br> - `%ascii_atom`: literals, not symbols, in the Erlang style; notation ala symbols in Ruby, CommonLisp, Julia ... no further quoting is needed for disambiguation. <br> - no option to quote for more characters <br> - future : quotes for charset expansion? Unicode?|
