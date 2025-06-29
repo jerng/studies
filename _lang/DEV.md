@@ -139,7 +139,7 @@
 |`circular` `rotary`|`@@<` `@CSL`|left shift |
 ||`@@>` `@CSR`|right shift|
 |`arithmetic` `signed`|`@$<` `@SSL`|left shift |
-||`@-}` `@SSR`|right shift|
+||`@$>` `@SSR`|right shift|
 |`order-0` `propositional` `boolean` logics|truth tables?|`NAND ⊼` `NOR ⊽` `XAND` : MORE CHECKING NEEDED|
 ||`a \| b` `OR`|`a \/ b` vee ( Lean-lang )|
 ||`a & b` `AND`|`a /\ b` wedge ( Lean-lang )|
