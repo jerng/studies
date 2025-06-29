@@ -26,6 +26,7 @@
      -    take `ALL regex features` from JS
      -    decide between `\forall` `\'forall'` `<forall>` `\<forall>` `other`
      -    `with` or `where` : [aspects](https://en.wikipedia.org/wiki/Aspect-oriented_programming)
+     -    consider replacing `~` with `-.` or `-,`
 -    UNASSIGNED : 
      ||`<-- -->`|`<== ==>`| `->> <<-`| `<<= =>>`| 
      |-|-|-|-|-|
