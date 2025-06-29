@@ -930,7 +930,13 @@ end
            -   `for key in/of b do {}`
                -   `for value in/of b do {}`
 
-# Lexing Algorithm
+# Lexing 
+
+## Tools
+
+https://github.com/skvadrik/re2c - can target JS
+
+## Algorithm
 
 1.  Let there be variables :
     -   `wm` : a working memory : initialised to an empty string
