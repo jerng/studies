@@ -1007,8 +1007,8 @@ end
 ### Data : times
 
 - `processing time` or `compilation time` may be sub-divided into various periods
-  - `preprocessing time` and `macros` refers to transformations done prior to a `main stage`; usually these are just lexical transformations, but some degree of parsing may o
-  - the `main stage` of processing may be sub-divided into various periods, also
+  - `preprocessing time/stage/pass` and `macros` refers to transformations done prior to a `main stage/pass`; usually these are just lexical transformations
+  - the `main stage/pass` of processing may be sub-divided into various periods, also
     - `lexing` : the delimitation of a `string` into `tokens` 
 
 ### Data : spaces
