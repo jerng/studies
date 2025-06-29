@@ -1013,11 +1013,16 @@ https://github.com/skvadrik/re2c - can target JS
 
 ### Data : times
 
-- `processing time` or `compilation time` may be sub-divided into various periods
+- `processing time` may be sub-divided into various periods
   - `preprocessing time/stage/pass` and `macros` refers to transformations done prior to a `main stage/pass`; usually these are just lexical transformations
   - the `main stage/pass` of processing may be sub-divided into various periods, also
     - `lexing` : the delimitation of a `string` into `tokens` 
-
+    - `parsing` : the determination of a nested `abstract syntax tree / AST` from `tokens`
+    - `semantic analysis` : the normalisation of the AST into an irreducible form, representing the semantics of the language
+  - `intepretation/compile time` : the `intepretation of byte code on a virtual machine, which emits bitcode` or the `compilation of the AST to bitcode, just-in-time / JIT, or ahead-of-time / AOT`
+  - `runtime` : terminal execution of `bitcode`  
+   
+    
 ### Data : spaces
 
 ## Operations on Data
