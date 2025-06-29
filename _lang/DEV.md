@@ -129,7 +129,7 @@
 ||`is` `is not` `IS` `IS NOT`|strict identity, like `<=>` `</>` in `order-0` logic; like `===` `!==` in JS |
 ||`eq` `not eq` `EQ` `NOT EQ`|equivalence, like `==` `!=` in JS |
 |`bitwise operator prefix`|`@`|bitwise operations are `domain specific` given that they are mainly used in the computing context to regard `bits` and `bytes` and `words`. Here we avoid the conventional `\|` `&` `~` as these operators will be used in a more general context. Following the style of Erlang, bitwise operators all have a common prefix. [Swift docs are pretty](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/advancedoperators/). <br> - complicated : different operators in various languages are overloaded for different underlying data types|
-|`logical` `unsigned`|`@` `@OR`||
+|`logical` `unsigned`|`@|` `@OR`||
 ||`@&` `@AND`||
 ||`@~` `@NOT`||
 ||`@^` `@XOR`||
