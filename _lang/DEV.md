@@ -985,3 +985,32 @@ end
 8.  
 
 ![508058620_18513042421001756_1035665533606289723_n](https://github.com/user-attachments/assets/1ffe17df-c92e-44d2-b333-66cfdf4d9f42)
+
+### Note on Lexing vs. Parsing
+
+- Commonly,
+  - `lexing` refers to the `delimiting of tokens` from a `string of characters`, without consideration for `nested structure`,and
+  - `parsing` refers to the building of a tree ( a nested structure )
+- However,
+  - a grammar may be defined such that `the nesting of a character, determines its delimitations`, rendering, the common case above, inapplicable
+- Moreover,
+  - a grammar may be defined such that `for any character, the preceding or following characters in the undelimited string, determine if that character is immediately followed by a delimitation`
+
+# Memory Layout
+
+>    All nouns refer to either `data` or `operations on data`
+
+## Data
+
+>    `data` must have an `address` in `space` and `time`
+
+### Data : times
+
+- `processing time` or `compilation time` may be sub-divided into various periods
+  - `preprocessing time` and `macros` refers to transformations done prior to a `main stage`; usually these are just lexical transformations, but some degree of parsing may o
+  - the `main stage` of processing may be sub-divided into various periods, also
+    - `lexing` : the delimitation of a `string` into `tokens` 
+
+### Data : spaces
+
+## Operations on Data
