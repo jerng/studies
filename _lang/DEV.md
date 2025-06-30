@@ -4,6 +4,7 @@
 ## Latest
 
 -    UNDONE :
+     -    `illustrative mode` - definition
      -    [`APL/J analogues`](https://code.jsoftware.com/wiki/NuVoc), `proof assistant features / go read about it`
      -    General error
      -    `let ... in ... ` `... where ...`,`to be unified with a bind syntax`
