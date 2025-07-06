@@ -72,7 +72,7 @@
 ||`'...'`|- `single quotes` are allowed in variables/symbol names and atoms <br> - `convention` : where a variable represents an ( `operator` implemented as a `function`), prefix the name of this variable with single quotes : `'and` `'isa` `'SIGMA` resulting in usage similar to where other languages may use `\` for `\and` `\isa` `\SIGMA` etc.|
 ||`''...''`|`unassigned`||
 ||`'''...'''`|`unassigned`||
-||`"..."` <br> lexical modifier| - `a infixFunction b c` can be converted to prefix such that `"infixFunction" a b c` <br> - `prefixFunction a b` can be converted to infix such that `a "prefixFunction" b` <br> - Haskell uses two separate operators for this, `(infixFunction)` `` `prefixFunction` ``|
+||`"..."` <br> diacritical/lexical modifier| - `a infixFunction b c` can be converted to prefix such that `"infixFunction" a b c` <br> - `prefixFunction a b` can be converted to infix such that `a "prefixFunction" b` <br> - Haskell uses two separate operators for this, `(infixFunction)` `` `prefixFunction` ``|
 |||- other uses?|
 ||`""...""`|`unassigned`||
 ||`"""..."""`|`unassigned`||
