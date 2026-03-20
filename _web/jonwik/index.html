@@ -1,2 +1,84 @@
 <html>
+<body>
+
+    <h1>script[type] values</h1>
+
+    <script type='text/javascript'></script>
+    <!--    this will parse; avoid 'application/javascript' as obsolete -->
+
+    <!--    JavaScript code in ALL THE FOLLOWING script elements : are NOT parsed by browsers -->
+
+    <script type='text/javascript; ignored=true'></script>
+    <!--    adding ';parameter=value' makes browser treat this block as unparsable, whereas it follows MIME syntax convention, and 'parameter=value' is for readability -->
+
+    <script type='application/json; ignored=true'></script>
+    <!--    'text/json' is obsolete; browser won't parse this type/subtype anyway, but parameter=value is for readability -->
+
+    <script type='application/json; content-transfer-encoding=base64'></script>
+    <script type='text/csv'></script>
+    <!--    further examples -->
+
+    <hr>
+
+    <h1>template[shadowrootmode] values</h1>
+
+    <div     class='framework-component-container'>
+        <template shadowrootmode='open'>
+        <!-- shadowrootmode='open' causes template to be rooted when the markup is parsed -->
+        This text is rendered under the shadow root.
+        </template>
+    </div>
+
+    <div     class='framework-component-container'>
+        <template shadowrootmode='closed'>
+        <!-- shadowrootmode='closed' causes template to be parsed to an unrendered documentFragment -->
+        This text is not rendered.
+        </template>
+    </div>
+
+    <div     class='framework-component-container'>
+        <template>
+        <!-- when unspecified, the behaviour follows shadowrootmode='closed' -->
+        This text is not rendered.
+        </template>
+    </div>
+
+    <hr>
+
+    <h1>customElement.define()</h1>
+
+    <hr>
+
+    <h1>div[data-*] JSON storage example</h1>
+
+    <div data-arbitrary-json='a-string'>
+        <script>
+            const element = document.querySelector('[data-arbitrary-json]')
+            console.log( 'expect "a-string" : ', element.dataset.arbitraryJson ) 
+
+            const json = {  "1":"\"",
+                            "2":"</div>",
+                            "3":"b-string"  
+            }
+            const stringifiedJson = JSON.stringify(json)
+            element.dataset.arbitraryJson = stringifiedJson
+            let elementHtml = element.outerHTML
+
+            console.log( 'json returns :', json )
+            
+            /* serialising JSON the easy way */
+            console.log( 'JSON.stringify(json) returns :', stringifiedJson )
+            console.log( 'element.outerHtml returns :', elementHtml )
+            console.log ( 'JSON.parse(element.dataset.arbitraryJson)', JSON.parse(element.dataset.arbitraryJson) )
+
+            /* serialising JSON the hard way */
+            element.dataset.arbitraryJson = '{"1":"\\"","2":"</div>","3":"b-string"}'
+            elementHtml = element.outerHTML
+            console.log( 'element.outerHtml returns :', elementHtml )
+            console.log ( 'JSON.parse(element.dataset.arbitraryJson)', JSON.parse(element.dataset.arbitraryJson) )
+
+        </script>
+    </div>
+
+</body>
 </html>
