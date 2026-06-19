@@ -6,6 +6,11 @@ https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols
 
 https://www.cuemath.com/numbers/math-symbols/
 
+### ad hoc notes
+
+- [triangle of power](https://www.youtube.com/watch?v=sULa9Lc4pck)
+  operator : `/base,power,result\` or `base/power\result`
+
 
 ### SURVEYS
 
