@@ -4,6 +4,7 @@
 ## Latest
 
 -    UNDONE :
+     -    use same syntax for bitwise and boolean logic, but add sigil or something `THISISBITWISE(blahblah)`
      -    `illustrative mode` - definition
      -    [`APL/J analogues`](https://code.jsoftware.com/wiki/NuVoc), `proof assistant features / go read about it`
      -    General error
